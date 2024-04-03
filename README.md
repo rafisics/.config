@@ -607,13 +607,21 @@ Run one final test, checking to see if your credentials are now automatically su
 For more help, see these [video](https://www.youtube.com/watch?v=kHkQnuYzwoo) instructions.
 
 <!-- ### Installing the GitHub Cli -->
+
 <!---->
+
 <!-- Assuming that you are using GitHub to host your repositories, it is convenient to install the GitHub Cli which allows you to make changes to your repositories directly from the terminal inside NeoVim: -->
+
 <!---->
+
 <!-- ``` -->
+
 <!-- brew install gh -->
+
 <!-- ``` -->
+
 <!---->
+
 <!-- For further information, see the section **GitHub Cli** in the [Cheat Sheet](https://github.com/benbrastmckie/.config/blob/master/CheatSheet.md) as well as the [GitHub Cli Repo](https://github.com/cli/cli). -->
 
 # Arch Linux Installation
@@ -1022,25 +1030,45 @@ Run one final test, checking to see if your credentials are now automatically su
 For more help, see these [video](https://www.youtube.com/watch?v=kHkQnuYzwoo) instructions.
 
 <!-- ### Installing the GitHub Cli -->
+
 <!---->
+
 <!-- Assuming that you are using GitHub to host your repositories, it is convenient to install the GitHub Cli which allows you to make changes to your repositories directly from the terminal inside NeoVim: -->
+
 <!---->
+
 <!-- ``` -->
+
 <!-- sudo pacman -S github-cli -->
+
 <!-- ``` -->
+
 <!---->
+
 <!-- You will then need to follow the [instructions](https://cli.github.com/manual/) in order to authenticate GitHub Cli by running: -->
+
 <!---->
+
 <!-- ``` -->
+
 <!-- gh auth login -->
+
 <!-- ``` -->
+
 <!---->
+
 <!-- Set NeoVim as your default editor by running: -->
+
 <!---->
+
 <!-- ``` -->
+
 <!-- gh config set editor nvim -->
+
 <!-- ``` -->
+
 <!---->
+
 <!-- For further information, see the section **GitHub Cli** in the [Cheat Sheet](https://github.com/benbrastmckie/.config/blob/master/CheatSheet.md) as well as the [GitHub Cli Repo](https://github.com/cli/cli). -->
 
 # Debian Linux Installation
@@ -1174,14 +1202,14 @@ latexmk --version
 ## [Nerd Fonts](https://github.com/ryanoasis/nerd-fonts)
 
 In order for NeoVim to load icons, it will be imporant to install a NerdFont.
-For simplicity, I have included RobotoMono in `~/.config/fonts` which you can now move to the appropriate folder on your computer by entering the following in the terminal:
+For simplicity, I have included [RobotoMono Nerd](https://www.nerdfonts.com/font-downloads) fonts in `~/.config/fonts` which you can now move to the appropriate folder on your computer by entering the following in the terminal:
 
 ```
-sudo cp -R ~/.config/fonts/RobotoMono/ /usr/share/fonts
+sudo cp -R ~/.config/fonts/RobotoMono /usr/share/fonts/truetype/
 ```
 
-If you intend to use the stock terminal, you will need to go into the terminal's settings to change the font to RobotoMono regular.
-You are now ready to write LaTex in NeoVim inside the stock terminal.
+If you intend to use the stock terminal, you will need to go into the terminal's settings to change the font to `RobotoMono Nerd Font` (regular).
+You are now ready to write LaTeX in NeoVim inside the stock terminal.
 
 ## [Zathura](https://pwmt.org/projects/zathura/)
 
@@ -1507,25 +1535,45 @@ Run one final test, checking to see if your credentials are now automatically su
 For more help, see these [video](https://www.youtube.com/watch?v=kHkQnuYzwoo) instructions.
 
 <!-- ### Installing the GitHub Cli -->
+
 <!---->
+
 <!-- Assuming that you are using GitHub to host your repositories, it is convenient to install the GitHub Cli which allows you to make changes to your repositories directly from the terminal inside NeoVim: -->
+
 <!---->
+
 <!-- ``` -->
+
 <!-- sudo apt install github-cli -->
+
 <!-- ``` -->
+
 <!---->
+
 <!-- You will then need to follow the [instructions](https://cli.github.com/manual/) in order to authenticate GitHub Cli by running: -->
+
 <!---->
+
 <!-- ``` -->
+
 <!-- gh auth login -->
+
 <!-- ``` -->
+
 <!---->
+
 <!-- Set NeoVim as your default editor by running: -->
+
 <!---->
+
 <!-- ``` -->
+
 <!-- gh config set editor nvim -->
+
 <!-- ``` -->
+
 <!---->
+
 <!-- For further information, see the section **GitHub Cli** in the [Cheat Sheet](https://github.com/benbrastmckie/.config/blob/master/CheatSheet.md) as well as the [GitHub Cli Repo](https://github.com/cli/cli). -->
 
 # Remapping Keys
