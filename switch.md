@@ -1,18 +1,9 @@
-if status is-interactive
-    # Commands to run in interactive sessions can go here
-end
+As I am getting some errors with NeoTeX that I couldn't fix (yet), I am trying out NvChad as well. I use a custom command `toggle_nvm` to switch back and forth between the NeoTeX and NvChad. 
 
-bind --erase \ct
-# removes the mapping <C-t> which is being used to close the terminal in NeoVim
+To enable the command in fish terminal, I have these functions in ` ~/.config/fish/config.fish
+`:
 
-if type -q zoxide
-zoxide init fish --cmd cd | source
-# removes the mapping <C-t> which is being used to close the terminal in NeoVim
-end
-
-# enables starship config 
-starship init fish | source
-
+```
 # Commands to switch from NeoTeX to NvChad
 function switch_to_nvchad
     # Back up NeoTeX
@@ -57,3 +48,4 @@ function toggle_nvim
     end
     nvim
 end
+```
