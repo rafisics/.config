@@ -1,16 +1,16 @@
 # Synctex
 
-set synctex true
+set synctex "true"
 set synctex-editor-command "nvim --remote-silent +%{line} %{input}"
 
 # Basic Settings
 
 set highlight-transparency .1
 set zoom-center "true"
-set selection-clipboard clipboard
+set selection-clipboard "clipboard"
 set render-loading "false"
-# set window-width 960
-set window-width 1280
+set window-width 960
+# set window-width 1280
 set window-height 1080
 set adjust-open "best-fit"
 
@@ -19,48 +19,67 @@ map K zoom in
 map J zoom out
 map p print
 map w recolor
-map k 5k
-map j 5k
+# map k 5k
+# map j 5k
 map <C-v> toggle_fullscreen
 
-set notification-error-bg       "#ebdbb2" # bg
-set notification-error-fg       "#9d0006" # bright:red
-set notification-warning-bg     "#ebdbb2" # bg
-set notification-warning-fg     "#b57614" # bright:yellow
-set notification-bg             "#ebdbb2" # bg
-set notification-fg             "#79740e" # bright:green
+# -------------
 
-set completion-bg               "#d5c4a1" # bg2
-set completion-fg               "#3c3836" # fg
-set completion-group-bg         "#ebdbb2" # bg1
-set completion-group-fg         "#928374" # gray
-set completion-highlight-bg     "#076678" # bright:blue
-set completion-highlight-fg     "#d5c4a1" # bg2
+set window-title-basename "true"
+# set selection-clipboard "clipboard"
 
-# Define the color in index mode
-set index-bg                    "#d5c4a1" # bg2
-set index-fg                    "#3c3836" # fg
-set index-active-bg             "#076678" # bright:blue
-set index-active-fg             "#d5c4a1" # bg2
+# Dracula color theme for Zathura
+# Swaps Foreground for Background to get a light version if the user prefers
 
-set inputbar-bg                 "#ebdbb2" # bg
-set inputbar-fg                 "#3c3836" # fg
+#
+# Dracula color theme
+#
 
-set statusbar-bg                "#d5c4a1" # bg2
-set statusbar-fg                "#3c3836" # fg
+set notification-error-bg       rgba(255,85,85,1)     # Red
+set notification-error-fg       rgba(248,248,242,1)   # Foreground
+set notification-warning-bg     rgba(255,184,108,1)   # Orange
+set notification-warning-fg     rgba(68,71,90,1)      # Selection
+set notification-bg             rgba(40,42,54,1)      # Background
+set notification-fg             rgba(248,248,242,1)   # Foreground
 
-set highlight-color             "#b57614" # bright:yellow
-set highlight-active-color      "#af3a03" # bright:orange
+set completion-bg               rgba(40,42,54,1)      # Background
+set completion-fg               rgba(98,114,164,1)    # Comment
+set completion-group-bg         rgba(40,42,54,1)      # Background
+set completion-group-fg         rgba(98,114,164,1)    # Comment
+set completion-highlight-bg     rgba(68,71,90,1)      # Selection
+set completion-highlight-fg     rgba(248,248,242,1)   # Foreground
 
-set default-bg                  "#1d2021" # bg
-set default-fg                  "#3c3836" # fg
-set render-loading              true
-set render-loading-bg           "#ebdbb2" # bg
-set render-loading-fg           "#3c3836" # fg
+set index-bg                    rgba(40,42,54,1)      # Background
+set index-fg                    rgba(248,248,242,1)   # Foreground
+set index-active-bg             rgba(68,71,90,1)      # Current Line
+set index-active-fg             rgba(248,248,242,1)   # Foreground
 
-# Recolor book content's color
-set recolor-lightcolor          "#ebdbb2" # bg
-set recolor-darkcolor           "#3c3836" # fg
+set inputbar-bg                 rgba(40,42,54,1)      # Background
+set inputbar-fg                 rgba(248,248,242,1)   # Foreground
+set statusbar-bg                rgba(40,42,54,1)      # Background
+set statusbar-fg                rgba(248,248,242,1)   # Foreground
+
+set highlight-color             rgba(255,184,108,0.5) # Orange
+set highlight-active-color      rgba(255,121,198,0.5) # Pink
+
+set default-bg                  rgba(40,42,54,1)      # Background
+set default-fg                  rgba(248,248,242,1)   # Foreground
+
+set render-loading              "true"
+set render-loading-bg           rgba(40,42,54,1)      # Background
+set render-loading-fg           rgba(248,248,242,1)   # Foreground
+
+#
+# Recolor mode settings
+#
+
+set recolor-lightcolor          rgba(40,42,54,1)      # Background
+set recolor-darkcolor           rgba(248,248,242,1)   # Foreground
+
+#
+# Startup options
+#
+set adjust-open width           
 set recolor                     "true"
-# set recolor-keephue             true      # keep original color
-# set recolor-reverse-video       "true"
+set recolor-keephue           "true"      # keep original color
+# set recolor-reverse-video     "true"
