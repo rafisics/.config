@@ -16,7 +16,7 @@
   "firenvim": { "branch": "master", "commit": "3363c140dca2ef0b89e2be0317917f077d752cd7" },
   "gitsigns.nvim": { "branch": "main", "commit": "81369ed5405ec0c5d55a9608b495dbf827415116" },
   "gruvbox.nvim": { "branch": "main", "commit": "6e4027ae957cddf7b193adfaec4a8f9e03b4555f" },
-  "lazy.nvim": { "branch": "main", "commit": "31ddbea7c10b6920c9077b66c97951ca8682d5c8" },
+  "lazy.nvim": { "branch": "main", "commit": "bef521ac89c8d423f9d092e37b58e8af0c099309" },
   "lazygit.nvim": { "branch": "main", "commit": "0ada6c6e7e138df92f5009b6952f4ac41248305a" },
   "local-highlight.nvim": { "branch": "master", "commit": "9003107e94291fc628318b34837c1ad3fe6461c7" },
   "lualine.nvim": { "branch": "master", "commit": "0a5a66803c7407767b799067986b4dc3036e1983" },

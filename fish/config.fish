@@ -36,7 +36,7 @@ function switch_to_neotex
     mv ~/.local/state/nvim{,.chad}
     mv ~/.cache/nvim{,.chad}
 
-    # Move to NvChad
+    # Move to NeoTeX
     mv ~/.config/nvim{.bak,}
     mv ~/.local/share/nvim{.bak,}
     mv ~/.local/state/nvim{.bak,}
