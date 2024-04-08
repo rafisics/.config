@@ -1,6 +1,7 @@
 return {
   "lervag/vimtex",
   ft = 'tex',
+  lazy = false,
   init = function()
     vim.g['vimtex_view_method'] = 'zathura'     -- main variant with xdotool (requires X11; not compatible with wayland)
     -- vim.g['vimtex_view_method'] = 'zathura_simple' -- for variant without xdotool to avoid errors in wayland
