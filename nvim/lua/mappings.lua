@@ -64,8 +64,8 @@ vim.keymap.set("n", "<C-p>", "<cmd>Telescope find_files<CR>", { remap = true })
 
 
 -- Toggle comments
-keymap('n', '<C-Bslash>', '<Plug>(comment_toggle_linewise_current)', opts)
-keymap('x', '<C-Bslash>', '<Plug>(comment_toggle_linewise_visual)', opts)
+keymap('n', '<C-/>', '<Plug>(comment_toggle_linewise_current)', opts)
+keymap('x', '<C-/>', '<Plug>(comment_toggle_linewise_visual)', opts)
 
 
 -- Open help on word
@@ -73,9 +73,9 @@ keymap("n", "<S-m>", ':execute "help " . expand("<cword>")<cr>', opts)
 
 
 -- Fix 'Y', 'E'
-keymap("n", "Y", "y$", opts)
+-- keymap("n", "Y", "y$", opts)
 keymap("n", "E", "ge", opts)
-keymap("v", "Y", "y$", opts)
+-- keymap("v", "Y", "y$", opts)
 -- keymap("v", "E", "ge", opts) -- causes errors with luasnip autocmp
 
 
