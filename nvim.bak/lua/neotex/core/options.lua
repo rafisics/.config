@@ -18,6 +18,7 @@ local options = {
   numberwidth = 2,                -- set number column width to 2 {default 4}
   signcolumn = "yes",             -- always show the sign column, otherwise it would shift the text each time
   cursorline = true,              -- highlight the current line
+  -- colorcolumn = "100",             -- highlight vertical colorcolumn (moved to after/python.lua)
   wrap = true,                    -- display lines as one long line
   showbreak = "  ",               -- set indent of wrapped lines
   cmdheight = 1,                  -- space in the neovim command line for displaying messages
@@ -49,6 +50,7 @@ local options = {
   smartcase = true,               -- smart case
   virtualedit = "block",          -- vitualblock mode doesn't get stuck at the end of line
   inccommand = "split",           -- shows all inline replacements in split
+  autoread = true,
 
 }
 

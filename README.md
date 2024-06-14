@@ -1,16 +1,16 @@
-```
- ███╗   ██╗███████╗ ██████╗ ████████╗███████╗██╗  ██╗
- ████╗  ██║██╔════╝██╔═══██╗╚══██╔══╝██╔════╝╚██╗██╔╝
- ██╔██╗ ██║█████╗  ██║   ██║   ██║   █████╗   ╚███╔╝
- ██║╚██╗██║██╔══╝  ██║   ██║   ██║   ██╔══╝   ██╔██╗
- ██║ ╚████║███████╗╚██████╔╝   ██║   ███████╗██╔╝ ██╗
- ╚═╝  ╚═══╝╚══════╝ ╚═════╝    ╚═╝   ╚══════╝╚═╝  ╚═╝
-```
-
+<!-- ``` -->
+<!--  ███╗   ██╗███████╗ ██████╗ ████████╗███████╗██╗  ██╗ -->
+<!--  ████╗  ██║██╔════╝██╔═══██╗╚══██╔══╝██╔════╝╚██╗██╔╝ -->
+<!--  ██╔██╗ ██║█████╗  ██║   ██║   ██║   █████╗   ╚███╔╝ -->
+<!--  ██║╚██╗██║██╔══╝  ██║   ██║   ██║   ██╔══╝   ██╔██╗ -->
+<!--  ██║ ╚████║███████╗╚██████╔╝   ██║   ███████╗██╔╝ ██╗ -->
+<!--  ╚═╝  ╚═══╝╚══════╝ ╚═════╝    ╚═╝   ╚══════╝╚═╝  ╚═╝ -->
+<!-- ``` -->
+<!---->
 # .config
 
 NOTE: I have recently (Jan 2024) migrated to Lazy package manager from Packer and refactored the config accordingly.
-It is running really fast with some nice features, including:
+It is running `NeoVim v0.9.5` really fast with some nice features, including:
 
 - LSP Autocompletion (VimTex, Buffer, Spell, Snippets, Python, Lua, etc.)
 - Linting and Formatting (Python, Lua, Markdown, etc.)
@@ -20,6 +20,9 @@ It is running really fast with some nice features, including:
 - Telescope (search citations, files, words, etc.)
 - And lots more!
 
+![Screenshot of the configuration](images/screenshot_cite.png)
+
+Running the unstable release of `NeoVim` may lead to errors, and so is discouraged.
 If there are features or plugins that you are aware of and would like to see integrated, don't hesitate to submit a feature request in an issue.
 I have not created any new videos so (for now) these [old ones](https://www.youtube.com/watch?v=_Ct2S65kpjQ&list=PLBYZ1xfnKeDRhCoaM4bTFrjCl3NKDBvqk) will have to do if you'd like to see what the previous version looked like.
 
@@ -66,9 +69,10 @@ brew upgrade
 ```
 
 If Homebrew has not been installed, you may install it by running the following two commands.
-Note that if you don't have `xcode` installed, this may take a while but is essential to what follows.
+Note that if you don't have `xcode` installed (determined by the first command below), installing it may take a while but is essential for what follows.
 
 ```
+xcode-select --version
 xcode-select --install
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
@@ -79,8 +83,9 @@ My reasons for doing this is ergonomics given which keys I'll be using most ofte
 Alternatively, you can make changes to the mappings that I've included in the config, though this may take a little more work than swapping things around in `System Preferences -> Keyboard`.
 Whatever you do, I recommend finding something comfortable before you begin using your NeoVim config, committing its key-bindings to memory.
 
-## [Fish](https://fishshell.com/)
+## [Fish](https://fishshell.com/) (Optional)
 
+Installing `Fish` is optional but will make working in the terminal a lot easier (including autocomplete).
 To install the Fish shell, run:
 
 ```
@@ -132,17 +137,27 @@ fish_vi_key_bindings
 
 If you aren't already comfy with vim-like modes, the vi-mode in Fish may be cumbersome, and best to avoid during the installation.
 
+### Extras
+
+Optionally, you can install `zoxide` which will help you move around in the terminal with less friction:
+
+```
+brew install zoxide
+```
+
+If `Homebrew` has any trouble recognizing paths inside `Fish`, you can run the following:
+
+```
+/opt/homebrew/bin/brew shellenv >> ~/.config/fish/config.fish # Ensures that brew paths are recognised inside fish
+```
+
+
 ## Dependencies
 
-Check to see that you have `git` installed by running:
+Check to see that you have `git` installed by running the first command below, running the second if it is not installed already:
 
 ```
 git --version
-```
-
-If Git is not installed, run:
-
-```
 brew install git
 ```
 
@@ -192,7 +207,7 @@ brew install pandoc
 brew install pandoc-plot
 brew install npm
 brew install wget
-sudo pip3 install neovim-remote
+brew install neovim-remote
 ```
 
 ## [NeoVim](https://neovim.io/)
@@ -1105,7 +1120,7 @@ Once these complete, run:
 cd ~/Downloads
 git clone https://github.com/neovim/neovim
 cd neovim 
-git checkout stable
+git checkout stable 
 make CMAKE_BUILD_TYPE=RelWithDebInfo
 sudo make install
 nvim
@@ -1602,3 +1617,4 @@ setxkbmap
 ```
 
 Once you achieve the desired result, reboot and confirm that the mappings are running as desired.
+
