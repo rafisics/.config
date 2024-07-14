@@ -5,12 +5,12 @@ set synctex-editor-command "nvim --remote-silent +%{line} %{input}"
 
 # Basic Settings
 
-set highlight-transparency .1
+# set highlight-transparency .1
 set zoom-center "true"
 set selection-clipboard "clipboard"
 set render-loading "false"
-set window-width 960
-# set window-width 1280
+# set window-width 960
+set window-width 1280
 set window-height 1080
 set adjust-open "best-fit"
 
@@ -83,3 +83,6 @@ set adjust-open width
 set recolor                     "true"
 set recolor-keephue           "true"      # keep original color
 # set recolor-reverse-video     "true"
+
+# set backend to avoid errors
+set database "sqlite"
