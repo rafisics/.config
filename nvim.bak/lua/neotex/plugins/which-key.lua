@@ -1,5 +1,6 @@
 return {
   "folke/which-key.nvim",
+  dependencies = { 'echasnovski/mini.icons' },
   event = "VeryLazy",
   init = function()
     vim.o.timeout = true
@@ -27,33 +28,52 @@ return {
           -- No actual key bindings are created
         },
       },
-      key_labels = {
-        -- override the label used to display some keys. It doesn't effect WK in any other way.
-        -- For example:
-        -- ["<space>"] = "SPC",
-        -- ["<CR>"] = "RET",
-        -- ["<tab>"] = "TAB",
-      },
+      -- key_labels = {
+      --   -- override the label used to display some keys. It doesn't effect WK in any other way.
+      --   -- For example:
+      --   -- ["<space>"] = "SPC",
+      --   -- ["<CR>"] = "RET",
+      --   -- ["<tab>"] = "TAB",
+      -- },
       -- triggers = "auto", -- automatically setup triggers
       triggers = { "<leader>" }, -- or specify a list manually
       -- add operators that will trigger motion and text object completion
       -- to enable native operators, set the preset / operators plugin above
       -- operators = { gc = "Comments" },
+      replace = {
+        key = {
+          function(key)
+            return require("which-key.view").format(key)
+          end,
+          -- { "<Space>", "SPC" },
+        },
+        -- desc = {
+        --   { "<Plug>%((.*)%)", "%1" },
+        --   { "^%+", "" },
+        --   { "<[cC]md>", "" },
+        --   { "<[cC][rR]>", "" },
+        --   { "<[sS]ilent>", "" },
+        --   { "^lua%s+", "" },
+        --   { "^call%s+", "" },
+        --   { "^:%s*", "" },
+        -- },
+      },
       icons = {
         breadcrumb = "»", -- symbol used in the command line area that shows your active key combo
         separator = "➜", -- symbol used between a key and it's label
         group = "+",      -- symbol prepended to a group
       },
-      popup_mappings = {
+      keys = {
         scroll_down = "<c-d>", -- binding to scroll down inside the popup
         scroll_up = "<c-u>",   -- binding to scroll up inside the popup
       },
-      window = {
+      win = {
         border = "rounded",       -- none, single, double, shadow
-        position = "bottom",      -- bottom, top
-        margin = { 1, 0, 1, 0 },  -- extra window margin [top, right, bottom, left]
+        -- position = "bottom",      -- bottom, top
+        -- margin = { 1, 0, 1, 0 },  -- extra window margin [top, right, bottom, left]
         padding = { 2, 2, 2, 2 }, -- extra window padding [top, right, bottom, left]
-        winblend = 0,
+        -- title = true,
+        -- title_pos = "center",
         zindex = 1000,            -- positive value to position WhichKey above other floating windows.
       },
       layout = {
@@ -62,17 +82,17 @@ return {
         spacing = 3,                                                                -- spacing between columns
         align = "left",                                                             -- align columns left, center or right
       },
-      ignore_missing = true,                                                        -- enable this to hide mappings for which you didn't specify a label
-      hidden = { "<silent>", "<cmd>", "<Cmd>", "<CR>", "call", "lua", "^:", "^ " }, -- hide mapping boilerplate
-      triggers_nowait = {
-      },
-      triggers_blacklist = {
-        -- list of mode / prefixes that should never be hooked by WhichKey
-        -- this is mostly relevant for key maps that start with a native binding
-        -- most people should not need to change this
-        i = { "j", "k" },
-        v = { "j", "k" },
-      },
+      -- ignore_missing = true,                                                        -- enable this to hide mappings for which you didn't specify a label
+      -- hidden = { "<silent>", "<cmd>", "<Cmd>", "<CR>", "call", "lua", "^:", "^ " }, -- hide mapping boilerplate
+      -- triggers_nowait = {
+      -- },
+      -- triggers_blacklist = {
+      --   -- list of mode / prefixes that should never be hooked by WhichKey
+      --   -- this is mostly relevant for key maps that start with a native binding
+      --   -- most people should not need to change this
+      --   i = { "j", "k" },
+      --   v = { "j", "k" },
+      -- },
       -- disable the WhichKey popup for certain buf types and file types.
       -- Disabled by default for Telescope
       disable = {
@@ -106,24 +126,24 @@ return {
         a = { "<cmd>lua PdfAnnots()<CR>", "annotate" },
         b = { "<cmd>terminal bibexport -o %:p:r.bib %:p:r.aux<CR>", "bib export" },
         c = { "<cmd>:VimtexClearCache All<CR>", "clear vimtex" },
-        e = { "<cmd>e ~/.config/nvim/snippets/tex.snippets<CR>", "edit snippets" },
+        -- e = { "<cmd>e ~/.config/nvim/snippets/tex.snippets<CR>", "edit snippets" },
         f = { "<cmd>lua vim.lsp.buf.format()<CR>", "format" },
-        g = { "<cmd>e ~/.config/nvim/templates/Glossary.tex<CR>", "edit glossary" },
+        -- g = { "<cmd>e ~/.config/nvim/templates/Glossary.tex<CR>", "edit glossary" },
         -- h = { "<cmd>lua _HTOP_TOGGLE()<CR>", "htop" },
         h = { "<cmd>LocalHighlightToggle<CR>", "highlight" },
         k = { "<cmd>VimtexClean<CR>", "kill aux" },
         -- l = { "<cmd>lua vim.g.cmptoggle = not vim.g.cmptoggle<CR>", "LSP" },
         -- m = { "<cmd>MarkdownPreview<CR>", "markdown preview" },
 
-        m = { "<cmd>TermExec cmd='python3 /home/benjamin/Documents/Philosophy/Projects/ModelChecker/Code/src/model_checker %:p:r.py'<CR>", "model checker" },
-        p = { "<cmd>TermExec cmd='python %:p:r.py'<CR>", "python" },
+        -- m = { "<cmd>TermExec cmd='python3 /home/benjamin/Documents/Philosophy/Projects/ModelChecker/Code/src/model_checker %:p:r.py'<CR>", "model checker" },
+        -- p = { "<cmd>TermExec cmd='python %:p:r.py'<CR>", "python" },
         r = { "<cmd>VimtexErrors<CR>", "report errors" },
         u = { "<cmd>cd %:p:h<CR>", "update cwd" },
         v = { "<plug>(vimtex-context-menu)", "vimtex menu" },
         w = { "<cmd>VimtexCountWords!<CR>", "word count" },
         -- w = { "<cmd>TermExec cmd='pandoc %:p -o %:p:r.docx'<CR>" , "word"},
         -- s = { "<cmd>lua function() require('cmp_vimtex.search').search_menu() end<CR>"           , "search citations" },
-        s = { "<cmd>TermExec cmd='ssh brastmck@eofe10.mit.edu'<CR>", "ssh" },
+        -- s = { "<cmd>TermExec cmd='ssh brastmck@eofe10.mit.edu'<CR>", "ssh" },
       },
       -- c = {
       --   name = "CITATION",
@@ -222,82 +242,82 @@ return {
         -- T = { "<cmd>Telescope lsp_type_definitions<CR>", "type definition" },
       },
       -- MARKDOWN MAPPINGS
-      m = {
-        name = "MARKDOWN",
-        v = { "<cmd>Slides<CR>", "view slides" },
-      },
+      -- m = {
+      --   name = "MARKDOWN",
+      --   v = { "<cmd>Slides<CR>", "view slides" },
+      -- },
       S = {
         name = "SESSIONS",
         s = { "<cmd>SessionManager save_current_session<CR>", "save" },
         d = { "<cmd>SessionManager delete_session<CR>", "delete" },
         l = { "<cmd>SessionManager load_session<CR>", "load" },
       },
-      n = {
-        name = "NIXOS",
-        d = { "<cmd>TermExec cmd='nix develop'<CR><C-w>j", "develop" },
-        -- f = { "<cmd>TermExec cmd='sudo nixos-rebuild switch --flake ~/.config/nixos/'<CR><C-w>j", "flake" },
-        g = { "<cmd>TermExec cmd='nix-collect-garbage --delete-older-than 15d'<CR><C-w>j", "garbage" },
-        -- g = { "<cmd>TermExec cmd='nix-collect-garbage -d'<CR><C-w>j", "garbage" },
-        p = { "<cmd>TermExec cmd='brave https://search.nixos.org/packages' open=0<CR>", "packages" },
-        m = { "<cmd>TermExec cmd='brave https://mynixos.com' open=0<CR>", "my-nixos" },
-        r = { "<cmd>TermExec cmd='sudo nixos-rebuild switch --flake ~/.dotfiles/'<CR><C-w>l", "rebuild flake" },
-        h = { "<cmd>TermExec cmd='home-manager switch --flake ~/.dotfiles/'<CR><C-w>l", "home-manager" },
-        -- r = { "<cmd>TermExec cmd='home-manager switch'<CR><C-w>j", "home rebuild" },
-        -- r = { "<cmd>TermExec cmd='sudo nixos-rebuild switch --flake ~/.config/home-manager/#nandi'<CR><C-w>j", "home rebuild" },
-        -- r = { "<cmd>TermExec cmd='home-manager switch --flake ~/.config/home-manager/'<CR><C-w>j", "rebuild" },
-        u = { "<cmd>TermExec cmd='nix flake update'<CR><C-w>j", "update" },
-      },
-      p = {
-        name = "PANDOC",
-        w = { "<cmd>TermExec cmd='pandoc %:p -o %:p:r.docx'<CR>", "word" },
-        m = { "<cmd>TermExec cmd='pandoc %:p -o %:p:r.md'<CR>", "markdown" },
-        h = { "<cmd>TermExec cmd='pandoc %:p -o %:p:r.html'<CR>", "html" },
-        l = { "<cmd>TermExec cmd='pandoc %:p -o %:p:r.tex'<CR>", "latex" },
-        p = { "<cmd>TermExec cmd='pandoc %:p -o %:p:r.pdf' open=0<CR>", "pdf" },
-        v = { "<cmd>TermExec cmd='zathura %:p:r.pdf &' open=0<CR>", "view" },
-        -- x = { "<cmd>echo "run: unoconv -f pdf path-to.docx""  , "word to pdf"},
-      },
+      -- n = {
+      --   name = "NIXOS",
+      --   d = { "<cmd>TermExec cmd='nix develop'<CR><C-w>j", "develop" },
+      --   -- f = { "<cmd>TermExec cmd='sudo nixos-rebuild switch --flake ~/.config/nixos/'<CR><C-w>j", "flake" },
+      --   g = { "<cmd>TermExec cmd='nix-collect-garbage --delete-older-than 15d'<CR><C-w>j", "garbage" },
+      --   -- g = { "<cmd>TermExec cmd='nix-collect-garbage -d'<CR><C-w>j", "garbage" },
+      --   p = { "<cmd>TermExec cmd='brave https://search.nixos.org/packages' open=0<CR>", "packages" },
+      --   m = { "<cmd>TermExec cmd='brave https://mynixos.com' open=0<CR>", "my-nixos" },
+      --   r = { "<cmd>TermExec cmd='sudo nixos-rebuild switch --flake ~/.dotfiles/'<CR><C-w>l", "rebuild flake" },
+      --   h = { "<cmd>TermExec cmd='home-manager switch --flake ~/.dotfiles/'<CR><C-w>l", "home-manager" },
+      --   -- r = { "<cmd>TermExec cmd='home-manager switch'<CR><C-w>j", "home rebuild" },
+      --   -- r = { "<cmd>TermExec cmd='sudo nixos-rebuild switch --flake ~/.config/home-manager/#nandi'<CR><C-w>j", "home rebuild" },
+      --   -- r = { "<cmd>TermExec cmd='home-manager switch --flake ~/.config/home-manager/'<CR><C-w>j", "rebuild" },
+      --   u = { "<cmd>TermExec cmd='nix flake update'<CR><C-w>j", "update" },
+      -- },
+      -- p = {
+      --   name = "PANDOC",
+      --   w = { "<cmd>TermExec cmd='pandoc %:p -o %:p:r.docx'<CR>", "word" },
+      --   m = { "<cmd>TermExec cmd='pandoc %:p -o %:p:r.md'<CR>", "markdown" },
+      --   h = { "<cmd>TermExec cmd='pandoc %:p -o %:p:r.html'<CR>", "html" },
+      --   l = { "<cmd>TermExec cmd='pandoc %:p -o %:p:r.tex'<CR>", "latex" },
+      --   p = { "<cmd>TermExec cmd='pandoc %:p -o %:p:r.pdf' open=0<CR>", "pdf" },
+      --   v = { "<cmd>TermExec cmd='zathura %:p:r.pdf &' open=0<CR>", "view" },
+      --   -- x = { "<cmd>echo "run: unoconv -f pdf path-to.docx""  , "word to pdf"},
+      -- },
       s = {
         name = "SURROUND",
         s = { "<Plug>(nvim-surround-normal)", "surround" },
         d = { "<Plug>(nvim-surround-delete)", "delete" },
         c = { "<Plug>(nvim-surround-change)", "change" },
       },
-      t = {
-        name = "TEMPLATES",
-        p = {
-          "<cmd>read ~/.config/nvim/templates/PhilPaper.tex<CR>",
-          "PhilPaper.tex",
-        },
-        l = {
-          "<cmd>read ~/.config/nvim/templates/Letter.tex<CR>",
-          "Letter.tex",
-        },
-        g = {
-          "<cmd>read ~/.config/nvim/templates/Glossary.tex<CR>",
-          "Glossary.tex",
-        },
-        h = {
-          "<cmd>read ~/.config/nvim/templates/HandOut.tex<CR>",
-          "HandOut.tex",
-        },
-        b = {
-          "<cmd>read ~/.config/nvim/templates/PhilBeamer.tex<CR>",
-          "PhilBeamer.tex",
-        },
-        s = {
-          "<cmd>read ~/.config/nvim/templates/SubFile.tex<CR>",
-          "SubFile.tex",
-        },
-        r = {
-          "<cmd>read ~/.config/nvim/templates/Root.tex<CR>",
-          "Root.tex",
-        },
-        m = {
-          "<cmd>read ~/.config/nvim/templates/MultipleAnswer.tex<CR>",
-          "MultipleAnswer.tex",
-        },
-      },
+      -- t = {
+      --   name = "TEMPLATES",
+      --   p = {
+      --     "<cmd>read ~/.config/nvim/templates/PhilPaper.tex<CR>",
+      --     "PhilPaper.tex",
+      --   },
+        -- l = {
+        --   "<cmd>read ~/.config/nvim/templates/Letter.tex<CR>",
+        --   "Letter.tex",
+        -- },
+        -- g = {
+        --   "<cmd>read ~/.config/nvim/templates/Glossary.tex<CR>",
+        --   "Glossary.tex",
+        -- },
+        -- h = {
+        --   "<cmd>read ~/.config/nvim/templates/HandOut.tex<CR>",
+        --   "HandOut.tex",
+        -- },
+        -- b = {
+        --   "<cmd>read ~/.config/nvim/templates/PhilBeamer.tex<CR>",
+        --   "PhilBeamer.tex",
+        -- },
+        -- s = {
+        --   "<cmd>read ~/.config/nvim/templates/SubFile.tex<CR>",
+        --   "SubFile.tex",
+        -- },
+        -- r = {
+        --   "<cmd>read ~/.config/nvim/templates/Root.tex<CR>",
+        --   "Root.tex",
+        -- },
+        -- m = {
+        --   "<cmd>read ~/.config/nvim/templates/MultipleAnswer.tex<CR>",
+        --   "MultipleAnswer.tex",
+        -- },
+      -- },
     },
   },
   config = function(_, opts)
