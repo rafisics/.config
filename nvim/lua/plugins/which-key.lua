@@ -11,6 +11,7 @@ return {
   end,
   opts = {
     setup = {
+      notify = false,
       show_help = true,
       plugins = {
         presets = {
