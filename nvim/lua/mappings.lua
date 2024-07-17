@@ -66,8 +66,8 @@ vim.keymap.set("n", "<C-p>", "<cmd>Telescope find_files<CR>", { remap = true })
 
 
 -- Toggle comments
-keymap('n', '<C-/>', '<Plug>(comment_toggle_linewise_current)', opts)
-keymap('x', '<C-/>', '<Plug>(comment_toggle_linewise_visual)', opts)
+keymap("n", "<C-/>", "<Plug>(comment_toggle_linewise_current)", opts)
+keymap("x", "<C-/>", "<Plug>(comment_toggle_linewise_visual)", opts)
 
 
 -- Open help on word
@@ -146,3 +146,10 @@ keymap("v", "j", "gj", opts)
 keymap("v", "k", "gk", opts)
 
 
+-- Unmap the overlaps 
+keymap("n", "<leader>cc", "<nop>", opts)
+keymap("n", "<leader>ch", "<nop>", opts)
+keymap("n", "<leader>cm", "<nop>", opts)
+keymap("n", "<leader>ds", "<nop>", opts)
+keymap("n", "<leader>wk", "<nop>", opts)
+keymap("n", "<leader>wK", "<nop>", opts)
