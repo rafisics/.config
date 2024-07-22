@@ -22,7 +22,7 @@ return {
   		ensure_installed = {
   			"lua-language-server", "stylua",
   			--"html-lsp", "css-lsp" , "prettier"
-        "texlab", --"ltex-ls", 
+        -- "texlab",      - using nvim-cmp instead of texlab
         "bibtex-tidy" 
   		},
   	},
