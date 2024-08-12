@@ -1,4 +1,4 @@
-require "nvchad.mappings" 
+require "nvchad.mappings"
 
 -- add yours here
 
@@ -144,6 +144,16 @@ keymap("n", "j", "gj", opts)
 keymap("n", "k", "gk", opts)
 keymap("v", "j", "gj", opts)
 keymap("v", "k", "gk", opts)
+
+
+-- Toggle terminal
+vim.keymap.set({ "n", "t" }, "<c-`>", function()
+  require("nvchad.term").toggle {
+      pos = "float",
+      id = "floatTermLoc",
+      cmd = "cd " .. vim.fn.expand "%:p:h" .. "&& fish",
+    }
+end, { desc = "Term toggle floating in buffer location" })
 
 
 -- Unmap the overlaps 
