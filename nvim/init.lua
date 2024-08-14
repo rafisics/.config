@@ -37,3 +37,14 @@ require "nvchad.autocmds"
 vim.schedule(function()
   require "mappings"
 end)
+
+
+vim.api.nvim_create_autocmd("DirChanged", {
+  callback = function()
+    for _, v in pairs(vim.g.nvchad_terms or {}) do
+      local cd_cmd = " cd  " .. vim.uv.cwd()
+      local job_id = vim.b[v.buf].terminal_job_id
+      vim.api.nvim_chan_send(job_id, cd_cmd .. " \n")
+    end
+  end,
+})
