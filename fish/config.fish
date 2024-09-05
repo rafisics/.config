@@ -57,3 +57,14 @@ function toggle_nvim
     end
     nvim
 end
+
+# For Gevolution 
+set -x LD_LIBRARY_PATH /home/rafi/Documents/astrophysics/hdf5-1.14.3/build/lib $LD_LIBRARY_PATH
+
+function run_gevolution
+    set start $argv[1]
+    set end $argv[2]
+    for i in (seq $start $end)
+        mpirun --oversubscribe -np 16 ./gevolution -n 4 -m 4 -s settings/settings$i.ini
+    end
+end
