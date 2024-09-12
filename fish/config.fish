@@ -13,6 +13,13 @@ end
 # enables starship config 
 starship init fish | source
 
+# Command to delete nvim local cache
+function delete_nvim_local_cache
+    rm -rf ~/.local/share/nvim
+    rm -rf ~/.local/state/nvim
+    rm -rf ~/.cache/nvim
+end
+
 # Commands to switch from NeoTeX to NvChad
 function switch_to_nvchad
     # Back up NeoTeX
@@ -43,7 +50,7 @@ function switch_to_neotex
     mv ~/.cache/nvim{.bak,}
 end
 
-# Toggle between NeoTeX and NvChad
+# Command to toggle between NeoTeX and NvChad
 function toggle_nvim
     if test -e ~/.config/nvim.chad -a ! -e ~/.config/nvim.bak
         # Switch from NeoTeX to NvChad
