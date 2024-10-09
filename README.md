@@ -26,7 +26,7 @@ It is running `NeoVim v0.9.5` really fast with some nice features, including:
 - Telescope (search citations, files, words, etc.)
 - And lots more!
 
-![Screenshot of the configuration](images/screenshot_cite.png)
+![Screenshot of the configuration](images/screenshot-nvim-zathura.png)
 
 <!-- ![Vim Typewriter Comic](images/VimType.png) -->
 <!-- ![Vim Excavator Comic](images/VimExcavator.png) -->
