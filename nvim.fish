@@ -3,12 +3,22 @@ function upgrade_nvim
     # Save the current directory
     set original_dir (pwd)
 
+    # Path to the Neovim source directory
+    set nvim_src_dir ~/neovim
+    set nvim_repo "https://github.com/neovim/neovim"
+
+    # Check if the Neovim source directory exists
+    if not test -d $nvim_src_dir
+        echo "Neovim source directory not found. Cloning from $nvim_repo..."
+        git clone $nvim_repo $nvim_src_dir
+        set clone_flag true
+    else
+        set clone_flag false
+    end
+
     # Navigate to the Neovim source directory
     echo "Navigating to Neovim source directory..."
-    cd ~/neovim || begin
-        echo "Error: Neovim directory not found!"
-        return 1
-    end
+    cd $nvim_src_dir
 
     # Fetch the latest changes from the remote repository
     echo "Fetching latest changes from the Neovim repository..."
@@ -33,6 +43,14 @@ function upgrade_nvim
     # Return to the original directory
     cd $original_dir
     echo "Returned to the original directory: $original_dir"
+
+    # Clean up if the directory was cloned by the script
+    if test $clone_flag = true
+        echo "Removing the Neovim source directory as it was cloned for this upgrade..."
+        rm -rf $nvim_src_dir
+    else
+        echo "Neovim source directory retained for future use."
+    end
 
     # Verify the new version
     echo "Neovim upgrade completed. Verifying version..."
