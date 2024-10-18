@@ -60,7 +60,6 @@
         "rygel.conf*": true,
         "smplayer*": true,
         "stacer*": true,
-        "starship.toml*": true,
         "systemd": true,
         "tiling-assistant*": true,
         "transmission": true,
