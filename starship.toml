@@ -4,16 +4,14 @@ format = """
 [](fg:surface0)\
 $os\
 $username\
-[](fg:surface0 bg:peach)\
+[](fg:surface0 bg:blue)\
 $directory\
-[](fg:peach bg:green)\
+[](fg:blue bg:green)\
 $git_branch\
 $git_status\
-[](fg:green bg:blue)\
-$docker_context\
-[](fg:blue bg:purple)\
+[](fg:green bg:peach)\
 $time\
-[](fg:purple)\
+[](fg:peach)\
 $line_break$character"""
 
 palette = 'catppuccin_mocha'
@@ -35,8 +33,8 @@ color_yellow = '#d79921'
 rosewater = "#f5e0dc"
 flamingo = "#f2cdcd"
 pink = "#f5c2e7"
-orange = "#cba6f7"
-red = "#f38ba8"
+mauve = "#cba6f7"
+red = "#f38ba8" 
 maroon = "#eba0ac"
 peach = "#fab387"
 yellow = "#f9e2af"
@@ -91,7 +89,7 @@ style_root = "bg:surface0 fg:text"
 format = '[ $user ]($style)'
 
 [directory]
-style = "fg:mantle bg:peach"
+style = "fg:mantle bg:blue"
 format = "[ $path ]($style)"
 truncation_length = 3
 truncation_symbol = "…/"
@@ -159,14 +157,18 @@ format = '[[ $symbol( $version) ](fg:base bg:teal)]($style)'
 
 [docker_context]
 symbol = ""
-style = "bg:mantle"
+style = "bg:color_bg3"
 format = '[[ $symbol( $context) ](fg:#83a598 bg:color_bg3)]($style)'
+
+[conda]
+style = "bg:color_bg3"
+format = '[[ $symbol( $environment) ](fg:#83a598 bg:color_bg3)]($style)'
 
 [time]
 disabled = false
 time_format = "%R"
 style = "bg:peach"
-format = '[[  $time ](fg:mantle bg:purple)]($style)'
+format = '[[  $time ](fg:mantle bg:peach)]($style)'
 
 [line_break]
 disabled = false
@@ -175,7 +177,7 @@ disabled = false
 disabled = false
 success_symbol = '[](bold fg:green)'
 error_symbol = '[](bold fg:red)'
-vimcmd_symbol = '[](bold fg:creen)'
-vimcmd_replace_one_symbol = '[](bold fg:purple)'
-vimcmd_replace_symbol = '[](bold fg:purple)'
+vimcmd_symbol = '[](bold fg:green)'
+vimcmd_replace_one_symbol = '[](bold fg:mauve)'
+vimcmd_replace_symbol = '[](bold fg:mauve)'
 vimcmd_visual_symbol = '[](bold fg:lavender)'
