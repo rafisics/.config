@@ -143,3 +143,5 @@ keymap("n", "K", "gk", opts)
 keymap("v", "J", "gj", opts)
 keymap("v", "K", "gk", opts)
 
+-- Toggle Transparency
+vim.keymap.set({ "n", "v" }, "<S-t>", ":TransparentToggle<CR>", opts)

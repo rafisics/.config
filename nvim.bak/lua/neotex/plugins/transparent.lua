@@ -1,3 +1,4 @@
 return {
-    'tribela/vim-transparent'
+    'xiyaowong/transparent.nvim',
+    -- cmd = 'TransparentToggle',
 }

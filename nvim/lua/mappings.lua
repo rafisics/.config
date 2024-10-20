@@ -145,16 +145,19 @@ keymap("n", "k", "gk", opts)
 keymap("v", "j", "gj", opts)
 keymap("v", "k", "gk", opts)
 
-
--- Toggle terminal
+-- Toggle terminal floating in buffer location
 vim.keymap.set({ "n", "t" }, "<c-`>", function()
   require("nvchad.term").toggle {
       pos = "float",
       id = "floatTermLoc",
       cmd = "cd " .. vim.fn.expand "%:p:h" .. "&& fish",
     }
-end, { desc = "Term toggle floating in buffer location" })
+end, opts)
 
+-- Toggle Transparency
+vim.keymap.set({ "n", "v" }, "<S-t>", function()
+  require("base46").toggle_transparency()
+end, opts)
 
 -- Unmap the overlaps 
 keymap("n", "<leader>cc", "<nop>", opts)
