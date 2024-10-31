@@ -190,3 +190,22 @@ bar {
         position top
 }
 
+# Brightness Control with xrander
+bindsym XF86MonBrightnessDown exec --no-startup-id xrandr --output eDP-1 --brightness 0.7  # Decrease brightness
+bindsym XF86MonBrightnessUp exec --no-startup-id xrandr --output eDP-1 --brightness 0.9  # Increase brightness
+
+# Dynamic Brightness Control
+# bindsym XF86MonBrightnessDown exec --no-startup-id ~/.config/i3/adjust_brightness.sh down
+# bindsym XF86MonBrightnessUp exec --no-startup-id ~/.config/i3/adjust_brightness.sh up
+
+# bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl -c backlight set +5%
+# bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl -c backlight set 5%-
+
+# Brightness Control with light
+# bindsym XF86MonBrightnessDown exec --no-startup-id light -A 10  # Increase brightness by 10%
+# bindsym XF86MonBrightnessUp exec --no-startup-id light -U 10  # Decrease brightness by 10%
+
+
+# Replace with your preferred method (using `light`)
+# bindsym F2 exec light -U 10
+# bindsym F3 exec light -A 10
