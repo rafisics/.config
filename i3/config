@@ -221,5 +221,9 @@ bindsym XF86MonBrightnessUp exec --no-startup-id xrandr --output eDP-1 --brightn
 exec_always --no-startup-id bash -c 'xinput set-prop "$(xinput list --name-only | grep -i "touchpad")" "libinput Tapping Enabled" 1'
 exec_always --no-startup-id bash -c 'xinput set-prop "$(xinput list --name-only | grep -i "touchpad")" "libinput Natural Scrolling Enabled" 1'
 
+
 # Set wallpaper with feh
 exec_always --no-startup-id feh --bg-scale ~/Pictures/Wallpapers/sajek_2024.jpeg
+
+# Start GNOME settings daemon to apply gtk settings
+exec_always --no-startup-id /usr/libexec/gsd-xsettings
