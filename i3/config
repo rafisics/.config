@@ -190,6 +190,9 @@ bar {
         position top
 }
 
+# Polybar 
+# exec_always --no-startup-id ~/.config/polybar/launch.sh
+
 # Brightness Control with xrander
 bindsym XF86MonBrightnessDown exec --no-startup-id xrandr --output eDP-1 --brightness 0.7  # Decrease brightness
 bindsym XF86MonBrightnessUp exec --no-startup-id xrandr --output eDP-1 --brightness 0.9  # Increase brightness
@@ -209,3 +212,10 @@ bindsym XF86MonBrightnessUp exec --no-startup-id xrandr --output eDP-1 --brightn
 # Replace with your preferred method (using `light`)
 # bindsym F2 exec light -U 10
 # bindsym F3 exec light -A 10
+
+# Enable touchpad tapping and natural scrolling
+# exec_always --no-startup-id xinput set-prop "SynPS/2 Synaptics TouchPad" "libinput Tapping Enabled" 1
+# exec_always --no-startup-id xinput set-prop "SynPS/2 Synaptics TouchPad" "libinput Natural Scrolling Enabled" 1
+# Enable touchpad tapping and natural scrolling (auto-detect touchpad)
+exec_always --no-startup-id bash -c 'xinput set-prop "$(xinput list --name-only | grep -i "touchpad")" "libinput Tapping Enabled" 1'
+exec_always --no-startup-id bash -c 'xinput set-prop "$(xinput list --name-only | grep -i "touchpad")" "libinput Natural Scrolling Enabled" 1'
