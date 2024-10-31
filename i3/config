@@ -213,9 +213,13 @@ bindsym XF86MonBrightnessUp exec --no-startup-id xrandr --output eDP-1 --brightn
 # bindsym F2 exec light -U 10
 # bindsym F3 exec light -A 10
 
+
 # Enable touchpad tapping and natural scrolling
 # exec_always --no-startup-id xinput set-prop "SynPS/2 Synaptics TouchPad" "libinput Tapping Enabled" 1
 # exec_always --no-startup-id xinput set-prop "SynPS/2 Synaptics TouchPad" "libinput Natural Scrolling Enabled" 1
 # Enable touchpad tapping and natural scrolling (auto-detect touchpad)
 exec_always --no-startup-id bash -c 'xinput set-prop "$(xinput list --name-only | grep -i "touchpad")" "libinput Tapping Enabled" 1'
 exec_always --no-startup-id bash -c 'xinput set-prop "$(xinput list --name-only | grep -i "touchpad")" "libinput Natural Scrolling Enabled" 1'
+
+# Set wallpaper with feh
+exec_always --no-startup-id feh --bg-scale ~/Pictures/Wallpapers/sajek_2024.jpeg
