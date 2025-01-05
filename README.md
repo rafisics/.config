@@ -1095,14 +1095,15 @@ node --version
 If the version is outdated, remove `node` with:
 
 ```
-apt-get purge nodejs &&\
+sudo apt-get purge nodejs &&\
 rm -r /etc/apt/sources.list.d/nodesource.list
 ```
 
 Install a newer version with:
 
 ```
-curl -fsSL https://deb.nodesource.com/setup_19.x | sudo -E bash - &&\
+sudo apt-get install -y curl
+curl -fsSL https://deb.nodesource.com/setup_23.x | sudo -E bash - &&\
 sudo apt-get install -y nodejs
 ```
 
@@ -1145,10 +1146,9 @@ sudo apt install git
 sudo apt install fzf
 sudo apt install ripgrep
 sudo apt install pandoc
-sudo apt install pandoc-citeproc
 sudo apt install nodejs
-sudo apt install stylua
-sudo apt install lua-language-server
+# sudo apt install stylua
+# sudo apt install lua-language-server
 sudo apt install wget
 sudo apt install xsel
 sudo apt install python3-pip
