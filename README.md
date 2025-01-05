@@ -1152,7 +1152,10 @@ sudo apt install nodejs
 sudo apt install wget
 sudo apt install xsel
 sudo apt install python3-pip
-sudo pip3 install neovim-remote
+python3 -m venv ~/.venvs/nvim-env     # Create a virtual environment
+source ~/.venvs/nvim-env/bin/activate # Activate the virtual environment
+pip3 install neovim-remote            # Install the package inside the environment
+deactivate                            # Deactivate the virtual environment
 ```
 
 Open NeoVim by running `nvim` in the terminal and run the following command:
