@@ -17,7 +17,7 @@ starship init fish | source
 source ~/.config/nvim.fish
 
 # Astrophysics
-source ~/my-scripts/astro/astro.fish
+source ~/github/my-scripts/astro/astro.fish
 
 # Python 
 function activate-py-nvim-env
