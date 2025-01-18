@@ -18,3 +18,12 @@ source ~/.config/nvim.fish
 
 # Astrophysics
 source ~/my-scripts/astro/astro.fish
+
+# Python 
+function activate-py-nvim-env
+    source ~/.venvs/nvim-env/bin/activate.fish
+end
+
+function activate-py-coding-env
+    source ~/.venvs/coding-env/bin/activate.fish
+end

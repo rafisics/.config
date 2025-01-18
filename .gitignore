@@ -56,3 +56,24 @@ Smart Code ltd/Stremio.conf
 Vial/Vial.conf
 qmk/qmk.ini
 via-nativia
+# mine 
+autostart/
+calibre/
+eog/
+gedit/
+glib-2.0/
+GNOME-xdg-terminals.list
+goa-1.0/
+gtk-4.0/
+google-chrome/
+ibus/
+inkscape/
+libreoffice/
+menus/
+neofetch/
+obs-studio/
+OpenBangla/
+tiling-assistant/
+update-notifier/
+ubuntu-xdg-terminals.list
+xdg-terminals.list
