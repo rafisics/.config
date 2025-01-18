@@ -11,6 +11,7 @@ $git_branch\
 $git_status\
 [](fg:green bg:blue)\
 $docker_context\
+$python\
 [](fg:blue bg:pink)\
 $time\
 [](fg:pink)\
@@ -156,8 +157,8 @@ format = '[[ $symbol( $version) ](fg:base bg:teal)]($style)'
 
 [python]
 symbol = ""
-style = "bg:teal"
-format = '[[ $symbol( $version) ](fg:base bg:teal)]($style)'
+style = "bg:blue"
+format = '[[ $symbol( $version) ](fg:base bg:blue)]($style)'
 
 [docker_context]
 symbol = ""
