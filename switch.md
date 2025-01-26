@@ -1,6 +1,6 @@
-Alongside NeoTeX, I am trying out NvChad as well. I use a custom command `toggle_nvm` to switch back and forth between the NeoTeX and NvChad. 
+Alongside NeoTeX, I am trying out NvChad as well. I use a custom command `toggle_nvim` to switch back and forth between the NeoTeX and NvChad. 
 
-To enable the command in fish terminal, I have these functions `~/.config/nvim.fish`:
+To enable the command in `fish` terminal, I have these functions `~/.config/nvim.fish`:
 
 ```
 # Command to delete nvim local cache

@@ -64,8 +64,10 @@ gedit/
 glib-2.0/
 GNOME-xdg-terminals.list
 goa-1.0/
+gtk-2.0/
 gtk-4.0/
 google-chrome/
+GIMP/
 ibus/
 inkscape/
 libreoffice/
