@@ -3,7 +3,7 @@
 "$schema" = "https://yazi-rs.github.io/schemas/yazi.json"
 
 [manager]
-ratio          = [ 1, 4, 3 ]
+ratio          = [ 2, 3, 4 ]
 sort_by        = "alphabetical"
 sort_sensitive = false
 sort_reverse 	 = false
@@ -17,7 +17,7 @@ mouse_events   = [ "click", "scroll" ]
 title_format   = "Yazi: {cwd}"
 
 [preview]
-wrap            = "no"
+wrap            = "yes"
 tab_size        = 2
 max_width       = 600
 max_height      = 900
@@ -27,7 +27,7 @@ image_filter    = "triangle"
 image_quality   = 75
 sixel_fraction  = 15
 ueberzug_scale  = 1
-ueberzug_offset = [ 0, 0, 0, 0 ]
+ueberzug_offset = [ 10, 2, -0.5, -0.5 ]
 
 [opener]
 edit = [
