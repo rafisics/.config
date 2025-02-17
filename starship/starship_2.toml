@@ -1,6 +1,6 @@
 format = """
 [](#3B4252)\
-$python\
+$os\
 $username\
 [](bg:#434C5E fg:#3B4252)\
 $directory\
@@ -8,18 +8,9 @@ $directory\
 $git_branch\
 $git_status\
 [](fg:#4C566A bg:#86BBD8)\
-$c\
-$elixir\
-$elm\
-$golang\
-$haskell\
-$java\
-$julia\
-$nodejs\
-$nim\
-$rust\
 [](fg:#86BBD8 bg:#06969A)\
 $docker_context\
+$python\
 [](fg:#06969A bg:#33658A)\
 $time\
 [ ](fg:#33658A)\
@@ -28,12 +19,39 @@ command_timeout = 5000
 # Disable the blank line at the start of the prompt
 # add_newline = false
 
+[os]
+disabled = false
+style = "bg:#3B4252"
+
+[os.symbols]
+Windows = "󰍲"
+Ubuntu = "󰕈"
+SUSE = ""
+Raspbian = "󰐿"
+Mint = "󰣭"
+Macos = "󰀵"
+Manjaro = ""
+Linux = "󰌽"
+Gentoo = "󰣨"
+Fedora = "󰣛"
+Alpine = ""
+Amazon = ""
+Android = ""
+Arch = "󰣇"
+Artix = "󰣇"
+EndeavourOS = ""
+CentOS = ""
+Debian = "󰣚"
+Redhat = "󱄛"
+RedHatEnterprise = "󱄛"
+Pop = ""
+
 # You can also replace your username with a neat symbol like  to save some space
 [username]
 show_always = true
 style_user = "bg:#3B4252"
 style_root = "bg:#3B4252"
-format = '[$user ]($style)'
+format = '[ $user ]($style)'
 
 [directory]
 style = "bg:#434C5E"
@@ -75,7 +93,7 @@ style = "bg:#86BBD8"
 format = '[ $symbol ($version) ]($style)'
 
 [git_branch]
-symbol = ""
+symbol = ""
 style = "bg:#4C566A"
 format = '[ $symbol $branch ]($style)'
 
@@ -126,4 +144,4 @@ format = '[ $symbol ($version) ]($style)'
 disabled = false
 time_format = "%R" # Hour:Minute Format
 style = "bg:#33658A"
-format = '[ $time ]($style)'
+format = '[  $time ]($style)'
