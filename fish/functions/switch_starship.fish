@@ -1,6 +1,5 @@
 function switch_starship
     set config_dir "$HOME/.config/starship"
-    set dest "$HOME/.config/starship.toml"
 
     if test (count $argv) -eq 0
         echo "Usage: switch_starship <number>"
@@ -12,7 +11,7 @@ function switch_starship
     set target_config "$config_dir/starship_$argv[1].toml"
 
     if test -f $target_config
-        cp $target_config $dest
+        set -Ux STARSHIP_CONFIG $target_config
         echo "Switched Starship config to starship_$argv[1]"
         starship init fish | source  # Reload Starship
     else
