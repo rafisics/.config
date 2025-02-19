@@ -58,6 +58,7 @@ qmk/qmk.ini
 via-nativia
 # mine 
 autostart/
+BraveSoftware/
 calibre/
 eog/
 gedit/
