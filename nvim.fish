@@ -108,3 +108,25 @@ function toggle_nvim
     end
     nvim
 end
+
+# Better Method for Neovim config switch - https://youtu.be/LkHjJlSgKZY - https://gist.github.com/elijahmanor/b279553c0132bfad7eae23e34ceb593b?permalink_comment_id=5312460#gistcomment-5312460
+
+function nvim-tex
+    env NVIM_APPNAME=nvim.bak nvim
+end
+
+function nvims
+    set items NvChad NeoTeX
+    set config (printf "%s\n" $items | fzf --prompt=" Neovim Config » " --height=~50% --layout=reverse --border --exit-0)
+    if [ -z $config ]
+        echo "Nothing selected"
+        return 0
+    else if [ $config = "NvChad" ]
+        set config ""
+    else if [ $config = "NeoTeX" ]
+        set config "nvim.bak"
+    end
+    env NVIM_APPNAME=$config nvim $argv
+end
+
+bind \ca nvims
