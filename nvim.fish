@@ -129,4 +129,4 @@ function nvims
     env NVIM_APPNAME=$config nvim $argv
 end
 
-bind \ca nvims
+bind \ca 'commandline -r "nvims"; commandline -f execute'
