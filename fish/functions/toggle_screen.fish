@@ -18,7 +18,7 @@ function toggle_screen
         # Then limit the visible (tracking) area to the left half (laptop) so the right half is extended
         xrandr --fb 2732x768 --output eDP-1 --panning 1366x768+0+0/2732x768+0+0
         # Start x11vnc to share the extended (right half) area
-        x11vnc -display :1 -usepw -clip 1366x768+1366+0 -nocursorshape -nocursorpos -repeat &
+        x11vnc -usepw -clip 1366x768+1366+0 -nocursorshape -nocursorpos -repeat &
         touch $state_file
     end
 end
