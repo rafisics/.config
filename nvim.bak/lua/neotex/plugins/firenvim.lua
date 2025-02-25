@@ -8,4 +8,3 @@ return {
   end,
   -- { "lualine.nvim", cond = not vim.g.started_by_firenvim }, -- not useful in the browser
 }
-

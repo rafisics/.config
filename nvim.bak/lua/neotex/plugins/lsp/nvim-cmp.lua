@@ -186,6 +186,5 @@ return {
         {name = 'cmdline'}
       }
     })
-
   end,
 }
