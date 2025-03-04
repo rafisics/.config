@@ -15,14 +15,15 @@
 
 # .config
 
-NOTE: I have recently (Jan 2024) migrated to Lazy package manager from Packer and refactored the config accordingly.
-It is running `NeoVim v0.9.5` really fast with some nice features, including:
+NOTE: 
+<!-- I have recently (Jan 2024) migrated to Lazy package manager from Packer and refactored the config accordingly. -->
+It is running `NeoVim v0.10.4` really fast with some nice features, including:
 
 - LSP Autocompletion (VimTex, Buffer, Spell, Snippets, Python, Lua, etc.)
 - Linting and Formatting (Python, Lua, Markdown, etc.)
 - BibExport (creating a local `.bib` file from all citations that occur in your `.tex` document)
-- AnnotatePDF (creates a local `.md` file with highlights and notes from citation under the cursor)
-- Pandoc (convert between file formats)
+<!-- - AnnotatePDF (creates a local `.md` file with highlights and notes from citation under the cursor) -->
+<!-- - Pandoc (convert between file formats) -->
 - Telescope (search citations, files, words, etc.)
 - And lots more!
 
@@ -1225,6 +1226,11 @@ If you want to customise Zathura, you can edit `~/.config/zathura/zathurarc`, re
 
 ```
 man zathuraarc
+```
+
+Zathura requires `xdotool` for forward search:
+```
+sudo apt install xdotool
 ```
 
 Although Zathura is an ideal pdf-viewer for writing LaTeX documents, you may want to use your default pdf-viewer for opening the pdfs associated with citations via the VimTex context-menu.
