@@ -4,61 +4,67 @@
         "type": "none"
     },
     "display": {
-        "separator": " → ",
-        "constants": [
-            "──────────────────────────────"
-        ]
+        "separator": " → "
     },
     "modules": [
+        "break",
         {
             "type": "os",
-            "key": "  {icon} OS",
+            "key": "  ╭─{icon} OS",
             "keyColor": "cyan"
         },
         {
             "type": "kernel",
-            "key": "  │ ├ Kernel",
+            "key": "  ├─ Kernel",
             "keyColor": "cyan"
         },
         {
             "type": "packages",
-            "key": "  │ ├󰏖 Packages",
+            "key": "  ╰─󰏖 Packages",
             "keyColor": "cyan"
         },
+        // "break",
         {
-            "type": "shell",
-            "key": "  │ └ Shell",
+            "type": "de",
+            "key": "  ╭─ DE",
             "keyColor": "cyan"
         },
         {
             "type": "wm",
-            "key": "   DE/WM",
-            "keyColor": "blue"
+            "key": "  ├─ WM",
+            "keyColor": "cyan"
         },
         {
-            "type": "wmtheme",
-            "key": "  │ ├󰉼 Theme",
-            "keyColor": "blue"
+            "type": "theme",
+            "key": "  ├─󰉼 Theme",
+            "keyColor": "cyan"
         },
         {
             "type": "icons",
-            "key": "  │ ├󰀻 Icons",
-            "keyColor": "blue"
+            "key": "  ╰─󰀻 Icons",
+            "keyColor": "cyan"
+        },
+        // "break",
+        {
+            "type": "shell",
+            "key": "  ╭─ Shell",
+            "keyColor": "cyan"
         },
         {
             "type": "terminal",
-            "key": "  │ ├ Terminal",
-            "keyColor": "blue"
+            "key": "  ├─ Terminal",
+            "keyColor": "cyan"
         },
         {
-            "type": "wallpaper",
-            "key": "  │ └󰸉 Wallpaper",
-            "keyColor": "blue"
+            "type": "terminalfont",
+            "key": "  ╰─ Terminal Font",
+            "keyColor": "cyan"
         },
-        "break",
+        // "break",
         {
-            "type": "custom",
-            "format": " {#90}  {#31}  {#32}  {#33}  {#34}  {#35}  {#36}  {#37}  {#38}  {#39}"
+            "type": "colors",
+            "paddingLeft": 4,
+            "symbol": "circle"
         }
     ]
 }
