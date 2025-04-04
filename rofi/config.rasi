@@ -4,7 +4,7 @@ configuration {
 	modi:				"drun";
 	font:				"Rubik 10";
 	show-icons:                     true;
-	icon-theme: 			"Reversal-dark";
+	icon-theme: 			"Yaru-prussiangreen";
 	display-drun: 			"";
 	drun-display-format:            "{name}";
 	sidebar-mode: 			false;
@@ -13,10 +13,11 @@ configuration {
 @theme "/dev/null"
 
 * {
-	bg:				#151515;
-	fg:				#e8e8d3;
-	accent:				#687363;
-	button:				#1c1c1c;
+    // Yaru-prussiangreen-dark colors
+	bg:				#22222200;
+	fg:				#f2f2f2;  /* Text color */
+	accent:				#16a085;
+	button:				#2d2d2d;
 
 	background-color:		@bg;
 	text-color:			@fg;
@@ -89,6 +90,6 @@ element-text, element-icon {
 }
 
 element selected {
-    	background-color:               @button;
+    	background-color:               @accent;
     	border-radius:                  6px;
 }
