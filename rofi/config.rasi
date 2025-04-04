@@ -90,6 +90,6 @@ element-text, element-icon {
 }
 
 element selected {
-    background-color: @accent;
+    background-color: @button;
     border-radius:    6px;
 }
