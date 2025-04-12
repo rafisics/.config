@@ -17,6 +17,9 @@ starship init fish | source
 # Nvim
 source ~/.config/nvim.fish
 
+# arXiv
+source ~/github/my-scripts/arxiv/arxiv.fish
+
 # Astrophysics
 source ~/github/my-scripts/astro/astro.fish
 
