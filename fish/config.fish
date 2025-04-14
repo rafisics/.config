@@ -22,8 +22,8 @@ if status is-interactive
 
     # Bundler/Ruby
     if type -q bundle
-        set -x GEM_HOME /home/rafi/gems
-        fish_add_path --global $GEM_HOME/bin
+        set -x GEM_HOME "$HOME/gems"
+        fish_add_path --global "$GEM_HOME/bin"
     end
 end
 
