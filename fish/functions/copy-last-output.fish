@@ -1,21 +1,25 @@
 function copy-last-output
-    # Get the last command including newlines
-    set -l last_cmd (history --max=1 | string collect)
-
-    if test -z "$last_cmd"
+    if not set -l last_cmd (history --max=1 | string collect)
         echo "No command found in history."
         return 1
     end
 
     echo "⏳ Running: $last_cmd"
-    set -l tmpfile (mktemp)
-
-    # Run command, capture output, and display it
-    set -l cmd_output (eval "$last_cmd" | tee /dev/tty | string collect)
-
-    # Combine command and output
-    echo -n "❯ $last_cmd \n $cmd_output" | xclip -selection clipboard
     
-    rm $tmpfile
-    echo "✅ Command and output copied to clipboard."
+    set -l tmpfile (mktemp -p /tmp copy-output.XXXXXX)
+    function __cleanup -S --on-process %self
+        rm -f $tmpfile 2>/dev/null
+    end
+
+    echo "❯ $last_cmd" > $tmpfile
+    if not eval "$last_cmd" 2>&1 | tee -a $tmpfile >/dev/tty
+        echo "⚠️ Command failed (output still copied)"
+    end
+
+    if not xclip -selection clipboard < $tmpfile
+        echo "❌ Failed to copy to clipboard! (Is xclip installed?)" >&2
+        return 1
+    end
+
+    echo "✅ Copied command + output to clipboard"
 end
