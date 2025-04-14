@@ -1,27 +1,31 @@
-# Ensure Fish is in interactive mode before running commands
+# Only run in interactive shells
 if status is-interactive
-    # Commands to run in interactive sessions can go here
+    # Remove <C-t> mapping used to close the terminal in NeoVim
+    bind --erase \ct
+
+    # Default editor
+    set -gx EDITOR "nvim"
+
+    # Zoxide (lazy-loaded via function)
+    if type -q zoxide
+        function __init_zoxide
+            zoxide init fish --cmd cd | source
+            functions -e __init_zoxide
+        end
+    end
+
+    # Starship (background loaded)
+    if not set -q __starship_initialized
+        starship init fish | source &
+        set -g __starship_initialized 1
+    end
+
+    # Bundler/Ruby
+    if type -q bundle
+        set -x GEM_HOME /home/rafi/gems
+        fish_add_path --global $GEM_HOME/bin
+    end
 end
 
-# Remove the mapping <C-t> which is used to close the terminal in NeoVim
-bind --erase \ct
-
-# Zoxide
-if type -q zoxide
-    zoxide init fish --cmd cd | source
-end
-
-# Starship
-starship init fish | source
-
-# Nvim
+# NeoVim
 source ~/.config/nvim.fish
-
-# Default editor 
-export EDITOR="nvim"
-
-# Bundler
-if type -q bundle
-    set -x GEM_HOME /home/rafi/gems
-    set -x PATH $GEM_HOME/bin $PATH
-end
