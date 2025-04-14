@@ -17,32 +17,8 @@ starship init fish | source
 # Nvim
 source ~/.config/nvim.fish
 
-# arXiv
-source ~/github/my-scripts/arxiv/arxiv.fish
-
-# Astrophysics
-source ~/github/my-scripts/astro/astro.fish
-
-# Python
-function activate-py-nvim-env
-    source ~/.venvs/nvim-env/bin/activate.fish
-end
-
-function activate-py-coding-env
-    source ~/.venvs/coding-env/bin/activate.fish
-end
-
-# Yazi
+# Default editor 
 export EDITOR="nvim"
-
-function y
-    set tmp (mktemp -t "yazi-cwd.XXXXXX")
-    yazi $argv --cwd-file="$tmp"
-    if set cwd (command cat -- "$tmp"); and [ -n "$cwd" ]; and [ "$cwd" != "$PWD" ]
-        builtin cd -- "$cwd"
-    end
-    rm -f -- "$tmp"
-end
 
 # Bundler
 if type -q bundle
