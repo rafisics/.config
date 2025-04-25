@@ -17,6 +17,8 @@ $time\
 [](fg:pink)\
 $line_break$character"""
 
+right_format = """$cmd_duration"""
+
 palette = 'catppuccin_mocha'
 command_timeout = 2000
 
@@ -186,3 +188,9 @@ vimcmd_symbol = '[❮](bold fg:green)'
 vimcmd_replace_one_symbol = '[❮](bold fg:mauve)'
 vimcmd_replace_symbol = '[❮](bold fg:mauve)'
 vimcmd_visual_symbol = '[❮](bold fg:lavender)'
+
+[cmd_duration]
+min_time = 1000
+show_milliseconds = false
+style = "bold yellow"
+format = "[⏱ $duration]($style)"
