@@ -231,7 +231,7 @@ def main(
     list=False,
     viewer="xdg-open %u",
     rofi_args="-i",
-    prompt_paper="Zotero",
+    prompt_paper=" Zotero ",
     prompt_attachment="attachment",
 ):
     if config is None:

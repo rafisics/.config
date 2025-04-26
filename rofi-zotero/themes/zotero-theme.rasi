@@ -1,14 +1,11 @@
 /* Dark, semi-transparent Rofi theme with single-column layout for Zotero */
 
 configuration {
-    modi: "drun -normal-window";
     show-icons: false;
-    display-drun: "Apps";
-    drun-display-format: "{name}";
-    font: "Fira Sans 11"; /* Reduced from 12 */
-    columns: 1; /* Single column */
-    width: 600px; /* Reduced from 800px */
-    lines: 6; /* Reduced from 10 */
+    font: "Fira Sans 11";
+    columns: 1;
+    width: 600px;
+    lines: 6;
     fixed-num-lines: true;
     case-sensitive: false;
 }
@@ -28,8 +25,8 @@ window {
     background-color: rgba(30, 30, 46, 0.8);
     border: 1px;
     border-radius: 0px;
-    padding: 8px; /* Reduced from 10px */
-    width: 600px; /* Match configuration */
+    padding: 8px;
+    width: 600px;
 }
 
 mainbox {
@@ -42,8 +39,8 @@ inputbar {
     background-color: #313244;
     border: 1px;
     border-radius: 4px;
-    padding: 6px; /* Reduced from 8px */
-    margin-bottom: 8px; /* Reduced from 10px */
+    padding: 6px;
+    margin-bottom: 8px;
 }
 
 entry {
@@ -64,7 +61,7 @@ listview {
 element {
     background-color: transparent;
     border: 0px;
-    padding: 6px; /* Reduced from 8px */
+    padding: 6px;
     text-color: #cdd6f4;
 }
 
