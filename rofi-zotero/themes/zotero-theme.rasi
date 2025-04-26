@@ -27,7 +27,7 @@ window {
     transparency: "real";
     background-color: rgba(30, 30, 46, 0.8);
     border: 1px;
-    border-radius: 8px;
+    border-radius: 0px;
     padding: 8px; /* Reduced from 10px */
     width: 600px; /* Match configuration */
 }

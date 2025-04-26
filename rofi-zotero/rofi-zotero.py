@@ -346,7 +346,9 @@ def main(
         print(items_input)
         return
 
-    rofi_command = ["rofi","-dmenu", "-format", "i"] + rofi_args + ["-p", prompt_paper]
+    rofi_command = ["rofi", 
+                    # "-normal-window", 
+                    "-dmenu", "-format", "i"] + rofi_args + ["-p", prompt_paper]
     rofi = subprocess.run(rofi_command, capture_output=True, text=True, input=items_input)
 
     selected_index = rofi.stdout.strip()
