@@ -52,7 +52,7 @@ _ZOTERO_SQLITE_FILE = "zotero.sqlite"
 
 # SQL queries for internal use
 _QUERY_AUTHORS = """
-    SELECT items.itemID, creators.Lastname
+    SELECT items.itemID, creators.lastName
     FROM ((creators
            JOIN itemCreators
              ON creators.creatorID = itemCreators.creatorID) AS t1
@@ -258,7 +258,7 @@ def main(
         return
 
     if not pref_path.exists() or not pref_path.is_file():
-        show_error(f"Could the find preference file {str(pref_path)}.\nUse the -c option to specify the path to the config directory.\n")
+        show_error(f"Could not find preference file {str(pref_path)}.\nUse the -c option to specify the path to the config directory.\n")
         return
 
     zotero_path = get_path_pref(pref_path, "extensions.zotero.dataDir")
