@@ -30,7 +30,7 @@ DEFAULT_ZOTERO_PATH = Path.home() / "Zotero"
 DEFAULT_ZOTERO_BASE_DIR = Path.home() / "papers"
 DEFAULT_ROFI_ARGS = "-i"  # case insensitive
 DEFAULT_VIEWER = "xdg-open %u"
-DEFAULT_PROMPT_PAPER = " Zotero "  # Changed from "paper"
+DEFAULT_PROMPT_PAPER = "Zotero"  # Changed from "paper"
 DEFAULT_PROMPT_ATTACHMENT = "attachment"
 
 FORMAT_ITEM = "[{itemType}] {author} ({year}) - {title}"
@@ -231,7 +231,7 @@ def main(
     list=False,
     viewer="xdg-open %u",
     rofi_args="-i",
-    prompt_paper=" Zotero ",
+    prompt_paper="Zotero",
     prompt_attachment="attachment",
 ):
     if config is None:

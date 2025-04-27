@@ -2,7 +2,7 @@
 
 configuration {
     modi:                   "drun";
-    font:                   "Rubik 10";
+    font:                   "Ubuntu Sans 11";
     show-icons:             true;
     icon-theme:             "Yaru-prussiangreen";
     display-drun:           "";
