@@ -150,7 +150,7 @@ style = "bg:#33658A"
 format = '[  $time ]($style)'
 
 [cmd_duration]
-min_time = 1000
+min_time = 10000
 show_milliseconds = false
 style = "bold yellow"
 format = "[⏱ $duration]($style)"

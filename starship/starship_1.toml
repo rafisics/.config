@@ -190,7 +190,7 @@ vimcmd_replace_symbol = '[❮](bold fg:mauve)'
 vimcmd_visual_symbol = '[❮](bold fg:lavender)'
 
 [cmd_duration]
-min_time = 1000
+min_time = 10000
 show_milliseconds = false
 style = "bold yellow"
 format = "[⏱ $duration]($style)"
