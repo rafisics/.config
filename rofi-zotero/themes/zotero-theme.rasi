@@ -2,7 +2,7 @@
 
 configuration {
     show-icons:          false;
-    font:                "Ubuntu Sans Sans 11";
+    font:                "Ubuntu Sans 11";
     width:               600px;
     lines:               6;
     fixed-num-lines:     false;
