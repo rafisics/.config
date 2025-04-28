@@ -1,21 +1,21 @@
-function switch_starship
+function starships
     set config_dir "$HOME/.config/starship"
+    set configs (ls $config_dir | grep -oE 'starship_[0-9]+' | sort -V)
 
-    if test (count $argv) -eq 0
-        echo "Usage: switch_starship <number>"
-        echo "Available configs:"
-        ls $config_dir | grep -oE 'starship_[0-9]+' | sort -V
-        return 1
+    set selected (printf "%s\n" $configs | fzf --prompt="Starship Config » " --height=~50% --layout=reverse --border --exit-0)
+
+    if [ -z "$selected" ]
+        echo "Nothing selected"
+        return 0
     end
 
-    set target_config "$config_dir/starship_$argv[1].toml"
+    set target_config "$config_dir/$selected.toml"
 
-    if test -f $target_config
-        set -Ux STARSHIP_CONFIG $target_config
-        echo "Switched Starship config to starship_$argv[1]"
+    if test -f "$target_config"
+        set -Ux STARSHIP_CONFIG "$target_config"
+        echo "Switched Starship config to $selected"
         starship init fish | source  # Reload Starship
     else
-        echo "Config 'starship_$argv[1]' not found. Available configs:"
-        ls $config_dir | grep -oE 'starship_[0-9]+' | sort -V
+        echo "Config '$selected' not found."
     end
 end
