@@ -13,7 +13,7 @@ M.ui = {
   changed_themes = {},
   theme_toggle = { "onedark", "one_light" },
   theme = "onedark", -- default theme
-  transparency = true,	
+  transparency = true,
 
   cmp = {
     icons = true,
@@ -41,30 +41,28 @@ M.ui = {
     modules = nil,
   },
 
---   nvdash = {
---     load_on_startup = false,
-
---     header = {
---       "           ▄ ▄                   ",
---       "       ▄   ▄▄▄     ▄ ▄▄▄ ▄ ▄     ",
---       "       █ ▄ █▄█ ▄▄▄ █ █▄█ █ █     ",
---       "    ▄▄ █▄█▄▄▄█ █▄█▄█▄▄█▄▄█ █     ",
---       "  ▄ █▄▄█ ▄ ▄▄ ▄█ ▄▄▄▄▄▄▄▄▄▄▄▄▄▄  ",
---       "  █▄▄▄▄ ▄▄▄ █ ▄ ▄▄▄ ▄ ▄▄▄ ▄ ▄ █ ▄",
---       "▄ █ █▄█ █▄█ █ █ █▄█ █ █▄█ ▄▄▄ █ █",
---       "█▄█ ▄ █▄▄█▄▄█ █ ▄▄█ █ ▄ █ █▄█▄█ █",
---       "    █▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█ █▄█▄▄▄█    ",
---     },
-
---     buttons = {
---       { "  Find File", "Spc f f", "Telescope find_files" },
---       { "󰈚  Recent Files", "Spc f o", "Telescope oldfiles" },
---       { "󰈭  Find Word", "Spc f w", "Telescope live_grep" },
---       { "  Bookmarks", "Spc m a", "Telescope marks" },
---       { "  Themes", "Spc t h", "Telescope themes" },
---       { "  Mappings", "Spc c h", "NvCheatsheet" },
---     },
---   },
+  -- nvdash = {
+  --   load_on_startup = false,
+  --   header = {
+  --     "           ▄ ▄                   ",
+  --     "       ▄   ▄▄▄     ▄ ▄▄▄ ▄ ▄     ",
+  --     "       █ ▄ █▄█ ▄▄▄ █ █▄█ █ █     ",
+  --     "    ▄▄ █▄█▄▄▄█ █▄█▄█▄▄█▄▄█ █     ",
+  --     "  ▄ █▄▄█ ▄ ▄▄ ▄█ ▄▄▄▄▄▄▄▄▄▄▄▄▄▄  ",
+  --     "  █▄▄▄▄ ▄▄▄ █ ▄ ▄▄▄ ▄ ▄▄▄ ▄ ▄ █ ▄",
+  --     "▄ █ █▄█ █▄█ █ █ █▄█ █ █▄█ ▄▄▄ █ █",
+  --     "█▄█ ▄ █▄▄█▄▄█ █ ▄▄█ █ ▄ █ █▄█▄█ █",
+  --     "    █▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█ █▄█▄▄▄█    ",
+  --   },
+  --   buttons = {
+  --     { "  Find File", "Spc f f", "Telescope find_files" },
+  --     { "󰈚  Recent Files", "Spc f o", "Telescope oldfiles" },
+  --     { "󰈭  Find Word", "Spc f w", "Telescope live_grep" },
+  --     { "  Bookmarks", "Spc m a", "Telescope marks" },
+  --     { "  Themes", "Spc t h", "Telescope themes" },
+  --     { "  Mappings", "Spc c h", "NvCheatsheet" },
+  --   },
+  -- },
 
   cheatsheet = { theme = "grid" }, -- simple/grid
 
@@ -88,4 +86,4 @@ M.base46 = {
   integrations = {},
 }
 
-return M 
+return M

@@ -9,11 +9,6 @@ return {
     local alpha = require("alpha")
     local dashboard = require("alpha.themes.dashboard")
 
-    -- Define highlight groups upfront
-    vim.api.nvim_set_hl(0, "AlphaHeader", { fg = "#787859" })
-    vim.api.nvim_set_hl(0, "AlphaFooter", { fg = "#787859" })
-    vim.api.nvim_set_hl(0, "AlphaButtons", { fg = "#787859" })
-
     -- Set header
     dashboard.section.header.val = {
       "                                                                       ",
@@ -27,7 +22,21 @@ return {
       " ██████  █████████████████████ ████ █████ █████ ████ ██████ ",
       "                                                                       ",
     }
-    dashboard.section.header.opts.hl = "AlphaHeader"
+
+    -- -- Set header
+    -- dashboard.section.header.val = {
+    --   "                                                      ",
+    --   " ███╗   ██╗███████╗ ██████╗ ████████╗███████╗██╗  ██╗ ",
+    --   " ████╗  ██║██╔════╝██╔═══██╗╚══██╔══╝██╔════╝╚██╗██╔╝ ",
+    --   " ██╔██╗ ██║█████╗  ██║   ██║   ██║   █████╗   ╚███╔╝  ",
+    --   " ██║╚██╗██║██╔══╝  ██║   ██║   ██║   ██╔══╝   ██╔██╗  ",
+    --   " ██║ ╚████║███████╗╚██████╔╝   ██║   ███████╗██╔╝ ██╗ ",
+    --   " ╚═╝  ╚═══╝╚══════╝ ╚═════╝    ╚═╝   ╚══════╝╚═╝  ╚═╝ ",
+    --   "                                                      ",
+    -- }
+
+    -- Set color
+    dashboard.section.header.opts.hl = "Title" -- lookup other hl groups with :highlight
 
     -- Set menu
     dashboard.section.buttons.val = {
@@ -42,11 +51,8 @@ return {
       dashboard.button("q", "  Quit", "<cmd>qa!<CR>"),
     }
 
-    -- Apply highlight to buttons
-    for _, button in ipairs(dashboard.section.buttons.val) do
-      button.opts.hl = "AlphaButtons"
-      button.opts.hl_shortcut = "AlphaButtons"
-    end
+    -- Send config to alpha
+    alpha.setup(dashboard.opts)
 
     -- Set footer
     -- dashboard.section.footer.val = fortune
@@ -63,13 +69,9 @@ return {
         local plugins = "⚡Neovim loaded " .. stats.count .. " plugins in " .. ms .. "ms"
         local footer = version .. "\t" .. plugins -- .. "\n" .. quote
         dashboard.section.footer.val = footer
-        dashboard.section.footer.opts.hl = "AlphaFooter"
         pcall(vim.cmd.AlphaRedraw)
       end,
     })
-
-    -- Send config to alpha (call only once)
-    alpha.setup(dashboard.opts)
 
     -- Disable folding on alpha buffer
     vim.cmd([[autocmd FileType alpha setlocal nofoldenable]])

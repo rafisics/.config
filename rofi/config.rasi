@@ -1,16 +1,13 @@
-// https://github.com/yuky2020/rofi-themes
-
 configuration {
     modi:                   "drun";
     font:                   "Ubuntu Sans 11";
     show-icons:             true;
-    icon-theme:             "Yaru-prussiangreen";
+    icon-theme:             "Yaru-bark";
     display-drun:           "";
     drun-display-format:    "{name}";
     sidebar-mode:           false;
     columns:                4;
     lines:                  3;
-    /* width:                  600px; */
     fixed-num-lines:        true;
     case-sensitive:         false;
 }
@@ -18,23 +15,22 @@ configuration {
 @theme "/dev/null"
 
 * {
-    background-color:       #1e1e2e;
-    text-color:             #cdd6f4;
-    border-color:           #45475a;
-    selected-background:    #313244;
-    selected-text:          #f5e0dc;
-    placeholder-color:      #6c7086;
-    urgent-background:      #f38ba8;
-    urgent-text:            #1e1e2e;
+    background-color:       #2A2A2A;  // Dark grey-brown, matches Kitty
+    text-color:             #FFFFFF;   // Pure white, matches Kitty foreground
+    border-color:           #4A4A4A;   // Slightly lighter grey, matches Kitty
+    selected-background:    #787859;   // Muted olive-green to match Yaru-bark-dark
+    selected-text:          #FFFFFF;   // Pure white for contrast
+    placeholder-color:      #A69B82;   // Warm beige-grey for harmony
+    urgent-background:      #A54242;   // Muted red, consistent with Kitty
+    urgent-text:            #FFFFFF;   // Pure white for contrast
 }
 
 window {
     transparency:           "real";
-    background-color:       rgba(30, 30, 46, 0.8);
+    background-color:       rgba(42, 42, 42, 0.8);  // Dark grey-brown with opacity
     border:                 1px;
     border-color:           @border-color;
-    border-radius:          0px; 
-    /* width:                  600px; */
+    border-radius:          0px;
     padding:                8px;
 }
 

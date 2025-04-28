@@ -11,18 +11,18 @@ configuration {
 
 * {
     background-color:       transparent;
-    text-color:             #FFFFFF;
-    border-color:           #4A4A4A;
-    selected-background:    #787859;
-    selected-text:          #FFFFFF;
-    placeholder-color:      #A69B82;
-    urgent-background:      #A54242;
-    urgent-text:            #FFFFFF;
+    text-color:             #cdd6f4;
+    border-color:           #45475a;
+    selected-background:    #313244;
+    selected-text:          #f5e0dc;
+    placeholder-color:      #6c7086;
+    urgent-background:      #f38ba8;
+    urgent-text:            #1e1e2e;
 }
 
 window {
     transparency:        "real";
-    background-color:    rgba(42, 42, 42, 0.8);
+    background-color:    rgba(30, 30, 46, 0.8);
     border:              1px;
     border-radius:       0px;
     padding:             8px;
@@ -37,19 +37,20 @@ mainbox {
 
 num-filtered-rows {
     expand:              false;
-    text-color:          @placeholder-color;
+    text-color:          Gray;
 }
 
 num-rows {
     expand:              false;
-    text-color:          @placeholder-color;
+    text-color:          Gray;
 }
 
 textbox-num-sep {
     expand:              false;
     str:                 "/";
-    text-color:          @placeholder-color;
+    text-color:          Gray;
 }
+
 case-indicator {
     spacing:             0;
     text-color:          @text-color;
