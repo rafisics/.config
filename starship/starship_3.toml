@@ -12,7 +12,7 @@ $docker_context\
 $python\
 [](fg:#5F819D bg:#3A5F5A)\
 $time\
-[ ](fg:#3A5F5A)\
+[](fg:#3A5F5A)\
 $line_break$character"""
 
 right_format = """$cmd_duration"""
