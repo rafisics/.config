@@ -38,7 +38,6 @@ vim.schedule(function()
   require "mappings"
 end)
 
-
 vim.api.nvim_create_autocmd("DirChanged", {
   callback = function()
     for _, v in pairs(vim.g.nvchad_terms or {}) do
