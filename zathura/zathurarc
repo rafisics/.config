@@ -50,7 +50,7 @@ set index-active-fg             "#504945" # bg2
 set inputbar-bg                 "#282828" # bg
 set inputbar-fg                 "#ebdbb2" # fg
 
-set statusbar-bg                "#504945" # bg2
+set statusbar-bg                "#282828" # bg
 set statusbar-fg                "#ebdbb2" # fg
 
 set highlight-color             "#fabd2f" # bright:yellow
