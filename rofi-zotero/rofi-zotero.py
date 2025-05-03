@@ -29,7 +29,7 @@ DEFAULT_ZOTERO_CONFIG = Path.home() / ".zotero"
 DEFAULT_ZOTERO_PATH = Path.home() / "Zotero"
 DEFAULT_ZOTERO_BASE_DIR = Path.home() / "papers"
 DEFAULT_ROFI_ARGS = "-i"  # case insensitive
-DEFAULT_VIEWER = "xdg-open %u"
+DEFAULT_VIEWER = "zathura %u" # xdg-open, zathura
 DEFAULT_PROMPT_PAPER = "Zotero"  # Changed from "paper"
 DEFAULT_PROMPT_ATTACHMENT = "attachment"
 
