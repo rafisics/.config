@@ -145,6 +145,9 @@ keymap("n", "k", "gk", opts)
 keymap("v", "j", "gj", opts)
 keymap("v", "k", "gk", opts)
 
+-- Toggle minimap
+keymap("n", "<leader>mm", ":MinimapToggle<CR>", opts)
+
 -- Toggle terminal floating in buffer location
 vim.keymap.set({ "n", "t" }, "<c-`>", function()
   require("nvchad.term").toggle {
@@ -154,7 +157,7 @@ vim.keymap.set({ "n", "t" }, "<c-`>", function()
     }
 end, opts)
 
--- Toggle Transparency
+-- Toggle Transparency # no more needed when transparency handled by Blur my Shell
 vim.keymap.set({ "n", "v" }, "<S-t>", function()
   require("base46").toggle_transparency()
 end, opts)
