@@ -2,9 +2,6 @@ function dump_gnome_settings
     set dir ~/github/ubuntu-setup
     cd $dir
     
-    # List of installed packages
-    dpkg --get-selections > package-list.txt
-
     # Dump full GNOME settings
     dconf dump /org/gnome/ > gnome/full-settings.dconf
 
