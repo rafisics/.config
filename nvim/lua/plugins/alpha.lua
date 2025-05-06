@@ -11,8 +11,9 @@ return {
 
     -- Define highlight groups upfront
     vim.api.nvim_set_hl(0, "AlphaHeader", { fg = "#787859" })
-    vim.api.nvim_set_hl(0, "AlphaFooter", { fg = "#787859" })
-    vim.api.nvim_set_hl(0, "AlphaButtons", { fg = "#787859" })
+    vim.api.nvim_set_hl(0, "AlphaFooter", { fg = "#C0B499" })
+    vim.api.nvim_set_hl(0, "AlphaButtons", { fg = "#C0B499" })
+    -- Note: #787859 may have low contrast; consider #C0B499 for better readability on footer and buttons
 
     -- Set header
     dashboard.section.header.val = {

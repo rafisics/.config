@@ -11,54 +11,54 @@
         {
             "type": "os",
             "key": "  ╭─{icon} OS",
-            "keyColor": "cyan"
+            "keyColor": "green"
         },
         {
             "type": "kernel",
             "key": "  ├─ Kernel",
-            "keyColor": "cyan"
+            "keyColor": "green"
         },
         {
             "type": "packages",
             "key": "  ╰─󰏖 Packages",
-            "keyColor": "cyan"
+            "keyColor": "green"
         },
         // "break",
         {
             "type": "de",
             "key": "  ╭─ DE",
-            "keyColor": "cyan"
+            "keyColor": "green"
         },
         {
             "type": "wm",
             "key": "  ├─ WM",
-            "keyColor": "cyan"
+            "keyColor": "green"
         },
         {
             "type": "theme",
             "key": "  ├─󰉼 Theme",
-            "keyColor": "cyan"
+            "keyColor": "green"
         },
         {
             "type": "icons",
             "key": "  ╰─󰀻 Icons",
-            "keyColor": "cyan"
+            "keyColor": "green"
         },
         // "break",
         {
             "type": "shell",
             "key": "  ╭─ Shell",
-            "keyColor": "cyan"
+            "keyColor": "green"
         },
         {
             "type": "terminal",
             "key": "  ├─ Terminal",
-            "keyColor": "cyan"
+            "keyColor": "green"
         },
         {
             "type": "terminalfont",
             "key": "  ╰─ Terminal Font",
-            "keyColor": "cyan"
+            "keyColor": "green"
         },
         // "break",
         {

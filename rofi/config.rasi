@@ -1,6 +1,6 @@
 configuration {
     modi:                   "drun";
-    font:                   "Ubuntu Sans 11";
+    font:                   "Roboto 11";
     show-icons:             true;
     icon-theme:             "Yaru-bark";
     display-drun:           "";
@@ -15,19 +15,19 @@ configuration {
 @theme "/dev/null"
 
 * {
-    background-color:       #2A2A2A;  // Dark grey-brown, matches Kitty
-    text-color:             #FFFFFF;   // Pure white, matches Kitty foreground
-    border-color:           #4A4A4A;   // Slightly lighter grey, matches Kitty
-    selected-background:    #787859;   // Muted olive-green to match Yaru-bark-dark
-    selected-text:          #FFFFFF;   // Pure white for contrast
-    placeholder-color:      #A69B82;   // Warm beige-grey for harmony
-    urgent-background:      #A54242;   // Muted red, consistent with Kitty
-    urgent-text:            #FFFFFF;   // Pure white for contrast
+    background-color:       transparent;
+    text-color:             #F0F0F0;
+    border-color:           #4A4A4A;
+    selected-background:    #787859;
+    selected-text:          #D4D4D4;
+    placeholder-color:      #C0B499;
+    urgent-background:      #A54242;
+    urgent-text:            #FFFFFF;
 }
 
 window {
     transparency:           "real";
-    background-color:       rgba(42, 42, 42, 0.8);  // Dark grey-brown with opacity
+    background-color:       rgba(58, 58, 58, 0.9);
     border:                 1px;
     border-color:           @border-color;
     border-radius:          0px;
@@ -76,14 +76,14 @@ listview {
 
 mainbox {
     children:               [inputbar, listview];
-    spacing:                2%;
+    spacing:                1.5%;
     padding:                2% 1% 2% 1%;
     background-color:       transparent;
 }
 
 element {
     orientation:            vertical;
-    padding:                2% 0% 2% 0%;
+    padding:                1.5% 0%;
     background-color:       transparent;
     border:                 0px;
     text-color:             @text-color;

@@ -2,7 +2,7 @@
 
 configuration {
     show-icons:          false;
-    font:                "Ubuntu Sans 11";
+    font:                "Roboto 11";
     width:               600px;
     lines:               6;
     fixed-num-lines:     false;
@@ -11,18 +11,18 @@ configuration {
 
 * {
     background-color:       transparent;
-    text-color:             #FFFFFF;
+    text-color:             #F0F0F0;
     border-color:           #4A4A4A;
     selected-background:    #787859;
-    selected-text:          #FFFFFF;
-    placeholder-color:      #A69B82;
+    selected-text:          #D4D4D4;
+    placeholder-color:      #C0B499;
     urgent-background:      #A54242;
     urgent-text:            #FFFFFF;
 }
 
 window {
     transparency:        "real";
-    background-color:    rgba(42, 42, 42, 0.8);
+    background-color:    rgba(58, 58, 58, 0.9);
     border:              1px;
     border-radius:       0px;
     padding:             8px;
