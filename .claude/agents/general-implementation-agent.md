@@ -472,5 +472,12 @@ See `rules/error-handling.md` for general error patterns. Agent-specific behavio
 3. Use status value "completed" (triggers Claude stop behavior)
 4. Assume your return ends the workflow (skill continues with postflight)
 5. Skip Stage 0 early metadata creation
+6. Spawn child agents for lifecycle phases other than the assigned `phase_constraint`
+   (when `phase_constraint` is present in delegation context). Implementation agents must
+   not spawn researchers or planners.
+
+**Phase Containment** (when `phase_constraint` is present):
+9. Record cross-phase recommendations in the handoff's `phase_recommendations` array,
+   rather than executing the cross-phase work directly.
 
 **Partial Results**: Return `status: "partial"` with `partial_progress` when work cannot be completed within timeout or after unrecoverable errors. Partial results with accurate metadata are preferred over forced or incomplete completion. The caller (skill-implementer) will report partial status to the user, who can re-run `/implement` to resume.

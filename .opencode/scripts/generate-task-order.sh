@@ -16,7 +16,7 @@
 #   3. A Dependency Waves table (computed via Kahn's algorithm)
 #   4. Topic-grouped dependency tree sections (DFS, deps shown below their dependents)
 #
-# Format spec: .opencode/context/formats/task-order-format.md
+# Format spec: .claude/context/formats/task-order-format.md
 #
 # Topic assignment: Tasks without a "topic" field in state.json appear in
 # ### Uncategorized. To assign topics, add a "topic" field to each task entry
@@ -144,8 +144,6 @@ build_graph() {
     local desc="${line#*|}"
     # Replace any embedded newlines in desc with space
     desc="${desc//$'\n'/ }"
-    # Un-slugify: replace underscores with spaces so project_name fallbacks display as readable text
-    desc="${desc//_/ }"
     [[ -n "$tn" ]] && task_desc["$tn"]="$desc"
   done <<< "$desc_data"
 
@@ -495,6 +493,7 @@ _print_topic_node() {
   _globally_visited["$task_num"]=1
 
   # Print this task's active successors (tasks that depend on this task, indented below)
+  # Skip successors that belong to a different topic -- they'll appear under their own heading
   local deps="${task_successors[$task_num]:-}"
   if [[ -n "$deps" ]]; then
     local sorted_deps
@@ -503,6 +502,10 @@ _print_topic_node() {
     for dep in "${dep_array[@]}"; do
       [[ -z "$dep" ]] && continue
       if [[ -n "${task_status[$dep]+x}" ]]; then
+        local dep_topic="${task_topic[$dep]:-}"
+        if [[ -n "$_current_section_topic" && -n "$dep_topic" && "$dep_topic" != "$_current_section_topic" ]]; then
+          continue
+        fi
         _print_topic_node "$dep" $((depth + 1))
       fi
     done
@@ -812,45 +815,6 @@ replace_section() {
 }
 
 # ============================================================================
-# Bootstrap Task Order Section
-# ============================================================================
-
-# bootstrap_task_order_section: if ## Task Order is missing from TODO_FILE,
-# insert a blank placeholder before ## Tasks (or at EOF if ## Tasks absent).
-# This makes replace_section() work on first run for new projects.
-bootstrap_task_order_section() {
-  # Idempotent: do nothing if section already present
-  if grep -q "^## Task Order$" "$TODO_FILE"; then
-    return 0
-  fi
-
-  echo "INFO: ## Task Order section missing — bootstrapping in $TODO_FILE" >&2
-
-  local tasks_line
-  tasks_line=$(grep -n "^## Tasks$" "$TODO_FILE" | head -1 | cut -d: -f1) || true
-
-  local tmp_file
-  tmp_file=$(mktemp)
-
-  if [[ -n "$tasks_line" ]]; then
-    # Insert before ## Tasks
-    if [[ "$tasks_line" -gt 1 ]]; then
-      head -n "$((tasks_line - 1))" "$TODO_FILE" > "$tmp_file"
-    else
-      : > "$tmp_file"
-    fi
-    printf '## Task Order\n\n' >> "$tmp_file"
-    tail -n +"${tasks_line}" "$TODO_FILE" >> "$tmp_file"
-  else
-    # No ## Tasks heading — append to end of file
-    cp "$TODO_FILE" "$tmp_file"
-    printf '\n## Task Order\n\n' >> "$tmp_file"
-  fi
-
-  mv "$tmp_file" "$TODO_FILE"
-}
-
-# ============================================================================
 # Main
 # ============================================================================
 
@@ -889,7 +853,6 @@ SECTION_CONTENT=$(generate_section "$GOAL_TEXT")
 if [[ "$MODE" == "print" ]]; then
   echo "$SECTION_CONTENT"
 elif [[ "$MODE" == "update" ]]; then
-  bootstrap_task_order_section
   replace_section "$SECTION_CONTENT"
   echo "OK: Task Order section updated in $TODO_FILE"
 fi

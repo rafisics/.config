@@ -21,6 +21,7 @@ Reference (do not load eagerly):
 - Path: `.claude/context/patterns/context-exhaustion-detection.md` - Context exhaustion heuristics
 - Path: `.claude/context/patterns/file-metadata-exchange.md` - File I/O helpers
 - Path: `.claude/context/patterns/jq-escaping-workarounds.md` - jq escaping patterns (Issue #1132)
+- Path: `.claude/scripts/orchestrator-postflight.sh` - Shared postflight pipeline (Stages 8-10)
 
 Note: This skill is a thin wrapper with internal postflight. Context is loaded by the delegated agent.
 
@@ -493,83 +494,29 @@ done  # End Continuation Loop
 
 ---
 
-### Stage 8: Link Artifacts
+### Stage 8: Run Shared Postflight Script
 
-Add artifact to state.json with summary.
-
-**IMPORTANT**: Use two-step jq pattern to avoid Issue #1132 escaping bug. See `jq-escaping-workarounds.md`.
-
-```bash
-if [ -n "$artifact_path" ]; then
-    # Step 1: Filter out existing summary artifacts (use "| not" pattern to avoid != escaping - Issue #1132)
-    jq '(.active_projects[] | select(.project_number == '$task_number')).artifacts =
-        [(.active_projects[] | select(.project_number == '$task_number')).artifacts // [] | .[] | select(.type == "summary" | not)]' \
-      specs/state.json > specs/tmp/state.json && mv specs/tmp/state.json specs/state.json
-
-    # Step 2: Add new summary artifact
-    jq --arg path "$artifact_path" \
-       --arg type "$artifact_type" \
-       --arg summary "$artifact_summary" \
-      '(.active_projects[] | select(.project_number == '$task_number')).artifacts += [{"path": $path, "type": $type, "summary": $summary}]' \
-      specs/state.json > specs/tmp/state.json && mv specs/tmp/state.json specs/state.json
-fi
-```
-
-**Update TODO.md** (if implemented): Regenerate from state.json (state.json artifact update was done in the previous step):
+Delegate artifact linking, TODO.md regeneration, TTS notification, git commit, and cleanup to
+the shared script. The inline Stage 7 above already handled status update, completion_summary,
+roadmap_items, and memory_candidates — so we set `SKIP_COMPLETION_DATA=true` to prevent
+the shared script from redundantly re-writing those fields.
 
 ```bash
-bash .claude/scripts/generate-todo.sh || echo "WARNING: generate-todo.sh failed (non-fatal)" >&2
+SKIP_COMPLETION_DATA=true bash .claude/scripts/orchestrator-postflight.sh \
+    "$task_number" "$project_name" "$padded_num" "$session_id" "implement" "$task_type"
 ```
 
-If the script exits non-zero, log a warning but continue (regeneration errors are non-blocking).
+The shared script handles: link summary artifact in state.json (two-step jq, Issue #1132 safe),
+regenerate TODO.md, fire TTS lifecycle notification, git commit ("task N: complete implementation"),
+and cleanup of `.postflight-pending`, `.postflight-loop-guard`, `.continuation-loop-guard`,
+and `.return-meta.json`.
+
+**Note**: Cleanup runs after the continuation loop exits. The `.postflight-pending` marker
+persists across loop iterations to ensure the SubagentStop hook fires correctly.
 
 ---
 
-### Stage 8a: Lifecycle TTS Notification
-
-Fire TTS and WezTerm tab coloring after artifact linking is complete:
-
-```bash
-lifecycle_script=".claude/scripts/lifecycle-notify.sh"
-if [ -f "$lifecycle_script" ]; then
-    bash "$lifecycle_script" "$STATE_STATUS" &
-fi
-```
-
-Non-blocking: called in background after artifacts are linked. Speaks "Tab N STATUS"
-(e.g., "Tab 3 completed") to announce the lifecycle transition.
-
----
-
-### Stage 9: Git Commit
-
-Commit changes with session ID:
-
-```bash
-git add -A
-git commit -m "task ${task_number}: complete implementation
-
-Session: ${session_id}
-```
-
----
-
-### Stage 10: Cleanup
-
-Cleanup runs **after** the continuation loop exits. The `.postflight-pending` marker persists across loop iterations to ensure the SubagentStop hook fires correctly.
-
-Remove marker, metadata, and loop-guard files:
-
-```bash
-rm -f "specs/${padded_num}_${project_name}/.postflight-pending"
-rm -f "specs/${padded_num}_${project_name}/.postflight-loop-guard"
-rm -f "specs/${padded_num}_${project_name}/.continuation-loop-guard"
-rm -f "specs/${padded_num}_${project_name}/.return-meta.json"
-```
-
----
-
-### Stage 11: Return Brief Summary
+### Stage 9: Return Brief Summary
 
 Return a brief text summary (NOT JSON). Example:
 

@@ -1,5 +1,5 @@
 ---
-next_project_number: 657
+next_project_number: 661
 ---
 
 # TODO
@@ -25,6 +25,62 @@ next_project_number: 657
 652 [NOT STARTED] — After ~1 week of the new pipeline running, review logs to verify 
 
 ## Tasks
+
+### 660. Add preflight status updates to skill-orchestrate state handlers
+- **Effort**: 1-2 hours
+- **Status**: [COMPLETED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+- **Research**: [660_orchestrate_preflight_status_updates/reports/01_preflight-analysis.md]
+- **Plan**: [660_orchestrate_preflight_status_updates/plans/01_preflight-plan.md]
+- **Summary**: [660_orchestrate_preflight_status_updates/summaries/01_preflight-summary.md]
+
+**Description**: skill-orchestrate dispatches agents without calling update-task-status.sh preflight first. The individual skills (skill-researcher Stage 2, skill-planner Stage 2, skill-implementer Stage 2) all call preflight before spawning their agent, which sets task status to the in-progress variant (researching/planning/implementing) and — for implement — updates the plan file top-level Status to [IMPLEMENTING] via update-plan-status.sh. Without these preflight calls, orchestrated tasks stay at their prior status throughout execution and plan files never show [IMPLEMENTING]. Fix: (1) Add preflight calls in skill-orchestrate Stage 4 state handlers before each dispatch — research dispatch should call preflight:research, plan dispatch should call preflight:plan, implement dispatch should call preflight:implement. (2) Do the same in multi-task mode Stage MT-4 before each parallel dispatch batch. (3) Verify that update-plan-status.sh correctly transitions plan Status and that phase markers ([NOT STARTED] -> [IN PROGRESS] -> [COMPLETED]) are updated by the implementation agent during execution. The phase markers are the agents responsibility (general-implementation-agent Stage 4A/4D), but confirm the orchestrator dispatch prompt provides sufficient context for the agent to locate and edit the plan file.
+
+---
+
+### 659. Add phase containment for orchestrator-dispatched agents
+- **Effort**: 1-2 hours
+- **Status**: [COMPLETED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+- **Research**: [659_orchestrator_phase_containment/reports/01_phase-containment.md]
+- **Plan**: [659_orchestrator_phase_containment/plans/01_phase-containment.md]
+- **Summary**: [659_orchestrator_phase_containment/summaries/01_phase-containment-summary.md]
+
+**Description**: Add a phase_constraint field to the delegation context that skill-orchestrate passes when dispatching agents. When present, agents must confine their work to the assigned phase (research, plan, or implement) and must not spawn child agents for other lifecycle phases. Agents can note recommendations (e.g. implementation appears trivial) in the .orchestrator-handoff.json for the orchestrator to act on, but cannot execute cross-phase work themselves. Update agent definitions and dispatch-agent-spec.md to enforce this constraint. This prevents the pattern where a research agent spawns its own implementation sub-agent, bypassing the orchestrator state machine, planning phase, and standard artifact creation.
+
+---
+
+### 658. Integrate shared postflight into skill-orchestrate
+- **Effort**: 1-2 hours
+- **Status**: [COMPLETED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: Task 657
+- **Research**: [658_integrate_shared_postflight_orchestrate/reports/01_integration-research.md]
+- **Plan**: [658_integrate_shared_postflight_orchestrate/plans/01_integration-plan.md]
+- **Summary**: [658_integrate_shared_postflight_orchestrate/summaries/01_integrate-postflight-summary.md]
+
+**Description**: Replace skill-orchestrate Stage 5 lightweight artifact linking (the inline skill_postflight_update/skill_link_artifacts calls) with calls to the shared orchestrator-postflight.sh script from Task 657. Update both single-task mode (Stage 5 handoff reading) and multi-task mode (Stage MT-4 per-task postflight). Ensure the orchestrator reads .return-meta.json (which agents already write) in addition to .orchestrator-handoff.json, so artifact metadata is reliably available. Update architecture docs (handoff-schema.md, dispatch-agent-spec.md, orchestrate-state-machine.md) to reflect the unified postflight path. Verify that orchestrated tasks produce identical artifact entries in state.json and TODO.md as tasks run via individual /research, /plan, /implement commands.
+
+---
+
+### 657. Create shared orchestrator-postflight.sh script
+- **Effort**: 2-3 hours
+- **Status**: [COMPLETED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+- **Research**: [657_create_shared_orchestrator_postflight/reports/01_postflight-extraction.md]
+- **Plan**: [657_create_shared_orchestrator_postflight/plans/01_postflight-script.md]
+- **Summary**: [657_create_shared_orchestrator_postflight/summaries/01_postflight-script-summary.md]
+
+**Description**: Extract the duplicated postflight logic from skill-researcher (Stages 6-9), skill-planner (Stages 6-9), and skill-implementer (Stages 6-10) into a shared .claude/scripts/orchestrator-postflight.sh script. The script should handle: (1) reading .return-meta.json metadata, (2) artifact validation via validate-artifact.sh, (3) status update via update-task-status.sh, (4) next_artifact_number incrementing (research only), (5) artifact linking to state.json via two-step jq pattern (Issue #1132 safe), (6) memory candidate propagation with append semantics, (7) generate-todo.sh regeneration, (8) lifecycle TTS notification, (9) cleanup of marker and metadata files. Parameterize by operation type (research/plan/implement) to handle the differences (e.g. only research increments artifact number, implement has completion_summary and roadmap_items). Refactor the three individual skills to call this shared script instead of inline postflight logic. Preserve all existing behavior including the jq escaping workarounds.
+
+---
 
 ### 656. Add topic assignment to commands with missing or partial coverage
 - **Effort**: 1-2 hours

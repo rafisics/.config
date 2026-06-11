@@ -24,6 +24,7 @@ Reference (do not load eagerly):
 - Path: `.claude/context/patterns/postflight-control.md` - Marker file protocol
 - Path: `.claude/context/patterns/file-metadata-exchange.md` - File I/O helpers
 - Path: `.claude/context/patterns/jq-escaping-workarounds.md` - jq escaping patterns (Issue #1132)
+- Path: `.claude/scripts/orchestrator-postflight.sh` - Shared postflight pipeline (Stages 6-10)
 
 Note: This skill is a thin wrapper with internal postflight. Context is loaded by the delegated agent.
 
@@ -282,131 +283,28 @@ If you DID use the Agent tool (Stage 5), skip this stage -- the subagent already
 The following stages MUST execute after work is complete, whether the work was done by a
 subagent (Stage 5) or inline (Stage 5b). Do NOT skip these stages for any reason.
 
-### Stage 6: Parse Subagent Return (Read Metadata File)
+### Stage 6: Run Shared Postflight Script
 
-Read the metadata file:
+Delegate all postflight operations (metadata read, artifact validation, status update, memory
+candidates propagation, artifact linking, TODO.md regeneration, TTS notification, git commit,
+and cleanup) to the shared script:
 
 ```bash
-metadata_file="specs/${padded_num}_${project_name}/.return-meta.json"
-
-if [ -f "$metadata_file" ] && jq empty "$metadata_file" 2>/dev/null; then
-    status=$(jq -r '.status' "$metadata_file")
-    artifact_path=$(jq -r '.artifacts[0].path // ""' "$metadata_file")
-    artifact_type=$(jq -r '.artifacts[0].type // ""' "$metadata_file")
-    artifact_summary=$(jq -r '.artifacts[0].summary // ""' "$metadata_file")
-else
-    echo "Error: Invalid or missing metadata file"
-    status="failed"
-fi
+bash .claude/scripts/orchestrator-postflight.sh \
+    "$task_number" "$project_name" "$padded_num" "$session_id" "plan"
 ```
+
+The shared script handles Stages 6-10 (read metadata, validate plan artifact, update task
+status to "planned", propagate memory_candidates, link artifacts in state.json, regenerate
+TODO.md, fire TTS notification, git commit with "task N: create implementation plan", and
+cleanup). This also fixes the previously missing memory_candidates propagation for the planner.
+
+**On partial/failed**: The script still runs cleanup. Task status remains "planning" for
+resume (the shared script only calls `update-task-status.sh` when status is "planned").
 
 ---
 
-### Stage 6a: Validate Artifact Content
-
-If subagent status is "planned" and `artifact_path` is non-empty, validate the plan artifact against format requirements. This is **non-blocking** -- warnings are logged but do not prevent postflight from completing.
-
-```bash
-if [ "$status" = "planned" ] && [ -n "$artifact_path" ] && [ -f "$artifact_path" ]; then
-    echo "Validating plan artifact..."
-    if ! bash .claude/scripts/validate-artifact.sh "$artifact_path" plan --fix; then
-        echo "WARNING: Plan artifact has format issues (non-blocking). Review output above."
-    fi
-fi
-```
-
-**Note**: The `--fix` flag attempts auto-repair of missing metadata fields. Validation failures are logged but do not block status update or git commit.
-
----
-
-### Stage 7: Update Task Status (Postflight)
-
-If subagent status is "planned", update state.json and TODO.md atomically using the centralized script:
-
-```bash
-bash .claude/scripts/update-task-status.sh postflight $task_number plan $session_id
-```
-
-If the script exits non-zero, log a warning but continue with artifact linking and git commit (postflight errors are non-blocking).
-
-**On partial/failed**: Keep status as "planning" for resume (do not call the script).
-
----
-
-### Stage 8: Link Artifacts
-
-Add artifact to state.json with summary.
-
-**IMPORTANT**: Use two-step jq pattern to avoid Issue #1132 escaping bug. See `jq-escaping-workarounds.md`.
-
-```bash
-if [ -n "$artifact_path" ]; then
-    # Step 1: Filter out existing plan artifacts (use "| not" pattern to avoid != escaping - Issue #1132)
-    jq '(.active_projects[] | select(.project_number == '$task_number')).artifacts =
-        [(.active_projects[] | select(.project_number == '$task_number')).artifacts // [] | .[] | select(.type == "plan" | not)]' \
-      specs/state.json > specs/tmp/state.json && mv specs/tmp/state.json specs/state.json
-
-    # Step 2: Add new plan artifact
-    jq --arg path "$artifact_path" \
-       --arg type "$artifact_type" \
-       --arg summary "$artifact_summary" \
-      '(.active_projects[] | select(.project_number == '$task_number')).artifacts += [{"path": $path, "type": $type, "summary": $summary}]' \
-      specs/state.json > specs/tmp/state.json && mv specs/tmp/state.json specs/state.json
-fi
-```
-
-**Update TODO.md**: Regenerate from state.json (state.json artifact update was done in the previous step):
-
-```bash
-bash .claude/scripts/generate-todo.sh || echo "WARNING: generate-todo.sh failed (non-fatal)" >&2
-```
-
-If the script exits non-zero, log a warning but continue (regeneration errors are non-blocking).
-
----
-
-### Stage 8a: Lifecycle TTS Notification
-
-Fire TTS and WezTerm tab coloring after artifact linking is complete:
-
-```bash
-lifecycle_script=".claude/scripts/lifecycle-notify.sh"
-if [ -f "$lifecycle_script" ]; then
-    bash "$lifecycle_script" "$STATE_STATUS" &
-fi
-```
-
-Non-blocking: called in background after artifacts are linked. Speaks "Tab N STATUS"
-(e.g., "Tab 3 planned") to announce the lifecycle transition.
-
----
-
-### Stage 9: Git Commit
-
-Commit changes with session ID:
-
-```bash
-git add -A
-git commit -m "task ${task_number}: create implementation plan
-
-Session: ${session_id}
-```
-
----
-
-### Stage 10: Cleanup
-
-Remove marker and metadata files:
-
-```bash
-rm -f "specs/${padded_num}_${project_name}/.postflight-pending"
-rm -f "specs/${padded_num}_${project_name}/.postflight-loop-guard"
-rm -f "specs/${padded_num}_${project_name}/.return-meta.json"
-```
-
----
-
-### Stage 11: Return Brief Summary
+### Stage 7: Return Brief Summary
 
 Return a brief text summary (NOT JSON). Example:
 
@@ -436,25 +334,9 @@ If subagent didn't write metadata file:
 Non-blocking: Log failure but continue with success response.
 
 ### jq Parse Failure
-If jq commands fail with INVALID_CHARACTER or syntax error (Issue #1132):
-1. Log to errors.json:
-```bash
-jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-   --arg sid "$session_id" \
-   --arg msg "jq parse error in postflight artifact linking" \
-   --argjson task "$task_number" \
-  '.errors += [{
-    "id": ("err_" + ($ts | gsub("[^0-9]"; ""))),
-    "timestamp": $ts,
-    "type": "jq_parse_failure",
-    "severity": "medium",
-    "message": $msg,
-    "context": {"session_id": $sid, "command": "/plan", "task": $task, "checkpoint": "GATE_OUT"},
-    "recovery": {"suggested_action": "Use two-step jq pattern from jq-escaping-workarounds.md", "auto_recoverable": true},
-    "fix_status": "unfixed"
-  }]' specs/errors.json > specs/tmp/errors.json && mv specs/tmp/errors.json specs/errors.json
-```
-2. Retry with two-step pattern (already implemented in Stage 8)
+jq postflight operations are handled by `orchestrator-postflight.sh` which uses Issue #1132-safe
+patterns throughout (`--arg atype` and `select(.type == "X" | not)`). If the shared script
+fails, check its output for jq error details. See `jq-escaping-workarounds.md` for patterns.
 
 ### Subagent Timeout
 Return partial status if subagent times out (default 1800s).
@@ -473,11 +355,9 @@ After the agent returns, this skill MUST NOT:
 5. **Write plan files** - Artifact creation is agent work
 
 The postflight phase is LIMITED TO:
-- Reading agent metadata file
-- Updating status via `update-task-status.sh` (handles state.json + TODO.md atomically)
-- Linking artifacts in state.json
-- Git commit
-- Cleanup of temp/marker files
+- Calling `orchestrator-postflight.sh` which handles: reading metadata, validating artifact,
+  calling `update-task-status.sh`, propagating memory_candidates, linking artifacts in state.json,
+  regenerating TODO.md, TTS notification, git commit, and cleanup
 
 Reference: @.claude/context/standards/postflight-tool-restrictions.md
 

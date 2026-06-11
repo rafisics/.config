@@ -508,3 +508,10 @@ When MCP search returns no results:
 6. Assume your return ends the workflow
 7. Fail research if MCP is unavailable
 8. Skip web search entirely even when MCP is available (MCP doesn't cover tutorials/discussions)
+9. Spawn child agents for lifecycle phases other than the assigned `phase_constraint`
+   (when `phase_constraint` is present in delegation context). Research agents must not
+   spawn planners or implementers.
+
+**Phase Containment** (when `phase_constraint` is present):
+10. Record cross-phase recommendations in the report's Recommendations section or
+    the handoff's `phase_recommendations` array, rather than executing the work directly.

@@ -812,5 +812,12 @@ error: builder for '/nix/store/...' failed with exit code 1
 8. Use `rec { }` in Nix code (risk of infinite recursion)
 9. Use top-level `with pkgs;` (static analysis failure)
 10. Use deprecated overlay variables `self`/`super` (use `final`/`prev`)
+11. Spawn child agents for lifecycle phases other than the assigned `phase_constraint`
+    (when `phase_constraint` is present in delegation context). Implementation agents must
+    not spawn researchers or planners.
+
+**Phase Containment** (when `phase_constraint` is present):
+12. Record cross-phase recommendations in the handoff's `phase_recommendations` array,
+    rather than executing the cross-phase work directly.
 11. Log MCP unavailability as error (it's informational)
 12. Block implementation when MCP is unavailable

@@ -378,3 +378,10 @@ If official docs are insufficient:
 4. Ignore plugin dependencies
 5. Use status value "completed"
 6. Assume your return ends the workflow
+7. Spawn child agents for lifecycle phases other than the assigned `phase_constraint`
+   (when `phase_constraint` is present in delegation context). Research agents must not
+   spawn planners or implementers.
+
+**Phase Containment** (when `phase_constraint` is present):
+8. Record cross-phase recommendations in the report's Recommendations section or
+   the handoff's `phase_recommendations` array, rather than executing the work directly.

@@ -1,7 +1,137 @@
 {
   "version": "1.1.0",
-  "next_project_number": 657,
+  "next_project_number": 661,
   "active_projects": [
+    {
+      "project_number": 660,
+      "project_name": "orchestrate_preflight_status_updates",
+      "title": "Add preflight status updates to skill-orchestrate state handlers",
+      "status": "completed",
+      "task_type": "meta",
+      "topic": "agent-system",
+      "effort": "1-2 hours",
+      "created": "2026-06-11T09:30:00Z",
+      "last_updated": "2026-06-11T16:35:28Z",
+      "dependencies": [],
+      "description": "skill-orchestrate dispatches agents without calling update-task-status.sh preflight first. The individual skills (skill-researcher Stage 2, skill-planner Stage 2, skill-implementer Stage 2) all call preflight before spawning their agent, which sets task status to the in-progress variant (researching/planning/implementing) and — for implement — updates the plan file top-level Status to [IMPLEMENTING] via update-plan-status.sh. Without these preflight calls, orchestrated tasks stay at their prior status throughout execution and plan files never show [IMPLEMENTING]. Fix: (1) Add preflight calls in skill-orchestrate Stage 4 state handlers before each dispatch — research dispatch should call preflight:research, plan dispatch should call preflight:plan, implement dispatch should call preflight:implement. (2) Do the same in multi-task mode Stage MT-4 before each parallel dispatch batch. (3) Verify that update-plan-status.sh correctly transitions plan Status and that phase markers ([NOT STARTED] -> [IN PROGRESS] -> [COMPLETED]) are updated by the implementation agent during execution. The phase markers are the agents responsibility (general-implementation-agent Stage 4A/4D), but confirm the orchestrator dispatch prompt provides sufficient context for the agent to locate and edit the plan file.",
+      "artifacts": [
+        {
+          "path": "specs/660_orchestrate_preflight_status_updates/reports/01_preflight-analysis.md",
+          "type": "research",
+          "summary": "Preflight analysis"
+        },
+        {
+          "path": "specs/660_orchestrate_preflight_status_updates/plans/01_preflight-plan.md",
+          "type": "plan",
+          "summary": "3-phase implementation plan for adding 7 preflight status update calls to skill-orchestrate (4 in Stage 4, 3 in MT-4)"
+        },
+        {
+          "path": "specs/660_orchestrate_preflight_status_updates/summaries/01_preflight-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for task 660: 7 preflight calls added to skill-orchestrate"
+        }
+      ],
+      "next_artifact_number": 2,
+      "session_id": "sess_1781194717_b3e1a2_660"
+    },
+    {
+      "project_number": 659,
+      "project_name": "orchestrator_phase_containment",
+      "title": "Add phase containment for orchestrator-dispatched agents",
+      "status": "completed",
+      "task_type": "meta",
+      "topic": "agent-system",
+      "effort": "1-2 hours",
+      "created": "2026-06-11T09:00:00Z",
+      "last_updated": "2026-06-11T16:35:28Z",
+      "dependencies": [],
+      "description": "Add a phase_constraint field to the delegation context that skill-orchestrate passes when dispatching agents. When present, agents must confine their work to the assigned phase (research, plan, or implement) and must not spawn child agents for other lifecycle phases. Agents can note recommendations (e.g. implementation appears trivial) in the .orchestrator-handoff.json for the orchestrator to act on, but cannot execute cross-phase work themselves. Update agent definitions and dispatch-agent-spec.md to enforce this constraint. This prevents the pattern where a research agent spawns its own implementation sub-agent, bypassing the orchestrator state machine, planning phase, and standard artifact creation.",
+      "artifacts": [
+        {
+          "path": "specs/659_orchestrator_phase_containment/reports/01_phase-containment.md",
+          "type": "research",
+          "summary": "Phase containment research"
+        },
+        {
+          "path": "specs/659_orchestrator_phase_containment/plans/01_phase-containment.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan for adding phase_constraint to orchestrator dispatches and agent definitions"
+        },
+        {
+          "path": "specs/659_orchestrator_phase_containment/summaries/01_phase-containment-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary"
+        }
+      ],
+      "next_artifact_number": 2,
+      "session_id": "sess_1781194717_b3e1a2_659"
+    },
+    {
+      "project_number": 658,
+      "project_name": "integrate_shared_postflight_orchestrate",
+      "title": "Integrate shared postflight into skill-orchestrate",
+      "status": "completed",
+      "task_type": "meta",
+      "topic": "agent-system",
+      "effort": "1-2 hours",
+      "created": "2026-06-11T09:00:00Z",
+      "last_updated": "2026-06-11T16:47:17Z",
+      "dependencies": [
+        657
+      ],
+      "description": "Replace skill-orchestrate Stage 5 lightweight artifact linking (the inline skill_postflight_update/skill_link_artifacts calls) with calls to the shared orchestrator-postflight.sh script from Task 657. Update both single-task mode (Stage 5 handoff reading) and multi-task mode (Stage MT-4 per-task postflight). Ensure the orchestrator reads .return-meta.json (which agents already write) in addition to .orchestrator-handoff.json, so artifact metadata is reliably available. Update architecture docs (handoff-schema.md, dispatch-agent-spec.md, orchestrate-state-machine.md) to reflect the unified postflight path. Verify that orchestrated tasks produce identical artifact entries in state.json and TODO.md as tasks run via individual /research, /plan, /implement commands.",
+      "artifacts": [
+        {
+          "path": "specs/658_integrate_shared_postflight_orchestrate/reports/01_integration-research.md",
+          "type": "research",
+          "summary": "Integration research for orchestrator-postflight.sh"
+        },
+        {
+          "path": "specs/658_integrate_shared_postflight_orchestrate/plans/01_integration-plan.md",
+          "type": "plan",
+          "summary": "4-phase integration plan for orchestrator-postflight.sh"
+        },
+        {
+          "path": "specs/658_integrate_shared_postflight_orchestrate/summaries/01_integrate-postflight-summary.md",
+          "type": "summary",
+          "summary": "Integration of orchestrator-postflight.sh into skill-orchestrate"
+        }
+      ],
+      "next_artifact_number": 2,
+      "session_id": "sess_1781194717_b3e1a2_658"
+    },
+    {
+      "project_number": 657,
+      "project_name": "create_shared_orchestrator_postflight",
+      "title": "Create shared orchestrator-postflight.sh script",
+      "status": "completed",
+      "task_type": "meta",
+      "topic": "agent-system",
+      "effort": "2-3 hours",
+      "created": "2026-06-11T09:00:00Z",
+      "last_updated": "2026-06-11T16:35:28Z",
+      "dependencies": [],
+      "description": "Extract the duplicated postflight logic from skill-researcher (Stages 6-9), skill-planner (Stages 6-9), and skill-implementer (Stages 6-10) into a shared .claude/scripts/orchestrator-postflight.sh script. The script should handle: (1) reading .return-meta.json metadata, (2) artifact validation via validate-artifact.sh, (3) status update via update-task-status.sh, (4) next_artifact_number incrementing (research only), (5) artifact linking to state.json via two-step jq pattern (Issue #1132 safe), (6) memory candidate propagation with append semantics, (7) generate-todo.sh regeneration, (8) lifecycle TTS notification, (9) cleanup of marker and metadata files. Parameterize by operation type (research/plan/implement) to handle the differences (e.g. only research increments artifact number, implement has completion_summary and roadmap_items). Refactor the three individual skills to call this shared script instead of inline postflight logic. Preserve all existing behavior including the jq escaping workarounds.",
+      "artifacts": [
+        {
+          "path": "specs/657_create_shared_orchestrator_postflight/reports/01_postflight-extraction.md",
+          "type": "research",
+          "summary": "Postflight extraction analysis"
+        },
+        {
+          "path": "specs/657_create_shared_orchestrator_postflight/plans/01_postflight-script.md",
+          "type": "plan",
+          "summary": "3-phase plan to create orchestrator-postflight.sh and refactor three skill SKILL.md files"
+        },
+        {
+          "path": "specs/657_create_shared_orchestrator_postflight/summaries/01_postflight-script-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for task 657: created orchestrator-postflight.sh and refactored three SKILL.md files"
+        }
+      ],
+      "next_artifact_number": 2,
+      "session_id": "sess_1781194717_b3e1a2_657"
+    },
     {
       "project_number": 647,
       "project_name": "enrich_state_json_schema",
