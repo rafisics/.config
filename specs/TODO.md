@@ -1,5 +1,5 @@
 ---
-next_project_number: 663
+next_project_number: 667
 ---
 
 # TODO
@@ -11,26 +11,72 @@ next_project_number: 663
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,652,661 | -- | agent-system, Terminal UI, Email Integration |
-| 2 | 662 | 661 | Terminal UI |
+| 1 | 78,87,652,663 | -- | agent-system, Terminal UI, Email Integration |
+| 2 | 664,665,666 | 663 | agent-system |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Agent System
 
 652 [NOT STARTED] — After ~1 week of the new pipeline running, review logs to verify 
+663 [NOT STARTED] — Create the cslib extension scaffold at .claude/extensions/cslib/ 
+  └─ 664 [NOT STARTED] — Create cslib-research-agent.md (model: opus) and cslib-implementa
+  └─ 665 [NOT STARTED] — Create skill-cslib-research/SKILL.md and skill-cslib-implementati
+  └─ 666 [NOT STARTED] — Create rules/cslib.md (path pattern: **/*.lean for CSLib project)
 
 ### Terminal UI
 
 87 [RESEARCHED] — Investigate why the terminal working directory changes to a proje
-661 [PLANNED] — Three fixes: (1) Add orchestrate to wezterm-task-number.sh Tier 1
-  └─ 662 [NOT STARTED] — Wire lifecycle-notify.sh into the postflight pipeline for both st
 
 ### Email Integration
 
 78 [PLANNED] — Fix Gmail SMTP authentication failure when sending emails via Him
 
 ## Tasks
+
+### 666. Create cslib context and rules
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: Task 663
+
+**Description**: Create rules/cslib.md (path pattern: **/*.lean for CSLib project) and context files under context/project/cslib/ covering: domain/ (CONTRIBUTING standards, notation conventions, project organization), patterns/ (proof structure, module organization, reuse-first philosophy), standards/ (CI pipeline, PR conventions, conventional commits, mathlib style), tools/ (lake commands, linters, checkInitImports, mk_all, lint-style, lake shake). CSLib-specific encoding: alpha equivalence notation, LTS transitions, reduction arrows from NOTATION.md. Working groups model and AI usage policy from CONTRIBUTING.md.
+
+---
+
+### 665. Create cslib skills
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: Task 663
+
+**Description**: Create skill-cslib-research/SKILL.md and skill-cslib-implementation/SKILL.md at .claude/extensions/cslib/skills/. Research skill delegates to cslib-research-agent with tools: lean-lsp MCP (inherited via lean dependency), WebSearch, WebFetch, Read, Bash. Implementation skill delegates to cslib-implementation-agent with tools: Read, Write, Edit, Bash (lake build, lake test, lake lint, lake exe checkInitImports, lake exe lint-style, lake shake). Both skills follow thin-wrapper pattern delegating to their respective agents.
+
+---
+
+### 664. Create cslib agents
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: Task 663
+
+**Description**: Create cslib-research-agent.md (model: opus) and cslib-implementation-agent.md (model: sonnet) at .claude/extensions/cslib/agents/. Research agent: inherits lean-lsp MCP tools via lean dependency, focuses on CSLib-specific formalization patterns, mathlib API discovery, typeclass-based abstraction. Implementation agent: CI verification pipeline (lake test, lake exe checkInitImports, lake lint, lake exe lint-style, lake shake --add-public --keep-implied --keep-prefix), Cslib.Init import enforcement, mathlib style compliance, proof readability over golfing.
+
+---
+
+### 663. Create cslib extension scaffold
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: Create the cslib extension scaffold at .claude/extensions/cslib/ modeled after the lean extension. Includes: manifest.json (task_type: "cslib", dependencies: ["core", "lean"], provides agents/skills/rules/context, routing table for research/plan/implement, no mcp_servers since lean-lsp inherited via lean dependency), EXTENSION.md (CLAUDE.md merge content for cslib section), README.md (extension documentation), index-entries.json (context discovery entries for cslib agents/task_types), and directory structure (agents/, skills/, commands/, rules/, context/project/cslib/{domain,patterns,standards,tools}/).
+
+---
 
 ### 662. Wire postflight lifecycle notifications end-to-end
 - **Effort**: 2-3 hours
