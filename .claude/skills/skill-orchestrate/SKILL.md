@@ -198,13 +198,9 @@ jq --arg state "$current_status" \
 Dispatch research via named subagent (resolved by task type in Stage 1b).
 
 ```
-# Preflight: update status before dispatch
-bash .claude/scripts/update-task-status.sh preflight "$task_number" research "$session_id" || \
-  echo "[orchestrate] WARNING: preflight research update failed (non-blocking)"
-
 dispatch_instructions = dispatch_agent "$RESEARCH_AGENT" \
   "Research task $task_number: $DESCRIPTION${focus_prompt:+. User focus: $focus_prompt}" \
-  '{"task_number": N, "task_type": "T", "session_id": "S", "orchestrator_mode": false, "phase_constraint": "research"}' \
+  '{"task_number": N, "task_type": "T", "session_id": "S", "orchestrator_mode": false}' \
   "false"
 ```
 
@@ -229,13 +225,9 @@ Dispatch planning via named subagent.
 ```
 research_artifacts=$(jq -c '[.active_projects[] | select(.project_number == N) | .artifacts // [] | .[] | select(.type == "report")] | .[0].path // ""' specs/state.json)
 
-# Preflight: update status before dispatch
-bash .claude/scripts/update-task-status.sh preflight "$task_number" plan "$session_id" || \
-  echo "[orchestrate] WARNING: preflight plan update failed (non-blocking)"
-
 dispatch_instructions = dispatch_agent "planner-agent" \
   "Create implementation plan for task $task_number${focus_prompt:+. User focus: $focus_prompt}" \
-  '{"task_number": N, "task_type": "T", "session_id": "S", "research_artifacts": [...], "orchestrator_mode": false, "phase_constraint": "plan"}' \
+  '{"task_number": N, "task_type": "T", "session_id": "S", "research_artifacts": [...], "orchestrator_mode": false}' \
   "false"
 ```
 
@@ -256,14 +248,10 @@ plan_path=$(ls -1 "${TASK_DIR}/plans/"*.md 2>/dev/null | sort -V | tail -1)
 ```
 
 ```
-# Preflight: update status before dispatch
-bash .claude/scripts/update-task-status.sh preflight "$task_number" implement "$session_id" || \
-  echo "[orchestrate] WARNING: preflight implement update failed (non-blocking)"
-
 dispatch_instructions = dispatch_agent "$IMPLEMENT_AGENT" \
   "Implement task $task_number following the plan${focus_prompt:+. User focus: $focus_prompt}" \
   '{"task_number": N, "task_type": "T", "session_id": "S", "orchestrator_mode": true,
-    "plan_path": "$plan_path", "phase_constraint": "implement"}' \
+    "plan_path": "$plan_path"}' \
   "false"
 ```
 
@@ -287,16 +275,11 @@ blocker_count=$(echo "$blockers" | jq 'length')
 Dispatch implement with continuation context (resolved by task type in Stage 1b).
 
 ```
-# Preflight: update status before dispatch
-bash .claude/scripts/update-task-status.sh preflight "$task_number" implement "$session_id" || \
-  echo "[orchestrate] WARNING: preflight implement update failed (non-blocking)"
-
 dispatch_instructions = dispatch_agent "$IMPLEMENT_AGENT" \
   "Resume implementation for task $task_number from continuation handoff${focus_prompt:+. User focus: $focus_prompt}" \
   '{"task_number": N, ..., "orchestrator_mode": true,
     "plan_path": "$plan_path",
-    "continuation_context": {continuation_context_object},
-    "phase_constraint": "implement"}' \
+    "continuation_context": {continuation_context_object}}' \
   "false"
 ```
 
@@ -356,25 +339,9 @@ Never read the full research report, plan, or implementation summary — only th
 
 ```bash
 if [ ! -f "$handoff_file" ]; then
-  echo "[orchestrate] WARNING: Skill did not write orchestrator handoff."
+  echo "[orchestrate] ERROR: Skill did not write orchestrator handoff."
   echo "This may mean orchestrator_mode was not propagated correctly."
-  echo "[orchestrate] Attempting .return-meta.json fallback for dispatch_status..."
-  # Fallback: infer dispatch_status from .return-meta.json (written by all agents regardless of orchestrator_mode)
-  # This path is common for research/plan dispatches (orchestrator_mode=false does not write handoff)
-  meta_file="${TASK_DIR}/.return-meta.json"
-  if [ -f "$meta_file" ] && jq empty "$meta_file" 2>/dev/null; then
-    dispatch_status=$(jq -r '.status // "failed"' "$meta_file")
-    echo "[orchestrate] Inferred dispatch_status from .return-meta.json: $dispatch_status"
-  else
-    dispatch_status="failed"
-    echo "[orchestrate] No .return-meta.json found — treating as failed"
-  fi
-  dispatch_summary="(no handoff; status inferred from .return-meta.json)"
-  blockers="[]"
-  continuation="null"
-  next_hint="none"
-  phases_completed=0
-  phases_total=0
+  # Increment cycle and continue — state.json may still have been updated
 else
   handoff=$(cat "$handoff_file")
   dispatch_status=$(echo "$handoff" | jq -r '.status')
@@ -384,44 +351,82 @@ else
   next_hint=$(echo "$handoff" | jq -r '.next_action_hint // "none"')
   phases_completed=$(echo "$handoff" | jq -r '.phases_completed // 0')
   phases_total=$(echo "$handoff" | jq -r '.phases_total // 0')
-fi
+  echo "[orchestrate] Dispatch result: $dispatch_status — $dispatch_summary"
+  [ "$phases_total" -gt 0 ] && echo "[orchestrate] Phase progress: $phases_completed/$phases_total"
 
-echo "[orchestrate] Dispatch result: $dispatch_status — $dispatch_summary"
-[ "$phases_total" -gt 0 ] && echo "[orchestrate] Phase progress: $phases_completed/$phases_total"
+  # Drift detection: arithmetic gate (cheap check before expensive inspection fork)
+  if [ "$phases_total" -gt 0 ] && [ "$dispatch_status" = "partial" ]; then
+    # Use awk for floating-point comparison (bash only does integer math)
+    completion_ratio=$(awk "BEGIN { printf \"%.4f\", $phases_completed / $phases_total }")
+    is_below_threshold=$(awk "BEGIN { print ($completion_ratio < $DRIFT_COMPLETION_THRESHOLD) ? \"yes\" : \"no\" }")
+    if [ "$is_below_threshold" = "yes" ]; then
+      echo "[orchestrate] Low phase completion ($phases_completed/$phases_total). Inspecting plan for drift..."
+      invoke_drift_inspection "$task_number" "$plan_path" "$session_id"
+    fi
+  fi
 
-# Drift detection: arithmetic gate (cheap check before expensive inspection fork)
-if [ "$phases_total" -gt 0 ] && [ "$dispatch_status" = "partial" ]; then
-  # Use awk for floating-point comparison (bash only does integer math)
-  completion_ratio=$(awk "BEGIN { printf \"%.4f\", $phases_completed / $phases_total }")
-  is_below_threshold=$(awk "BEGIN { print ($completion_ratio < $DRIFT_COMPLETION_THRESHOLD) ? \"yes\" : \"no\" }")
-  if [ "$is_below_threshold" = "yes" ]; then
-    echo "[orchestrate] Low phase completion ($phases_completed/$phases_total). Inspecting plan for drift..."
-    invoke_drift_inspection "$task_number" "$plan_path" "$session_id"
+  # Postflight status update: trigger state.json + TODO.md Task Order regeneration
+  case "$dispatch_status" in
+    researched)
+      skill_postflight_update "$task_number" "research" "$session_id" "$dispatch_status"
+      ;;
+    planned)
+      skill_postflight_update "$task_number" "plan" "$session_id" "$dispatch_status"
+      ;;
+    implemented)
+      skill_postflight_update "$task_number" "implement" "$session_id" "$dispatch_status"
+      ;;
+    *)
+      echo "[orchestrate] Dispatch status '$dispatch_status' — no postflight update needed"
+      ;;
+  esac
+
+  # Lifecycle notifications: fire tab color change and TTS after each phase transition.
+  # Mid-orchestrate transitions (researched, planned) use --quiet so only the tab color
+  # changes to the dim color of the NEXT phase — no TTS until true completion.
+  # Final completion (implemented) fires full mode: bright "completed" color + TTS.
+  lifecycle_script=".claude/scripts/lifecycle-notify.sh"
+  if [ -f "$lifecycle_script" ]; then
+    case "$dispatch_status" in
+      researched)
+        bash "$lifecycle_script" "planning" --quiet &
+        ;;
+      planned)
+        bash "$lifecycle_script" "implementing" --quiet &
+        ;;
+      implemented)
+        bash "$lifecycle_script" "completed" &
+        ;;
+    esac
+  fi
+
+  # Artifact linking: extract artifact path/type from handoff and link in TODO.md + state.json
+  handoff_artifact_path=$(echo "$handoff" | jq -r '.artifacts[0].path // ""')
+  handoff_artifact_type=$(echo "$handoff" | jq -r '.artifacts[0].type // ""')
+  handoff_artifact_summary=$(echo "$handoff" | jq -r '.artifacts[0].summary // ""')
+  if [ -n "$handoff_artifact_path" ] && [ "$handoff_artifact_path" != "null" ]; then
+    case "$handoff_artifact_type" in
+      report)
+        field_name='**Research**'
+        next_field='**Plan**'
+        ;;
+      plan)
+        field_name='**Plan**'
+        next_field='**Description**'
+        ;;
+      summary)
+        field_name='**Summary**'
+        next_field='**Description**'
+        ;;
+      *)
+        field_name='**Summary**'
+        next_field='**Description**'
+        ;;
+    esac
+    skill_link_artifacts "$task_number" "$handoff_artifact_path" "$handoff_artifact_type" \
+      "$handoff_artifact_summary" "$field_name" "$next_field"
   fi
 fi
-
-# Postflight: call shared orchestrator-postflight.sh for artifact linking, status sync, TODO regen, TTS, git commit
-# Determine operation_type from dispatch_status
-case "$dispatch_status" in
-  researched)
-    bash .claude/scripts/orchestrator-postflight.sh \
-      "$task_number" "$PROJECT_NAME" "$PADDED_NUM" "$session_id" "research" "$TASK_TYPE" \
-      || echo "[orchestrate] WARNING: postflight for research failed (non-blocking)"
-    ;;
-  planned)
-    bash .claude/scripts/orchestrator-postflight.sh \
-      "$task_number" "$PROJECT_NAME" "$PADDED_NUM" "$session_id" "plan" "$TASK_TYPE" \
-      || echo "[orchestrate] WARNING: postflight for plan failed (non-blocking)"
-    ;;
-  implemented)
-    bash .claude/scripts/orchestrator-postflight.sh \
-      "$task_number" "$PROJECT_NAME" "$PADDED_NUM" "$session_id" "implement" "$TASK_TYPE" \
-      || echo "[orchestrate] WARNING: postflight for implement failed (non-blocking)"
-    ;;
-  *)
-    echo "[orchestrate] Dispatch status '$dispatch_status' — no postflight update needed"
-    ;;
-esac
 
 # Increment cycle_count
 cycle_count=$((cycle_count + 1))
@@ -454,7 +459,7 @@ invoke_drift_inspection() {
     --argjson num "$task_number" \
     --arg session_id "$session_id" \
     --arg plan_path "$plan_path" \
-    '{"task_number": $num, "session_id": $session_id, "plan_path": $plan_path, "orchestrator_mode": false, "phase_constraint": "research"}')
+    '{"task_number": $num, "session_id": $session_id, "plan_path": $plan_path, "orchestrator_mode": false}')
 
   drift_inspect_prompt="Read the plan file at '$plan_path'. Count: (1) total checklist items matching '- \\[ \\]' or '- \\[x\\]', (2) completed items matching '- \\[x\\]', (3) deviation annotations matching '*(deviation:'. Calculate drift_pct as: deviation_count / max(total_items, 1). Write compact JSON to '${TASK_DIR}/.drift-inspection.json' with fields: drift_pct (float), deviation_count (int), total_items (int), completed_items (int), summary (string, one sentence). Return a brief summary of findings."
 
@@ -489,7 +494,7 @@ invoke_drift_inspection() {
         "plan_path": $plan_path,
         "revision_reason": $revision_reason,
         "drift_pct": $drift_pct,
-        "orchestrator_mode": false, "phase_constraint": "revise"}')
+        "orchestrator_mode": false}')
     dispatch_agent "reviser-agent" \
       "Revise the implementation plan for task $task_number to address plan drift (drift_pct=$drift_pct). Summary: $drift_summary" \
       "$revise_context" "false"
@@ -537,7 +542,7 @@ blocker_escalation() {
     --argjson num "$task_number" \
     --arg session_id "$session_id" \
     --arg blocker "$blocker_desc" \
-    '{"task_number": $num, "session_id": $session_id, "blocker": $blocker, "orchestrator_mode": false, "phase_constraint": "research"}')
+    '{"task_number": $num, "session_id": $session_id, "blocker": $blocker, "orchestrator_mode": false}')
   dispatch_agent "" "$blocker_research_prompt" "$fork_context" "true"
   # SKILL.md reads this output and invokes the Agent tool as a fork (omitting subagent_type)
   # After Agent tool returns: read handoff for research findings
@@ -557,7 +562,7 @@ blocker_escalation() {
     '{"task_number": $num, "session_id": $session_id,
       "research_findings": $findings,
       "plan_path": $plan_path,
-      "orchestrator_mode": false, "phase_constraint": "revise"}')
+      "orchestrator_mode": false}')
   dispatch_agent "reviser-agent" \
     "Revise the implementation plan for task $task_number to address this blocker: $blocker_desc. Research findings: $findings_summary" \
     "$revise_context" "false"
@@ -572,7 +577,7 @@ blocker_escalation() {
     --arg plan_path "${revised_plan_path:-}" \
     '{"task_number": $num, "session_id": $session_id,
       "orchestrator_mode": true,
-      "plan_path": $plan_path, "phase_constraint": "implement"}')
+      "plan_path": $plan_path}')
   dispatch_agent "$IMPLEMENT_AGENT" \
     "Implement task $task_number following the revised plan${focus_prompt:+. User focus: $focus_prompt}" \
     "$implement_context" "false"
@@ -926,12 +931,8 @@ for task_num in "${research_tasks[@]}"; do
     --argjson num "$task_num" \
     --arg task_type "$task_type" \
     --arg session_id "${session_id}_${task_num}" \
-    '{"task_number": $num, "task_type": $task_type, "session_id": $session_id, "orchestrator_mode": false, "phase_constraint": "research"}')
+    '{"task_number": $num, "task_type": $task_type, "session_id": $session_id, "orchestrator_mode": false}')
   
-  # Preflight: update status before dispatch
-  bash .claude/scripts/update-task-status.sh preflight "$task_num" research "${session_id}_${task_num}" || \
-    echo "[orchestrate-mt] WARNING: preflight research failed for task $task_num (non-blocking)"
-
   # Invoke Agent tool: subagent_type=$r_agent
   # Dispatch: dispatch_agent "$r_agent" "Research task $task_num: $description" "$dispatch_context" "false"
   echo "[orchestrate-mt] Dispatching research for task $task_num -> $r_agent"
@@ -952,12 +953,8 @@ for task_num in "${plan_tasks[@]}"; do
     --arg session_id "${session_id}_${task_num}" \
     --argjson research_artifacts "[$research_artifacts]" \
     '{"task_number": $num, "task_type": $task_type, "session_id": $session_id,
-      "research_artifacts": $research_artifacts, "orchestrator_mode": false, "phase_constraint": "plan"}')
+      "research_artifacts": $research_artifacts, "orchestrator_mode": false}')
   
-  # Preflight: update status before dispatch
-  bash .claude/scripts/update-task-status.sh preflight "$task_num" plan "${session_id}_${task_num}" || \
-    echo "[orchestrate-mt] WARNING: preflight plan failed for task $task_num (non-blocking)"
-
   # Invoke Agent tool: subagent_type=planner-agent
   echo "[orchestrate-mt] Dispatching planning for task $task_num -> planner-agent"
 done
@@ -984,12 +981,8 @@ for task_num in "${implement_tasks[@]}"; do
     --arg plan_path "${plan_path:-}" \
     --argjson continuation "$continuation" \
     '{"task_number": $num, "task_type": $task_type, "session_id": $session_id,
-      "orchestrator_mode": true, "plan_path": $plan_path, "continuation_context": $continuation, "phase_constraint": "implement"}')
+      "orchestrator_mode": true, "plan_path": $plan_path, "continuation_context": $continuation}')
   
-  # Preflight: update status before dispatch
-  bash .claude/scripts/update-task-status.sh preflight "$task_num" implement "${session_id}_${task_num}" || \
-    echo "[orchestrate-mt] WARNING: preflight implement failed for task $task_num (non-blocking)"
-
   # Invoke Agent tool: subagent_type=$i_agent
   echo "[orchestrate-mt] Dispatching implement for task $task_num -> $i_agent"
 done
@@ -998,57 +991,66 @@ done
 for task_num in "${research_tasks[@]}" "${plan_tasks[@]}" "${implement_tasks[@]}"; do
   task_dir="${task_dirs[$task_num]}"
   handoff_file="${task_dir}/.orchestrator-handoff.json"
-  mt_padded=$(printf "%03d" "$task_num")
-  # Extract project_name from task_dir by stripping "specs/{padded}_" prefix
-  mt_project_name="${task_dir#specs/${mt_padded}_}"
-  mt_task_type="${task_types[$task_num]:-general}"
-  mt_session="${session_id}_${task_num}"
   
   if [ ! -f "$handoff_file" ]; then
-    echo "[orchestrate-mt] WARNING: Task $task_num did not write handoff."
-    echo "[orchestrate-mt] Attempting .return-meta.json fallback for dispatch_status..."
-    # Fallback: infer dispatch_status from .return-meta.json (written by all agents regardless of orchestrator_mode)
-    mt_meta_file="${task_dir}/.return-meta.json"
-    if [ -f "$mt_meta_file" ] && jq empty "$mt_meta_file" 2>/dev/null; then
-      dispatch_status=$(jq -r '.status // "failed"' "$mt_meta_file")
-      echo "[orchestrate-mt] Task $task_num: inferred dispatch_status from .return-meta.json: $dispatch_status"
-    else
-      echo "[orchestrate-mt] Task $task_num: no handoff and no .return-meta.json — marking failed"
-      jq --argjson num "$task_num" \
-        '.failed_tasks = (.failed_tasks + [$num] | unique)' \
-        "$mt_state_file" > "${mt_state_file}.tmp" && mv "${mt_state_file}.tmp" "$mt_state_file"
-      continue
-    fi
-    dispatch_summary="(no handoff; status inferred from .return-meta.json)"
-  else
-    handoff=$(cat "$handoff_file")
-    dispatch_status=$(echo "$handoff" | jq -r '.status')
-    dispatch_summary=$(echo "$handoff" | jq -r '.summary // ""')
+    echo "[orchestrate-mt] WARNING: Task $task_num did not write handoff — marking failed"
+    jq --argjson num "$task_num" \
+      '.failed_tasks = (.failed_tasks + [$num] | unique)' \
+      "$mt_state_file" > "${mt_state_file}.tmp" && mv "${mt_state_file}.tmp" "$mt_state_file"
+    continue
   fi
   
+  handoff=$(cat "$handoff_file")
+  dispatch_status=$(echo "$handoff" | jq -r '.status')
+  dispatch_summary=$(echo "$handoff" | jq -r '.summary // ""')
   echo "[orchestrate-mt] Task $task_num dispatch result: $dispatch_status — $dispatch_summary"
   
-  # Postflight: call shared orchestrator-postflight.sh for artifact linking, status sync, TODO regen, TTS, git commit
+  # Determine operation from dispatch status
   case "$dispatch_status" in
     researched)
-      bash .claude/scripts/orchestrator-postflight.sh \
-        "$task_num" "$mt_project_name" "$mt_padded" "$mt_session" "research" "$mt_task_type" \
-        || echo "[orchestrate-mt] WARNING: postflight for task $task_num research failed (non-blocking)"
+      operation="research"
+      skill_postflight_update "$task_num" "research" "${session_id}_${task_num}" "$dispatch_status"
       ;;
     planned)
-      bash .claude/scripts/orchestrator-postflight.sh \
-        "$task_num" "$mt_project_name" "$mt_padded" "$mt_session" "plan" "$mt_task_type" \
-        || echo "[orchestrate-mt] WARNING: postflight for task $task_num plan failed (non-blocking)"
+      operation="plan"
+      skill_postflight_update "$task_num" "plan" "${session_id}_${task_num}" "$dispatch_status"
       ;;
     implemented)
-      bash .claude/scripts/orchestrator-postflight.sh \
-        "$task_num" "$mt_project_name" "$mt_padded" "$mt_session" "implement" "$mt_task_type" \
-        || echo "[orchestrate-mt] WARNING: postflight for task $task_num implement failed (non-blocking)"
+      operation="implement"
+      skill_postflight_update "$task_num" "implement" "${session_id}_${task_num}" "$dispatch_status"
       ;;
     *)
+      operation="unknown"
       echo "[orchestrate-mt] Task $task_num status '$dispatch_status' — no postflight update"
       ;;
   esac
+  
+  # Artifact linking (same logic as single-task Stage 5)
+  handoff_artifact_path=$(echo "$handoff" | jq -r '.artifacts[0].path // ""')
+  handoff_artifact_type=$(echo "$handoff" | jq -r '.artifacts[0].type // ""')
+  handoff_artifact_summary=$(echo "$handoff" | jq -r '.artifacts[0].summary // ""')
+  if [ -n "$handoff_artifact_path" ] && [ "$handoff_artifact_path" != "null" ]; then
+    case "$handoff_artifact_type" in
+      report)
+        field_name='**Research**'
+        next_field='**Plan**'
+        ;;
+      plan)
+        field_name='**Plan**'
+        next_field='**Description**'
+        ;;
+      summary)
+        field_name='**Summary**'
+        next_field='**Description**'
+        ;;
+      *)
+        field_name='**Summary**'
+        next_field='**Description**'
+        ;;
+    esac
+    skill_link_artifacts "$task_num" "$handoff_artifact_path" "$handoff_artifact_type" \
+      "$handoff_artifact_summary" "$field_name" "$next_field"
+  fi
   
   # Update multi-state current_statuses and move to completed/failed as appropriate
   # Re-read fresh status from state.json (postflight may have updated it)

@@ -190,10 +190,3 @@ See `rules/error-handling.md` for general error patterns. Agent-specific behavio
 6. Assume your return ends the workflow (skill continues with postflight)
 7. Skip Stage 0 early metadata creation
 8. Modify state.json or TODO.md directly (skill handles this in postflight)
-9. Spawn child agents for lifecycle phases other than the assigned `phase_constraint`
-   (when `phase_constraint` is present in delegation context). Revision agents must not
-   spawn implementers or researchers.
-
-**Phase Containment** (when `phase_constraint` is present):
-10. Record cross-phase recommendations in the revised plan's Notes section or the handoff's
-    `phase_recommendations` array, rather than executing the cross-phase work directly.

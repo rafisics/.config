@@ -1,7 +1,52 @@
 {
   "version": "1.1.0",
-  "next_project_number": 661,
+  "next_project_number": 663,
   "active_projects": [
+    {
+      "project_number": 662,
+      "project_name": "wire_postflight_lifecycle_notifications",
+      "title": "Wire postflight lifecycle notifications end-to-end",
+      "status": "completed",
+      "task_type": "neovim",
+      "topic": "Terminal UI",
+      "effort": "2-3 hours",
+      "created": "2026-06-11T17:30:00Z",
+      "last_updated": "2026-06-11T18:05:53Z",
+      "dependencies": [
+        661
+      ],
+      "description": "Wire lifecycle-notify.sh into the postflight pipeline for both standalone and orchestrate flows. Update orchestrator-postflight.sh to pass --quiet for mid-orchestrate phase completions (dim color change only, no TTS). Wire standalone command postflight (skill-base.sh) to call lifecycle-notify.sh on completion (with TTS). Ensure workflow-active marker cleanup so Stop hook fires needs_input at the right time. The dim/bright color distinction in wezterm.lua already exists — dim bg+fg for in-progress states (researching/planning/implementing), bright bg+fg for completed states (researched/planned/completed). Mid-orchestrate transitions should use the in-progress color of the NEXT phase (e.g., research done -> set planning dim color). Final completion or standalone completion should use the bright completed color + TTS announcement. Test: /research N standalone (bright researched + TTS), /orchestrate N multi-phase (dim color transitions, bright + TTS only at final stop).",
+      "artifacts": [],
+      "next_artifact_number": 1,
+      "session_id": "sess_1781200006_200d87_662"
+    },
+    {
+      "project_number": 661,
+      "project_name": "fix_hook_regexes_lifecycle_notify",
+      "title": "Fix hook regexes and create lifecycle-notify.sh",
+      "status": "completed",
+      "task_type": "neovim",
+      "topic": "Terminal UI",
+      "effort": "1-2 hours",
+      "created": "2026-06-11T17:30:00Z",
+      "last_updated": "2026-06-11T17:55:37Z",
+      "dependencies": [],
+      "description": "Three fixes: (1) Add orchestrate to wezterm-task-number.sh Tier 1a regex alternation so /orchestrate N sets TASK_NUMBER correctly. (2) Add orchestrate to wezterm-preflight-status.sh Tier 1 matchers with appropriate initial status mapping (orchestrate starts with researching since it begins with research phase). (3) Create the missing .claude/scripts/lifecycle-notify.sh bridge script that orchestrator-postflight.sh already references at line 306. The script should accept a status argument (researched/planned/completed/etc.) and an optional --quiet flag. Normal mode: call wezterm-notify.sh to update tab color AND tts-notify.sh --lifecycle for TTS announcement. Quiet mode (--quiet): call wezterm-notify.sh only (no TTS) — used for mid-orchestrate phase transitions where the user does not need to be alerted.",
+      "artifacts": [
+        {
+          "path": "specs/661_fix_hook_regexes_lifecycle_notify/reports/01_hook-regex-lifecycle.md",
+          "type": "research",
+          "summary": "Research report on hook regex fixes and lifecycle-notify.sh"
+        },
+        {
+          "path": "specs/661_fix_hook_regexes_lifecycle_notify/plans/01_hook-regex-lifecycle.md",
+          "type": "plan",
+          "summary": "2-phase implementation plan for hook regex fixes and lifecycle-notify.sh creation"
+        }
+      ],
+      "next_artifact_number": 2,
+      "session_id": "sess_1781200006_200d87_661"
+    },
     {
       "project_number": 660,
       "project_name": "orchestrate_preflight_status_updates",
@@ -603,7 +648,7 @@
       "title": "Investigate terminal directory change when opening neovim in wezterm",
       "description": "Investigate why the terminal working directory changes to a project root when opening neovim sessions in wezterm from the home directory (~). Determine whether this behavior is caused by neovim or wezterm (configured in ~/.dotfiles/config/). Identify if any functionality depends on this behavior before modifying it. Goal is to avoid changing the terminal directory unless necessary.",
       "effort": "TBD",
-      "topic": "wezterm-notifications",
+      "topic": "Terminal UI",
       "dependencies": []
     },
     {
@@ -631,7 +676,7 @@
       "planned": "2026-02-13T18:10:48Z",
       "title": "Fix Himalaya SMTP authentication failure when sending emails",
       "description": "Fix Gmail SMTP authentication failure when sending emails via Himalaya (<leader>me). Error: Authentication failed: Code: 535, Enhanced code: 5.7.8, Message: Username and Password not accepted. The error occurs with TLS connection attempts and persists through multiple retry attempts. Identify and fix the root cause of the SMTP credential configuration.",
-      "topic": "wezterm-notifications"
+      "topic": "Email Integration"
     },
     {
       "project_number": 653,

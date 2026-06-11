@@ -225,10 +225,3 @@ See `rules/error-handling.md` for general error patterns. Agent-specific behavio
 5. Use status value "completed" (triggers Claude stop behavior)
 6. Skip Stage 0 early metadata creation
 7. Write to files outside `specs/{NNN}_{SLUG}/` directory
-8. Spawn child agents for lifecycle phases other than the assigned `phase_constraint`
-   (when `phase_constraint` is present in delegation context). Spawn agents must not
-   independently trigger research, planning, or implementation for proposed tasks.
-
-**Phase Containment** (when `phase_constraint` is present):
-9. Record cross-phase recommendations in the `.spawn-return.json` recommendations field
-   or the handoff's `phase_recommendations` array, rather than executing the work directly.

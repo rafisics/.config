@@ -23,7 +23,6 @@ Reference (do not load eagerly):
 - Path: `.claude/context/patterns/postflight-control.md` - Marker file protocol
 - Path: `.claude/context/patterns/file-metadata-exchange.md` - File I/O helpers
 - Path: `.claude/context/patterns/jq-escaping-workarounds.md` - jq escaping patterns (Issue #1132)
-- Path: `.claude/scripts/orchestrator-postflight.sh` - Shared postflight pipeline (Stages 6-9)
 
 Note: This skill is a thin wrapper with internal postflight. Context is loaded by the delegated agent.
 
@@ -253,28 +252,145 @@ If you DID use the Agent tool (Stage 5), skip this stage -- the subagent already
 The following stages MUST execute after work is complete, whether the work was done by a
 subagent (Stage 5) or inline (Stage 5b). Do NOT skip these stages for any reason.
 
-### Stage 6: Run Shared Postflight Script
+### Stage 6: Parse Subagent Return (Read Metadata File)
 
-Delegate all postflight operations (metadata read, artifact validation, status update, artifact
-number increment, memory candidates propagation, artifact linking, TODO.md regeneration, TTS
-notification, and cleanup) to the shared script:
+Read the metadata file:
 
 ```bash
-bash .claude/scripts/orchestrator-postflight.sh \
-    "$task_number" "$project_name" "$padded_num" "$session_id" "research"
+metadata_file="specs/${padded_num}_${project_name}/.return-meta.json"
+
+if [ -f "$metadata_file" ] && jq empty "$metadata_file" 2>/dev/null; then
+    status=$(jq -r '.status' "$metadata_file")
+    artifact_path=$(jq -r '.artifacts[0].path // ""' "$metadata_file")
+    artifact_type=$(jq -r '.artifacts[0].type // ""' "$metadata_file")
+    artifact_summary=$(jq -r '.artifacts[0].summary // ""' "$metadata_file")
+    memory_candidates=$(jq -c '.memory_candidates // []' "$metadata_file")
+else
+    echo "Error: Invalid or missing metadata file"
+    status="failed"
+fi
 ```
-
-The shared script handles Stages 6-10 (read metadata, validate artifact, update task status,
-increment `next_artifact_number`, propagate memory_candidates, link artifacts, regenerate
-TODO.md, fire TTS notification, cleanup). Research does NOT produce a git commit (matching
-prior behavior where researcher had no Stage 9 git commit).
-
-**On partial/failed**: The script still runs cleanup. Task status remains "researching" for
-resume (the shared script only calls `update-task-status.sh` when status is "researched").
 
 ---
 
-### Stage 7: Return Brief Summary
+### Stage 6a: Validate Artifact Content
+
+If subagent status is "researched" and `artifact_path` is non-empty, validate the report artifact against format requirements. This is **non-blocking** -- warnings are logged but do not prevent postflight from completing.
+
+```bash
+if [ "$status" = "researched" ] && [ -n "$artifact_path" ] && [ -f "$artifact_path" ]; then
+    echo "Validating report artifact..."
+    if ! bash .claude/scripts/validate-artifact.sh "$artifact_path" report --fix; then
+        echo "WARNING: Report artifact has format issues (non-blocking). Review output above."
+    fi
+fi
+```
+
+**Note**: The `--fix` flag attempts auto-repair of missing metadata fields. Validation failures are logged but do not block status update or git commit.
+
+---
+
+### Stage 7: Update Task Status (Postflight)
+
+If status is "researched", update status and increment artifact number:
+
+```bash
+# Step 1: Update status (state.json, TODO.md task entry, TODO.md Task Order)
+if [ "$status" = "researched" ]; then
+  .claude/scripts/update-task-status.sh postflight "$task_number" research "$session_id"
+fi
+
+# Step 2: Increment next_artifact_number (research advances the sequence)
+jq '(.active_projects[] | select(.project_number == '$task_number')).next_artifact_number =
+    (((.active_projects[] | select(.project_number == '$task_number')).next_artifact_number // 1) + 1)' \
+  specs/state.json > specs/tmp/state.json && mv specs/tmp/state.json specs/state.json
+```
+
+**Note**: Research is the only operation that increments `next_artifact_number`. Plan and implement use `(current - 1)` to stay in the same "round".
+
+**On partial/failed**: Keep status as "researching" for resume (do not call the script).
+
+---
+
+### Stage 7a: Propagate Memory Candidates
+
+If the agent emitted memory candidates, append them to the task's state.json entry using append semantics (merge with any existing candidates from prior operations).
+
+```bash
+if [ "$memory_candidates" != "[]" ] && [ -n "$memory_candidates" ]; then
+    # Append new candidates to existing array (append semantics, not overwrite)
+    jq --argjson new_candidates "$memory_candidates" \
+      '(.active_projects[] | select(.project_number == '$task_number')).memory_candidates =
+        ((.active_projects[] | select(.project_number == '$task_number')).memory_candidates // []) + $new_candidates' \
+      specs/state.json > specs/tmp/state.json && mv specs/tmp/state.json specs/state.json
+fi
+```
+
+**Note**: Uses `// []` fallback so this works whether or not the task already has candidates. Append semantics ensure research and implementation candidates coexist.
+
+---
+
+### Stage 8: Link Artifacts
+
+Add artifact to state.json with summary.
+
+**IMPORTANT**: Use two-step jq pattern to avoid Issue #1132 escaping bug. See `jq-escaping-workarounds.md`.
+
+```bash
+if [ -n "$artifact_path" ]; then
+    # Step 1: Filter out existing research artifacts (use "| not" pattern to avoid != escaping - Issue #1132)
+    jq '(.active_projects[] | select(.project_number == '$task_number')).artifacts =
+        [(.active_projects[] | select(.project_number == '$task_number')).artifacts // [] | .[] | select(.type == "research" | not)]' \
+      specs/state.json > specs/tmp/state.json && mv specs/tmp/state.json specs/state.json
+
+    # Step 2: Add new research artifact
+    jq --arg path "$artifact_path" \
+       --arg type "$artifact_type" \
+       --arg summary "$artifact_summary" \
+      '(.active_projects[] | select(.project_number == '$task_number')).artifacts += [{"path": $path, "type": $type, "summary": $summary}]' \
+      specs/state.json > specs/tmp/state.json && mv specs/tmp/state.json specs/state.json
+fi
+```
+
+**Regenerate TODO.md** from state.json (state.json artifact update was done in the step above):
+
+```bash
+bash .claude/scripts/generate-todo.sh || echo "WARNING: generate-todo.sh failed (non-fatal)" >&2
+```
+
+This regenerates TODO.md from state.json with correct bracket-only `[path]` format artifact links. Never use markdown `[name](path)` format for artifact links. If the script exits non-zero, log a warning but continue (regeneration errors are non-blocking).
+
+---
+
+### Stage 8a: Lifecycle TTS Notification
+
+Fire TTS and WezTerm tab coloring after artifact linking is complete:
+
+```bash
+lifecycle_script=".claude/scripts/lifecycle-notify.sh"
+if [ -f "$lifecycle_script" ] && [ "$status" = "researched" ]; then
+    bash "$lifecycle_script" "researched" &
+fi
+```
+
+Non-blocking: called in background after artifacts are linked. Speaks "Tab N STATUS"
+(e.g., "Tab 3 researched") to announce the lifecycle transition.
+
+---
+
+### Stage 9: Cleanup
+
+Remove marker and metadata files:
+
+```bash
+rm -f "specs/${padded_num}_${project_name}/.postflight-pending"
+rm -f "specs/${padded_num}_${project_name}/.postflight-loop-guard"
+rm -f "specs/${padded_num}_${project_name}/.return-meta.json"
+```
+
+---
+
+### Stage 10: Return Brief Summary
 
 Return a brief text summary (NOT JSON). Example:
 
@@ -316,9 +432,11 @@ After the agent returns, this skill MUST NOT:
 5. **Write reports** - Artifact creation is agent work
 
 The postflight phase is LIMITED TO:
-- Calling `orchestrator-postflight.sh` which handles: reading metadata, validating artifact,
-  calling `update-task-status.sh`, incrementing `next_artifact_number`, propagating memory_candidates,
-  linking artifacts in state.json, regenerating TODO.md, TTS notification, and cleanup
+- Reading agent metadata file
+- Calling `update-task-status.sh` for status updates (state.json + TODO.md)
+- Incrementing `next_artifact_number` via jq
+- Linking artifacts in state.json
+- Cleanup of temp/marker files
 
 Reference: @.claude/context/standards/postflight-tool-restrictions.md
 

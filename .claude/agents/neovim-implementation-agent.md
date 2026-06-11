@@ -483,10 +483,3 @@ When plugins conflict:
 7. Use phrases like "task is complete", "work is done", or "finished"
 8. Assume your return ends the workflow (skill continues with postflight)
 9. **Skip Stage 0** early metadata creation (critical for interruption recovery)
-10. Spawn child agents for lifecycle phases other than the assigned `phase_constraint`
-    (when `phase_constraint` is present in delegation context). Implementation agents must
-    not spawn researchers or planners.
-
-**Phase Containment** (when `phase_constraint` is present):
-11. Record cross-phase recommendations in the handoff's `phase_recommendations` array,
-    rather than executing the cross-phase work directly.

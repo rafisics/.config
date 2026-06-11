@@ -1,0 +1,48 @@
+{
+  "session_id": "sess_1781200006_200d87",
+  "task_numbers": [
+    661,
+    662
+  ],
+  "waves": [
+    [
+      661
+    ],
+    [
+      662
+    ]
+  ],
+  "dependency_graph": {
+    "661": [],
+    "662": [
+      661
+    ]
+  },
+  "task_types": {
+    "661": "neovim",
+    "662": "neovim"
+  },
+  "task_dirs": {
+    "661": "specs/661_fix_hook_regexes_lifecycle_notify",
+    "662": "specs/662_wire_postflight_lifecycle_notifications"
+  },
+  "research_agents": {
+    "661": "neovim-research-agent",
+    "662": "neovim-research-agent"
+  },
+  "implement_agents": {
+    "661": "neovim-implementation-agent",
+    "662": "neovim-implementation-agent"
+  },
+  "current_statuses": {
+    "661": "completed",
+    "662": "completed"
+  },
+  "cycle_count": 6,
+  "max_cycles": 10,
+  "failed_tasks": [],
+  "completed_tasks": [
+    661,
+    662
+  ]
+}

@@ -50,9 +50,10 @@ SHOULD_SET=0
 SHOULD_CLEAR=0
 
 # Tier 1: Lifecycle commands -> set in-progress CLAUDE_STATUS
-# /research N  -> researching
-# /plan N      -> planning
-# /implement N -> implementing
+# /research N    -> researching
+# /plan N        -> planning
+# /implement N   -> implementing
+# /orchestrate N -> researching
 if [[ "$PROMPT" =~ ^[[:space:]]*/?(research)[[:space:]]+ ]]; then
     STATUS_VALUE="researching"
     SHOULD_SET=1
@@ -61,6 +62,9 @@ elif [[ "$PROMPT" =~ ^[[:space:]]*/?(plan)[[:space:]]+ ]]; then
     SHOULD_SET=1
 elif [[ "$PROMPT" =~ ^[[:space:]]*/?(implement)[[:space:]]+ ]]; then
     STATUS_VALUE="implementing"
+    SHOULD_SET=1
+elif [[ "$PROMPT" =~ ^[[:space:]]*/?(orchestrate)[[:space:]]+ ]]; then
+    STATUS_VALUE="researching"
     SHOULD_SET=1
 
 # Tier 2: Any other slash command -> clear CLAUDE_STATUS

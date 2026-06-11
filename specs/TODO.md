@@ -1,5 +1,5 @@
 ---
-next_project_number: 661
+next_project_number: 663
 ---
 
 # TODO
@@ -11,20 +11,50 @@ next_project_number: 661
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,652 | -- | wezterm-notifications, agent-system |
+| 1 | 78,87,652,661 | -- | agent-system, Terminal UI, Email Integration |
+| 2 | 662 | 661 | Terminal UI |
 
 **Grouped by Topic** (indented = depends on parent):
-
-### Wezterm Notifications
-
-78 [PLANNED] — Fix Gmail SMTP authentication failure when sending emails via Him
-87 [RESEARCHED] — Investigate why the terminal working directory changes to a proje
 
 ### Agent System
 
 652 [NOT STARTED] — After ~1 week of the new pipeline running, review logs to verify 
 
+### Terminal UI
+
+87 [RESEARCHED] — Investigate why the terminal working directory changes to a proje
+661 [PLANNED] — Three fixes: (1) Add orchestrate to wezterm-task-number.sh Tier 1
+  └─ 662 [NOT STARTED] — Wire lifecycle-notify.sh into the postflight pipeline for both st
+
+### Email Integration
+
+78 [PLANNED] — Fix Gmail SMTP authentication failure when sending emails via Him
+
 ## Tasks
+
+### 662. Wire postflight lifecycle notifications end-to-end
+- **Effort**: 2-3 hours
+- **Status**: [COMPLETED]
+- **Task Type**: neovim
+- **Topic**: Terminal UI
+- **Dependencies**: Task 661
+
+**Description**: Wire lifecycle-notify.sh into the postflight pipeline for both standalone and orchestrate flows. Update orchestrator-postflight.sh to pass --quiet for mid-orchestrate phase completions (dim color change only, no TTS). Wire standalone command postflight (skill-base.sh) to call lifecycle-notify.sh on completion (with TTS). Ensure workflow-active marker cleanup so Stop hook fires needs_input at the right time. The dim/bright color distinction in wezterm.lua already exists — dim bg+fg for in-progress states (researching/planning/implementing), bright bg+fg for completed states (researched/planned/completed). Mid-orchestrate transitions should use the in-progress color of the NEXT phase (e.g., research done -> set planning dim color). Final completion or standalone completion should use the bright completed color + TTS announcement. Test: /research N standalone (bright researched + TTS), /orchestrate N multi-phase (dim color transitions, bright + TTS only at final stop).
+
+---
+
+### 661. Fix hook regexes and create lifecycle-notify.sh
+- **Effort**: 1-2 hours
+- **Status**: [COMPLETED]
+- **Task Type**: neovim
+- **Topic**: Terminal UI
+- **Dependencies**: None
+- **Research**: [661_fix_hook_regexes_lifecycle_notify/reports/01_hook-regex-lifecycle.md]
+- **Plan**: [661_fix_hook_regexes_lifecycle_notify/plans/01_hook-regex-lifecycle.md]
+
+**Description**: Three fixes: (1) Add orchestrate to wezterm-task-number.sh Tier 1a regex alternation so /orchestrate N sets TASK_NUMBER correctly. (2) Add orchestrate to wezterm-preflight-status.sh Tier 1 matchers with appropriate initial status mapping (orchestrate starts with researching since it begins with research phase). (3) Create the missing .claude/scripts/lifecycle-notify.sh bridge script that orchestrator-postflight.sh already references at line 306. The script should accept a status argument (researched/planned/completed/etc.) and an optional --quiet flag. Normal mode: call wezterm-notify.sh to update tab color AND tts-notify.sh --lifecycle for TTS announcement. Quiet mode (--quiet): call wezterm-notify.sh only (no TTS) — used for mid-orchestrate phase transitions where the user does not need to be alerted.
+
+---
 
 ### 660. Add preflight status updates to skill-orchestrate state handlers
 - **Effort**: 1-2 hours
@@ -369,7 +399,7 @@ This task creates the foundation; tasks 655 and 656 consume these utilities.
 - **Effort**: TBD
 - **Status**: [RESEARCHED]
 - **Task Type**: neovim
-- **Topic**: wezterm-notifications
+- **Topic**: Terminal UI
 - **Dependencies**: None
 - **Research**: [087_investigate_wezterm_terminal_directory_change/reports/research-001.md]
 
@@ -381,7 +411,7 @@ This task creates the foundation; tasks 655 and 656 consume these utilities.
 - **Effort**: 1-2 hours
 - **Status**: [PLANNED]
 - **Task Type**: neovim
-- **Topic**: wezterm-notifications
+- **Topic**: Email Integration
 - **Dependencies**: None
 - **Research**: [078_fix_himalaya_smtp_authentication_failure/reports/research-001.md]
 - **Plan**: [078_fix_himalaya_smtp_authentication_failure/plans/implementation-001.md]

@@ -280,10 +280,3 @@ See `rules/error-handling.md` for general error patterns. Agent-specific behavio
 4. Use status value "completed" (triggers Claude stop behavior)
 5. Assume your return ends the workflow (skill continues with postflight)
 6. Skip Stage 0 early metadata creation
-7. Spawn child agents for lifecycle phases other than the assigned `phase_constraint`
-   (when `phase_constraint` is present in delegation context). Research agents must not
-   spawn planners or implementers.
-
-**Phase Containment** (when `phase_constraint` is present):
-8. Record cross-phase recommendations in the report's Recommendations section or
-   the handoff's `phase_recommendations` array, rather than executing the work directly.
