@@ -71,7 +71,14 @@ the successor agent reads markdown prose.
     "handoff_path": "specs/NNN_slug/handoffs/phase-N-handoff-TIMESTAMP.md",
     "phases_completed": 2,
     "phases_total": 4
-  }
+  },
+
+  "phase_recommendations": [
+    {
+      "recommendation": "Description of cross-phase work that was deferred due to phase_constraint",
+      "triggered_by": "phase_constraint: implement — encountered during phase 2"
+    }
+  ]
 }
 ```
 
@@ -103,6 +110,12 @@ The orchestrator reads this to understand cycle outcome without reading full art
 List of artifacts written by this cycle. The orchestrator uses these to populate delegation
 context for the next cycle (e.g., plan path for implement dispatch).
 
+**Advisory role for artifact linking**: The `artifacts` array in the orchestrator handoff is ADVISORY
+for state machine context. Authoritative artifact data for linking in state.json and TODO.md comes
+from `.return-meta.json` via `orchestrator-postflight.sh`. The handoff artifacts are provided so
+the orchestrator can pass them as context to downstream dispatches (e.g., `research_artifacts`
+for the plan dispatch), not for direct artifact linking.
+
 ### `blockers` (optional)
 Non-empty only when `status = "partial"` or `status = "blocked"`. Each blocker entry must
 contain enough context for a research fork to investigate without reading full artifacts.
@@ -133,6 +146,23 @@ Points to the continuation handoff file written by the agent. The orchestrator r
 **Note**: `continuation_context` and `blockers` can both be present (partial completion with
 identified blockers). The orchestrator handles blockers first via escalation.
 
+### `phase_recommendations` (optional, max 2 entries)
+Cross-phase recommendations recorded by agents when `phase_constraint` is present in the
+delegation context. When an agent detects work that belongs to a different lifecycle phase,
+it MUST NOT perform that work directly — instead it records the recommendation here so the
+orchestrator state machine can trigger the appropriate phase later.
+
+**Entry format**:
+- `recommendation` (string): Description of the cross-phase work to be done
+- `triggered_by` (string): Context for what prompted this recommendation (e.g., which phase and why)
+
+**Distinction from `next_action_hint`**: `next_action_hint` suggests the immediate next
+orchestrator action (plan/implement/revise). `phase_recommendations` captures specific
+cross-phase work items that should be addressed in a future orchestrator cycle. The
+orchestrator may use these to inform dispatch prompts for subsequent phases.
+
+**Token budget**: ~50 tokens (max 2 entries). Cap entries to keep total handoff under 400 tokens.
+
 ---
 
 ## Token Budget Constraints
@@ -146,10 +176,11 @@ Field-level budgets:
 | `summary` | ~100 |
 | `artifacts` (all entries) | ~50 |
 | `blockers` (all entries) | ~100 |
-| `decisions_made` (all entries) | ~50 |
-| `dead_ends` (all entries) | ~50 |
+| `decisions_made` (all entries) | ~40 |
+| `dead_ends` (all entries) | ~40 |
 | `files_modified` (all entries) | ~30 |
 | `continuation_context` | ~20 |
+| `phase_recommendations` (max 2 entries) | ~50 |
 | Schema overhead (field names, JSON structure) | ~50 |
 
 If content would exceed 400 tokens, truncate `decisions_made` and `dead_ends` first (these are

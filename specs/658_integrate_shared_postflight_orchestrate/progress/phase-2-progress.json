@@ -1,0 +1,16 @@
+{
+  "phase": 2,
+  "phase_name": "Replace Stage MT-4 Postflight (Multi-Task Mode)",
+  "started_at": "2026-06-11T00:05:00Z",
+  "last_updated": "2026-06-11T00:10:00Z",
+  "objectives": [
+    {"id": 1, "description": "Locate per-task postflight loop in Stage MT-4", "status": "done"},
+    {"id": 2, "description": "Add .return-meta.json fallback for dispatch_status in MT handoff-reading block", "status": "done"},
+    {"id": 3, "description": "Replace skill_postflight_update and skill_link_artifacts blocks with orchestrator-postflight.sh calls using per-task variables", "status": "done"},
+    {"id": 4, "description": "Extract mt_project_name from task_dirs (strip specs/{padded}_ prefix)", "status": "done"}
+  ],
+  "current_objective": 4,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": []
+}

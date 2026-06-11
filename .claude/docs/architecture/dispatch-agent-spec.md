@@ -36,7 +36,13 @@ dispatch_agent() {
   #   $1 = agent_type             - Named agent string (e.g. "general-research-agent")
   #                                 Pass "" (empty string) for fork path
   #   $2 = prompt                 - Full prompt string to pass to Agent tool
-  #   $3 = context_json           - Delegation context JSON string
+  #   $3 = context_json           - Delegation context JSON string. When dispatched by
+  #                                 skill-orchestrate, this JSON includes a "phase_constraint"
+  #                                 field with one of: "research" | "plan" | "implement" |
+  #                                 "revise" | "none". Agents receiving this context MUST
+  #                                 confine work to the specified phase and MUST NOT spawn
+  #                                 child agents for other lifecycle phases. When absent
+  #                                 (non-orchestrated dispatch), behavior is unconstrained.
   #   $4 = is_blocker_escalation  - "true" | "false"
   #
   # Returns:
@@ -117,17 +123,25 @@ expected.
 
 ### Decision Matrix
 
-| Dispatch Context | `is_blocker_escalation` | Path | Why |
-|-----------------|------------------------|------|-----|
-| State machine: not_started → research | `false` | Named subagent | Cold; needs agent context |
-| State machine: researched → plan | `false` | Named subagent | Cold; needs agent context |
-| State machine: planned → implement | `false` | Named subagent | Cold; needs agent context |
-| Blocker escalation: research fork | `true` | Fork | Warm; general research, no specialized context |
-| Blocker escalation: revise | `false` | Named subagent | Reviser needs specialized prompt |
-| Blocker escalation: re-implement | `false` | Named subagent | Named implementer context needed |
+| Dispatch Context | `is_blocker_escalation` | `phase_constraint` | Path | Why |
+|-----------------|------------------------|--------------------|------|-----|
+| State machine: not_started → research | `false` | `"research"` | Named subagent | Cold; needs agent context |
+| State machine: researched → plan | `false` | `"plan"` | Named subagent | Cold; needs agent context |
+| State machine: planned → implement | `false` | `"implement"` | Named subagent | Cold; needs agent context |
+| State machine: partial → continue implement | `false` | `"implement"` | Named subagent | Resume from continuation handoff |
+| Drift inspection: read plan (fork) | `true` | `"research"` | Fork | Warm; read-only analysis |
+| Drift inspection: revise plan | `false` | `"revise"` | Named subagent | Reviser needs specialized prompt |
+| Blocker escalation: research fork | `true` | `"research"` | Fork | Warm; general research, no specialized context |
+| Blocker escalation: revise | `false` | `"revise"` | Named subagent | Reviser needs specialized prompt |
+| Blocker escalation: re-implement | `false` | `"implement"` | Named subagent | Named implementer context needed |
+| Multi-task: research dispatch | `false` | `"research"` | Named subagent | Cold; per-task research agent |
+| Multi-task: plan dispatch | `false` | `"plan"` | Named subagent | Cold; per-task planner |
+| Multi-task: implement dispatch | `false` | `"implement"` | Named subagent | Cold; per-task implementer |
 
-**Note**: Only the initial blocker research step uses a fork. Reviser and re-implement dispatch
-use named subagents even during blocker escalation (they need specialized agent prompts).
+**Note**: Only the initial blocker research step and drift inspection fork use a fork path.
+All other dispatches use named subagents. The `phase_constraint` field in `context_json`
+enforces agent scope isolation — agents MUST NOT spawn child agents for other lifecycle
+phases when this field is present.
 
 ---
 
@@ -176,6 +190,41 @@ while [ "$cycle_count" -lt "$MAX_CYCLES" ]; do
   update_loop_guard "$cycle_count" "$task_status"
 done
 ```
+
+---
+
+## Postflight Integration
+
+After each `dispatch_agent()` call in `skill-orchestrate`, the skill reads the dispatch outcome
+(from `.orchestrator-handoff.json` or `.return-meta.json` fallback) and calls the shared
+postflight pipeline:
+
+```bash
+bash .claude/scripts/orchestrator-postflight.sh \
+  "$task_number" "$PROJECT_NAME" "$PADDED_NUM" "$session_id" "$operation_type" "$TASK_TYPE"
+```
+
+This matches the postflight path used by individual `/research`, `/plan`, and `/implement`
+commands, ensuring consistent artifact linking, state.json updates, TODO.md regeneration, TTS
+notification, git commits, and cleanup.
+
+### Postflight Call Sites
+
+| Dispatch Outcome | operation_type | Notes |
+|-----------------|---------------|-------|
+| `dispatch_status = "researched"` | `research` | Called in Stage 5 (single-task) and Stage MT-4 (multi-task) |
+| `dispatch_status = "planned"` | `plan` | Called in Stage 5 and Stage MT-4 |
+| `dispatch_status = "implemented"` | `implement` | Called in Stage 5 and Stage MT-4; may be a no-op if skill-implementer already ran postflight internally |
+
+### No-Op Behavior for Implement
+
+When `dispatch_status = "implemented"`, `skill-implementer` may have already called
+`orchestrator-postflight.sh` internally (via its own postflight stage). In that case:
+- `.return-meta.json` was already cleaned up by the inner invocation
+- `orchestrator-postflight.sh` reads missing metadata as `status=failed` but still runs cleanup
+- The outer call is effectively a no-op with harmless duplicate cleanup
+
+This double-call pattern is safe because all postflight steps are idempotent or non-blocking.
 
 ---
 

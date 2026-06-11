@@ -144,6 +144,70 @@ Step 5: RE-DISPATCH IMPLEMENT
 
 ---
 
+## Postflight Pipeline
+
+After each dispatch (Stage 5), `skill-orchestrate` calls `orchestrator-postflight.sh` to drive the
+full postflight pipeline. This is the same script used by individual `/research`, `/plan`, and
+`/implement` commands — `/orchestrate` gets identical postflight behavior without duplicating logic.
+
+### Dual-File Read Pattern
+
+Stage 5 reads two distinct files for different purposes:
+
+| File | Source | Purpose |
+|------|--------|---------|
+| `.orchestrator-handoff.json` | Written by skills (orchestrator_mode=true only) | State machine decisions: blockers, continuation, next_action_hint |
+| `.return-meta.json` | Written by ALL agents (always) | Postflight data: artifact path, completion_summary, memory_candidates |
+
+The handoff controls **what the state machine does next**. The return-meta drives **what gets written
+to state.json, TODO.md, and the git commit**.
+
+### `.return-meta.json` Fallback for dispatch_status
+
+Research and plan dispatches use `orchestrator_mode: false` (they do not write `.orchestrator-handoff.json`).
+When the handoff is absent, Stage 5 falls back to reading `dispatch_status` from `.return-meta.json`:
+
+```bash
+if [ ! -f "$handoff_file" ]; then
+  meta_file="${TASK_DIR}/.return-meta.json"
+  if [ -f "$meta_file" ]; then
+    dispatch_status=$(jq -r '.status // "failed"' "$meta_file")
+  else
+    dispatch_status="failed"
+  fi
+fi
+```
+
+This ensures research and plan dispatches receive correct postflight processing even though they
+do not write the orchestrator handoff.
+
+### orchestrator-postflight.sh Call Pattern
+
+```bash
+# Stage 5 — single-task mode
+case "$dispatch_status" in
+  researched)
+    bash .claude/scripts/orchestrator-postflight.sh \
+      "$task_number" "$PROJECT_NAME" "$PADDED_NUM" "$session_id" "research" "$TASK_TYPE"
+    ;;
+  planned)
+    bash .claude/scripts/orchestrator-postflight.sh \
+      "$task_number" "$PROJECT_NAME" "$PADDED_NUM" "$session_id" "plan" "$TASK_TYPE"
+    ;;
+  implemented)
+    bash .claude/scripts/orchestrator-postflight.sh \
+      "$task_number" "$PROJECT_NAME" "$PADDED_NUM" "$session_id" "implement" "$TASK_TYPE"
+    ;;
+esac
+```
+
+The script handles: artifact validation, status update (research/plan), artifact linking in
+state.json, TODO.md regeneration, TTS notification, git commit (plan/implement), and cleanup of
+marker files. For implement dispatches where skill-implementer already called the script internally,
+the call is a no-op (`.return-meta.json` was already cleaned up by the inner invocation).
+
+---
+
 ## Context Flatness Guarantee
 
 The orchestrator NEVER reads research reports, plan files, or implementation summaries during its
