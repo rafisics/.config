@@ -368,8 +368,8 @@ Fire TTS and WezTerm tab coloring after artifact linking is complete:
 
 ```bash
 lifecycle_script=".claude/scripts/lifecycle-notify.sh"
-if [ -f "$lifecycle_script" ] && [ "$status" = "researched" ]; then
-    bash "$lifecycle_script" "researched" &
+if [ -f "$lifecycle_script" ]; then
+    bash "$lifecycle_script" "$STATE_STATUS" &
 fi
 ```
 

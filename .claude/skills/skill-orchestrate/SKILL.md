@@ -381,25 +381,6 @@ else
       ;;
   esac
 
-  # Lifecycle notifications: fire tab color change and TTS after each phase transition.
-  # Mid-orchestrate transitions (researched, planned) use --quiet so only the tab color
-  # changes to the dim color of the NEXT phase — no TTS until true completion.
-  # Final completion (implemented) fires full mode: bright "completed" color + TTS.
-  lifecycle_script=".claude/scripts/lifecycle-notify.sh"
-  if [ -f "$lifecycle_script" ]; then
-    case "$dispatch_status" in
-      researched)
-        bash "$lifecycle_script" "planning" --quiet &
-        ;;
-      planned)
-        bash "$lifecycle_script" "implementing" --quiet &
-        ;;
-      implemented)
-        bash "$lifecycle_script" "completed" &
-        ;;
-    esac
-  fi
-
   # Artifact linking: extract artifact path/type from handoff and link in TODO.md + state.json
   handoff_artifact_path=$(echo "$handoff" | jq -r '.artifacts[0].path // ""')
   handoff_artifact_type=$(echo "$handoff" | jq -r '.artifacts[0].type // ""')

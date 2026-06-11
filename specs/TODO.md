@@ -35,7 +35,7 @@ next_project_number: 668
 
 ### 667. Create cslib /pr command
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 663
@@ -46,7 +46,7 @@ next_project_number: 668
 
 ### 666. Create cslib context and rules
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 663
@@ -57,7 +57,7 @@ next_project_number: 668
 
 ### 665. Create cslib skills
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 663
@@ -68,7 +68,7 @@ next_project_number: 668
 
 ### 664. Create cslib agents
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 663
