@@ -1,0 +1,124 @@
+{
+  "entries": [
+    {
+      "path": "project/cslib/domain/contributing-standards.md",
+      "description": "CSLib CONTRIBUTING.md key standards: variable names, proof style, notation, CI",
+      "tags": ["cslib", "contributing", "standards"],
+      "load_when": {
+        "languages": ["cslib"],
+        "agents": ["cslib-research-agent", "cslib-implementation-agent"]
+      },
+      "domain": "project",
+      "subdomain": "cslib",
+      "summary": "CSLib CONTRIBUTING.md key standards: variable names, proof style, notation, CI"
+    },
+    {
+      "path": "project/cslib/domain/notation-conventions.md",
+      "description": "CSLib-specific notation: alpha equivalence, LTS transitions, reduction arrows",
+      "tags": ["cslib", "notation", "conventions"],
+      "load_when": {
+        "languages": ["cslib"],
+        "agents": ["cslib-research-agent", "cslib-implementation-agent"]
+      },
+      "domain": "project",
+      "subdomain": "cslib",
+      "summary": "CSLib-specific notation: alpha equivalence, LTS transitions, reduction arrows"
+    },
+    {
+      "path": "project/cslib/domain/project-organization.md",
+      "description": "CSLib project structure: pillars, working groups, module layout",
+      "tags": ["cslib", "project", "organization"],
+      "load_when": {
+        "languages": ["cslib"],
+        "agents": ["cslib-research-agent", "cslib-implementation-agent"]
+      },
+      "domain": "project",
+      "subdomain": "cslib",
+      "summary": "CSLib project structure: pillars, working groups, module layout"
+    },
+    {
+      "path": "project/cslib/patterns/proof-structure.md",
+      "description": "CSLib proof structure patterns and module organization",
+      "tags": ["cslib", "proofs", "patterns"],
+      "load_when": {
+        "languages": ["cslib"],
+        "agents": ["cslib-implementation-agent"]
+      },
+      "domain": "project",
+      "subdomain": "cslib",
+      "summary": "CSLib proof structure patterns and module organization"
+    },
+    {
+      "path": "project/cslib/patterns/reuse-first.md",
+      "description": "CSLib reuse-first philosophy: prefer existing Mathlib/CSLib abstractions",
+      "tags": ["cslib", "reuse", "mathlib"],
+      "load_when": {
+        "languages": ["cslib"],
+        "agents": ["cslib-research-agent", "cslib-implementation-agent"]
+      },
+      "domain": "project",
+      "subdomain": "cslib",
+      "summary": "CSLib reuse-first philosophy: prefer existing Mathlib/CSLib abstractions"
+    },
+    {
+      "path": "project/cslib/standards/ci-pipeline.md",
+      "description": "CSLib CI pipeline: lake test, checkInitImports, lint-style, lake shake commands",
+      "tags": ["cslib", "ci", "pipeline", "lake"],
+      "load_when": {
+        "languages": ["cslib"],
+        "agents": ["cslib-implementation-agent"]
+      },
+      "domain": "project",
+      "subdomain": "cslib",
+      "summary": "CSLib CI pipeline: lake test, checkInitImports, lint-style, lake shake commands"
+    },
+    {
+      "path": "project/cslib/standards/pr-conventions.md",
+      "description": "CSLib PR title conventions, conventional commits, review process",
+      "tags": ["cslib", "pr", "git", "commits"],
+      "load_when": {
+        "languages": ["cslib"],
+        "agents": ["cslib-implementation-agent"]
+      },
+      "domain": "project",
+      "subdomain": "cslib",
+      "summary": "CSLib PR title conventions, conventional commits, review process"
+    },
+    {
+      "path": "project/cslib/standards/mathlib-style.md",
+      "description": "Mathlib-style Lean coding standards applied to CSLib",
+      "tags": ["cslib", "mathlib", "style"],
+      "load_when": {
+        "languages": ["cslib"],
+        "agents": ["cslib-implementation-agent"]
+      },
+      "domain": "project",
+      "subdomain": "cslib",
+      "summary": "Mathlib-style Lean coding standards applied to CSLib"
+    },
+    {
+      "path": "project/cslib/tools/lake-commands.md",
+      "description": "Lake commands for CSLib: build, test, exe targets, shake",
+      "tags": ["cslib", "lake", "tools", "build"],
+      "load_when": {
+        "languages": ["cslib"],
+        "agents": ["cslib-research-agent", "cslib-implementation-agent"]
+      },
+      "domain": "project",
+      "subdomain": "cslib",
+      "summary": "Lake commands for CSLib: build, test, exe targets, shake"
+    },
+    {
+      "path": "project/cslib/tools/linters.md",
+      "description": "CSLib linting tools: checkInitImports, lint-style, lake shake",
+      "tags": ["cslib", "linters", "checkInitImports", "lint-style"],
+      "load_when": {
+        "languages": ["cslib"],
+        "agents": ["cslib-implementation-agent"]
+      },
+      "domain": "project",
+      "subdomain": "cslib",
+      "summary": "CSLib linting tools: checkInitImports, lint-style, lake shake"
+    }
+  ]
+}

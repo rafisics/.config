@@ -1,33 +1,21 @@
 {
   "status": "tasks_created",
-  "summary": "Created 5 tasks for porting .claude/ agent system upgrades to .opencode/: core script infrastructure (633), orchestrator system (634), synthesis and domain agents (635), context/rules/extensions sync (636), and verification (637).",
+  "summary": "Created 4 tasks for cslib extension: scaffold (#663), agents (#664), skills (#665), context and rules (#666). Tasks 664-666 depend on 663 and can run in parallel after it completes.",
   "artifacts": [
     {
       "type": "task_entry",
       "path": "specs/TODO.md",
-      "summary": "Tasks #633-637 added to TODO.md"
-    },
-    {
-      "type": "state_update",
-      "path": "specs/state.json",
-      "summary": "Tasks #633-637 added to state.json with dependency graph"
+      "summary": "Tasks #663-666 added to TODO.md"
     }
   ],
   "metadata": {
-    "session_id": "sess_20260607_meta_port",
-    "duration_seconds": 600,
+    "session_id": "sess_1749673200_cslib_meta",
+    "duration_seconds": 60,
     "agent_type": "meta-builder-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "meta", "skill-meta", "meta-builder-agent"],
+    "delegation_path": ["orchestrator", "meta", "meta-builder-agent"],
     "mode": "prompt",
-    "tasks_created": 5
+    "tasks_created": 4
   },
-  "tasks": [
-    {"number": 633, "title": "Port core script infrastructure from .claude/ to .opencode/", "effort": "3-4 hours", "deps": [], "dir": "specs/633_port_core_script_infrastructure/"},
-    {"number": 634, "title": "Port orchestrator system (.claude/ to .opencode/)", "effort": "2-3 hours", "deps": [633], "dir": "specs/634_port_orchestrator_system/"},
-    {"number": 635, "title": "Port synthesis and domain agents (.claude/ to .opencode/)", "effort": "1-2 hours", "deps": [633], "dir": "specs/635_port_synthesis_domain_agents/"},
-    {"number": 636, "title": "Sync context, rules, extensions, and cleanup (.claude/ to .opencode/)", "effort": "2-3 hours", "deps": [633, 634, 635], "dir": "specs/636_sync_context_rules_extensions_cleanup/"},
-    {"number": 637, "title": "Verification and drift detection", "effort": "1-2 hours", "deps": [633, 634, 635, 636], "dir": "specs/637_verification_and_drift_detection/"}
-  ],
-  "next_steps": "Run /research 633 to begin research on foundational task (port core script infrastructure)"
+  "next_steps": "Run /research 663 to begin research on the cslib extension scaffold (foundational task). After completing 663, tasks 664-666 can be researched/implemented in parallel."
 }

@@ -24,16 +24,16 @@
       "project_number": 666,
       "project_name": "create_cslib_context_rules",
       "title": "Create cslib context and rules",
-      "status": "researched",
+      "status": "completed",
       "task_type": "meta",
       "topic": "agent-system",
       "effort": "2-3 hours",
       "created": "2026-06-11T19:00:00Z",
-      "last_updated": "2026-06-11T23:07:37Z",
+      "last_updated": "2026-06-11T23:36:03Z",
       "dependencies": [
         663
       ],
-      "description": "Create rules/cslib.md (path pattern: **/*.lean for CSLib project) and context files under context/project/cslib/ covering: domain/ (CONTRIBUTING standards, notation conventions, project organization), patterns/ (proof structure, module organization, reuse-first philosophy), standards/ (CI pipeline, PR conventions, conventional commits, mathlib style), tools/ (lake commands, linters, checkInitImports, mk_all, lint-style, lake shake). CSLib-specific encoding: alpha equivalence notation, LTS transitions, reduction arrows from NOTATION.md. Working groups model and AI usage policy from CONTRIBUTING.md.",
+      "description": "Create rules/cslib.md (path pattern: **/*.lean for CSLib project) and context files under context/project/cslib/ covering: domain/ (CONTRIBUTING standards, notation conventions, project organization), patterns/ (proof structure, module organization, reuse-first philosophy), standards/ (CI pipeline, PR conventions, conventional commits, mathlib style), tools/ (lake commands, linters, checkInitImports, mk_all, lint-style, lake shake). CSLib-specific encoding: alpha equivalence notation, LTS transitions, reduction arrows from NOTATION.md. Working groups model and AI usage policy from CONTRIBUTING.md. Additionally, incorporate citation conventions from /home/benjamin/Projects/cslib/.claude/context/standards/citation-conventions.md as a new context file at context/project/cslib/standards/citation-conventions.md — this covers BibKey format (CamelCase, e.g. Blackburn2001), the references.bib workflow, canonical citation display format in module docstrings, and legacy pattern conversion rules.",
       "artifacts": [],
       "next_artifact_number": 1,
       "session_id": "sess_1749673500_a3b2c1_666"
@@ -42,12 +42,12 @@
       "project_number": 665,
       "project_name": "create_cslib_skills",
       "title": "Create cslib skills",
-      "status": "researched",
+      "status": "completed",
       "task_type": "meta",
       "topic": "agent-system",
       "effort": "1-2 hours",
       "created": "2026-06-11T19:00:00Z",
-      "last_updated": "2026-06-11T23:07:37Z",
+      "last_updated": "2026-06-11T23:36:03Z",
       "dependencies": [
         663
       ],
@@ -60,12 +60,12 @@
       "project_number": 664,
       "project_name": "create_cslib_agents",
       "title": "Create cslib agents",
-      "status": "researched",
+      "status": "completed",
       "task_type": "meta",
       "topic": "agent-system",
       "effort": "1-2 hours",
       "created": "2026-06-11T19:00:00Z",
-      "last_updated": "2026-06-11T23:07:37Z",
+      "last_updated": "2026-06-11T23:36:03Z",
       "dependencies": [
         663
       ],

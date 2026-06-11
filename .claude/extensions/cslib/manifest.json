@@ -1,0 +1,53 @@
+{
+  "name": "cslib",
+  "version": "1.0.0",
+  "description": "CSLib Lean 4 computer science library formalization support",
+  "task_type": "cslib",
+  "dependencies": [
+    "core",
+    "lean"
+  ],
+  "provides": {
+    "agents": [
+      "cslib-research-agent.md",
+      "cslib-implementation-agent.md"
+    ],
+    "skills": [
+      "skill-cslib-research",
+      "skill-cslib-implementation"
+    ],
+    "commands": [],
+    "rules": [
+      "cslib.md"
+    ],
+    "context": [
+      "project/cslib"
+    ],
+    "scripts": [],
+    "hooks": []
+  },
+  "routing": {
+    "research": {
+      "cslib": "skill-cslib-research"
+    },
+    "plan": {
+      "cslib": "skill-planner"
+    },
+    "implement": {
+      "cslib": "skill-cslib-implementation"
+    }
+  },
+  "merge_targets": {
+    "claudemd": {
+      "source": "EXTENSION.md",
+      "target": ".claude/CLAUDE.md",
+      "section_id": "extension_cslib"
+    },
+    "index": {
+      "source": "index-entries.json",
+      "target": ".claude/context/index.json"
+    }
+  },
+  "mcp_servers": {},
+  "hooks": {}
+}
