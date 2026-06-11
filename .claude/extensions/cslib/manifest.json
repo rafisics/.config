@@ -16,7 +16,7 @@
       "skill-cslib-research",
       "skill-cslib-implementation"
     ],
-    "commands": [],
+    "commands": ["pr.md"],
     "rules": [
       "cslib.md"
     ],
