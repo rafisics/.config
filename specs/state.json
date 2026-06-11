@@ -1,72 +1,94 @@
 {
   "version": "1.1.0",
-  "next_project_number": 667,
+  "next_project_number": 668,
   "active_projects": [
     {
-      "project_number": 666,
-      "project_name": "create_cslib_context_rules",
-      "title": "Create cslib context and rules",
+      "project_number": 667,
+      "project_name": "create_cslib_pr_command",
+      "title": "Create cslib /pr command",
       "status": "not_started",
       "task_type": "meta",
       "topic": "agent-system",
       "effort": "2-3 hours",
+      "created": "2026-06-11T23:30:00Z",
+      "last_updated": "2026-06-11T23:30:00Z",
+      "dependencies": [
+        663
+      ],
+      "description": "Create a /pr command for the cslib extension that accepts a task number, path (file or directory), or description to cherry-pick elements from main branch onto a feature branch, clean up code to CSLib quality standards, run the full CI pipeline (lake build, lake exe checkInitImports, lake lint, lake exe lint-style, lake shake --add-public --keep-implied --keep-prefix, lake exe mk_all --module, lake test), submit PR with user approval (conventional commit title: feat/fix/doc/style/refactor/test/chore/perf, AI disclosure in description), and merge back to main with user approval. Deliverables: command file at .claude/extensions/cslib/commands/pr.md, manifest.json provides.commands update, and optionally a dedicated skill-cslib-pr skill if complexity warrants separation.",
+      "artifacts": [],
+      "next_artifact_number": 1,
+      "session_id": "sess_1749674800_pr_meta"
+    },
+    {
+      "project_number": 666,
+      "project_name": "create_cslib_context_rules",
+      "title": "Create cslib context and rules",
+      "status": "researched",
+      "task_type": "meta",
+      "topic": "agent-system",
+      "effort": "2-3 hours",
       "created": "2026-06-11T19:00:00Z",
-      "last_updated": "2026-06-11T19:00:00Z",
+      "last_updated": "2026-06-11T23:07:37Z",
       "dependencies": [
         663
       ],
       "description": "Create rules/cslib.md (path pattern: **/*.lean for CSLib project) and context files under context/project/cslib/ covering: domain/ (CONTRIBUTING standards, notation conventions, project organization), patterns/ (proof structure, module organization, reuse-first philosophy), standards/ (CI pipeline, PR conventions, conventional commits, mathlib style), tools/ (lake commands, linters, checkInitImports, mk_all, lint-style, lake shake). CSLib-specific encoding: alpha equivalence notation, LTS transitions, reduction arrows from NOTATION.md. Working groups model and AI usage policy from CONTRIBUTING.md.",
       "artifacts": [],
-      "next_artifact_number": 1
+      "next_artifact_number": 1,
+      "session_id": "sess_1749673500_a3b2c1_666"
     },
     {
       "project_number": 665,
       "project_name": "create_cslib_skills",
       "title": "Create cslib skills",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "meta",
       "topic": "agent-system",
       "effort": "1-2 hours",
       "created": "2026-06-11T19:00:00Z",
-      "last_updated": "2026-06-11T19:00:00Z",
+      "last_updated": "2026-06-11T23:07:37Z",
       "dependencies": [
         663
       ],
       "description": "Create skill-cslib-research/SKILL.md and skill-cslib-implementation/SKILL.md at .claude/extensions/cslib/skills/. Research skill delegates to cslib-research-agent with tools: lean-lsp MCP (inherited via lean dependency), WebSearch, WebFetch, Read, Bash. Implementation skill delegates to cslib-implementation-agent with tools: Read, Write, Edit, Bash (lake build, lake test, lake lint, lake exe checkInitImports, lake exe lint-style, lake shake). Both skills follow thin-wrapper pattern delegating to their respective agents.",
       "artifacts": [],
-      "next_artifact_number": 1
+      "next_artifact_number": 1,
+      "session_id": "sess_1749673500_a3b2c1_665"
     },
     {
       "project_number": 664,
       "project_name": "create_cslib_agents",
       "title": "Create cslib agents",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "meta",
       "topic": "agent-system",
       "effort": "1-2 hours",
       "created": "2026-06-11T19:00:00Z",
-      "last_updated": "2026-06-11T19:00:00Z",
+      "last_updated": "2026-06-11T23:07:37Z",
       "dependencies": [
         663
       ],
       "description": "Create cslib-research-agent.md (model: opus) and cslib-implementation-agent.md (model: sonnet) at .claude/extensions/cslib/agents/. Research agent: inherits lean-lsp MCP tools via lean dependency, focuses on CSLib-specific formalization patterns, mathlib API discovery, typeclass-based abstraction. Implementation agent: CI verification pipeline (lake test, lake exe checkInitImports, lake lint, lake exe lint-style, lake shake --add-public --keep-implied --keep-prefix), Cslib.Init import enforcement, mathlib style compliance, proof readability over golfing.",
       "artifacts": [],
-      "next_artifact_number": 1
+      "next_artifact_number": 1,
+      "session_id": "sess_1749673500_a3b2c1_664"
     },
     {
       "project_number": 663,
       "project_name": "create_cslib_extension_scaffold",
       "title": "Create cslib extension scaffold",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "meta",
       "topic": "agent-system",
       "effort": "1-2 hours",
       "created": "2026-06-11T19:00:00Z",
-      "last_updated": "2026-06-11T19:00:00Z",
+      "last_updated": "2026-06-11T23:03:32Z",
       "dependencies": [],
       "description": "Create the cslib extension scaffold at .claude/extensions/cslib/ modeled after the lean extension. Includes: manifest.json (task_type: \"cslib\", dependencies: [\"core\", \"lean\"], provides agents/skills/rules/context, routing table for research/plan/implement, no mcp_servers since lean-lsp inherited via lean dependency), EXTENSION.md (CLAUDE.md merge content for cslib section), README.md (extension documentation), index-entries.json (context discovery entries for cslib agents/task_types), and directory structure (agents/, skills/, commands/, rules/, context/project/cslib/{domain,patterns,standards,tools}/).",
       "artifacts": [],
-      "next_artifact_number": 1
+      "next_artifact_number": 1,
+      "session_id": "sess_1749673500_a3b2c1_663"
     },
     {
       "project_number": 662,

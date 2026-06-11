@@ -1,5 +1,5 @@
 ---
-next_project_number: 667
+next_project_number: 668
 ---
 
 # TODO
@@ -11,18 +11,17 @@ next_project_number: 667
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,652,663 | -- | agent-system, Terminal UI, Email Integration |
-| 2 | 664,665,666 | 663 | agent-system |
+| 1 | 78,87,652,664,665,666,667 | -- | agent-system, Terminal UI, Email Integration |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Agent System
 
 652 [NOT STARTED] — After ~1 week of the new pipeline running, review logs to verify 
-663 [NOT STARTED] — Create the cslib extension scaffold at .claude/extensions/cslib/ 
-  └─ 664 [NOT STARTED] — Create cslib-research-agent.md (model: opus) and cslib-implementa
-  └─ 665 [NOT STARTED] — Create skill-cslib-research/SKILL.md and skill-cslib-implementati
-  └─ 666 [NOT STARTED] — Create rules/cslib.md (path pattern: **/*.lean for CSLib project)
+664 [RESEARCHED] — Create cslib-research-agent.md (model: opus) and cslib-implementa
+665 [RESEARCHED] — Create skill-cslib-research/SKILL.md and skill-cslib-implementati
+666 [RESEARCHED] — Create rules/cslib.md (path pattern: **/*.lean for CSLib project)
+667 [NOT STARTED] — Create a /pr command for the cslib extension that accepts a task 
 
 ### Terminal UI
 
@@ -34,9 +33,20 @@ next_project_number: 667
 
 ## Tasks
 
-### 666. Create cslib context and rules
+### 667. Create cslib /pr command
 - **Effort**: 2-3 hours
 - **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: Task 663
+
+**Description**: Create a /pr command for the cslib extension that accepts a task number, path (file or directory), or description to cherry-pick elements from main branch onto a feature branch, clean up code to CSLib quality standards, run the full CI pipeline (lake build, lake exe checkInitImports, lake lint, lake exe lint-style, lake shake --add-public --keep-implied --keep-prefix, lake exe mk_all --module, lake test), submit PR with user approval (conventional commit title: feat/fix/doc/style/refactor/test/chore/perf, AI disclosure in description), and merge back to main with user approval. Deliverables: command file at .claude/extensions/cslib/commands/pr.md, manifest.json provides.commands update, and optionally a dedicated skill-cslib-pr skill if complexity warrants separation.
+
+---
+
+### 666. Create cslib context and rules
+- **Effort**: 2-3 hours
+- **Status**: [RESEARCHED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 663
@@ -47,7 +57,7 @@ next_project_number: 667
 
 ### 665. Create cslib skills
 - **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 663
@@ -58,7 +68,7 @@ next_project_number: 667
 
 ### 664. Create cslib agents
 - **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 663
@@ -69,7 +79,7 @@ next_project_number: 667
 
 ### 663. Create cslib extension scaffold
 - **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
