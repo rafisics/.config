@@ -131,6 +131,30 @@
       "domain": "project",
       "subdomain": "cslib",
       "summary": "CSLib linting tools: checkInitImports, lint-style, lake shake"
+    },
+    {
+      "path": "project/cslib/standards/citation-conventions.md",
+      "description": "CSLib citation conventions: BibKey format, references.bib verification for hard-mode H3 grounding",
+      "tags": ["cslib", "citations", "bibkey", "references", "hard-mode"],
+      "load_when": {
+        "languages": ["cslib"],
+        "agents": ["cslib-research-hard-agent"]
+      },
+      "domain": "project",
+      "subdomain": "cslib",
+      "summary": "BibKey format (AuthorYYYY) and references.bib citation verification for Tier 1 literature-backed CSLib research"
+    },
+    {
+      "path": "project/cslib/standards/ci-pipeline.md",
+      "description": "CSLib CI pipeline steps for hard-mode implementation: lake build, checkInitImports, lint, shake, test",
+      "tags": ["cslib", "ci", "pipeline", "lake", "hard-mode"],
+      "load_when": {
+        "languages": ["cslib"],
+        "agents": ["cslib-implementation-hard-agent"]
+      },
+      "domain": "project",
+      "subdomain": "cslib",
+      "summary": "7-step CSLib CI pipeline required before returning implemented status in hard-mode"
     }
   ]
 }

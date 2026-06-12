@@ -9,13 +9,17 @@
   "provides": {
     "agents": [
       "lean-research-agent.md",
-      "lean-implementation-agent.md"
+      "lean-implementation-agent.md",
+      "lean-research-hard-agent.md",
+      "lean-implementation-hard-agent.md"
     ],
     "skills": [
       "skill-lean-research",
       "skill-lean-implementation",
       "skill-lake-repair",
-      "skill-lean-version"
+      "skill-lean-version",
+      "skill-lean-research-hard",
+      "skill-lean-implementation-hard"
     ],
     "commands": [
       "lake.md",
@@ -25,7 +29,8 @@
       "lean4.md"
     ],
     "context": [
-      "project/lean4"
+      "project/lean4",
+      "contracts"
     ],
     "scripts": [],
     "hooks": []
@@ -45,6 +50,14 @@
       "lean4": "skill-lean-implementation",
       "lean4:lake": "skill-lake-repair",
       "lean4:version": "skill-lean-version"
+    }
+  },
+  "routing_hard": {
+    "research": {
+      "lean4": "skill-lean-research-hard"
+    },
+    "implement": {
+      "lean4": "skill-lean-implementation-hard"
     }
   },
   "merge_targets": {

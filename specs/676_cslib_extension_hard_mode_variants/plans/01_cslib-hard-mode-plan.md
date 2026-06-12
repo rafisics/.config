@@ -170,20 +170,20 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Update EXTENSION.md and index-entries.json [NOT STARTED]
+### Phase 4: Update EXTENSION.md and index-entries.json [COMPLETED]
 
 **Goal**: Update documentation and context index to register the new hard-mode agents and skills for discovery and loading.
 
 **Tasks**:
-- [ ] Add hard-mode rows to EXTENSION.md Skill-Agent Mapping table:
+- [x] Add hard-mode rows to EXTENSION.md Skill-Agent Mapping table:
   - skill-cslib-research-hard -> cslib-research-hard-agent -> opus
-  - skill-cslib-implementation-hard -> cslib-implementation-hard-agent -> sonnet
-- [ ] Add "When to use --hard for CSLib tasks" guidance section to EXTENSION.md
-- [ ] Add 2 new entries to index-entries.json for hard agent load conditions:
+  - skill-cslib-implementation-hard -> cslib-implementation-hard-agent -> sonnet *(completed)*
+- [x] Add "When to use --hard for CSLib tasks" guidance section to EXTENSION.md *(completed)*
+- [x] Add 2 new entries to index-entries.json for hard agent load conditions:
   - cslib-research-hard-agent.md with agents and task_types load conditions
-  - cslib-implementation-hard-agent.md with agents and task_types load conditions
-- [ ] Verify index-entries.json is valid JSON after modification
-- [ ] Verify EXTENSION.md table alignment is correct
+  - cslib-implementation-hard-agent.md with agents and task_types load conditions *(completed)*
+- [x] Verify index-entries.json is valid JSON after modification *(completed: 13 entries)*
+- [x] Verify EXTENSION.md table alignment is correct *(completed)*
 
 **Timing**: 30 minutes
 

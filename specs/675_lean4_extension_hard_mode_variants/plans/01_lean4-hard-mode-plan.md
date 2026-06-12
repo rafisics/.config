@@ -201,7 +201,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Manifest, Index, and Documentation Updates [NOT STARTED]
+### Phase 4: Manifest, Index, and Documentation Updates [IN PROGRESS]
 
 **Goal**: Wire up routing, context discovery, and user-facing documentation for the new hard-mode artifacts.
 
