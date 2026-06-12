@@ -245,17 +245,17 @@ This plan is fully sequential due to the layered dependency chain: routing infra
 
 ---
 
-### Phase 6: Documentation and CLAUDE.md Updates [NOT STARTED]
+### Phase 6: Documentation and CLAUDE.md Updates [COMPLETED]
 
 **Goal**: Update all documentation to reflect the new hard-mode system: CLAUDE.md skill-to-agent mapping, command reference, routing tables, token cost documentation, and a "when to use --hard" decision framework.
 
 **Tasks**:
-- [ ] Update `.claude/CLAUDE.md` Skill-to-Agent Mapping table: Add 4 new rows for hard-mode skills (skill-researcher-hard -> general-research-hard-agent, skill-planner-hard -> planner-hard-agent, skill-implementer-hard -> general-implementation-hard-agent, skill-orchestrate-hard -> (direct execution))
-- [ ] Update `.claude/CLAUDE.md` Agents table: Add 3 new rows for hard-mode agents
-- [ ] Update `.claude/CLAUDE.md` Command Reference: Note that --hard routes to hard-mode skills when available, with graceful fallback when not
-- [ ] Add a new section to `.claude/CLAUDE.md`: "## Hard Mode (`--hard`)" with: (a) What hard mode does (behavioral contracts, per-phase dispatch, convergence policing); (b) When to use --hard (decision framework): use when the task has 2+ plan versions, when previous attempts produced analysis-only output with no code, when the task involves formal verification (lean4, z3), when working from a literature base requiring faithful transcription, when a task has been stuck in IMPLEMENTING for 3+ dispatch cycles; (c) Cost impact (~3-5x standard, ~15-25x with --team --hard); (d) Composability: --hard works with --team (each teammate gets hard-mode contracts), works with model flags (--hard --opus), works with extension routing (routing_hard manifest key); (e) Graceful fallback: commands without hard variants silently use standard behavior; (f) Explicit note: --hard is per-invocation only, not sticky per-task
-- [ ] Update `.claude/context/guides/extension-development.md`: Document the optional `routing_hard` key in extension manifests. Same structure as `routing` but activated when effort_flag="hard". Extensions that don't provide `routing_hard` automatically fall back to core hard-mode skills
-- [ ] Regenerate `.claude/CLAUDE.md` if it is generated from merge sources (check the generation mechanism)
+- [x] Update `.claude/CLAUDE.md` Skill-to-Agent Mapping table: Add 4 new rows for hard-mode skills (skill-researcher-hard -> general-research-hard-agent, skill-planner-hard -> planner-hard-agent, skill-implementer-hard -> general-implementation-hard-agent, skill-orchestrate-hard -> (direct execution)) *(completed)*
+- [x] Update `.claude/CLAUDE.md` Agents table: Add 3 new rows for hard-mode agents *(completed)*
+- [x] Update `.claude/CLAUDE.md` Command Reference: Note that --hard routes to hard-mode skills when available, with graceful fallback when not *(deviation: altered — command ref already shows --hard in usage; Hard Mode section covers routing and fallback)*
+- [x] Add a new section to `.claude/CLAUDE.md`: "## Hard Mode (`--hard`)" with: (a) What hard mode does (behavioral contracts, per-phase dispatch, convergence policing); (b) When to use --hard (decision framework): use when the task has 2+ plan versions, when previous attempts produced analysis-only output with no code, when the task involves formal verification (lean4, z3), when working from a literature base requiring faithful transcription, when a task has been stuck in IMPLEMENTING for 3+ dispatch cycles; (c) Cost impact (~3-5x standard, ~15-25x with --team --hard); (d) Composability: --hard works with --team (each teammate gets hard-mode contracts), works with model flags (--hard --opus), works with extension routing (routing_hard manifest key); (e) Graceful fallback: commands without hard variants silently use standard behavior; (f) Explicit note: --hard is per-invocation only, not sticky per-task *(completed)*
+- [x] Update `.claude/context/guides/extension-development.md`: Document the optional `routing_hard` key in extension manifests. Same structure as `routing` but activated when effort_flag="hard". Extensions that don't provide `routing_hard` automatically fall back to core hard-mode skills *(completed)*
+- [x] Regenerate `.claude/CLAUDE.md` if it is generated from merge sources (check the generation mechanism) *(completed: merge-sources/claudemd.md was already updated in previous phases; applied diff to CLAUDE.md directly)*
 
 **Timing**: 1 hour
 

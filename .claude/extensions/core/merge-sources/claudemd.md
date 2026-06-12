@@ -185,6 +185,10 @@ Standard actions: `create`, `complete research`, `create implementation plan`, `
 | skill-reviser | reviser-agent | opus | Plan revision and description update |
 | skill-spawn | spawn-agent | sonnet | Analyze blockers and spawn new tasks |
 | skill-orchestrate | (direct execution) | opus | Autonomous lifecycle state machine (/orchestrate command) |
+| skill-orchestrate-hard | (direct execution) | opus | Hard-mode orchestration: per-phase dispatch, adversarial verification, churn detection |
+| skill-researcher-hard | general-research-hard-agent | sonnet | Hard-mode research: adversarial verification (H4), reference grounding (H3) |
+| skill-planner-hard | planner-hard-agent | opus | Hard-mode planning: phase sizing (H8), postmortem constraints, wave declarations |
+| skill-implementer-hard | general-implementation-hard-agent | sonnet | Hard-mode implementation: anti-analysis (H2), wrap-up discipline (H9), territory (H7) |
 | skill-git-workflow | (direct execution) | - | Create scoped git commits for task operations |
 | skill-fix-it | (direct execution) | - | Scan for FIX:/TODO:/NOTE: tags and create tasks |
 | skill-project-overview | (direct execution) | - | Interactive repo scan and project-overview.md task creation |
@@ -202,6 +206,9 @@ Standard actions: `create`, `complete research`, `create implementation plan`, `
 | reviser-agent | Plan revision with research synthesis |
 | spawn-agent | Blocker analysis and task decomposition |
 | synthesis-agent | Multi-output synthesis for team research and team planning |
+| general-research-hard-agent | Hard-mode research with adversarial self-verification and reference grounding |
+| planner-hard-agent | Hard-mode planning with phase sizing constraints and postmortem rules |
+| general-implementation-hard-agent | Hard-mode implementation with anti-analysis contracts and per-phase focus |
 
 **Model Enforcement**: Agents declare preferred models via `model:` frontmatter field using a tiered policy: Opus for deep-reasoning agents (planner, meta-builder, reviser, formal/lean/math/logic) AND for orchestrator commands (`/research`, `/plan`, `/implement`) which accumulate large context across sequential sub-agent calls and require the 1M context auto-upgrade; Sonnet for worker agents (research, implementation, review, spawn, domain tasks) which have their own fresh context per invocation. Two independent flag dimensions override behavior at invocation time: effort flags (`--fast`, `--hard`) control reasoning depth, and model flags (`--haiku`, `--sonnet`, `--opus`) select the model family. These flags work on `/research`, `/plan`, and `/implement`. See `.claude/docs/reference/standards/agent-frontmatter-standard.md` for details.
 
@@ -218,6 +225,63 @@ Standard actions: `create`, `complete research`, `create implementation plan`, `
 | `--team` | skill-team-implement | 2-4 | Parallel phase execution with debugger |
 
 **Note**: Team mode uses ~5x tokens compared to single-agent. Default team_size=3 (Primary + Alternatives + Critic). Use `--fast` for 2 or `--hard` for 4.
+
+## Hard Mode (`--hard`)
+
+Hard mode encodes behavioral contracts distilled from high-complexity task orchestration (BimodalLogic task-273 baseline: 9 H-techniques, measured outcome: 0 lines -> 2,400+ lines across 13 dispatches).
+
+### What Hard Mode Does
+
+Hard mode activates a set of behavioral contracts and routing changes:
+- **Anti-analysis (H2)**: Strict read budget, forbidden analysis-only outputs, defect bar enforcement
+- **Reference grounding (H3)**: Source-to-implementation mapping with tier selection (literature/docs/code)
+- **Adversarial verification (H4)**: Research output verified before plan dispatch
+- **Divergence audit (H5)**: Three-strikes on any target triggers dedicated audit dispatch
+- **Convergence policing (H6)**: Churn detection with per-target counters
+- **Territory contracts (H7)**: Parallel dispatch with explicit file ownership
+- **Phase sizing (H8)**: Each phase bounded to one agent run (~100-500 lines output)
+- **Wrap-up discipline (H9)**: Orchestrator handoff JSON + incremental commits at every green milestone
+
+### When to Use `--hard`
+
+Use `--hard` when one or more of the following apply:
+
+1. **2+ plan versions exist** for the same task without convergence
+2. **Previous dispatches produced analysis-only output** with no file writes (analysis-paralysis signal)
+3. **Task involves formal verification** (lean4, z3) requiring faithful transcription of mathematical sources
+4. **Task involves literature-based implementation** (paper to code, spec to implementation)
+5. **Task has been in [IMPLEMENTING] for 3+ dispatch cycles** without phase completion
+6. **Task description contains "deflection" or "stuck"** indicators in /errors output
+
+### Cost Impact
+
+| Mode | Cost Multiplier |
+|------|----------------|
+| Standard | 1x |
+| `--hard` | ~3-5x |
+| `--team` | ~5x |
+| `--hard --team` | ~15-25x |
+
+### Composability
+
+- `--hard` works with `--team`: team skills inject hard-mode contracts into each teammate
+- `--hard` works with model flags: `--hard --opus` uses Opus model with hard-mode contracts
+- `--hard` works with extension routing: extensions declare `routing_hard` in their manifest
+- Graceful fallback: commands without hard variants silently use standard behavior
+
+### Routing Mechanism
+
+`--hard` is resolved by `command-route-skill.sh` as a 4th `effort_flag` argument:
+1. Check `routing_hard.$operation.$task_type` in extension manifests
+2. If not found: construct candidate by appending `-hard` to the resolved skill name
+3. If candidate skill exists (`.claude/skills/${skill}-hard/SKILL.md`): use it
+4. If not: fall back to standard skill with stderr note `[route] No hard variant for $skill; using standard skill`
+
+### Per-Invocation Only
+
+`--hard` is a per-invocation flag only. There is no sticky hard mode or `effort_mode` field
+in state.json. Each invocation of `/research`, `/plan`, `/implement`, or `/orchestrate` must
+explicitly pass `--hard` to activate hard mode.
 
 ## Rules References
 

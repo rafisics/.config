@@ -81,6 +81,7 @@ For the full directory layout including agents, skills, rules, context, and opti
 | `dependencies` | array | No | Other extensions required |
 | `provides` | object | Yes | Agents, skills, commands, rules, context, scripts, hooks, docs, templates, systemd, root_files, data |
 | `routing` | object | No | Task-type to skill mapping for research/plan/implement |
+| `routing_hard` | object | No | Hard-mode task-type to skill mapping (activated by `--hard` flag); same structure as `routing` |
 | `merge_targets` | object | Yes | Source-to-target file mappings for system integration |
 
 For the complete manifest schema with all fields and examples, see [Extension System Architecture](../../docs/architecture/extension-system.md#manifest-schema).
@@ -253,3 +254,51 @@ If loading fails:
 1. Verify task_type is set in manifest
 2. Check agent names match skill mappings
 3. Ensure routing entries map task_type to correct skills
+
+## Hard-Mode Routing (`routing_hard`)
+
+Extensions can declare hard-mode skill variants via the optional `routing_hard` manifest key. This key has the same structure as `routing` but is activated when the `--hard` flag is passed to `/research`, `/plan`, `/implement`, or `/orchestrate`.
+
+### Declaring Hard-Mode Routes
+
+```json
+{
+  "routing": {
+    "research": { "lean4": "skill-lean-research" },
+    "plan":     { "lean4": "skill-planner" },
+    "implement": { "lean4": "skill-lean-implementation" }
+  },
+  "routing_hard": {
+    "research": { "lean4": "skill-lean-research-hard" },
+    "plan":     { "lean4": "skill-planner-hard" },
+    "implement": { "lean4": "skill-lean-implementation-hard" }
+  }
+}
+```
+
+### Fallback Behavior
+
+Extensions that do not provide `routing_hard` automatically fall back to core hard-mode skills:
+
+1. `command-route-skill.sh` checks `routing_hard.$operation.$task_type` in extension manifests
+2. If not found, it constructs a candidate by appending `-hard` to the resolved skill name
+3. If the candidate skill exists (`.claude/skills/${skill}-hard/SKILL.md`): uses it
+4. If not: falls back to the standard skill with a stderr note:
+   `[route] No hard variant for $skill; using standard skill`
+
+This means an extension can support `--hard` without declaring `routing_hard` entries, as long
+as a core hard-mode skill handles the task type. Only declare `routing_hard` when the extension
+provides domain-specific hard-mode behavior (e.g., lean4 formal transcription mandate H3).
+
+### Hard-Mode Agent Requirements
+
+Hard-mode skills delegate to hard-mode agents that must reference the behavioral contract files:
+
+- `@.claude/context/contracts/anti-analysis.md` -- H2 read budget and output constraints
+- `@.claude/context/contracts/reference-grounding.md` -- H3 source-to-implementation mapping
+- `@.claude/context/contracts/convergence.md` -- H6 churn detection and per-target counters
+- `@.claude/context/contracts/territory.md` -- H7 parallel dispatch file ownership
+- `@.claude/context/contracts/wrap-up.md` -- H9 handoff JSON and commit discipline
+
+Domain-specific hard-mode agents may override individual H-techniques (e.g., lean4 agents
+strengthen H3 with lemma-to-source mapping) while inheriting the rest from the base contracts.
