@@ -265,6 +265,48 @@ validate_extensions_loaded() {
     done < <(jq -r '.extensions | keys[]' "$extensions_file" 2>/dev/null)
 }
 
+# Validate hard-mode agent/skill/contract system
+validate_hard_mode_system() {
+    local system_dir="$1"
+    local agents_subdir="$2"
+
+    echo ""
+    log_info "Validating hard-mode system..."
+    echo "----------------------------------------"
+
+    # Check hard agent existence (3 agents)
+    log_info "Checking hard-mode agents..."
+    for agent in general-research-hard-agent planner-hard-agent general-implementation-hard-agent; do
+        validate_agent_exists "$system_dir/$agents_subdir" "$agent"
+    done
+
+    # Check hard skill directory existence (4 skills)
+    log_info "Checking hard-mode skills..."
+    for skill in skill-researcher-hard skill-planner-hard skill-implementer-hard skill-orchestrate-hard; do
+        if [[ -d "$system_dir/skills/$skill" ]]; then
+            log_pass "Hard skill exists: $skill"
+        else
+            log_fail "Hard skill missing: $skill"
+        fi
+    done
+
+    # Check contract file existence (5 contracts)
+    log_info "Checking contract files..."
+    for contract in anti-analysis.md reference-grounding.md convergence.md territory.md wrap-up.md; do
+        if [[ -f "$system_dir/context/contracts/$contract" ]]; then
+            log_pass "Contract exists: contracts/$contract"
+        else
+            log_fail "Contract missing: contracts/$contract"
+        fi
+    done
+
+    # Check index.json entries for hard agents (at least one entry per hard agent)
+    log_info "Checking index.json entries for hard agents..."
+    validate_index_entries "$system_dir" "general-research-hard-agent"
+    validate_index_entries "$system_dir" "planner-hard-agent"
+    validate_index_entries "$system_dir" "general-implementation-hard-agent"
+}
+
 # Main validation
 main() {
     echo "========================================"
@@ -274,6 +316,7 @@ main() {
     if [[ "$SYSTEM" == "all" || "$SYSTEM" == "--all" || "$SYSTEM" == "--claude" ]]; then
         validate_core_system "$PROJECT_ROOT/.claude" ".claude" "agents"
         validate_extensions_loaded "$PROJECT_ROOT/.claude" ".claude" "agents"
+        validate_hard_mode_system "$PROJECT_ROOT/.claude" "agents"
     fi
 
     if [[ "$SYSTEM" == "all" || "$SYSTEM" == "--all" || "$SYSTEM" == "--opencode" ]]; then

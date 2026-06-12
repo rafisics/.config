@@ -95,18 +95,18 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Hard-Mode Wiring Validation Extension [NOT STARTED]
+### Phase 2: Hard-Mode Wiring Validation Extension [COMPLETED]
 
 **Goal**: Extend `validate-wiring.sh` to cover hard-mode agents, skills, and contract files so the existing wiring validator has full coverage.
 
 **Tasks**:
-- [ ] Add `validate_hard_mode_system()` function to `validate-wiring.sh`
-- [ ] Check hard agent existence (3 agents: `general-research-hard-agent`, `planner-hard-agent`, `general-implementation-hard-agent`)
-- [ ] Check hard skill directory existence (4 skills: `skill-researcher-hard`, `skill-planner-hard`, `skill-implementer-hard`, `skill-orchestrate-hard`)
-- [ ] Check contract file existence (5 contracts in `.claude/context/contracts/`)
-- [ ] Check index.json entries exist for hard agents (at least one entry per hard agent in `load_when.agents`)
-- [ ] Call `validate_hard_mode_system()` from the main execution flow (after existing `validate_claude_system` or `validate_all_systems` calls)
-- [ ] Verify script still passes with `--claude` and `--all` flags
+- [x] Add `validate_hard_mode_system()` function to `validate-wiring.sh` *(completed)*
+- [x] Check hard agent existence (3 agents: `general-research-hard-agent`, `planner-hard-agent`, `general-implementation-hard-agent`) *(completed)*
+- [x] Check hard skill directory existence (4 skills: `skill-researcher-hard`, `skill-planner-hard`, `skill-implementer-hard`, `skill-orchestrate-hard`) *(completed)*
+- [x] Check contract file existence (5 contracts in `.claude/context/contracts/`) *(completed)*
+- [x] Check index.json entries exist for hard agents (at least one entry per hard agent in `load_when.agents`) *(completed)*
+- [x] Call `validate_hard_mode_system()` from the main execution flow (after existing `validate_claude_system` or `validate_all_systems` calls) *(completed)*
+- [x] Verify script still passes with `--claude` and `--all` flags *(completed: all hard-mode checks pass)*
 
 **Timing**: 1 hour
 
