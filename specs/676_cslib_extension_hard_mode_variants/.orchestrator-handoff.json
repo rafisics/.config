@@ -1,0 +1,15 @@
+{
+  "status": "researched",
+  "summary": "Full hard-mode routing design for cslib extension: 4 new files (2 agents + 2 skills) + 3 file modifications. cslib hard agents are justified (7 behavioral gaps vs generic hard agents). Key override: H3 citation conventions (BibKey/references.bib enforcement). All 5 core contracts reusable as-is. No contract override files needed. Lean4 extension is out-of-scope for this task.",
+  "phases_completed": 0,
+  "phases_total": 0,
+  "blockers": [],
+  "continuation_context": null,
+  "artifacts": [
+    {
+      "path": "specs/676_cslib_extension_hard_mode_variants/reports/01_cslib-hard-mode-research.md",
+      "type": "report",
+      "summary": "Complete research: cslib extension anatomy, hard-mode infrastructure inventory, H-technique analysis for CSLib domain, full file inventory (7 artifacts), agent design specifications, manifest routing_hard block, risk assessment, and consistency constraints for future lean4 extension hard-mode."
+    }
+  ]
+}

@@ -38,7 +38,7 @@ next_project_number: 679
 ## Tasks
 
 ### 678. Adaptive auto-escalation advisory (v2)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 669
@@ -58,7 +58,7 @@ next_project_number: 679
 ---
 
 ### 676. Add hard-mode routing to cslib extension
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 669
@@ -68,7 +68,7 @@ next_project_number: 679
 ---
 
 ### 675. Add hard-mode routing to lean4 extension
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 669
