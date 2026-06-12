@@ -193,6 +193,24 @@ teammate_model="${model_flag:-sonnet}"
 
 # Prepare model preference line for prompts (secondary guidance)
 model_preference_line="Model preference: Use Claude ${teammate_model^} 4.6 for this analysis."
+
+# Hard-mode branch: when effort_flag="hard", use hard-mode agents and inject contract summary
+if [ "$hard_team_mode" = "true" ] || [ "$effort_flag" = "hard" ]; then
+  echo "[team-research] Hard mode: injecting anti-analysis and reference-grounding contracts into teammate prompts" >&2
+  # Use hard-mode agent for each teammate
+  teammate_subagent_type="general-research-hard-agent"
+  hard_mode_preamble="
+HARD MODE RESEARCH DISPATCH. The following contracts are mandatory:
+
+1. Anti-Analysis (H2): First concrete output within 20% of tool calls. No analysis-only verdicts.
+2. Reference Grounding (H3): Load-bearing claims must cite specific sources. Apply Tier 1 (literature),
+   Tier 2 (documentation), or Tier 3 (implementation) as appropriate.
+3. Adversarial Verification: Append ## Adversarial Self-Verification to your findings.
+"
+else
+  teammate_subagent_type="general-research-agent"
+  hard_mode_preamble=""
+fi
 ```
 
 ---
@@ -213,6 +231,7 @@ Create teammate prompts and spawn wave. Pass `artifact_number` and `teammate_let
 
 **Teammate A - Primary Angle**:
 ```
+{hard_mode_preamble}
 Research task {task_number}: {description}
 
 {model_preference_line}
@@ -236,6 +255,7 @@ Format: Markdown with clear sections for:
 
 **Teammate B - Alternative Approaches**:
 ```
+{hard_mode_preamble}
 Research task {task_number}: {description}
 
 {model_preference_line}
@@ -255,6 +275,7 @@ Format: Same as Teammate A
 
 **Teammate C - Critic (always present)**:
 ```
+{hard_mode_preamble}
 Research task {task_number}: {description}
 
 {model_preference_line}
@@ -280,6 +301,7 @@ Format: Same as Teammate A
 
 **Teammate D - Horizons (always present)**:
 ```
+{hard_mode_preamble}
 Research task {task_number}: {description}
 
 {model_preference_line}
@@ -313,8 +335,11 @@ Format: Same as Teammate A
 
 **IMPORTANT**: Pass the `model` parameter to enforce model selection:
 - Use `model: "${teammate_model}"` (from Stage 5b: model_flag if provided, otherwise "sonnet" as default)
+- In hard mode, use `subagent_type: "${teammate_subagent_type}"` (set to `general-research-hard-agent` when `hard_team_mode=true`)
 
 The `model_preference_line` in prompts serves as secondary guidance only. The `model` parameter on Agent tool is the enforced selection.
+
+**Hard + Team cost note**: When `hard_team_mode=true`, cost is ~15-25x standard (4 hard-mode teammates plus hard-mode synthesis). Use only for formally complex or heavily deflection-prone tasks.
 
 **Synthesis uses base number without letter**: After all teammates complete, the synthesis report uses `{run_padded}_{slug}.md` (e.g., `01_team-research.md`).
 

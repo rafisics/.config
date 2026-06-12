@@ -47,6 +47,23 @@ This skill activates when:
 # Use model_flag if provided, otherwise default to sonnet (cost-effective for team mode)
 teammate_model="${model_flag:-sonnet}"
 model_preference_line="Model preference: Use Claude ${teammate_model^} 4.6 for this task."
+
+# Hard-mode branch: when effort_flag="hard" or hard_team_mode=true, inject anti-analysis contract
+if [ "$hard_team_mode" = "true" ] || [ "$effort_flag" = "hard" ]; then
+  echo "[team-implement] Hard mode: injecting anti-analysis contract and territory awareness into teammate prompts" >&2
+  teammate_subagent_type="general-implementation-hard-agent"
+  hard_mode_preamble="
+HARD MODE IMPLEMENTATION DISPATCH. The following contracts are mandatory:
+
+1. Anti-Analysis (H2): First file Write or Edit must happen within 20% of tool calls. No analysis-only output.
+2. Settled-Design Preamble: State the decided design before first file operation.
+3. Territory Awareness (H7): Honor the file territory listed below. Do not modify files outside your territory.
+4. Wrap-up (H9): Write .orchestrator-handoff.json before terminating. Commit at every green-build milestone.
+"
+else
+  teammate_subagent_type="general-implementation-agent"
+  hard_mode_preamble=""
+fi
 ```
 
 ---
@@ -279,6 +296,7 @@ For each wave, spawn teammates for parallelizable phases (up to team_size):
 
 **Phase Implementer Prompt Template**:
 ```
+{hard_mode_preamble}
 Implement phase {P} of task {task_number}: {phase_name}
 
 {model_preference_line}
@@ -288,6 +306,10 @@ Implement phase {P} of task {task_number}: {phase_name}
 
 ## Files to Modify
 {files_list}
+
+## Territory (hard mode only — honor these boundaries)
+Owned files: {files_list}
+Read-only references: [files from other phases]
 
 ## Steps
 {steps_from_plan}
@@ -308,6 +330,10 @@ If build/test fails:
 2. Mark phase [PARTIAL] instead of [COMPLETED]
 3. Return with error context for debugger
 ```
+
+**Hard-mode spawning**: When `hard_team_mode=true`, use `subagent_type: "${teammate_subagent_type}"` (general-implementation-hard-agent) for each phase implementer. Pass the Territory section using the files extracted from the plan's phase definition.
+
+**Hard + Team cost note**: When `hard_team_mode=true`, cost is ~15-25x standard (N hard-mode implementation agents plus coordination). Use only for formally complex or heavily deflection-prone tasks.
 
 ---
 

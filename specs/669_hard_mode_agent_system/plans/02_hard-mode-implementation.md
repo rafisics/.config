@@ -216,16 +216,16 @@ This plan is fully sequential due to the layered dependency chain: routing infra
 
 ---
 
-### Phase 5: Team-Mode Hard Composability and Graceful Fallback [NOT STARTED]
+### Phase 5: Team-Mode Hard Composability and Graceful Fallback [COMPLETED]
 
 **Goal**: Enable `--hard + --team` composability so that team skills inject hard-mode contracts into teammate prompts when `effort_flag="hard"`. Also verify and document the graceful fallback behavior for commands that have no hard variant.
 
 **Tasks**:
-- [ ] Update `.claude/skills/skill-team-research/SKILL.md`: When `effort_flag="hard"`, modify the teammate dispatch prompt to include: (1) a preamble line "This is a HARD-MODE research dispatch. The following contracts are mandatory:" (2) inline the essential contract requirements from anti-analysis.md and reference-grounding.md (not the full files -- a 10-line summary of the key rules); (3) set `subagent_type` to `general-research-hard-agent` for each teammate if that agent exists, otherwise use standard agent
-- [ ] Update `.claude/skills/skill-team-plan/SKILL.md`: Same pattern -- when `effort_flag="hard"`, modify teammate prompts to enforce H8 plan requirements (phase sizing, postmortem-constraints, preserved-assets), use `planner-hard-agent` for teammates
-- [ ] Update `.claude/skills/skill-team-implement/SKILL.md`: When `effort_flag="hard"`, inject anti-analysis contract summary into teammate prompts, use `general-implementation-hard-agent` for teammates, pass territory contract awareness for parallel phases
-- [ ] Verify graceful fallback: Test that commands without hard variants (e.g., `/todo --hard`, `/review --hard`, `/refresh --hard`) silently ignore the flag. Since `--hard` is parsed into `EFFORT_FLAG` by `parse-command-args.sh` but only acts when `command-route-skill.sh` is called with it, commands that don't call the routing script naturally ignore it. Document this behavior
-- [ ] Add a one-time note emission: When `--hard` is first detected in a session by any command, emit a note to stderr: `[hard-mode] Hard mode active. Cost: ~3-5x standard. Use --hard for deflection-prone or formally complex tasks.` This note fires once per session (track via a session-scoped flag or temp file)
+- [x] Update `.claude/skills/skill-team-research/SKILL.md`: When `effort_flag="hard"`, *(completed)* modify the teammate dispatch prompt to include: (1) a preamble line "This is a HARD-MODE research dispatch. The following contracts are mandatory:" (2) inline the essential contract requirements from anti-analysis.md and reference-grounding.md (not the full files -- a 10-line summary of the key rules); (3) set `subagent_type` to `general-research-hard-agent` for each teammate if that agent exists, otherwise use standard agent
+- [x] Update `.claude/skills/skill-team-plan/SKILL.md`: Same pattern -- when `effort_flag="hard"`, *(completed)* modify teammate prompts to enforce H8 plan requirements (phase sizing, postmortem-constraints, preserved-assets), use `planner-hard-agent` for teammates
+- [x] Update `.claude/skills/skill-team-implement/SKILL.md`: When `effort_flag="hard"`, *(completed)* inject anti-analysis contract summary into teammate prompts, use `general-implementation-hard-agent` for teammates, pass territory contract awareness for parallel phases
+- [x] Verify graceful fallback: Test that commands without hard variants *(completed — verified by routing script test in Phase 1)* (e.g., `/todo --hard`, `/review --hard`, `/refresh --hard`) silently ignore the flag. Since `--hard` is parsed into `EFFORT_FLAG` by `parse-command-args.sh` but only acts when `command-route-skill.sh` is called with it, commands that don't call the routing script naturally ignore it. Document this behavior
+- [x] Add a one-time note emission: When `--hard` is first detected *(completed — added to each hard skill's Stage 1.5 via session flag file)* in a session by any command, emit a note to stderr: `[hard-mode] Hard mode active. Cost: ~3-5x standard. Use --hard for deflection-prone or formally complex tasks.` This note fires once per session (track via a session-scoped flag or temp file)
 
 **Timing**: 1.5 hours
 
