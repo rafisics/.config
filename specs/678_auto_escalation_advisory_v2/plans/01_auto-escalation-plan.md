@@ -84,20 +84,20 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Add check_churn_advisory() Function [IN PROGRESS]
+### Phase 2: Add check_churn_advisory() Function [COMPLETED]
 
 **Goal**: Implement the churn detection function that evaluates three signals and emits the advisory warning.
 
 **Tasks**:
-- [ ] Define `check_churn_advisory()` function after Stage 5a (drift inspection), as a new Stage 5b section
-- [ ] Signal 1 (plan revisions): count `*.md` files in `${TASK_DIR}/plans/` directory using `ls -1 | wc -l`; store in `churn_plan_revisions`
-- [ ] Signal 2 (implement no-progress): compare `phases_completed` against `last_impl_phases`; increment `churn_no_progress` when delta <= 0, reset to 0 when delta > 0; update `last_impl_phases`
-- [ ] Signal 3 (analysis-only output): when `phases_completed == 0` AND `dispatch_status == "partial"`, grep `dispatch_summary` for analysis-marker regex; increment `churn_analysis_only` on match
-- [ ] Gate: skip check for `researched` and `planned` dispatch statuses (phases_completed is meaningless for those)
-- [ ] Threshold check: emit advisory if any threshold crossed (`churn_plan_revisions >= 2`, `churn_no_progress >= 3`, `churn_analysis_only >= 1`) AND `churn_advisory_emitted == false`
-- [ ] Warning output: use `[orchestrate] ADVISORY:` prefix on stderr, multi-line with counter values and `Consider: /orchestrate $task_number --hard` suggestion
-- [ ] Set `churn_advisory_emitted=true` after emission
-- [ ] Persist updated counters back to loop guard using selective `jq` field updates on the `churn_advisory` sub-object
+- [x] Define `check_churn_advisory()` function after Stage 5a (drift inspection), as a new Stage 5b section *(completed)*
+- [x] Signal 1 (plan revisions): count `*.md` files in `${TASK_DIR}/plans/` directory using `ls -1 | wc -l`; store in `churn_plan_revisions` *(completed)*
+- [x] Signal 2 (implement no-progress): compare `phases_completed` against `last_impl_phases`; increment `churn_no_progress` when delta <= 0, reset to 0 when delta > 0; update `last_impl_phases` *(completed)*
+- [x] Signal 3 (analysis-only output): when `phases_completed == 0` AND `dispatch_status == "partial"`, grep `dispatch_summary` for analysis-marker regex; increment `churn_analysis_only` on match *(completed)*
+- [x] Gate: skip check for `researched` and `planned` dispatch statuses (phases_completed is meaningless for those) *(completed)*
+- [x] Threshold check: emit advisory if any threshold crossed (`churn_plan_revisions >= 2`, `churn_no_progress >= 3`, `churn_analysis_only >= 1`) AND `churn_advisory_emitted == false` *(completed)*
+- [x] Warning output: use `[orchestrate] ADVISORY:` prefix on stderr, multi-line with counter values and `Consider: /orchestrate $task_number --hard` suggestion *(completed)*
+- [x] Set `churn_advisory_emitted=true` after emission *(completed)*
+- [x] Persist updated counters back to loop guard using selective `jq` field updates on the `churn_advisory` sub-object *(completed)*
 
 **Timing**: 40 minutes
 

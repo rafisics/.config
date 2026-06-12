@@ -508,6 +508,73 @@ invoke_drift_inspection() {
 
 ---
 
+### Stage 5b: Churn Advisory Function
+
+Called from Stage 5 after the postflight status update block. Tracks three deflection signals
+and emits a one-time advisory warning when any threshold is crossed. Advisory only — never
+alters dispatch routing or auto-escalates to `--hard`.
+
+```bash
+check_churn_advisory() {
+  # Skip churn check for research/planning dispatches (phases_completed is meaningless)
+  if [ "$dispatch_status" = "researched" ] || [ "$dispatch_status" = "planned" ]; then
+    return 0
+  fi
+
+  # Signal 1: plan revision count — count *.md files in plans/ directory
+  churn_plan_revisions=$(ls -1 "${TASK_DIR}/plans/"*.md 2>/dev/null | wc -l | tr -d ' ')
+
+  # Signal 2: implement no-progress — compare phases_completed against last recorded
+  if [ "$dispatch_status" = "partial" ] || [ "$dispatch_status" = "implemented" ]; then
+    phases_delta=$(( phases_completed - last_impl_phases ))
+    if [ "$phases_delta" -le 0 ]; then
+      churn_no_progress=$(( churn_no_progress + 1 ))
+    else
+      churn_no_progress=0
+    fi
+    last_impl_phases="$phases_completed"
+  fi
+
+  # Signal 3: analysis-only output — zero phases + partial + analysis-marker phrases
+  if [ "$phases_completed" -eq 0 ] && [ "$dispatch_status" = "partial" ]; then
+    analysis_markers="analysis complete\|reviewed the\|examined the\|no changes made\|no files written"
+    if echo "$dispatch_summary" | grep -qi "$analysis_markers"; then
+      churn_analysis_only=$(( churn_analysis_only + 1 ))
+    fi
+  fi
+
+  # Threshold check: emit advisory once if any signal crosses its threshold
+  threshold_crossed=false
+  [ "$churn_plan_revisions" -ge 2 ] && threshold_crossed=true
+  [ "$churn_no_progress" -ge 3 ] && threshold_crossed=true
+  [ "$churn_analysis_only" -ge 1 ] && threshold_crossed=true
+
+  if [ "$threshold_crossed" = "true" ] && [ "$churn_advisory_emitted" = "false" ]; then
+    echo "[orchestrate] ADVISORY: Churn pattern detected for task $task_number." >&2
+    echo "[orchestrate] ADVISORY: Signals: plan_revisions=$churn_plan_revisions, no_progress_dispatches=$churn_no_progress, analysis_only=$churn_analysis_only" >&2
+    echo "[orchestrate] ADVISORY: Repeated deflection may indicate a hard coordination problem." >&2
+    echo "[orchestrate] ADVISORY: Consider: /orchestrate $task_number --hard" >&2
+    churn_advisory_emitted=true
+  fi
+
+  # Persist updated counters back to loop guard
+  jq \
+    --argjson plan_rev "$churn_plan_revisions" \
+    --argjson no_prog "$churn_no_progress" \
+    --argjson analysis "$churn_analysis_only" \
+    --argjson emitted "$( [ "$churn_advisory_emitted" = "true" ] && echo true || echo false )" \
+    --argjson last_phases "$last_impl_phases" \
+    '.churn_advisory.plan_revision_count = $plan_rev |
+     .churn_advisory.implement_no_progress_count = $no_prog |
+     .churn_advisory.analysis_only_count = $analysis |
+     .churn_advisory.advisory_emitted = $emitted |
+     .churn_advisory.last_implement_phases_completed = $last_phases' \
+    "$loop_guard_file" > "${loop_guard_file}.tmp" && mv "${loop_guard_file}.tmp" "$loop_guard_file"
+}
+```
+
+---
+
 ### Stage 6: Blocker Escalation (5-Step Sequence)
 
 Called when: `partial` state with non-empty blockers, or `blocked` state.
