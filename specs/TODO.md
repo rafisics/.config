@@ -23,7 +23,7 @@ next_project_number: 682
 
 87 [RESEARCHED] — Investigate why the terminal working directory changes to a proje
 680 [PLANNED] — Modify claude-stop-notify.sh to call tts-notify.sh when no workfl
-681 [PLANNING] — Fix orchestrator-postflight.sh Stage 8b to pass --quiet only for 
+681 [PLANNED] — Fix orchestrator-postflight.sh Stage 8b to pass --quiet only for 
 
 ### Email Integration
 
@@ -36,11 +36,12 @@ next_project_number: 682
 ## Tasks
 
 ### 681. Fix orchestrator final-completion TTS and tab opacity integration
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: meta
 - **Topic**: Terminal UI
 - **Dependencies**: Task 679
 - **Research**: [681_fix_orchestrator_final_tts/reports/01_orchestrator-tts-research.md]
+- **Plan**: [681_fix_orchestrator_final_tts/plans/01_orchestrator-tts-plan.md]
 
 **Description**: Fix orchestrator-postflight.sh Stage 8b to pass --quiet only for mid-orchestrate transitions (research->plan, plan->implement) and call lifecycle-notify.sh WITHOUT --quiet on final completion so TTS fires. Currently line 313 always passes --quiet with comment "this script is called mid-orchestrate where the orchestrator itself fires the final TTS on true completion" but no such final TTS code exists. The fix requires: (1) orchestrator-postflight.sh must know whether this is a mid-orchestrate call or final completion — add an argument or env var from the caller, (2) for final completion (implement postflight in non-orchestrate mode, or orchestrate final phase), call lifecycle-notify.sh without --quiet, (3) clear workflow-active marker before final Stop so claude-stop-notify.sh fires needs_input tab color + TTS, (4) verify dim-to-bright tab color transitions work correctly during orchestrate cycles (dim for in-progress, bright for completed, needs_input for awaiting user). Files: .claude/scripts/orchestrator-postflight.sh, .claude/scripts/lifecycle-notify.sh, .claude/hooks/claude-stop-notify.sh (workflow-active marker cleanup).
 
