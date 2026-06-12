@@ -3413,6 +3413,146 @@
         ]
       },
       "domain": "project"
+    },
+    {
+      "path": "contracts/anti-analysis.md",
+      "summary": "H2 anti-analysis contract: read budget enforcement, forbidden conclusions, defect bar, settled-design preamble protocol",
+      "line_count": 68,
+      "topics": [
+        "hard-mode",
+        "anti-analysis",
+        "contracts",
+        "implementation"
+      ],
+      "keywords": [
+        "anti-analysis",
+        "read-budget",
+        "defect-bar",
+        "hard-mode",
+        "H2",
+        "forbidden-conclusions"
+      ],
+      "domain": "core",
+      "subdomain": "contracts",
+      "load_when": {
+        "agents": [
+          "general-implementation-hard-agent",
+          "general-research-hard-agent"
+        ],
+        "commands": [],
+        "task_types": []
+      }
+    },
+    {
+      "path": "contracts/reference-grounding.md",
+      "summary": "H3 reference grounding contract: three tiers (literature, documentation, implementation) with source-to-implementation mapping",
+      "line_count": 75,
+      "topics": [
+        "hard-mode",
+        "reference-grounding",
+        "contracts",
+        "research"
+      ],
+      "keywords": [
+        "reference-grounding",
+        "transcription",
+        "source-mapping",
+        "hard-mode",
+        "H3",
+        "prior-art"
+      ],
+      "domain": "core",
+      "subdomain": "contracts",
+      "load_when": {
+        "agents": [
+          "general-research-hard-agent",
+          "planner-hard-agent"
+        ],
+        "commands": [],
+        "task_types": []
+      }
+    },
+    {
+      "path": "contracts/convergence.md",
+      "summary": "H6 convergence policing contract: churn detection, three-strikes rule, user-authorization for architectural pivots",
+      "line_count": 73,
+      "topics": [
+        "hard-mode",
+        "convergence",
+        "contracts",
+        "orchestration"
+      ],
+      "keywords": [
+        "convergence",
+        "churn",
+        "three-strikes",
+        "hard-mode",
+        "H6",
+        "divergence-audit"
+      ],
+      "domain": "core",
+      "subdomain": "contracts",
+      "load_when": {
+        "agents": [],
+        "commands": [],
+        "task_types": []
+      }
+    },
+    {
+      "path": "contracts/territory.md",
+      "summary": "H7 territory contract: file ownership, plan-section territory, commit protocol for parallel dispatch",
+      "line_count": 82,
+      "topics": [
+        "hard-mode",
+        "territory",
+        "contracts",
+        "parallel-dispatch"
+      ],
+      "keywords": [
+        "territory",
+        "file-ownership",
+        "parallel-dispatch",
+        "hard-mode",
+        "H7",
+        "commit-protocol"
+      ],
+      "domain": "core",
+      "subdomain": "contracts",
+      "load_when": {
+        "agents": [
+          "general-implementation-hard-agent"
+        ],
+        "commands": [],
+        "task_types": []
+      }
+    },
+    {
+      "path": "contracts/wrap-up.md",
+      "summary": "H9 wrap-up and handoff contract: orchestrator handoff JSON schema, continuation markdown, incremental commit discipline",
+      "line_count": 94,
+      "topics": [
+        "hard-mode",
+        "wrap-up",
+        "contracts",
+        "handoff"
+      ],
+      "keywords": [
+        "wrap-up",
+        "handoff",
+        "incremental-commits",
+        "hard-mode",
+        "H9",
+        "build-green"
+      ],
+      "domain": "core",
+      "subdomain": "contracts",
+      "load_when": {
+        "agents": [
+          "general-implementation-hard-agent"
+        ],
+        "commands": [],
+        "task_types": []
+      }
     }
   ]
 }
