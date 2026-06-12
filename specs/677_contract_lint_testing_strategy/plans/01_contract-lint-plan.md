@@ -64,21 +64,21 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Static Contract Lint Script [IN PROGRESS]
+### Phase 1: Static Contract Lint Script [COMPLETED]
 
 **Goal**: Create the core lint script that validates hard-mode contract structural compliance across agent files, skill files, contract files, and index.json.
 
 **Tasks**:
-- [ ] Create `.claude/scripts/lint/lint-contract-compliance.sh` following the `lint-postflight-boundary.sh` pattern (colored output, exit 0/1, `set -euo pipefail`)
-- [ ] Implement Check A: hard-agent contract @-references (verify each hard agent references its required contracts in Context References section)
-- [ ] Implement Check B: contract file existence and H-technique references (all 5 contract files exist and contain H-technique identifiers)
-- [ ] Implement Check C: skill-to-hard-agent dispatch wiring (each hard skill dispatches to correct hard agent)
-- [ ] Implement Check D: convergence policing fields in `skill-orchestrate-hard/SKILL.md` (churn fields: `total_churn`, `target_churn`, `adversarial_triggers`)
-- [ ] Implement Check E: H2 vocabulary in implementation-hard agent (Forbidden Conclusions, Defect Bar, single-phase, settled-design)
-- [ ] Implement Check F: index.json contract coverage for hard agents (verify hard agents appear in contract `load_when.agents` entries)
-- [ ] Add `--verbose` flag for detailed output and `--help` for usage
-- [ ] Add script header documenting what IS and IS NOT checked (explicit scope boundary)
-- [ ] Test the script against the current codebase and verify exit code 0
+- [x] Create `.claude/scripts/lint/lint-contract-compliance.sh` following the `lint-postflight-boundary.sh` pattern (colored output, exit 0/1, `set -euo pipefail`) *(completed)*
+- [x] Implement Check A: hard-agent contract @-references (verify each hard agent references its required contracts in Context References section) *(completed)*
+- [x] Implement Check B: contract file existence and H-technique references (all 5 contract files exist and contain H-technique identifiers) *(completed)*
+- [x] Implement Check C: skill-to-hard-agent dispatch wiring (each hard skill dispatches to correct hard agent) *(completed)*
+- [x] Implement Check D: convergence policing fields in `skill-orchestrate-hard/SKILL.md` (churn fields: `total_churn`, `target_churn`, `adversarial_triggers`) *(completed)*
+- [x] Implement Check E: H2 vocabulary in implementation-hard agent (Forbidden Conclusions, Defect Bar, single-phase, settled-design) *(completed)*
+- [x] Implement Check F: index.json contract coverage for hard agents (verify hard agents appear in contract `load_when.agents` entries) *(completed)*
+- [x] Add `--verbose` flag for detailed output and `--help` for usage *(completed)*
+- [x] Add script header documenting what IS and IS NOT checked (explicit scope boundary) *(completed)*
+- [x] Test the script against the current codebase and verify exit code 0 *(completed: 24 checks pass)*
 
 **Timing**: 2 hours
 
