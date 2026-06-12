@@ -1,5 +1,5 @@
 ---
-next_project_number: 669
+next_project_number: 670
 ---
 
 # TODO
@@ -11,13 +11,14 @@ next_project_number: 669
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,652 | -- | agent-system, Terminal UI, Email Integration |
+| 1 | 78,87,652,669 | -- | agent-system, Terminal UI, Email Integration |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Agent System
 
 652 [NOT STARTED] — After ~1 week of the new pipeline running, review logs to verify 
+669 [RESEARCHED] — Create hard-mode variants of the agent system for very complex, d
 
 ### Terminal UI
 
@@ -28,6 +29,18 @@ next_project_number: 669
 78 [PLANNED] — Fix Gmail SMTP authentication failure when sending emails via Him
 
 ## Tasks
+
+### 669. Add hard-mode routing (--hard) with hard-mode skills and agents for very complex tasks
+- **Effort**: 8-12 hours
+- **Status**: [RESEARCHED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+- **Research**: [669_hard_mode_agent_system/reports/01_hard-mode-orchestration-approach.md]
+
+**Description**: Create hard-mode variants of the agent system for very complex, deflection-prone tasks (e.g., deep Lean formalization): route --hard in /implement, /research, /plan, /orchestrate to hard-mode skills (skill-lean-implementation-hard, skill-orchestrate-hard, skill-planner-hard, skill-{domain}-research-hard) calling hard-mode agents. Hard mode encodes: per-phase dispatch (one bounded milestone per agent run), anti-analysis prompt contracts (read budgets, forbidden conclusions, counterexample bar for defect claims), prior-art transcription mandates with PDF-level citation, adversarial verification of research reports, divergence-audit trigger after repeated deflections (churn counters in loop guard), territory contracts for parallel dispatch, roadmap handoffs with incremental commit discipline, and hard-mode plan format (phases sized for single runs, postmortem constraints, lemma-to-source mapping, preserved-assets accounting). See report 01 for the full methodology distilled from the BimodalLogic task-273 session, measured outcomes, and a 7-step implementation breakdown.
+
+---
 
 ### 668. Add default_task_type support to task creation pipeline
 - **Effort**: 1-2 hours

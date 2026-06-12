@@ -1,6 +1,6 @@
 {
   "version": "1.1.0",
-  "next_project_number": 669,
+  "next_project_number": 670,
   "active_projects": [
     {
       "project_number": 668,
@@ -874,6 +874,29 @@
       "artifacts": [],
       "session_id": "sess_1749607200_a3b2c1_656",
       "completion_summary": "Added topic assignment to 6 creation points: Mode C suggest-wrap for fix-it and review, Mode A picker-insert for project-overview, Mode B inherit-with-fallback for spawn/--expand/--review. All extension copies synced."
+    },
+    {
+      "project_number": 669,
+      "project_name": "hard_mode_agent_system",
+      "title": "Add hard-mode routing (--hard) with hard-mode skills and agents for very complex tasks",
+      "status": "researched",
+      "task_type": "meta",
+      "topic": "agent-system",
+      "effort": "8-12 hours",
+      "created": "2026-06-12T07:30:00Z",
+      "last_updated": "2026-06-12T07:30:00Z",
+      "dependencies": [],
+      "description": "Create hard-mode variants of the agent system for very complex, deflection-prone tasks (e.g., deep Lean formalization): route --hard in /implement, /research, /plan, /orchestrate to hard-mode skills (skill-lean-implementation-hard, skill-orchestrate-hard, skill-planner-hard, skill-{domain}-research-hard) calling hard-mode agents. Hard mode encodes: per-phase dispatch (one bounded milestone per agent run), anti-analysis prompt contracts (read budgets, forbidden conclusions, counterexample bar for defect claims), prior-art transcription mandates with PDF-level citation, adversarial verification of research reports, divergence-audit trigger after repeated deflections (churn counters in loop guard), territory contracts for parallel dispatch, roadmap handoffs with incremental commit discipline, and hard-mode plan format (phases sized for single runs, postmortem constraints, lemma-to-source mapping, preserved-assets accounting). See report 01 for the full methodology distilled from the BimodalLogic task-273 session, measured outcomes, and a 7-step implementation breakdown.",
+      "artifacts": [
+        {
+          "path": "specs/669_hard_mode_agent_system/reports/01_hard-mode-orchestration-approach.md",
+          "type": "report",
+          "summary": "Hard-mode orchestration methodology: 6 observed failure modes, 9 counter-techniques (per-phase dispatch, anti-analysis contracts, prior-art grounding, adversarial verification, divergence audit, convergence policing, territory contracts, hard plan format, roadmap handoffs), proposed --hard routing architecture, measured outcomes, implementation breakdown"
+        }
+      ],
+      "next_artifact_number": 2,
+      "researched": "2026-06-12T07:30:00Z",
+      "session_id": "sess_1781193902_83bc5c"
     }
   ],
   "completed_projects": [],
