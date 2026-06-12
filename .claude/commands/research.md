@@ -328,71 +328,41 @@ If `team_mode == true`:
 
 **Extension Routing** (when `--team` flag NOT present):
 
-Check extension manifests for task-type-specific research routing:
+Use the centralized routing script to resolve the skill, including hard-mode routing when `effort_flag="hard"`:
 
 ```bash
-# Get task_type (may be simple "founder" or compound "founder:deck")
-task_type=$(echo "$task_data" | jq -r '.task_type // "general"')
-
-# Check extension routing for research (skill_name starts empty)
-skill_name=""
-for manifest in .claude/extensions/*/manifest.json; do
-  if [ -f "$manifest" ]; then
-    ext_skill=$(jq -r --arg tt "$task_type" \
-      '.routing.research[$tt] // empty' "$manifest")
-    if [ -n "$ext_skill" ]; then
-      skill_name="$ext_skill"
-      break
-    fi
-  fi
-done
-
-# Fallback: if compound key (contains ":"), try base task_type
-if [ -z "$skill_name" ] && echo "$task_type" | grep -q ":"; then
-  base_type=$(echo "$task_type" | cut -d: -f1)
-  for manifest in .claude/extensions/*/manifest.json; do
-    if [ -f "$manifest" ]; then
-      ext_skill=$(jq -r --arg tt "$base_type" \
-        '.routing.research[$tt] // empty' "$manifest")
-      if [ -n "$ext_skill" ]; then
-        skill_name="$ext_skill"
-        break
-      fi
-    fi
-  done
-fi
-
-# Fallback to default researcher if no extension routing found
-skill_name=${skill_name:-"skill-researcher"}
+source .claude/scripts/command-route-skill.sh "research" "$TASK_TYPE" "skill-researcher" "$EFFORT_FLAG"
+skill_name="$SKILL_NAME"
 ```
 
 **Extension-Based Routing Table**:
 
-| Task Type | Skill to Invoke |
-|-----------|-----------------|
-| `founder` | `skill-market` (from founder extension) |
-| `founder:deck` | `skill-deck-research` (from founder extension) |
-| `founder:analyze` | `skill-analyze` (from founder extension) |
-| `founder:strategy` | `skill-strategy` (from founder extension) |
-| `founder:{sub-type}` | Compound key lookup, falls back to `skill-market` |
-| `general`, `meta`, `markdown` | `skill-researcher` (default) |
+| Task Type | effort_flag | Skill to Invoke |
+|-----------|-------------|-----------------|
+| `founder` | (any) | `skill-market` (from founder extension) |
+| `founder:deck` | (any) | `skill-deck-research` (from founder extension) |
+| `general`, `meta`, `markdown` | (empty) | `skill-researcher` (default) |
+| `general`, `meta`, `markdown` | `hard` | `skill-researcher-hard` (if exists, else `skill-researcher`) |
 
 **Skill Selection Logic**:
 ```
 if team_mode:
   skill_name = "skill-team-research"
+  hard_team_mode = (effort_flag == "hard")
 else:
-  skill_name = {extension routing lookup} OR "skill-researcher"
+  skill_name = command-route-skill.sh "research" TASK_TYPE "skill-researcher" EFFORT_FLAG
 ```
+
+**Hard + Team composability**: When both `--team` and `--hard` are present, set `hard_team_mode=true` and pass it to `skill-team-research` so it injects hard-mode contracts into teammate prompts.
 
 **Invoke the Skill tool NOW** with:
 ```
 # For team mode:
 skill: "skill-team-research"
-args: "task_number={N} focus={focus_prompt} team_size={team_size} session_id={session_id} effort_flag={effort_flag} model_flag={model_flag} clean_flag={clean_flag}"
+args: "task_number={N} focus={focus_prompt} team_size={team_size} session_id={session_id} effort_flag={effort_flag} model_flag={model_flag} clean_flag={clean_flag} hard_team_mode={hard_team_mode}"
 
 # For single-agent mode:
-skill: "{skill-name from table above}"
+skill: "{skill_name}"
 args: "task_number={N} focus={focus_prompt} session_id={session_id} effort_flag={effort_flag} model_flag={model_flag} clean_flag={clean_flag}"
 ```
 

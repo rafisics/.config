@@ -122,25 +122,28 @@ If no plan: ABORT "No implementation plan found. Run /plan {N} first."
 **Extension Routing** (when `--team` flag NOT present):
 
 ```bash
-source .claude/scripts/command-route-skill.sh "implement" "$TASK_TYPE" "skill-implementer"
+source .claude/scripts/command-route-skill.sh "implement" "$TASK_TYPE" "skill-implementer" "$EFFORT_FLAG"
 skill_name="$SKILL_NAME"
 # Defensive correction (state.json + TODO.md) handled by command-gate-out.sh
 ```
 
 **Routing table**:
 
-| Task Type | Skill to Invoke |
-|-----------|-----------------|
-| `neovim` | `skill-neovim-implementation` |
-| `nix` | `skill-nix-implementation` |
-| `general`, `meta`, `markdown` | `skill-implementer` (default) |
-| Extension type | Resolved via extension manifest routing |
+| Task Type | effort_flag | Skill to Invoke |
+|-----------|-------------|-----------------|
+| `neovim` | (any) | `skill-neovim-implementation` |
+| `nix` | (any) | `skill-nix-implementation` |
+| `general`, `meta`, `markdown` | (empty) | `skill-implementer` (default) |
+| `general`, `meta`, `markdown` | `hard` | `skill-implementer-hard` (if exists, else `skill-implementer`) |
+| Extension type | (any) | Resolved via extension manifest routing (routing_hard when effort_flag="hard") |
+
+**Hard + Team composability**: When `TEAM_MODE=true` and `EFFORT_FLAG="hard"`, set `hard_team_mode=true` and pass to `skill-team-implement`.
 
 **Invoke the Skill tool NOW** with:
 ```
 # For team mode:
 skill: "skill-team-implement"
-args: "task_number={N} plan_path={path} resume_phase={phase} team_size={TEAM_SIZE} session_id={SESSION_ID} effort_flag={EFFORT_FLAG} model_flag={MODEL_FLAG} clean_flag={CLEAN_FLAG} orchestrator_mode=false"
+args: "task_number={N} plan_path={path} resume_phase={phase} team_size={TEAM_SIZE} session_id={SESSION_ID} effort_flag={EFFORT_FLAG} model_flag={MODEL_FLAG} clean_flag={CLEAN_FLAG} orchestrator_mode=false hard_team_mode={hard_team_mode}"
 
 # For single-agent mode:
 skill: "{skill_name}"

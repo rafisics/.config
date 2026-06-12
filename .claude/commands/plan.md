@@ -332,73 +332,41 @@ If `team_mode == true`:
 
 **Extension Routing** (when `--team` flag NOT present):
 
-Check extension manifests for task-type-specific plan routing:
+Use the centralized routing script to resolve the skill, including hard-mode routing when `effort_flag="hard"`:
 
 ```bash
-# Get task_type (may be simple "founder" or compound "founder:deck")
-task_type=$(echo "$task_data" | jq -r '.task_type // "general"')
-
-# Check extension routing for plan (skill_name starts empty)
-skill_name=""
-for manifest in .claude/extensions/*/manifest.json; do
-  if [ -f "$manifest" ]; then
-    ext_skill=$(jq -r --arg tt "$task_type" \
-      '.routing.plan[$tt] // empty' "$manifest")
-    if [ -n "$ext_skill" ]; then
-      skill_name="$ext_skill"
-      break
-    fi
-  fi
-done
-
-# Fallback: if compound key (contains ":"), try base task_type
-if [ -z "$skill_name" ] && echo "$task_type" | grep -q ":"; then
-  base_type=$(echo "$task_type" | cut -d: -f1)
-  for manifest in .claude/extensions/*/manifest.json; do
-    if [ -f "$manifest" ]; then
-      ext_skill=$(jq -r --arg tt "$base_type" \
-        '.routing.plan[$tt] // empty' "$manifest")
-      if [ -n "$ext_skill" ]; then
-        skill_name="$ext_skill"
-        break
-      fi
-    fi
-  done
-fi
-
-# Fallback to default planner if no extension routing found
-skill_name=${skill_name:-"skill-planner"}
+source .claude/scripts/command-route-skill.sh "plan" "$TASK_TYPE" "skill-planner" "$EFFORT_FLAG"
+skill_name="$SKILL_NAME"
 ```
 
 **Extension-Based Routing Table**:
 
-| Task Type | Skill to Invoke |
-|-----------|-----------------|
-| `founder` | `skill-founder-plan` (from founder extension) |
-| `founder:deck` | `skill-deck-plan` (from founder extension) |
-| `founder:{sub-type}` | Compound key lookup, falls back to `skill-founder-plan` |
-| Other | `skill-planner` (default) |
+| Task Type | effort_flag | Skill to Invoke |
+|-----------|-------------|-----------------|
+| `founder` | (any) | `skill-founder-plan` (from founder extension) |
+| `founder:deck` | (any) | `skill-deck-plan` (from founder extension) |
+| Other | (empty) | `skill-planner` (default) |
+| Other | `hard` | `skill-planner-hard` (if exists, else `skill-planner`) |
 
 **Skill Selection Logic**:
 ```
 if team_mode:
   skill_name = "skill-team-plan"
+  hard_team_mode = (effort_flag == "hard")
 else:
-  skill_name = {extension routing lookup} OR "skill-planner"
+  skill_name = command-route-skill.sh "plan" TASK_TYPE "skill-planner" EFFORT_FLAG
 ```
+
+**Hard + Team composability**: When both `--team` and `--hard` are present, set `hard_team_mode=true` and pass it to `skill-team-plan` so it injects hard-mode contracts into teammate prompts.
 
 **Invoke the Skill tool NOW** with:
 ```
 # For team mode:
 skill: "skill-team-plan"
-args: "task_number={N} research_path={path to research report if exists} prior_plan_path={path to prior plan if exists} team_size={team_size} session_id={session_id} effort_flag={effort_flag} model_flag={model_flag} clean_flag={clean_flag} roadmap_flag={roadmap_flag}"
+args: "task_number={N} research_path={path to research report if exists} prior_plan_path={path to prior plan if exists} team_size={team_size} session_id={session_id} effort_flag={effort_flag} model_flag={model_flag} clean_flag={clean_flag} roadmap_flag={roadmap_flag} hard_team_mode={hard_team_mode}"
 
-# For extension-routed skill (e.g., skill-founder-plan):
-skill: "{skill_name from extension routing}"
-args: "task_number={N} research_path={path to research report if exists} prior_plan_path={path to prior plan if exists} session_id={session_id} effort_flag={effort_flag} model_flag={model_flag} clean_flag={clean_flag} roadmap_flag={roadmap_flag}"
-
-# For default single-agent mode:
-skill: "skill-planner"
+# For single-agent mode (skill_name resolved by command-route-skill.sh):
+skill: "{skill_name}"
 args: "task_number={N} research_path={path to research report if exists} prior_plan_path={path to prior plan if exists} session_id={session_id} effort_flag={effort_flag} model_flag={model_flag} clean_flag={clean_flag} roadmap_flag={roadmap_flag}"
 ```
 
