@@ -71,14 +71,14 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Lean4 Contract Overrides [IN PROGRESS]
+### Phase 1: Lean4 Contract Overrides [COMPLETED]
 
 **Goal**: Create the lean4-specific contract override files that hard agents will reference.
 
 **Tasks**:
-- [ ] Create directory `.claude/extensions/lean/context/contracts/`
-- [ ] Create `reference-grounding.md` (~80 lines): lean4 Tier 1 override with lemma-level mapping table format (columns: Source | Prop/Location | Lean Identifier | Type Signature | Status), strict transcription discipline, sorry-inventory cross-reference, PDF section citation requirement
-- [ ] Create `anti-analysis.md` (~50 lines): lean4 H2 override adding formal proof line bar ("first sorry-free lemma within the first 30% of tool calls"), tightened forbidden conclusions for proof contexts (e.g., "this theorem needs a different approach" without a concrete type-mismatch), sub-sorry policy enforcement for leaf-only sorries
+- [x] Create directory `.claude/extensions/lean/context/contracts/` *(completed)*
+- [x] Create `reference-grounding.md` (~80 lines): lean4 Tier 1 override with lemma-level mapping table format (columns: Source | Prop/Location | Lean Identifier | Type Signature | Status), strict transcription discipline, sorry-inventory cross-reference, PDF section citation requirement *(completed)*
+- [x] Create `anti-analysis.md` (~50 lines): lean4 H2 override adding formal proof line bar ("first sorry-free lemma within the first 30% of tool calls"), tightened forbidden conclusions for proof contexts (e.g., "this theorem needs a different approach" without a concrete type-mismatch), sub-sorry policy enforcement for leaf-only sorries *(completed)*
 
 **Timing**: 1 hour
 
