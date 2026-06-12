@@ -1,0 +1,199 @@
+# Implementation Plan: Contract Lint Testing Strategy
+
+- **Task**: 677 - contract_lint_testing_strategy
+- **Status**: [NOT STARTED]
+- **Effort**: 5 hours
+- **Dependencies**: Task 669 (hard_mode_agent_system)
+- **Research Inputs**: specs/677_contract_lint_testing_strategy/reports/01_contract-lint-research.md
+- **Artifacts**: plans/01_contract-lint-plan.md (this file)
+- **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
+- **Type**: meta
+- **Lean Intent**: false
+
+## Overview
+
+Implement a bash-based testing strategy for hard-mode behavioral contract compliance. The strategy creates a new static lint script for contract @-reference and vocabulary checks, extends two existing validation scripts (`validate-wiring.sh` and `validate-artifact.sh`) to cover hard-mode agents/skills/plans, and adds a standalone handoff schema validator. All scripts follow the existing bash lint patterns established by `lint-postflight-boundary.sh` and `validate-wiring.sh`, requiring no new infrastructure or test frameworks.
+
+### Research Integration
+
+Research report (`01_contract-lint-research.md`) identified three tiers of testable contract properties: Tier 1 (fully static file content checks), Tier 2 (artifact-level post-hoc checks), and Tier 3 (dynamic runtime traces, deferred). The research catalogued specific statically-checkable properties for all five contracts (anti-analysis, reference-grounding, convergence, territory, wrap-up) and provided concrete implementation sketches for each validation function. Key gap: `validate-wiring.sh` has zero hard-mode coverage, and `validate-artifact.sh` has no hard-mode plan section checks.
+
+### Prior Plan Reference
+
+No prior plan.
+
+### Roadmap Alignment
+
+No roadmap items identified for this meta/infrastructure task.
+
+## Goals & Non-Goals
+
+**Goals**:
+- Create `lint-contract-compliance.sh` covering Tier 1 static checks for all five hard-mode contracts
+- Extend `validate-wiring.sh` to validate hard-mode agents, skills, and contract file existence
+- Extend `validate-artifact.sh` to detect and check hard-mode plan sections (postmortem constraints, phase sizing, wave maps)
+- Create `validate-handoff.sh` for orchestrator handoff JSON schema validation
+- Document what is NOT checked (runtime behavior) to prevent false confidence
+
+**Non-Goals**:
+- Runtime trace harness for behavioral compliance (deferred to future task)
+- CI integration (meta tasks skip CI by default)
+- Automated test runner framework (all scripts are standalone)
+- Modifying the contracts themselves or the hard-mode agents/skills
+
+## Risks & Mitigations
+
+| Risk | Impact | Likelihood | Mitigation |
+|------|--------|------------|------------|
+| Static checks give false confidence about behavioral correctness | H | M | Document clearly in each script header what is NOT checked |
+| Lint script becomes stale as contracts evolve | M | M | Check contract files by reading them for vocabulary, not hardcoded strings where possible |
+| Hard-mode plan checks produce false positives on non-hard plans | M | L | Gate checks on detection of "hard-mode" or "planner-hard" marker in plan metadata |
+| validate-wiring.sh extension conflicts with existing checks | M | L | Add hard-mode checks in a separate function, called from main() after existing checks |
+| Contract file structure changes break grep patterns | M | M | Use anchored heading patterns (^##) that are format-stable |
+
+## Implementation Phases
+
+**Dependency Analysis**:
+| Wave | Phases | Blocked by |
+|------|--------|------------|
+| 1    | 1      | --         |
+| 2    | 2, 3   | 1          |
+| 3    | 4      | 2, 3       |
+
+Phases within the same wave can execute in parallel.
+
+---
+
+### Phase 1: Static Contract Lint Script [NOT STARTED]
+
+**Goal**: Create the core lint script that validates hard-mode contract structural compliance across agent files, skill files, contract files, and index.json.
+
+**Tasks**:
+- [ ] Create `.claude/scripts/lint/lint-contract-compliance.sh` following the `lint-postflight-boundary.sh` pattern (colored output, exit 0/1, `set -euo pipefail`)
+- [ ] Implement Check A: hard-agent contract @-references (verify each hard agent references its required contracts in Context References section)
+- [ ] Implement Check B: contract file existence and H-technique references (all 5 contract files exist and contain H-technique identifiers)
+- [ ] Implement Check C: skill-to-hard-agent dispatch wiring (each hard skill dispatches to correct hard agent)
+- [ ] Implement Check D: convergence policing fields in `skill-orchestrate-hard/SKILL.md` (churn fields: `total_churn`, `target_churn`, `adversarial_triggers`)
+- [ ] Implement Check E: H2 vocabulary in implementation-hard agent (Forbidden Conclusions, Defect Bar, single-phase, settled-design)
+- [ ] Implement Check F: index.json contract coverage for hard agents (verify hard agents appear in contract `load_when.agents` entries)
+- [ ] Add `--verbose` flag for detailed output and `--help` for usage
+- [ ] Add script header documenting what IS and IS NOT checked (explicit scope boundary)
+- [ ] Test the script against the current codebase and verify exit code 0
+
+**Timing**: 2 hours
+
+**Depends on**: none
+
+**Files to modify**:
+- `.claude/scripts/lint/lint-contract-compliance.sh` - New file (~200-250 lines)
+
+**Verification**:
+- Script runs without errors: `bash .claude/scripts/lint/lint-contract-compliance.sh`
+- Exit code 0 on current codebase (all checks pass)
+- `--verbose` flag produces detailed per-check output
+- Intentionally breaking a contract reference produces exit code 1
+
+---
+
+### Phase 2: Hard-Mode Wiring Validation Extension [NOT STARTED]
+
+**Goal**: Extend `validate-wiring.sh` to cover hard-mode agents, skills, and contract files so the existing wiring validator has full coverage.
+
+**Tasks**:
+- [ ] Add `validate_hard_mode_system()` function to `validate-wiring.sh`
+- [ ] Check hard agent existence (3 agents: `general-research-hard-agent`, `planner-hard-agent`, `general-implementation-hard-agent`)
+- [ ] Check hard skill directory existence (4 skills: `skill-researcher-hard`, `skill-planner-hard`, `skill-implementer-hard`, `skill-orchestrate-hard`)
+- [ ] Check contract file existence (5 contracts in `.claude/context/contracts/`)
+- [ ] Check index.json entries exist for hard agents (at least one entry per hard agent in `load_when.agents`)
+- [ ] Call `validate_hard_mode_system()` from the main execution flow (after existing `validate_claude_system` or `validate_all_systems` calls)
+- [ ] Verify script still passes with `--claude` and `--all` flags
+
+**Timing**: 1 hour
+
+**Depends on**: 1
+
+**Files to modify**:
+- `.claude/scripts/validate-wiring.sh` - Add ~60-80 lines (new function + call site)
+
+**Verification**:
+- `bash .claude/scripts/validate-wiring.sh --claude` includes hard-mode checks in output
+- All hard-mode checks show `[PASS]` on current codebase
+- Removing a hard agent file causes `[FAIL]` in output
+
+---
+
+### Phase 3: Hard-Mode Plan Artifact Checks [NOT STARTED]
+
+**Goal**: Extend `validate-artifact.sh` to detect hard-mode plans and verify they contain required sections (postmortem constraints, phase sizing annotations, dependency wave maps).
+
+**Tasks**:
+- [ ] Add hard-mode plan detection logic: check for `planner-hard` or `hard-mode` or `--hard` in plan metadata/title
+- [ ] When hard-mode plan detected, check for `## Postmortem Constraints` section heading
+- [ ] Check for phase sizing annotations: at least one `### Phase` has `Estimated output` and `Done when` fields
+- [ ] Check for Dependency Analysis wave map table (already checked for all plans; verify it covers hard-mode plans)
+- [ ] Ensure non-hard plans are not flagged by the hard-mode checks (gate on detection)
+- [ ] Add hard-mode check results to the existing pass/fail output format
+
+**Timing**: 1 hour
+
+**Depends on**: 1
+
+**Files to modify**:
+- `.claude/scripts/validate-artifact.sh` - Add ~30-40 lines (hard-mode detection + checks)
+
+**Verification**:
+- `bash .claude/scripts/validate-artifact.sh specs/.../plans/hard-plan.md plan` reports hard-mode section status
+- Non-hard plans are not flagged for missing hard-mode sections
+- Missing `## Postmortem Constraints` in a hard plan produces a warning
+
+---
+
+### Phase 4: Handoff Schema Validation Script [NOT STARTED]
+
+**Goal**: Create a standalone validator for `.orchestrator-handoff.json` files produced by `skill-orchestrate-hard`, verifying JSON structure, required fields, and status/continuation_path consistency.
+
+**Tasks**:
+- [ ] Create `.claude/scripts/validate-handoff.sh` following existing script patterns (colored output, usage help)
+- [ ] Validate JSON parsability with `jq empty`
+- [ ] Check required fields: `status`, `phases_completed`, `phases_total`, `sorry_inventory`, `blockers`, `continuation_path`
+- [ ] Validate status value is one of: `implemented`, `partial`, `blocked`
+- [ ] When status is `partial` or `blocked`, verify `continuation_path` is non-null
+- [ ] When status is `partial`, verify `phases_completed < phases_total`
+- [ ] Add usage documentation and `--help` flag
+- [ ] Test against any existing handoff files in `specs/` directories
+
+**Timing**: 1 hour
+
+**Depends on**: 2, 3
+
+**Files to modify**:
+- `.claude/scripts/validate-handoff.sh` - New file (~80-100 lines)
+
+**Verification**:
+- Script accepts a valid handoff JSON file with exit code 0
+- Invalid JSON produces clear error message
+- Missing required fields produce warnings
+- Status/continuation_path inconsistency produces warning
+
+## Testing & Validation
+
+- [ ] `lint-contract-compliance.sh` exits 0 on current codebase
+- [ ] `validate-wiring.sh --claude` includes hard-mode checks and all pass
+- [ ] `validate-artifact.sh` correctly detects and checks a hard-mode plan
+- [ ] `validate-artifact.sh` does not flag non-hard plans for hard-mode sections
+- [ ] `validate-handoff.sh` validates existing handoff JSON files (if any)
+- [ ] All scripts have consistent colored output format (PASS/FAIL/WARN)
+- [ ] All scripts include usage documentation via `--help` flag
+- [ ] No regressions in existing `validate-wiring.sh` or `validate-artifact.sh` checks
+
+## Artifacts & Outputs
+
+- `.claude/scripts/lint/lint-contract-compliance.sh` - New static contract lint script
+- `.claude/scripts/validate-wiring.sh` - Extended with hard-mode system validation
+- `.claude/scripts/validate-artifact.sh` - Extended with hard-mode plan checks
+- `.claude/scripts/validate-handoff.sh` - New handoff schema validator
+- `specs/677_contract_lint_testing_strategy/plans/01_contract-lint-plan.md` - This plan
+
+## Rollback/Contingency
+
+All changes are additive. The new lint script and handoff validator are standalone files that can be deleted. The extensions to `validate-wiring.sh` and `validate-artifact.sh` add new functions called from main() -- reverting requires removing the function definitions and their call sites. Git revert of the implementation commit cleanly undoes all changes.
