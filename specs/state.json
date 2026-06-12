@@ -1,6 +1,6 @@
 {
   "version": "1.1.0",
-  "next_project_number": 670,
+  "next_project_number": 671,
   "active_projects": [
     {
       "project_number": 668,
@@ -907,6 +907,27 @@
       "next_artifact_number": 3,
       "researched": "2026-06-12T16:31:33Z",
       "session_id": "sess_1781282559_df2643"
+    },
+    {
+      "project_number": 670,
+      "project_name": "fix_artifact_counter_system",
+      "status": "researched",
+      "task_type": "meta",
+      "description": "Fix 4 bugs in the artifact counter system (next_artifact_number): (1) Revision does not increment counter — causes collisions when multiple plan revisions share the same number, (2) No collision detection when computed artifact number matches existing files, (3) Counter drift for legacy tasks that predate the unified numbering, (4) plan_version vs artifact sequence number confusion in filenames. Root cause observed during BimodalLogic task 273 (21 plan versions). Fix requires ~80 lines across 5-7 skill files.",
+      "priority": "high",
+      "topic": "artifact-management",
+      "dependencies": [],
+      "created": "2026-06-12T17:05:54Z",
+      "last_updated": "2026-06-12T17:05:54Z",
+      "researched": "2026-06-12T17:05:54Z",
+      "artifacts": [
+        {
+          "path": "specs/670_fix_artifact_counter_system/reports/01_artifact-counter-analysis.md",
+          "type": "report",
+          "summary": "4 bugs identified: revision no-increment, no collision detection, counter drift, plan_version confusion. Test cases and fixes specified."
+        }
+      ],
+      "next_artifact_number": 2
     }
   ],
   "completed_projects": [],

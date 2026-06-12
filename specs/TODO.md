@@ -1,5 +1,5 @@
 ---
-next_project_number: 670
+next_project_number: 671
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 670
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,652,669 | -- | agent-system, Terminal UI, Email Integration |
+| 1 | 78,87,652,669,670 | -- | agent-system, Terminal UI, artifact-management, ... |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -28,7 +28,22 @@ next_project_number: 670
 
 78 [PLANNED] — Fix Gmail SMTP authentication failure when sending emails via Him
 
+### Artifact Management
+
+670 [RESEARCHED] — Fix 4 bugs in the artifact counter system (next_artifact_number):
+
 ## Tasks
+
+### 670. Fix artifact counter system
+- **Status**: [RESEARCHED]
+- **Task Type**: meta
+- **Topic**: artifact-management
+- **Dependencies**: None
+- **Research**: [670_fix_artifact_counter_system/reports/01_artifact-counter-analysis.md]
+
+**Description**: Fix 4 bugs in the artifact counter system (next_artifact_number): (1) Revision does not increment counter — causes collisions when multiple plan revisions share the same number, (2) No collision detection when computed artifact number matches existing files, (3) Counter drift for legacy tasks that predate the unified numbering, (4) plan_version vs artifact sequence number confusion in filenames. Root cause observed during BimodalLogic task 273 (21 plan versions). Fix requires ~80 lines across 5-7 skill files.
+
+---
 
 ### 669. Add hard-mode routing (--hard) with hard-mode skills and agents for very complex tasks
 - **Effort**: 8-12 hours
