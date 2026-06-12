@@ -22,8 +22,8 @@ next_project_number: 682
 ### Terminal UI
 
 87 [RESEARCHED] — Investigate why the terminal working directory changes to a proje
-680 [NOT STARTED] — Modify claude-stop-notify.sh to call tts-notify.sh when no workfl
-681 [NOT STARTED] — Fix orchestrator-postflight.sh Stage 8b to pass --quiet only for 
+680 [PLANNED] — Modify claude-stop-notify.sh to call tts-notify.sh when no workfl
+681 [PLANNING] — Fix orchestrator-postflight.sh Stage 8b to pass --quiet only for 
 
 ### Email Integration
 
@@ -36,20 +36,23 @@ next_project_number: 682
 ## Tasks
 
 ### 681. Fix orchestrator final-completion TTS and tab opacity integration
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNING]
 - **Task Type**: meta
 - **Topic**: Terminal UI
 - **Dependencies**: Task 679
+- **Research**: [681_fix_orchestrator_final_tts/reports/01_orchestrator-tts-research.md]
 
 **Description**: Fix orchestrator-postflight.sh Stage 8b to pass --quiet only for mid-orchestrate transitions (research->plan, plan->implement) and call lifecycle-notify.sh WITHOUT --quiet on final completion so TTS fires. Currently line 313 always passes --quiet with comment "this script is called mid-orchestrate where the orchestrator itself fires the final TTS on true completion" but no such final TTS code exists. The fix requires: (1) orchestrator-postflight.sh must know whether this is a mid-orchestrate call or final completion — add an argument or env var from the caller, (2) for final completion (implement postflight in non-orchestrate mode, or orchestrate final phase), call lifecycle-notify.sh without --quiet, (3) clear workflow-active marker before final Stop so claude-stop-notify.sh fires needs_input tab color + TTS, (4) verify dim-to-bright tab color transitions work correctly during orchestrate cycles (dim for in-progress, bright for completed, needs_input for awaiting user). Files: .claude/scripts/orchestrator-postflight.sh, .claude/scripts/lifecycle-notify.sh, .claude/hooks/claude-stop-notify.sh (workflow-active marker cleanup).
 
 ---
 
 ### 680. Fix Stop hook to fire TTS when user attention is needed
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNED]
 - **Task Type**: meta
 - **Topic**: Terminal UI
 - **Dependencies**: Task 679
+- **Research**: [680_fix_stop_hook_tts/reports/01_stop-hook-tts-research.md]
+- **Plan**: [680_fix_stop_hook_tts/plans/01_stop-hook-tts-plan.md]
 
 **Description**: Modify claude-stop-notify.sh to call tts-notify.sh when no workflow-active marker exists (= agent halted, user must act). When workflow-active marker IS present (mid-orchestrate pause), skip TTS so tab stays dim with no announcement. Add cooldown dedup to prevent rapid stop/start from spamming TTS. The current claude-stop-notify.sh (line 59) explicitly skips TTS with comment "no TTS for non-lifecycle stops" — this is the root cause of TTS never firing on /implement, /todo, /orchestrate completion. Files: .claude/hooks/claude-stop-notify.sh, .claude/hooks/tts-notify.sh (verify cooldown mechanism). Also harmonize with the global ~/.config/.claude/hooks/tts-notify.sh which does fire TTS on Stop but lacks the workflow-active marker pattern.
 

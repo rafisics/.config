@@ -63,7 +63,7 @@
       "project_number": 680,
       "project_name": "fix_stop_hook_tts",
       "title": "Fix Stop hook to fire TTS when user attention is needed",
-      "status": "not_started",
+      "status": "planned",
       "task_type": "meta",
       "topic": "Terminal UI",
       "dependencies": [
@@ -71,15 +71,57 @@
       ],
       "description": "Modify claude-stop-notify.sh to call tts-notify.sh when no workflow-active marker exists (= agent halted, user must act). When workflow-active marker IS present (mid-orchestrate pause), skip TTS so tab stays dim with no announcement. Add cooldown dedup to prevent rapid stop/start from spamming TTS. The current claude-stop-notify.sh (line 59) explicitly skips TTS with comment \"no TTS for non-lifecycle stops\" — this is the root cause of TTS never firing on /implement, /todo, /orchestrate completion. Files: .claude/hooks/claude-stop-notify.sh, .claude/hooks/tts-notify.sh (verify cooldown mechanism). Also harmonize with the global ~/.config/.claude/hooks/tts-notify.sh which does fire TTS on Stop but lacks the workflow-active marker pattern.",
       "created": "2026-06-12T00:00:00Z",
-      "last_updated": "2026-06-12T00:00:00Z",
-      "next_artifact_number": 1,
-      "artifacts": []
+      "last_updated": "2026-06-12T20:25:48Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/680_fix_stop_hook_tts/reports/01_stop-hook-tts-research.md",
+          "type": "report",
+          "summary": "Stop hook TTS fix research: exact change set, cooldown design, shared dedup file, idle_prompt matcher"
+        },
+        {
+          "path": "specs/680_fix_stop_hook_tts/plans/01_stop-hook-tts-plan.md",
+          "type": "plan",
+          "summary": "3-phase implementation plan: tts-notify.sh cooldown, claude-stop-notify.sh TTS call, settings.json idle_prompt matcher"
+        }
+      ],
+      "session_id": "sess_1749783612_a7b3c2_680",
+      "memory_candidates": [
+        {
+          "content": "The workflow-active marker (.claude/tmp/workflow-active) written by update-task-status.sh preflight is NEVER cleared by postflight. It is only cleared by wezterm-preflight-status.sh Tier 2 (any non-lifecycle slash command). This means after any /implement or /orchestrate run, the marker persists until the user types another slash command. This is a known architectural gap that causes the Stop hook to suppress interactive TTS indefinitely after a lifecycle command.",
+          "category": "INSIGHT",
+          "source_artifact": "specs/680_fix_stop_hook_tts/reports/01_stop-hook-tts-research.md",
+          "confidence": 0.95,
+          "suggested_keywords": [
+            "workflow-active",
+            "marker",
+            "Stop hook",
+            "suppression",
+            "cleanup",
+            "postflight"
+          ]
+        },
+        {
+          "content": "Shared cooldown timestamp file /tmp/claude-tts-last-notify is used by BOTH the project .claude/hooks/tts-notify.sh (after task 680 fix) and the global ~/.config/.claude/hooks/tts-notify.sh. Using the same path for both scripts enables cross-project dedup — a lifecycle TTS announcement from one script prevents a Stop hook TTS from the other script within the 10-second cooldown window. This is the correct dedup mechanism for the double-announcement risk when task 681 clears the workflow-active marker before final Stop.",
+          "category": "PATTERN",
+          "source_artifact": "specs/680_fix_stop_hook_tts/reports/01_stop-hook-tts-research.md",
+          "confidence": 0.9,
+          "suggested_keywords": [
+            "TTS",
+            "cooldown",
+            "dedup",
+            "tts-notify",
+            "shared timestamp",
+            "double-announcement"
+          ]
+        }
+      ]
     },
     {
       "project_number": 681,
       "project_name": "fix_orchestrator_final_tts",
       "title": "Fix orchestrator final-completion TTS and tab opacity integration",
-      "status": "not_started",
+      "status": "planning",
       "task_type": "meta",
       "topic": "Terminal UI",
       "dependencies": [
@@ -87,9 +129,45 @@
       ],
       "description": "Fix orchestrator-postflight.sh Stage 8b to pass --quiet only for mid-orchestrate transitions (research->plan, plan->implement) and call lifecycle-notify.sh WITHOUT --quiet on final completion so TTS fires. Currently line 313 always passes --quiet with comment \"this script is called mid-orchestrate where the orchestrator itself fires the final TTS on true completion\" but no such final TTS code exists. The fix requires: (1) orchestrator-postflight.sh must know whether this is a mid-orchestrate call or final completion — add an argument or env var from the caller, (2) for final completion (implement postflight in non-orchestrate mode, or orchestrate final phase), call lifecycle-notify.sh without --quiet, (3) clear workflow-active marker before final Stop so claude-stop-notify.sh fires needs_input tab color + TTS, (4) verify dim-to-bright tab color transitions work correctly during orchestrate cycles (dim for in-progress, bright for completed, needs_input for awaiting user). Files: .claude/scripts/orchestrator-postflight.sh, .claude/scripts/lifecycle-notify.sh, .claude/hooks/claude-stop-notify.sh (workflow-active marker cleanup).",
       "created": "2026-06-12T00:00:00Z",
-      "last_updated": "2026-06-12T00:00:00Z",
-      "next_artifact_number": 1,
-      "artifacts": []
+      "last_updated": "2026-06-12T20:22:43Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/681_fix_orchestrator_final_tts/reports/01_orchestrator-tts-research.md",
+          "type": "report",
+          "summary": "Orchestrator TTS research: workflow-active marker never cleared on orchestrate completion; 3-file change set"
+        }
+      ],
+      "session_id": "sess_1749783612_a7b3c2_681",
+      "memory_candidates": [
+        {
+          "content": "orchestrator-postflight.sh is not called by any skill SKILL.md — all skills implement postflight inline and call lifecycle-notify.sh directly in their Stage 8a without --quiet. The script header incorrectly claims skills call it. The script is infrastructure for future use only.",
+          "category": "INSIGHT",
+          "source_artifact": "specs/681_fix_orchestrator_final_tts/reports/01_orchestrator-tts-research.md",
+          "confidence": 0.95,
+          "suggested_keywords": [
+            "orchestrator-postflight",
+            "lifecycle-notify",
+            "skills",
+            "dead-code",
+            "postflight-architecture"
+          ]
+        },
+        {
+          "content": "workflow-active marker (.claude/tmp/workflow-active) is written by update-task-status.sh preflight but never cleared by skill-orchestrate on clean exit. It is only cleared by wezterm-preflight-status.sh Tier 2 (non-lifecycle slash commands). This causes the final Stop hook after /orchestrate to fire silently, suppressing TTS and needs_input color.",
+          "category": "INSIGHT",
+          "source_artifact": "specs/681_fix_orchestrator_final_tts/reports/01_orchestrator-tts-research.md",
+          "confidence": 0.98,
+          "suggested_keywords": [
+            "workflow-active",
+            "marker",
+            "orchestrate",
+            "stop-hook",
+            "TTS",
+            "suppression"
+          ]
+        }
+      ]
     },
     {
       "project_number": 678,

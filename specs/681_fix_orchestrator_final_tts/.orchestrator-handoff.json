@@ -1,0 +1,13 @@
+{
+  "status": "researched",
+  "summary": "Confirmed bug: orchestrator-postflight.sh Stage 8b always passes --quiet to lifecycle-notify.sh, but this script is actually dead code (no skill calls it). The real TTS gap is that skill-orchestrate Stage 8 never clears the workflow-active marker, causing the final Stop hook to fire silently after orchestrate completes. Fix is 3-file: (1) add rm -f workflow-active to skill-orchestrate Stage 8 clean exit, (2) remove --quiet from orchestrator-postflight.sh Stage 8b for correctness, (3) add 10s cooldown to tts-notify.sh to prevent double-announce when lifecycle TTS and Stop-hook TTS both fire at orchestrate completion.",
+  "artifacts": [
+    {
+      "path": "specs/681_fix_orchestrator_final_tts/reports/01_orchestrator-tts-research.md",
+      "type": "report",
+      "summary": "Full call-site inventory, signal design evaluation, marker lifecycle analysis, tab color discrepancy table, and proposed 3-file change set with exact code snippets."
+    }
+  ],
+  "blockers": [],
+  "next_action_hint": "plan"
+}
