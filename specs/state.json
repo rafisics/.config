@@ -70,7 +70,7 @@
       "project_number": 674,
       "project_name": "upgrade_pr_command_task_integration",
       "title": "Upgrade /pr command for task-integrated workflow",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "meta",
       "topic": "agent-system",
       "dependencies": [
@@ -80,9 +80,21 @@
       ],
       "description": "Upgrade the existing /pr command (cslib extension) to integrate with the task lifecycle. When invoked as `/pr N`, load the [PR READY] task, read pr-description.md from task artifacts, run the full CI pipeline with interactive fix, present/edit the description based on the standard format, handle stacked PR base branch detection, submit via `gh pr create`, and transition task to [COMPLETED]. Key changes: (1) task-mode reads pr-description.md instead of generating from scratch; (2) supports stacked PRs by detecting base_branch from task metadata; (3) updates task status on successful submission; (4) removes redundant CI checklist from description body (real CI runs in the pipeline step, per leanprover/cslib PR #635 convention). Source: .claude/extensions/cslib/commands/pr.md (885 lines) — refine its task-mode path while preserving path-mode and description-mode. Also fix the hardcoded state.json path bug in STEP 2 (currently points at /home/benjamin/.config/nvim/specs/state.json instead of the target project specs/).",
       "created": "2026-06-12T23:00:00Z",
-      "last_updated": "2026-06-12T23:00:00Z",
+      "last_updated": "2026-06-12T18:07:46Z",
       "next_artifact_number": 1,
-      "artifacts": []
+      "artifacts": [
+        {
+          "path": "specs/674_upgrade_pr_command_task_integration/reports/01_pr-command-integration.md",
+          "type": "report",
+          "summary": "pr.md task-mode redesign, path bug fix, base_branch detection, status transition"
+        },
+        {
+          "path": "specs/674_upgrade_pr_command_task_integration/plans/01_pr-command-plan.md",
+          "type": "plan",
+          "summary": "5-phase plan: pr.md task-mode redesign, base_branch, cross-repo cslib scripts"
+        }
+      ],
+      "session_id": "sess_1781284922_643662_674"
     },
     {
       "project_number": 673,

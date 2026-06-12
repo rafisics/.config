@@ -24,7 +24,7 @@ next_project_number: 679
   └─ 676 [NOT STARTED] — Add hard-mode routing to the cslib extension following the same p
   └─ 677 [NOT STARTED] — Design and implement a testing strategy for hard-mode behavioral 
   └─ 678 [NOT STARTED] — Implement churn detection that emits a 'consider --hard' warning 
-674 [NOT STARTED] — Upgrade the existing /pr command (cslib extension) to integrate w
+674 [PLANNED] — Upgrade the existing /pr command (cslib extension) to integrate w
 
 ### Terminal UI
 
@@ -81,10 +81,12 @@ next_project_number: 679
 ---
 
 ### 674. Upgrade /pr command for task-integrated workflow
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 671, Task 672, Task 673
+- **Research**: [674_upgrade_pr_command_task_integration/reports/01_pr-command-integration.md]
+- **Plan**: [674_upgrade_pr_command_task_integration/plans/01_pr-command-plan.md]
 
 **Description**: Upgrade the existing /pr command (cslib extension) to integrate with the task lifecycle. When invoked as `/pr N`, load the [PR READY] task, read pr-description.md from task artifacts, run the full CI pipeline with interactive fix, present/edit the description based on the standard format, handle stacked PR base branch detection, submit via `gh pr create`, and transition task to [COMPLETED]. Key changes: (1) task-mode reads pr-description.md instead of generating from scratch; (2) supports stacked PRs by detecting base_branch from task metadata; (3) updates task status on successful submission; (4) removes redundant CI checklist from description body (real CI runs in the pipeline step, per leanprover/cslib PR #635 convention). Source: .claude/extensions/cslib/commands/pr.md (885 lines) — refine its task-mode path while preserving path-mode and description-mode. Also fix the hardcoded state.json path bug in STEP 2 (currently points at /home/benjamin/.config/nvim/specs/state.json instead of the target project specs/).
 

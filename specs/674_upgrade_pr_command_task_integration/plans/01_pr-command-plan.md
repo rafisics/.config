@@ -1,7 +1,7 @@
 # Implementation Plan: Upgrade /pr Command Task Integration
 
 - **Task**: 674 - Upgrade /pr command for task-integrated workflow
-- **Status**: [IN PROGRESS]
+- **Status**: [COMPLETED]
 - **Effort**: 3 hours
 - **Dependencies**: Tasks 671, 672, 673 (all completed)
 - **Research Inputs**: specs/674_upgrade_pr_command_task_integration/reports/01_pr-command-integration.md
