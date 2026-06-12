@@ -23,7 +23,7 @@
       "project_number": 677,
       "project_name": "contract_lint_testing_strategy",
       "title": "Contract lint and testing strategy for hard-mode behavioral correctness",
-      "status": "planned",
+      "status": "completed",
       "task_type": "meta",
       "topic": "agent-system",
       "dependencies": [
@@ -31,7 +31,7 @@
       ],
       "description": "Design and implement a testing strategy for hard-mode behavioral correctness: contract lint rules that verify agents honor anti-analysis budgets, reference grounding requirements, and convergence policing thresholds. May include test harnesses that replay known deflection-prone prompts against hard-mode agents and check for contract violations. Research inputs: specs/669_hard_mode_agent_system/reports/01_hard-mode-orchestration-approach.md, specs/669_hard_mode_agent_system/reports/02_team-research.md.",
       "created": "2026-06-12T00:00:00Z",
-      "last_updated": "2026-06-12T18:34:04Z",
+      "last_updated": "2026-06-12T18:45:32Z",
       "next_artifact_number": 1,
       "artifacts": [
         {
@@ -71,7 +71,7 @@
       "project_number": 676,
       "project_name": "cslib_extension_hard_mode_variants",
       "title": "Add hard-mode routing to cslib extension",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "meta",
       "topic": "agent-system",
       "dependencies": [
@@ -79,7 +79,7 @@
       ],
       "description": "Add hard-mode routing to the cslib extension following the same pattern as lean4: routing_hard manifest entries, skill-cslib-research-hard, skill-cslib-implementation-hard, cslib hard agents with domain-specific H-technique overrides. Research inputs: specs/669_hard_mode_agent_system/reports/01_hard-mode-orchestration-approach.md, specs/669_hard_mode_agent_system/reports/02_team-research.md.",
       "created": "2026-06-12T00:00:00Z",
-      "last_updated": "2026-06-12T18:36:49Z",
+      "last_updated": "2026-06-12T18:45:39Z",
       "next_artifact_number": 1,
       "artifacts": [
         {

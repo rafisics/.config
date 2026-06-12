@@ -1,7 +1,7 @@
 # Implementation Plan: Contract Lint Testing Strategy
 
 - **Task**: 677 - contract_lint_testing_strategy
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 5 hours
 - **Dependencies**: Task 669 (hard_mode_agent_system)
 - **Research Inputs**: specs/677_contract_lint_testing_strategy/reports/01_contract-lint-research.md
@@ -177,14 +177,14 @@ Phases within the same wave can execute in parallel.
 
 ## Testing & Validation
 
-- [ ] `lint-contract-compliance.sh` exits 0 on current codebase
-- [ ] `validate-wiring.sh --claude` includes hard-mode checks and all pass
-- [ ] `validate-artifact.sh` correctly detects and checks a hard-mode plan
-- [ ] `validate-artifact.sh` does not flag non-hard plans for hard-mode sections
-- [ ] `validate-handoff.sh` validates existing handoff JSON files (if any)
-- [ ] All scripts have consistent colored output format (PASS/FAIL/WARN)
-- [ ] All scripts include usage documentation via `--help` flag
-- [ ] No regressions in existing `validate-wiring.sh` or `validate-artifact.sh` checks
+- [x] `lint-contract-compliance.sh` exits 0 on current codebase *(24 checks pass)*
+- [x] `validate-wiring.sh --claude` includes hard-mode checks and all pass *(16 new hard-mode checks all PASS)*
+- [x] `validate-artifact.sh` correctly detects and checks a hard-mode plan *(warns on missing Postmortem Constraints and phase sizing)*
+- [x] `validate-artifact.sh` does not flag non-hard plans for hard-mode sections *(verified)*
+- [x] `validate-handoff.sh` validates existing handoff JSON files (if any) *(tested against 5 existing files)*
+- [x] All scripts have consistent colored output format (PASS/FAIL/WARN) *(verified)*
+- [x] All scripts include usage documentation via `--help` flag *(verified)*
+- [x] No regressions in existing `validate-wiring.sh` or `validate-artifact.sh` checks *(verified)*
 
 ## Artifacts & Outputs
 

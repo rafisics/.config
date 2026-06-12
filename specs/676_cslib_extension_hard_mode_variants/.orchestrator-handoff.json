@@ -1,15 +1,15 @@
 {
-  "status": "planned",
-  "summary": "Implementation plan created with 4 phases: manifest routing_hard + provides (Phase 1), hard agents (Phase 2), hard skills (Phase 3), docs + index updates (Phase 4). Total 7 artifacts: 4 new files, 3 modifications.",
-  "phases_completed": 0,
+  "status": "implemented",
+  "summary": "Added hard-mode routing to cslib extension: routing_hard manifest block, 2 hard agents (cslib-research-hard-agent with H2+H3+H4+BibKey, cslib-implementation-hard-agent with H2+H7+H9+sorry_inventory), 2 hard skill wrappers, EXTENSION.md update with guidance, 2 index-entries.json entries",
+  "phases_completed": 4,
   "phases_total": 4,
   "blockers": [],
   "continuation_context": null,
   "artifacts": [
     {
-      "path": "specs/676_cslib_extension_hard_mode_variants/plans/01_cslib-hard-mode-plan.md",
-      "type": "plan",
-      "summary": "4-phase plan for adding hard-mode routing to cslib extension: manifest, agents, skills, docs"
+      "path": "specs/676_cslib_extension_hard_mode_variants/summaries/01_cslib-hard-mode-summary.md",
+      "type": "summary",
+      "summary": "Implementation summary for task 676: cslib extension hard-mode variants"
     }
   ]
 }

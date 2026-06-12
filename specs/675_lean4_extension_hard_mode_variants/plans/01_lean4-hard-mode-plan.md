@@ -201,14 +201,14 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Manifest, Index, and Documentation Updates [IN PROGRESS]
+### Phase 4: Manifest, Index, and Documentation Updates [COMPLETED]
 
 **Goal**: Wire up routing, context discovery, and user-facing documentation for the new hard-mode artifacts.
 
 **Tasks**:
-- [ ] Update `manifest.json`: add `routing_hard` key with research and implement entries for lean4; add new agents to `provides.agents` array; add new skills to `provides.skills` array; add `"contracts"` to `provides.context` array
-- [ ] Update `index-entries.json`: add 2 entries for the new contract files with `load_when.agents` pointing to `["lean-research-hard-agent", "lean-implementation-hard-agent"]`
-- [ ] Update `EXTENSION.md`: add "Lean Hard Mode" subsection with routing table, skill-agent mapping rows for the 2 hard agents (skill-lean-research-hard -> lean-research-hard-agent, skill-lean-implementation-hard -> lean-implementation-hard-agent), and note that /plan --hard uses core planner-hard-agent
+- [x] Update `manifest.json`: add `routing_hard` key with research and implement entries for lean4; add new agents to `provides.agents` array; add new skills to `provides.skills` array; add `"contracts"` to `provides.context` array *(completed)*
+- [x] Update `index-entries.json`: add 2 entries for the new contract files with `load_when.agents` pointing to `["lean-research-hard-agent", "lean-implementation-hard-agent"]` *(completed)*
+- [x] Update `EXTENSION.md`: add "Lean Hard Mode" subsection with routing table, skill-agent mapping rows for the 2 hard agents (skill-lean-research-hard -> lean-research-hard-agent, skill-lean-implementation-hard -> lean-implementation-hard-agent), and note that /plan --hard uses core planner-hard-agent *(completed)*
 
 **Timing**: 0.5 hours
 

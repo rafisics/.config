@@ -1,7 +1,7 @@
 # Implementation Plan: Task #676
 
 - **Task**: 676 - cslib_extension_hard_mode_variants
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2.5 hours
 - **Dependencies**: Task 669 (hard_mode_agent_system) -- completed
 - **Research Inputs**: specs/676_cslib_extension_hard_mode_variants/reports/01_cslib-hard-mode-research.md

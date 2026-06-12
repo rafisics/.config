@@ -48,7 +48,7 @@ next_project_number: 679
 ---
 
 ### 677. Contract lint and testing strategy for hard-mode behavioral correctness
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 669
@@ -59,7 +59,7 @@ next_project_number: 679
 ---
 
 ### 676. Add hard-mode routing to cslib extension
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 669
