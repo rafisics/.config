@@ -1,7 +1,140 @@
 {
   "version": "1.1.0",
-  "next_project_number": 671,
+  "next_project_number": 679,
   "active_projects": [
+    {
+      "project_number": 678,
+      "project_name": "auto_escalation_advisory_v2",
+      "title": "Adaptive auto-escalation advisory (v2)",
+      "status": "not_started",
+      "task_type": "meta",
+      "topic": "agent-system",
+      "dependencies": [669],
+      "description": "Implement churn detection that emits a 'consider --hard' warning when repeated deflection patterns are observed: 2+ plan revisions on a single task, 3+ implement dispatches with no phase completion, or analysis-only output in implementation phases. This is advisory only -- does not auto-escalate. v2 trajectory item. Research inputs: specs/669_hard_mode_agent_system/reports/01_hard-mode-orchestration-approach.md, specs/669_hard_mode_agent_system/reports/02_team-research.md.",
+      "created": "2026-06-12T00:00:00Z",
+      "last_updated": "2026-06-12T00:00:00Z",
+      "next_artifact_number": 1,
+      "artifacts": []
+    },
+    {
+      "project_number": 677,
+      "project_name": "contract_lint_testing_strategy",
+      "title": "Contract lint and testing strategy for hard-mode behavioral correctness",
+      "status": "not_started",
+      "task_type": "meta",
+      "topic": "agent-system",
+      "dependencies": [669],
+      "description": "Design and implement a testing strategy for hard-mode behavioral correctness: contract lint rules that verify agents honor anti-analysis budgets, reference grounding requirements, and convergence policing thresholds. May include test harnesses that replay known deflection-prone prompts against hard-mode agents and check for contract violations. Research inputs: specs/669_hard_mode_agent_system/reports/01_hard-mode-orchestration-approach.md, specs/669_hard_mode_agent_system/reports/02_team-research.md.",
+      "created": "2026-06-12T00:00:00Z",
+      "last_updated": "2026-06-12T00:00:00Z",
+      "next_artifact_number": 1,
+      "artifacts": []
+    },
+    {
+      "project_number": 676,
+      "project_name": "cslib_extension_hard_mode_variants",
+      "title": "Add hard-mode routing to cslib extension",
+      "status": "not_started",
+      "task_type": "meta",
+      "topic": "agent-system",
+      "dependencies": [669],
+      "description": "Add hard-mode routing to the cslib extension following the same pattern as lean4: routing_hard manifest entries, skill-cslib-research-hard, skill-cslib-implementation-hard, cslib hard agents with domain-specific H-technique overrides. Research inputs: specs/669_hard_mode_agent_system/reports/01_hard-mode-orchestration-approach.md, specs/669_hard_mode_agent_system/reports/02_team-research.md.",
+      "created": "2026-06-12T00:00:00Z",
+      "last_updated": "2026-06-12T00:00:00Z",
+      "next_artifact_number": 1,
+      "artifacts": []
+    },
+    {
+      "project_number": 675,
+      "project_name": "lean4_extension_hard_mode_variants",
+      "title": "Add hard-mode routing to lean4 extension",
+      "status": "not_started",
+      "task_type": "meta",
+      "topic": "agent-system",
+      "dependencies": [669],
+      "description": "Add hard-mode routing to the lean4 extension: routing_hard manifest entries, skill-lean-research-hard, skill-lean-implementation-hard, lean hard agents with H3 strict transcription mandate, H5 formal divergence audit, H8 lemma-to-source mapping, H9 sorry inventory. Research inputs: specs/669_hard_mode_agent_system/reports/01_hard-mode-orchestration-approach.md, specs/669_hard_mode_agent_system/reports/02_team-research.md.",
+      "created": "2026-06-12T00:00:00Z",
+      "last_updated": "2026-06-12T00:00:00Z",
+      "next_artifact_number": 1,
+      "artifacts": []
+    },
+    {
+      "project_number": 674,
+      "project_name": "upgrade_pr_command_task_integration",
+      "title": "Upgrade /pr command for task-integrated workflow",
+      "status": "not_started",
+      "task_type": "meta",
+      "topic": "agent-system",
+      "dependencies": [
+        671,
+        672,
+        673
+      ],
+      "description": "Upgrade the existing /pr command (cslib extension) to integrate with the task lifecycle. When invoked as `/pr N`, load the [PR READY] task, read pr-description.md from task artifacts, run the full CI pipeline with interactive fix, present/edit the description based on the standard format, handle stacked PR base branch detection, submit via `gh pr create`, and transition task to [COMPLETED]. Key changes: (1) task-mode reads pr-description.md instead of generating from scratch; (2) supports stacked PRs by detecting base_branch from task metadata; (3) updates task status on successful submission; (4) removes redundant CI checklist from description body (real CI runs in the pipeline step, per leanprover/cslib PR #635 convention). Source: .claude/extensions/cslib/commands/pr.md (885 lines) — refine its task-mode path while preserving path-mode and description-mode. Also fix the hardcoded state.json path bug in STEP 2 (currently points at /home/benjamin/.config/nvim/specs/state.json instead of the target project specs/).",
+      "created": "2026-06-12T23:00:00Z",
+      "last_updated": "2026-06-12T23:00:00Z",
+      "next_artifact_number": 1,
+      "artifacts": []
+    },
+    {
+      "project_number": 673,
+      "project_name": "pr_task_type_routing",
+      "title": "Add pr task type routing to cslib extension",
+      "status": "not_started",
+      "task_type": "meta",
+      "topic": "agent-system",
+      "dependencies": [
+        671,
+        672
+      ],
+      "description": "Add a `pr` task type to the cslib extension manifest routing (.claude/extensions/cslib/manifest.json). This task type represents PR preparation work (as distinct from code implementation). Research phase: analyze code changes on the PR branch, dependency graph of stacked PRs, and prior PR descriptions. Plan phase: outline the PR description structure, branch strategy (new branch from upstream/main vs reuse existing), stacked PR base detection. Implement phase: create or validate the feature branch, generate pr-description.md from the standard format template, run initial CI verification, and transition the task to [PR READY] instead of [COMPLETED]. Requires manifest.json routing entries (research/plan/implement for task_type pr), potentially a skill-pr-implementation or reuse of cslib-implementation-agent with PR-specific behavior, and context injection for PR format standards from task 672.",
+      "created": "2026-06-12T23:00:00Z",
+      "last_updated": "2026-06-12T23:00:00Z",
+      "next_artifact_number": 1,
+      "artifacts": []
+    },
+    {
+      "project_number": 672,
+      "project_name": "pr_description_format_standard",
+      "title": "Standardize CSLib PR description format",
+      "status": "researched",
+      "task_type": "meta",
+      "topic": "agent-system",
+      "dependencies": [],
+      "description": "Create a canonical PR description format file in the cslib extension context (.claude/extensions/cslib/context/project/cslib/standards/ alongside pr-conventions.md), based on the leanprover/cslib PR #635/#637 pattern and the 6 existing pr-description.md files in the cslib project specs/. The format should define required and optional sections: Title (conventional commit format), Summary (2-4 sentences), Context/Motivation (Zulip links, stacked PR info, literature references), File-by-file change summary (### per file with bullets), Dependencies (stacked on #NNN), AI Disclosure (standardized boilerplate, always last), and optional design rationale sections. Key insight from PR #635: no CI checklist in the body (CI is verified in the pipeline, not claimed in the description). Add the file to index-entries.json so it is loaded for pr-type tasks, and update pr-conventions.md to reference the new format file instead of its outdated inline template.",
+      "created": "2026-06-12T23:00:00Z",
+      "last_updated": "2026-06-12T17:27:41Z",
+      "next_artifact_number": 1,
+      "artifacts": [
+        {
+          "path": "specs/672_pr_description_format_standard/reports/01_pr-description-format.md",
+          "type": "report",
+          "summary": "Pattern analysis of 5 real cslib PR descriptions and proposed canonical format"
+        }
+      ],
+      "session_id": "sess_1781284922_643662_672"
+    },
+    {
+      "project_number": 671,
+      "project_name": "pr_ready_status_lifecycle",
+      "title": "Add [PR READY] status to task lifecycle",
+      "status": "researched",
+      "task_type": "meta",
+      "topic": "agent-system",
+      "dependencies": [],
+      "description": "Add [PR READY] as a new non-terminal task status in the task lifecycle, gating between [IMPLEMENTING] and the /pr submission step. Changes needed (both live copies and extension sources per the sync convention): (1) Update .claude/rules/state-management.md and extensions/core/rules/state-management.md status transition documentation to include [PR READY] (state.json value: pr_ready) and its transitions ([IMPLEMENTING] -> [PR READY] for pr tasks, [PR READY] -> [COMPLETED] after /pr submission, [PR READY] -> [IMPLEMENTING] if issues found). (2) Update .claude/scripts/generate-todo.sh and extensions/core copy to render [PR READY]. (3) Update .claude/scripts/update-task-status.sh and extensions/core copy to accept the new status. (4) Update CLAUDE.md merge-source Status Markers section. (5) Verify generate-todo.sh correctly renders [PR READY] tasks in TODO.md. [PR READY] is NOT terminal.",
+      "created": "2026-06-12T23:00:00Z",
+      "last_updated": "2026-06-12T17:28:05Z",
+      "next_artifact_number": 1,
+      "artifacts": [
+        {
+          "path": "specs/671_pr_ready_status_lifecycle/reports/01_pr-ready-status.md",
+          "type": "report",
+          "summary": "Full inventory of 14 files requiring changes for pr_ready status"
+        }
+      ],
+      "session_id": "sess_1781284922_643662_671"
+    },
     {
       "project_number": 668,
       "project_name": "add_default_task_type_support",
@@ -879,12 +1012,12 @@
       "project_number": 669,
       "project_name": "hard_mode_agent_system",
       "title": "Add hard-mode routing (--hard) with hard-mode skills and agents for very complex tasks",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "meta",
       "topic": "agent-system",
       "effort": "8-12 hours",
       "created": "2026-06-12T07:30:00Z",
-      "last_updated": "2026-06-12T16:50:29Z",
+      "last_updated": "2026-06-12T17:24:54Z",
       "dependencies": [],
       "description": "Create hard-mode variants of the agent system for very complex, deflection-prone tasks (e.g., deep Lean formalization): route --hard in /implement, /research, /plan, /orchestrate to hard-mode skills (skill-lean-implementation-hard, skill-orchestrate-hard, skill-planner-hard, skill-{domain}-research-hard) calling hard-mode agents. Hard mode encodes: per-phase dispatch (one bounded milestone per agent run), anti-analysis prompt contracts (read budgets, forbidden conclusions, counterexample bar for defect claims), prior-art transcription mandates with PDF-level citation, adversarial verification of research reports, divergence-audit trigger after repeated deflections (churn counters in loop guard), territory contracts for parallel dispatch, roadmap handoffs with incremental commit discipline, and hard-mode plan format (phases sized for single runs, postmortem constraints, lemma-to-source mapping, preserved-assets accounting). See report 01 for the full methodology distilled from the BimodalLogic task-273 session, measured outcomes, and a 7-step implementation breakdown.",
       "artifacts": [
