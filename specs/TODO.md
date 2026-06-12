@@ -1,27 +1,24 @@
 ---
-next_project_number: 668
+next_project_number: 669
 ---
 
 # TODO
 
 ## Task Order
 
-*Updated 2026-06-11. Generated from state.json dependency graph.*
+*Updated 2026-06-12. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,652,664,665,666,667 | -- | agent-system, Terminal UI, Email Integration |
+| 1 | 78,87,652,668 | -- | agent-system, Terminal UI, Email Integration |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Agent System
 
 652 [NOT STARTED] — After ~1 week of the new pipeline running, review logs to verify 
-664 [RESEARCHED] — Create cslib-research-agent.md (model: opus) and cslib-implementa
-665 [RESEARCHED] — Create skill-cslib-research/SKILL.md and skill-cslib-implementati
-666 [RESEARCHED] — Create rules/cslib.md (path pattern: **/*.lean for CSLib project)
-667 [NOT STARTED] — Create a /pr command for the cslib extension that accepts a task 
+668 [NOT STARTED] — Add a default_task_type field to state.json that projects can set
 
 ### Terminal UI
 
@@ -32,6 +29,17 @@ next_project_number: 668
 78 [PLANNED] — Fix Gmail SMTP authentication failure when sending emails via Him
 
 ## Tasks
+
+### 668. Add default_task_type support to task creation pipeline
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: Add a default_task_type field to state.json that projects can set to override the hardcoded keyword table in task.md step 4. When default_task_type is present, task.md uses it as the task type for all new tasks except those matching meta keywords (meta/agent/command/skill), which always override to meta since they modify .claude/ itself. This fixes the problem where CSLib tasks get lean4 or formal instead of cslib because the keyword table matches proof/theorem/lean/logic keywords before the cslib extension routing is consulted. Changes: (1) Modify task.md step 4 to read default_task_type from state.json via jq, use it as default when set, only allow meta keywords to override. (2) Sync extension copy at extensions/core/commands/task.md. (3) Update state-management-schema.md to document the new field. (4) Document in CLAUDE.md state.json schema section.
+
+---
 
 ### 667. Create cslib /pr command
 - **Effort**: 2-3 hours
@@ -51,7 +59,7 @@ next_project_number: 668
 - **Topic**: agent-system
 - **Dependencies**: Task 663
 
-**Description**: Create rules/cslib.md (path pattern: **/*.lean for CSLib project) and context files under context/project/cslib/ covering: domain/ (CONTRIBUTING standards, notation conventions, project organization), patterns/ (proof structure, module organization, reuse-first philosophy), standards/ (CI pipeline, PR conventions, conventional commits, mathlib style), tools/ (lake commands, linters, checkInitImports, mk_all, lint-style, lake shake). CSLib-specific encoding: alpha equivalence notation, LTS transitions, reduction arrows from NOTATION.md. Working groups model and AI usage policy from CONTRIBUTING.md.
+**Description**: Create rules/cslib.md (path pattern: **/*.lean for CSLib project) and context files under context/project/cslib/ covering: domain/ (CONTRIBUTING standards, notation conventions, project organization), patterns/ (proof structure, module organization, reuse-first philosophy), standards/ (CI pipeline, PR conventions, conventional commits, mathlib style), tools/ (lake commands, linters, checkInitImports, mk_all, lint-style, lake shake). CSLib-specific encoding: alpha equivalence notation, LTS transitions, reduction arrows from NOTATION.md. Working groups model and AI usage policy from CONTRIBUTING.md. Additionally, incorporate citation conventions from /home/benjamin/Projects/cslib/.claude/context/standards/citation-conventions.md as a new context file at context/project/cslib/standards/citation-conventions.md — this covers BibKey format (CamelCase, e.g. Blackburn2001), the references.bib workflow, canonical citation display format in module docstrings, and legacy pattern conversion rules.
 
 ---
 
