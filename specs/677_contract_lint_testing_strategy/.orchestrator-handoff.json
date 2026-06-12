@@ -1,0 +1,15 @@
+{
+  "status": "researched",
+  "summary": "Designed a 5-phase testing strategy: (1) static contract lint script checking @-references, H-technique vocabulary, skill-to-agent wiring, and churn field coverage; (2) hard-mode wiring extension to validate-wiring.sh; (3) plan artifact extension to validate-artifact.sh for postmortem/phase-sizing checks; (4) handoff schema validation script; (5) runtime trace harness deferred. All phases are bash-based, follow existing lint patterns, no new infrastructure required.",
+  "phases_completed": 0,
+  "phases_total": 0,
+  "blockers": [],
+  "continuation_context": null,
+  "artifacts": [
+    {
+      "path": "specs/677_contract_lint_testing_strategy/reports/01_contract-lint-research.md",
+      "type": "report",
+      "summary": "Full taxonomy of static vs runtime contract properties; proposed lint rules for 4 script targets; phased implementation recommendation; index.json gap identified (convergence.md has empty load_when.agents)."
+    }
+  ]
+}
