@@ -107,6 +107,25 @@ Add pr-description.md artifact to state.json with summary. Update TODO.md per
 
 Artifact type: `pr_description`, path: `specs/{NNN}_{SLUG}/pr-description.md`.
 
+**base_branch**: Also record the base branch in the state.json task entry. This field is read
+by the `/pr` command to set `--base` when creating the PR. Use the branch name the PR will
+target (e.g., `"main"` for direct upstream PRs, or `"feat/parent-branch"` for stacked PRs).
+
+The subagent should determine and report the base branch used (typically `"main"` unless
+this task is stacked on top of another unmerged PR).
+
+```bash
+# Write base_branch to state.json task metadata
+CSLIB_DIR="/home/benjamin/Projects/cslib"
+CSLIB_STATE="$CSLIB_DIR/specs/state.json"
+base_branch_used="main"  # or the parent branch for stacked PRs
+
+jq --argjson num "$task_number" \
+   --arg branch "$base_branch_used" \
+   '.active_projects |= map(if .project_number == $num then . + {"base_branch": $branch} else . end)' \
+   "$CSLIB_STATE" > /tmp/state.tmp && mv /tmp/state.tmp "$CSLIB_STATE"
+```
+
 ### Stage 8: Git Commit
 Commit changes with session ID.
 

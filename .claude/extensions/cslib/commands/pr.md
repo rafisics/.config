@@ -73,14 +73,67 @@ Determine `input_mode` from `input_value`:
 
 **Task mode** (`input_mode="task"`):
 ```bash
-# Read task description from state.json
-task_desc=$(jq -r --argjson num "$input_value" \
+# Define cslib project paths
+CSLIB_DIR="/home/benjamin/Projects/cslib"
+CSLIB_STATE="$CSLIB_DIR/specs/state.json"
+
+# Generate a session ID for status transitions later
+session_id="sess_$(date +%s)_$(head -c8 /dev/urandom | xxd -p 2>/dev/null || date +%N)"
+
+# Read task metadata from state.json
+task_name=$(jq -r --argjson num "$input_value" \
   '.active_projects[] | select(.project_number == $num) | .project_name' \
-  /home/benjamin/.config/nvim/specs/state.json 2>/dev/null)
+  "$CSLIB_STATE" 2>/dev/null)
+task_status=$(jq -r --argjson num "$input_value" \
+  '.active_projects[] | select(.project_number == $num) | .status' \
+  "$CSLIB_STATE" 2>/dev/null)
+
+# Validate task status: warn if not pr_ready
+if [ "$task_status" != "pr_ready" ] && [ -n "$task_status" ] && [ "$task_status" != "null" ]; then
+  echo "Warning: Task $input_value is in [$task_status] status, not [PR READY]."
+  echo "This task may not have a pr-description.md prepared by skill-pr-implementation."
+  # Ask user to continue anyway or abort
+  # (Use AskUserQuestion or present options — continue will use fallback description generation)
+fi
+
 # Convert underscores to spaces for display
-working_desc=$(echo "$task_desc" | tr '_' ' ')
+working_desc=$(echo "$task_name" | tr '_' ' ')
 ```
 If not found, use `"task $input_value"` as `working_desc`.
+
+```bash
+# Compute pr-description.md path
+task_num_padded=$(printf '%03d' "$input_value")
+task_dir="$CSLIB_DIR/specs/${task_num_padded}_${task_name}"
+pr_desc_path="$task_dir/pr-description.md"
+
+# Load pr-description.md if it exists
+if [ -f "$pr_desc_path" ]; then
+  pr_body=$(cat "$pr_desc_path")
+  pr_title=$(head -1 "$pr_desc_path" | sed 's/^# //')
+  has_pr_description=true
+  echo "Found pr-description.md: $pr_desc_path"
+  echo "PR title from file: $pr_title"
+else
+  has_pr_description=false
+  echo "Warning: pr-description.md not found at $pr_desc_path"
+  echo "The description will be composed interactively (STEP 9)."
+fi
+
+# Read base_branch from state.json task metadata (defaults to "main")
+base_branch=$(jq -r --argjson num "$input_value" \
+  '.active_projects[] | select(.project_number == $num) | .base_branch // "main"' \
+  "$CSLIB_STATE" 2>/dev/null)
+base_branch="${base_branch:-main}"
+
+# Stacked PR advisory: if pr_body mentions "stacked" but base_branch is "main"
+if [ "$has_pr_description" = "true" ]; then
+  if echo "$pr_body" | grep -qi "stacked" && [ "$base_branch" = "main" ]; then
+    echo "Advisory: PR description mentions a stacked PR but base_branch is not set in task metadata."
+    echo "Using --base main. If this PR should target a different branch, set base_branch in state.json."
+  fi
+fi
+```
 
 **Path mode** (`input_mode="path"`):
 ```bash
@@ -209,8 +262,17 @@ If `branch_override` was provided via `--branch`, use that instead.
 Check if branch already exists:
 ```bash
 cd /home/benjamin/Projects/cslib
-git branch --list "$proposed_branch" 2>/dev/null
-git ls-remote --heads origin "$proposed_branch" 2>/dev/null
+local_exists=$(git branch --list "$proposed_branch" 2>/dev/null)
+remote_exists=$(git ls-remote --heads origin "$proposed_branch" 2>/dev/null)
+```
+
+**Task mode** (`input_mode="task"`): If a `feat/` branch matching the task slug already exists
+locally (as would be created by `skill-pr-implementation`), offer to reuse it:
+```bash
+if [ -n "$local_exists" ] || [ -n "$remote_exists" ]; then
+  echo "Branch '$proposed_branch' already exists (created by skill-pr-implementation)."
+  # Ask user to reuse existing branch or create a new one
+fi
 ```
 
 **Ask the user** via AskUserQuestion:
@@ -221,25 +283,27 @@ git ls-remote --heads origin "$proposed_branch" 2>/dev/null
   "multiSelect": false,
   "options": [
     {"label": "Yes, create '{proposed_branch}'", "description": "Create this branch from upstream/main and switch to it"},
+    {"label": "Reuse existing '{proposed_branch}'", "description": "Switch to the existing branch (if created by skill-pr-implementation)"},
     {"label": "Use a different name", "description": "Enter a custom branch name at the prompt"},
     {"label": "Cancel", "description": "Abort the PR workflow"}
   ]
 }
 ```
 
-- If **Yes**: proceed with `proposed_branch`
+- If **Yes**: proceed with `proposed_branch` (create new from upstream/main)
+- If **Reuse existing**: switch to the branch without recreating: `git checkout "$proposed_branch"`
 - If **Use a different name**: display "Enter branch name (format: type/description):" and read input from the conversation; use that as `branch_name`
 - If **Cancel**: **STOP** — user aborted
 
 If `--dry-run`: show what would happen and skip git commands.
 
-Otherwise:
+Otherwise (creating new branch):
 ```bash
 cd /home/benjamin/Projects/cslib
 git checkout upstream/main -b "$branch_name" 2>&1
 ```
 
-If branch already exists locally, ask to delete and recreate or switch to existing.
+If branch already exists locally and user chose to create new, ask to delete and recreate or switch to existing.
 
 Display:
 ```
@@ -466,6 +530,40 @@ All CI checks passed!
 
 **EXECUTE NOW**: Guide the user in composing a conventional commit PR title.
 
+**Task mode** (`input_mode="task"`) — when `has_pr_description` is true:
+The title was already extracted from `pr-description.md` in STEP 2. Skip the 3-step interactive
+flow and present the loaded title for approval instead:
+
+Display:
+```
+PR title from pr-description.md:
+  {pr_title}
+```
+
+**Ask user** via AskUserQuestion:
+```json
+{
+  "question": "Use this PR title from pr-description.md?\n\n{pr_title}",
+  "header": "PR Title: Confirm or Override",
+  "multiSelect": false,
+  "options": [
+    {"label": "Yes, use this title", "description": "Proceed with the title from pr-description.md"},
+    {"label": "Override with custom title", "description": "Enter a custom PR title in the conversation"}
+  ]
+}
+```
+
+- If **Yes**: `pr_title` is already set — proceed directly to STEP 9
+- If **Override**: display "Enter the full PR title (e.g., 'feat(Logics): prove completeness for K'):"
+  and read the user's next message as `pr_title`
+
+Store `pr_title` and **IMMEDIATELY CONTINUE** to STEP 9.
+
+---
+
+**Path mode or Description mode** (or task mode when `has_pr_description` is false):
+Fall through to the full interactive 3-step title selection:
+
 Display the prefix options and **Ask user** via AskUserQuestion:
 ```json
 {
@@ -549,7 +647,45 @@ Store `pr_title = composed_title`.
 
 ### STEP 9: Compose PR Description
 
-**EXECUTE NOW**: Build the PR description from the template, CI results, and changed files.
+**EXECUTE NOW**: Build the PR description from pr-description.md (task mode) or the template (other modes).
+
+**Task mode** (`input_mode="task"`) — when `has_pr_description` is true:
+The body was loaded from `pr-description.md` in STEP 2. Display it and ask for approval:
+
+Display:
+```
+PR description from pr-description.md ({pr_desc_path}):
+────────────────────────────────────────────────────────
+{first 20 lines of pr_body}
+...
+```
+
+**Ask user** via AskUserQuestion:
+```json
+{
+  "question": "Review the PR description loaded from pr-description.md:",
+  "header": "PR Description",
+  "multiSelect": false,
+  "options": [
+    {"label": "Approve — use this description", "description": "Proceed with the content from pr-description.md"},
+    {"label": "Edit summary section", "description": "Provide a custom summary in the conversation, keep the rest"},
+    {"label": "Edit AI disclosure", "description": "Customize the AI disclosure section"},
+    {"label": "Replace entirely", "description": "Type a complete custom description in the conversation"}
+  ]
+}
+```
+
+- Approve: proceed with `pr_body = pr_body` (already loaded)
+- Edit summary: read user's next message as the new summary; replace the `## Summary` section
+- Edit AI disclosure: read user's next message as the new disclosure; replace `## AI Disclosure`
+- Replace entirely: read user's next message as the full `pr_body`
+
+**On success**: **IMMEDIATELY CONTINUE** to STEP 10.
+
+---
+
+**Path mode, Description mode, or Task mode when `has_pr_description` is false**:
+Fall through to template-based description generation:
 
 Collect the list of changed files:
 ```bash
@@ -641,7 +777,7 @@ Then show the PR summary to the user before submission:
 PR Submission Summary
 =====================
 Title: {pr_title}
-Branch: {branch_name} -> leanprover/cslib main
+Branch: {branch_name} -> leanprover/cslib {base_branch}
 Draft: {true/false}
 Changed files:
   {list of changed files}
@@ -674,7 +810,7 @@ If `--dry-run`: show what would execute without running:
 ```
 [DRY RUN] Would execute:
   git push -u origin {branch_name}
-  gh pr create --base main --repo leanprover/cslib \
+  gh pr create --base {base_branch} --repo leanprover/cslib \
     --title "{pr_title}" \
     --body "..." \
     {--draft if draft}
@@ -697,14 +833,14 @@ fi
 # Create PR
 if [ "$is_draft" = "true" ]; then
   gh pr create \
-    --base main \
+    --base "$base_branch" \
     --repo leanprover/cslib \
     --title "$pr_title" \
     --body "$pr_body" \
     --draft 2>&1
 else
   gh pr create \
-    --base main \
+    --base "$base_branch" \
     --repo leanprover/cslib \
     --title "$pr_title" \
     --body "$pr_body" 2>&1
@@ -724,6 +860,37 @@ Status: {Open/Draft}
 
 Next: Monitor the PR at {pr_url}
 CI will run automatically on GitHub Actions.
+```
+
+**On success**: **IMMEDIATELY CONTINUE** to STEP 10b (if task mode) or STEP 11 (otherwise).
+
+---
+
+### STEP 10b: Transition Task Status to Completed (Task Mode Only)
+
+**EXECUTE NOW** (task mode only — skip if `input_mode` is not "task"):
+
+After a successful PR submission, transition the task from `[PR READY]` to `[COMPLETED]` in the
+cslib project:
+
+```bash
+cd "$CSLIB_DIR"
+if ! bash .claude/scripts/update-task-status.sh postflight "$input_value" pr_ready "$session_id" 2>/dev/null; then
+  echo "Note: Could not update task $input_value status to [COMPLETED]."
+  echo "The update-task-status.sh script may not support pr_ready yet."
+  echo "Manually update task $input_value to [COMPLETED] in:"
+  echo "  $CSLIB_DIR/specs/state.json"
+else
+  echo "Task $input_value transitioned to [COMPLETED]."
+fi
+```
+
+Display:
+```
+Task Status Update
+==================
+Task {input_value} -> [COMPLETED]
+(If update failed, update manually per the note above.)
 ```
 
 **On success**: **IMMEDIATELY CONTINUE** to STEP 11.
