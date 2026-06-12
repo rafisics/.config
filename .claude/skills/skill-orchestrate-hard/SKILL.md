@@ -371,6 +371,14 @@ echo "[hard-orchestrate] Task $task_number: partial state with no continuation. 
 EXIT (partial)
 ```
 
+#### State: `pr_ready`
+
+```bash
+echo "[hard-orchestrate] Task $task_number is PR READY — use /merge to submit the pull request."
+rm -f "$loop_guard_file"
+EXIT (success, pr_ready)
+```
+
 #### State: `blocked`
 
 Read blockers from state.json. Invoke blocker escalation (Stage 6).

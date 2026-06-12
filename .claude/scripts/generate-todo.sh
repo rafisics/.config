@@ -126,6 +126,7 @@ format_status() {
     abandoned)    printf '%s' "ABANDONED" ;;
     partial)      printf '%s' "PARTIAL" ;;
     expanded)     printf '%s' "EXPANDED" ;;
+    pr_ready)     printf '%s' "PR READY" ;;
     *)            printf '%s' "$(echo "$raw" | tr '[:lower:]' '[:upper:]')" ;;
   esac
 }

@@ -889,6 +889,9 @@ for task_num in "${active_tasks[@]}"; do
         implement_tasks+=("$task_num")
       fi
       ;;
+    pr_ready)
+      echo "[orchestrate-mt] Task $task_num is PR READY — use /merge to submit the pull request. Skipping auto-dispatch."
+      ;;
     blocked|researching|planning)
       echo "[orchestrate-mt] Task $task_num in in-flight or blocked state [$status] — skipping this cycle"
       ;;

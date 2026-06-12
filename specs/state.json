@@ -131,13 +131,13 @@
       "project_number": 671,
       "project_name": "pr_ready_status_lifecycle",
       "title": "Add [PR READY] status to task lifecycle",
-      "status": "planned",
+      "status": "completed",
       "task_type": "meta",
       "topic": "agent-system",
       "dependencies": [],
       "description": "Add [PR READY] as a new non-terminal task status in the task lifecycle, gating between [IMPLEMENTING] and the /pr submission step. Changes needed (both live copies and extension sources per the sync convention): (1) Update .claude/rules/state-management.md and extensions/core/rules/state-management.md status transition documentation to include [PR READY] (state.json value: pr_ready) and its transitions ([IMPLEMENTING] -> [PR READY] for pr tasks, [PR READY] -> [COMPLETED] after /pr submission, [PR READY] -> [IMPLEMENTING] if issues found). (2) Update .claude/scripts/generate-todo.sh and extensions/core copy to render [PR READY]. (3) Update .claude/scripts/update-task-status.sh and extensions/core copy to accept the new status. (4) Update CLAUDE.md merge-source Status Markers section. (5) Verify generate-todo.sh correctly renders [PR READY] tasks in TODO.md. [PR READY] is NOT terminal.",
       "created": "2026-06-12T23:00:00Z",
-      "last_updated": "2026-06-12T17:31:24Z",
+      "last_updated": "2026-06-12T17:36:41Z",
       "next_artifact_number": 1,
       "artifacts": [
         {

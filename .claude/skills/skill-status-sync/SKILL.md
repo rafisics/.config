@@ -112,6 +112,7 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg status "{target_status}" \
 | researching | [RESEARCHING] |
 | planning | [PLANNING] |
 | implementing | [IMPLEMENTING] |
+| pr_ready | [PR READY] |
 
 **Return**: JSON object with status "synced" and previous/new status fields.
 
@@ -163,6 +164,7 @@ jq --arg path "{artifact_path}" \
 | planned | [PLANNED] |
 | implemented | [IMPLEMENTED] |
 | partial | [PARTIAL] |
+| pr_ready | [PR READY] |
 
 **Return**: JSON object with target_status and artifacts_linked fields.
 

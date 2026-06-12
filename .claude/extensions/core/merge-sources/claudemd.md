@@ -33,7 +33,8 @@ Task management and agent orchestration for project development. For comprehensi
 - `[NOT STARTED]` - Initial state
 - `[RESEARCHING]` -> `[RESEARCHED]` - Research phase
 - `[PLANNING]` -> `[PLANNED]` - Planning phase
-- `[IMPLEMENTING]` -> `[COMPLETED]` - Implementation phase
+- `[IMPLEMENTING]` -> `[PR READY]` -> `[COMPLETED]` - Implementation + PR phase
+- `[PR READY]` -> `[IMPLEMENTING]` - If PR review finds issues (re-dispatch)
 - `[BLOCKED]`, `[ABANDONED]`, `[PARTIAL]`, `[EXPANDED]` - Terminal/exception states
 
 ### Artifact Paths

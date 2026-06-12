@@ -33,6 +33,9 @@ Any status -> [BLOCKED] (with reason)
 Any status -> [ABANDONED] (moves to archive)
 Any non-terminal -> [EXPANDED] (when divided into subtasks)
 [IMPLEMENTING] -> [PARTIAL] (on timeout/error)
+[IMPLEMENTING] -> [PR READY] (implementation complete, awaiting PR submission)
+[PR READY] -> [IMPLEMENTING] (if issues found during PR review)
+[PR READY] -> [COMPLETED] (after /merge PR submission)
 ```
 
 ### Restrictions

@@ -617,6 +617,7 @@ format_status() {
     abandoned)    echo "ABANDONED" ;;
     partial)      echo "PARTIAL" ;;
     expanded)     echo "EXPANDED" ;;
+    pr_ready)     echo "PR READY" ;;
     *)            echo "$(echo "$raw" | tr '[:lower:]' '[:upper:]')" ;;
   esac
 }
