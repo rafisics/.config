@@ -1,15 +1,15 @@
 {
-  "status": "researched",
-  "summary": "Lean4 extension hard-mode variants research complete. Core hard-mode infrastructure from task 669 is fully in place. Need 6 new files + 3 modifications to the lean extension: lean-research-hard-agent.md (H2+H3+H4+H5), lean-implementation-hard-agent.md (H2+H9 sorry-inventory+single-phase), skill-lean-research-hard, skill-lean-implementation-hard, and two lean4 contract overrides (reference-grounding, anti-analysis). Manifest gets routing_hard key. No lean4 planner hard agent needed.",
+  "status": "planned",
+  "summary": "Implementation plan created with 4 phases: lean4 contract overrides (H2/H3), hard agents (research + implementation), hard skills (2 thin wrappers), and manifest/docs integration. 3 dependency waves, 4 hours estimated.",
   "phases_completed": 0,
-  "phases_total": 0,
+  "phases_total": 4,
   "blockers": [],
   "continuation_context": null,
   "artifacts": [
     {
-      "path": "specs/675_lean4_extension_hard_mode_variants/reports/01_lean4-hard-mode-research.md",
-      "type": "report",
-      "summary": "Full anatomy of lean extension, core hard-mode infrastructure audit, per-H-technique lean4 override analysis, exact file inventory (6 new files, 3 modified), agent structure decisions, risk assessment"
+      "path": "specs/675_lean4_extension_hard_mode_variants/plans/01_lean4-hard-mode-plan.md",
+      "type": "plan",
+      "summary": "4-phase plan: contracts -> agents + skills (parallel) -> manifest/docs. Creates 6 new files, modifies 3."
     }
   ]
 }

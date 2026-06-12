@@ -19,7 +19,7 @@ next_project_number: 679
 
 652 [NOT STARTED] — After ~1 week of the new pipeline running, review logs to verify 
 675 [PLANNING] — Add hard-mode routing to the lean4 extension: routing_hard manife
-676 [PLANNING] — Add hard-mode routing to the cslib extension following the same p
+676 [PLANNED] — Add hard-mode routing to the cslib extension following the same p
 677 [PLANNED] — Design and implement a testing strategy for hard-mode behavioral 
 678 [PLANNED] — Implement churn detection that emits a 'consider --hard' warning 
 
@@ -63,6 +63,7 @@ next_project_number: 679
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 669
+- **Plan**: [676_cslib_extension_hard_mode_variants/plans/01_cslib-hard-mode-plan.md]
 
 **Description**: Add hard-mode routing to the cslib extension following the same pattern as lean4: routing_hard manifest entries, skill-cslib-research-hard, skill-cslib-implementation-hard, cslib hard agents with domain-specific H-technique overrides. Research inputs: specs/669_hard_mode_agent_system/reports/01_hard-mode-orchestration-approach.md, specs/669_hard_mode_agent_system/reports/02_team-research.md.
 
