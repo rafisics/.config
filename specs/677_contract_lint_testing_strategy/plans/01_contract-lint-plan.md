@@ -122,17 +122,17 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Hard-Mode Plan Artifact Checks [IN PROGRESS]
+### Phase 3: Hard-Mode Plan Artifact Checks [COMPLETED]
 
 **Goal**: Extend `validate-artifact.sh` to detect hard-mode plans and verify they contain required sections (postmortem constraints, phase sizing annotations, dependency wave maps).
 
 **Tasks**:
-- [ ] Add hard-mode plan detection logic: check for `planner-hard` or `hard-mode` or `--hard` in plan metadata/title
-- [ ] When hard-mode plan detected, check for `## Postmortem Constraints` section heading
-- [ ] Check for phase sizing annotations: at least one `### Phase` has `Estimated output` and `Done when` fields
-- [ ] Check for Dependency Analysis wave map table (already checked for all plans; verify it covers hard-mode plans)
-- [ ] Ensure non-hard plans are not flagged by the hard-mode checks (gate on detection)
-- [ ] Add hard-mode check results to the existing pass/fail output format
+- [x] Add hard-mode plan detection logic: check for `planner-hard` or `hard-mode` or `--hard` in plan metadata/title *(completed: gates on title/metadata, not body)*
+- [x] When hard-mode plan detected, check for `## Postmortem Constraints` section heading *(completed)*
+- [x] Check for phase sizing annotations: at least one `### Phase` has `Estimated output` and `Done when` fields *(completed)*
+- [x] Check for Dependency Analysis wave map table (already checked for all plans; verify it covers hard-mode plans) *(completed: pre-existing check covers this)*
+- [x] Ensure non-hard plans are not flagged by the hard-mode checks (gate on detection) *(completed: verified)*
+- [x] Add hard-mode check results to the existing pass/fail output format *(completed: warnings appear in summary)*
 
 **Timing**: 1 hour
 

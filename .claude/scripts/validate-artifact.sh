@@ -40,9 +40,9 @@ errors=0
 warnings=0
 fixes=0
 
-log_error() { echo "  [ERROR] $1"; ((errors++)); }
-log_warn()  { echo "  [WARN]  $1"; ((warnings++)); }
-log_fix()   { echo "  [FIXED] $1"; ((fixes++)); }
+log_error() { echo "  [ERROR] $1"; errors=$((errors + 1)); }
+log_warn()  { echo "  [WARN]  $1"; warnings=$((warnings + 1)); }
+log_fix()   { echo "  [FIXED] $1"; fixes=$((fixes + 1)); }
 log_info()  { echo "  [INFO]  $1"; }
 
 if [ -z "$artifact_path" ] || [ -z "$artifact_type" ]; then
