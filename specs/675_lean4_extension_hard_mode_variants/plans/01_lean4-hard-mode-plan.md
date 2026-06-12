@@ -95,12 +95,12 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Lean4 Hard Agents [IN PROGRESS]
+### Phase 2: Lean4 Hard Agents [COMPLETED]
 
 **Goal**: Create the two lean4 hard agent definition files.
 
 **Tasks**:
-- [ ] Create `lean-research-hard-agent.md` (~200 lines) in `.claude/extensions/lean/agents/`:
+- [x] Create `lean-research-hard-agent.md` (~200 lines) in `.claude/extensions/lean/agents/`:
   - Frontmatter: name, description, model: opus
   - Overview: extends lean-research-agent with H2, H3 (lean4 strict), H4, H5
   - Context references: lean4 contract overrides via @-references, core reference-grounding.md for fallback
@@ -114,7 +114,8 @@ Phases within the same wave can execute in parallel.
   - H5 divergence audit mode: triggered by focus_prompt containing "divergence" or "audit"; outputs sorry inventory table, type-mismatch analysis, divergence table (MATCHES/STRONGER/WEAKER/DIFFERENT), corrected Lean-ready targets, postmortem
   - Zero-debt policy for recommendations (mirror from lean-research-agent)
   - Execution flow stages (mirror structure from lean-research-agent, adding H-contract enforcement stages)
-- [ ] Create `lean-implementation-hard-agent.md` (~250 lines) in `.claude/extensions/lean/agents/`:
+  *(completed)*
+- [x] Create `lean-implementation-hard-agent.md` (~250 lines) in `.claude/extensions/lean/agents/`:
   - Frontmatter: name, description, model: opus
   - Overview: extends lean-implementation-agent with H2, H9, single-phase focus
   - Context references: lean4 contract overrides, core wrap-up.md contract
@@ -129,6 +130,7 @@ Phases within the same wave can execute in parallel.
   - Zero-debt policy (mirror from lean-implementation-agent: NO sorry in implemented status)
   - Final verification section: sorry/axiom/vacuous check with sorry_inventory population
   - Execution flow stages
+  *(completed)*
 
 **Timing**: 1.5 hours
 
