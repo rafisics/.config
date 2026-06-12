@@ -150,7 +150,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Lean4 Hard Skills [NOT STARTED]
+### Phase 3: Lean4 Hard Skills [IN PROGRESS]
 
 **Goal**: Create the two lean4 hard skill wrappers.
 

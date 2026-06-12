@@ -134,25 +134,25 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Create hard-mode skill wrapper files [NOT STARTED]
+### Phase 3: Create hard-mode skill wrapper files [COMPLETED]
 
 **Goal**: Create thin skill wrappers that dispatch to the new hard-mode agents and pass hard-mode delegation context.
 
 **Tasks**:
-- [ ] Create `skill-cslib-research-hard/SKILL.md` (~90 lines) following skill-researcher-hard pattern:
+- [x] Create `skill-cslib-research-hard/SKILL.md` (~90 lines) following skill-researcher-hard pattern:
   - Frontmatter: name, description, allowed-tools
   - Dispatches to cslib-research-hard-agent instead of cslib-research-agent
   - Passes effort_flag: "hard" in delegation context
   - Postflight logs adversarial_verification_triggered
-  - Maintenance note referencing base skill-cslib-research
-- [ ] Create `skill-cslib-implementation-hard/SKILL.md` (~110 lines) following skill-implementer-hard pattern:
+  - Maintenance note referencing base skill-cslib-research *(completed)*
+- [x] Create `skill-cslib-implementation-hard/SKILL.md` (~110 lines) following skill-implementer-hard pattern:
   - Frontmatter: name, description, allowed-tools
   - Dispatches to cslib-implementation-hard-agent instead of cslib-implementation-agent
   - Passes effort_flag: "hard" and phase_number in delegation context
   - Single-phase dispatch context (H1): reads .orchestrator-handoff.json
   - Includes territory params when non-null
-  - Maintenance note referencing base skill-cslib-implementation
-- [ ] Verify both skill directories contain SKILL.md files
+  - Maintenance note referencing base skill-cslib-implementation *(completed)*
+- [x] Verify both skill directories contain SKILL.md files *(completed)*
 
 **Timing**: 40 minutes
 

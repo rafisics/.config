@@ -148,7 +148,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Handoff Schema Validation Script [NOT STARTED]
+### Phase 4: Handoff Schema Validation Script [IN PROGRESS]
 
 **Goal**: Create a standalone validator for `.orchestrator-handoff.json` files produced by `skill-orchestrate-hard`, verifying JSON structure, required fields, and status/continuation_path consistency.
 
