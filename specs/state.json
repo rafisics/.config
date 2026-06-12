@@ -109,6 +109,11 @@
           "path": "specs/673_pr_task_type_routing/plans/01_pr-task-type-plan.md",
           "type": "plan",
           "summary": "3-phase plan: manifest routing, skill-pr-implementation, EXTENSION.md docs"
+        },
+        {
+          "path": "specs/673_pr_task_type_routing/summaries/01_implementation-summary.md",
+          "type": "summary",
+          "summary": "pr task type routing: manifest, skill-pr-implementation, EXTENSION.md"
         }
       ],
       "session_id": "sess_1781284922_643662_673"

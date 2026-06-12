@@ -11,8 +11,8 @@ next_project_number: 679
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,652,669,670,673 | -- | agent-system, Terminal UI, artifact-management, ... |
-| 2 | 674,675,676,677,678 | 669,673 | agent-system |
+| 1 | 78,87,652,669,670,674 | -- | agent-system, Terminal UI, artifact-management, ... |
+| 2 | 675,676,677,678 | 669 | agent-system |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -24,8 +24,7 @@ next_project_number: 679
   └─ 676 [NOT STARTED] — Add hard-mode routing to the cslib extension following the same p
   └─ 677 [NOT STARTED] — Design and implement a testing strategy for hard-mode behavioral 
   └─ 678 [NOT STARTED] — Implement churn detection that emits a 'consider --hard' warning 
-673 [PLANNED] — Add a `pr` task type to the cslib extension manifest routing (.cl
-  └─ 674 [NOT STARTED] — Upgrade the existing /pr command (cslib extension) to integrate w
+674 [NOT STARTED] — Upgrade the existing /pr command (cslib extension) to integrate w
 
 ### Terminal UI
 
@@ -98,6 +97,7 @@ next_project_number: 679
 - **Dependencies**: Task 671, Task 672
 - **Research**: [673_pr_task_type_routing/reports/01_pr-task-type-routing.md]
 - **Plan**: [673_pr_task_type_routing/plans/01_pr-task-type-plan.md]
+- **Summary**: [673_pr_task_type_routing/summaries/01_implementation-summary.md]
 
 **Description**: Add a `pr` task type to the cslib extension manifest routing (.claude/extensions/cslib/manifest.json). This task type represents PR preparation work (as distinct from code implementation). Research phase: analyze code changes on the PR branch, dependency graph of stacked PRs, and prior PR descriptions. Plan phase: outline the PR description structure, branch strategy (new branch from upstream/main vs reuse existing), stacked PR base detection. Implement phase: create or validate the feature branch, generate pr-description.md from the standard format template, run initial CI verification, and transition the task to [PR READY] instead of [COMPLETED]. Requires manifest.json routing entries (research/plan/implement for task_type pr), potentially a skill-pr-implementation or reuse of cslib-implementation-agent with PR-specific behavior, and context injection for PR format standards from task 672.
 
