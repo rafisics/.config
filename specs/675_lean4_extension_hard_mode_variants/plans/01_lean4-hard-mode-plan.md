@@ -150,13 +150,13 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Lean4 Hard Skills [IN PROGRESS]
+### Phase 3: Lean4 Hard Skills [COMPLETED]
 
 **Goal**: Create the two lean4 hard skill wrappers.
 
 **Tasks**:
-- [ ] Create directory `.claude/extensions/lean/skills/skill-lean-research-hard/`
-- [ ] Create `SKILL.md` in skill-lean-research-hard/ (~150 lines):
+- [x] Create directory `.claude/extensions/lean/skills/skill-lean-research-hard/` *(completed)*
+- [x] Create `SKILL.md` in skill-lean-research-hard/ (~150 lines):
   - Frontmatter: name: skill-lean-research-hard, description, allowed-tools: Agent, Bash, Edit, Read, Write
   - Overview: thin wrapper delegating to lean-research-hard-agent; mirrors skill-lean-research postflight
   - Trigger conditions: /research N --hard for lean4 tasks, routed by command-route-skill.sh
@@ -167,8 +167,9 @@ Phases within the same wave can execute in parallel.
   - Stage 4: Agent spawn (lean-research-hard-agent via Agent tool, subagent_type: lean-research-hard-agent, model: opus)
   - Stage 5: Postflight (read metadata, check adversarial_verification_triggered, status update, artifact linking, git commit)
   - MUST NOT section (mirror from skill-lean-research: no re-doing agent work in postflight)
-- [ ] Create directory `.claude/extensions/lean/skills/skill-lean-implementation-hard/`
-- [ ] Create `SKILL.md` in skill-lean-implementation-hard/ (~180 lines):
+  *(completed)*
+- [x] Create directory `.claude/extensions/lean/skills/skill-lean-implementation-hard/` *(completed)*
+- [x] Create `SKILL.md` in skill-lean-implementation-hard/ (~180 lines):
   - Frontmatter: name: skill-lean-implementation-hard, description, allowed-tools: Agent, Bash, Edit, Read, Write
   - Overview: thin wrapper delegating to lean-implementation-hard-agent with per-phase dispatch context; mirrors skill-lean-implementation postflight
   - Trigger conditions: /implement N --hard for lean4 tasks, or dispatched from skill-orchestrate-hard
@@ -180,6 +181,7 @@ Phases within the same wave can execute in parallel.
   - Stage 5: Agent spawn (lean-implementation-hard-agent via Agent tool, model: opus)
   - Stage 6: Postflight (read metadata, read verification results from metadata, plan compliance check from metadata, sorry_inventory propagation to handoff, status update, artifact linking, git commit)
   - MUST NOT section (mirror from skill-lean-implementation)
+  *(completed)*
 
 **Timing**: 1 hour
 
