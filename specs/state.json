@@ -120,7 +120,7 @@
       "project_number": 675,
       "project_name": "lean4_extension_hard_mode_variants",
       "title": "Add hard-mode routing to lean4 extension",
-      "status": "planned",
+      "status": "completed",
       "task_type": "meta",
       "topic": "agent-system",
       "dependencies": [
@@ -128,7 +128,7 @@
       ],
       "description": "Add hard-mode routing to the lean4 extension: routing_hard manifest entries, skill-lean-research-hard, skill-lean-implementation-hard, lean hard agents with H3 strict transcription mandate, H5 formal divergence audit, H8 lemma-to-source mapping, H9 sorry inventory. Research inputs: specs/669_hard_mode_agent_system/reports/01_hard-mode-orchestration-approach.md, specs/669_hard_mode_agent_system/reports/02_team-research.md.",
       "created": "2026-06-12T00:00:00Z",
-      "last_updated": "2026-06-12T18:35:30Z",
+      "last_updated": "2026-06-12T18:48:02Z",
       "next_artifact_number": 1,
       "artifacts": [],
       "session_id": "sess_1781288710_ad1e5a_675"

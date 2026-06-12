@@ -11,17 +11,13 @@ next_project_number: 679
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,652,670,675,676,677,678 | -- | agent-system, Terminal UI, artifact-management, ... |
+| 1 | 78,87,652,670 | -- | agent-system, Terminal UI, artifact-management, ... |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Agent System
 
 652 [NOT STARTED] — After ~1 week of the new pipeline running, review logs to verify 
-675 [PLANNING] — Add hard-mode routing to the lean4 extension: routing_hard manife
-676 [PLANNED] — Add hard-mode routing to the cslib extension following the same p
-677 [PLANNED] — Design and implement a testing strategy for hard-mode behavioral 
-678 [PLANNED] — Implement churn detection that emits a 'consider --hard' warning 
 
 ### Terminal UI
 
@@ -70,7 +66,7 @@ next_project_number: 679
 ---
 
 ### 675. Add hard-mode routing to lean4 extension
-- **Status**: [PLANNING]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 669

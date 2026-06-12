@@ -19,10 +19,10 @@
     "678": "specs/678_auto_escalation_advisory_v2"
   },
   "current_statuses": {
-    "675": "planned",
-    "676": "planned",
-    "677": "planned",
-    "678": "planned"
+    "675": "completed",
+    "676": "completed",
+    "677": "completed",
+    "678": "completed"
   },
   "research_agents": {
     "675": "general-research-agent",
@@ -36,10 +36,15 @@
     "677": "general-implementation-agent",
     "678": "general-implementation-agent"
   },
-  "cycle_count": 2,
+  "cycle_count": 3,
   "max_cycles": 20,
   "failed_tasks": [],
-  "completed_tasks": [],
+  "completed_tasks": [
+    675,
+    676,
+    677,
+    678
+  ],
   "waves": [
     [
       675,
