@@ -1,15 +1,15 @@
 {
-  "status": "planned",
-  "summary": "Implementation plan created with 4 phases: lean4 contract overrides (H2/H3), hard agents (research + implementation), hard skills (2 thin wrappers), and manifest/docs integration. 3 dependency waves, 4 hours estimated.",
-  "phases_completed": 0,
+  "status": "implemented",
+  "summary": "Added hard-mode routing to the lean4 extension: 2 hard agents, 2 hard skills, 2 lean4 contract overrides, manifest/index/docs updates",
+  "phases_completed": 4,
   "phases_total": 4,
   "blockers": [],
   "continuation_context": null,
   "artifacts": [
     {
-      "path": "specs/675_lean4_extension_hard_mode_variants/plans/01_lean4-hard-mode-plan.md",
-      "type": "plan",
-      "summary": "4-phase plan: contracts -> agents + skills (parallel) -> manifest/docs. Creates 6 new files, modifies 3."
+      "path": "specs/675_lean4_extension_hard_mode_variants/summaries/01_lean4-hard-mode-summary.md",
+      "type": "summary",
+      "summary": "Implementation summary for task 675: lean4 extension hard mode variants"
     }
   ]
 }
