@@ -400,6 +400,9 @@ else
       ;;
   esac
 
+  # Churn advisory check: evaluate deflection signals and emit one-time warning if needed
+  check_churn_advisory
+
   # Artifact linking: extract artifact path/type from handoff and link in TODO.md + state.json
   handoff_artifact_path=$(echo "$handoff" | jq -r '.artifacts[0].path // ""')
   handoff_artifact_type=$(echo "$handoff" | jq -r '.artifacts[0].type // ""')

@@ -114,15 +114,15 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Wire check_churn_advisory() into Stage 5 [NOT STARTED]
+### Phase 3: Wire check_churn_advisory() into Stage 5 [COMPLETED]
 
 **Goal**: Insert the function call into the Stage 5 handoff reading flow, after postflight status update and before artifact linking.
 
 **Tasks**:
-- [ ] Add `check_churn_advisory` call in Stage 5 after the `case "$dispatch_status"` postflight block and before the artifact linking section
-- [ ] Verify the call site has access to all required variables: `dispatch_status`, `dispatch_summary`, `phases_completed`, `last_impl_phases`, `churn_plan_revisions`, `churn_no_progress`, `churn_analysis_only`, `churn_advisory_emitted`
-- [ ] Verify Stage 7 loop guard update (selective jq merge) does not overwrite the `churn_advisory` sub-object -- confirm it only updates `current_state`, `last_updated`, `cycle_count`
-- [ ] Test the full flow conceptually: fresh start -> research dispatch (no check) -> plan dispatch (no check) -> implement dispatch (check fires) -> no-progress (counter increments) -> advisory emits once
+- [x] Add `check_churn_advisory` call in Stage 5 after the `case "$dispatch_status"` postflight block and before the artifact linking section *(completed)*
+- [x] Verify the call site has access to all required variables: `dispatch_status`, `dispatch_summary`, `phases_completed`, `last_impl_phases`, `churn_plan_revisions`, `churn_no_progress`, `churn_analysis_only`, `churn_advisory_emitted` *(completed)*
+- [x] Verify Stage 7 loop guard update (selective jq merge) does not overwrite the `churn_advisory` sub-object -- confirm it only updates `current_state`, `last_updated`, `cycle_count` *(completed)*
+- [x] Test the full flow conceptually: fresh start -> research dispatch (no check) -> plan dispatch (no check) -> implement dispatch (check fires) -> no-progress (counter increments) -> advisory emits once *(completed)*
 
 **Timing**: 20 minutes
 
