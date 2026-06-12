@@ -117,6 +117,7 @@ TODO.md is generated from state.json. Update state.json first, then call `bash .
 ```json
 {
   "next_project_number": 1,
+  "default_task_type": null,
   "active_projects": [{
     "project_number": 1,
     "project_name": "task_slug",
@@ -131,6 +132,8 @@ TODO.md is generated from state.json. Update state.json first, then call `bash .
   }
 }
 ```
+
+**`default_task_type`** (optional, null by default): When set to a non-null string, overrides the keyword table in `/task` step 4 for all new tasks in this project. Meta keywords ("meta", "agent", "command", "skill") always resolve to `meta` regardless of this field. Precedence: meta keywords > `default_task_type` > keyword table > `general`.
 
 ### Completion Workflow
 - Non-meta tasks: `completion_summary` + optional `roadmap_items` -> /todo annotates ROADMAP.md

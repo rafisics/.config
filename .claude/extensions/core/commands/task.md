@@ -109,26 +109,35 @@ When $ARGUMENTS contains a description (no flags).
    - **Implement**: (default for unrecognized patterns)
 
 4. **Detect task_type** from keywords:
-   - "meta", "agent", "command", "skill" → meta
-   - "lean", "lean4", "mathlib", "theorem", "proof" → lean4
-   - "latex", "tex", "document", "typeset" → latex
-   - "typst" → typst
-   - "python", "pytest", "pip" → python
-   - "z3", "smt", "solver", "constraint" → z3
-   - "nix", "nixos", "home-manager", "flake" → nix
-   - "web", "astro", "tailwind", "cloudflare" → web
-   - "epidemiology", "epi", "cohort", "case-control", "strobe" → epi:study
-   - "formal", "logic", "math", "physics", "modal", "kripke" → formal
-   - "deck", "slide", "presentation", "pitch deck" → founder:deck
-   - "spreadsheet", "sheet", "excel" → founder:sheet
-   - "finance", "financial", "revenue", "burn rate" → founder:finance
-   - "market size", "tam", "sam", "som" → founder:market
-   - "competitive", "competitor" → founder:analyze
-   - "strategy", "strategic", "roadmap" → founder:strategy
-   - "legal", "contract", "agreement" → founder:legal
-   - "project plan", "timeline", "milestone" → founder:project
-   - "founder", "go-to-market", "gtm" → founder
-   - Otherwise → general
+
+   First, check for a project-level default:
+   ```bash
+   default_type=$(jq -r '.default_task_type // empty' specs/state.json)
+   ```
+
+   Then apply precedence rules:
+   - **Meta keywords always win (unconditional)**: "meta", "agent", "command", "skill" → meta
+   - **Project default** (if `default_type` is non-empty and no meta keyword matched): use `default_type`
+   - **Keyword table** (if no meta keyword and no project default):
+     - "lean", "lean4", "mathlib", "theorem", "proof" → lean4
+     - "latex", "tex", "document", "typeset" → latex
+     - "typst" → typst
+     - "python", "pytest", "pip" → python
+     - "z3", "smt", "solver", "constraint" → z3
+     - "nix", "nixos", "home-manager", "flake" → nix
+     - "web", "astro", "tailwind", "cloudflare" → web
+     - "epidemiology", "epi", "cohort", "case-control", "strobe" → epi:study
+     - "formal", "logic", "math", "physics", "modal", "kripke" → formal
+     - "deck", "slide", "presentation", "pitch deck" → founder:deck
+     - "spreadsheet", "sheet", "excel" → founder:sheet
+     - "finance", "financial", "revenue", "burn rate" → founder:finance
+     - "market size", "tam", "sam", "som" → founder:market
+     - "competitive", "competitor" → founder:analyze
+     - "strategy", "strategic", "roadmap" → founder:strategy
+     - "legal", "contract", "agreement" → founder:legal
+     - "project plan", "timeline", "milestone" → founder:project
+     - "founder", "go-to-market", "gtm" → founder
+     - Otherwise → general
 
 4.5. **Assign topic** to this task:
 

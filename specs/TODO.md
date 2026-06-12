@@ -11,14 +11,13 @@ next_project_number: 669
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,652,668 | -- | agent-system, Terminal UI, Email Integration |
+| 1 | 78,87,652 | -- | agent-system, Terminal UI, Email Integration |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Agent System
 
 652 [NOT STARTED] — After ~1 week of the new pipeline running, review logs to verify 
-668 [NOT STARTED] — Add a default_task_type field to state.json that projects can set
 
 ### Terminal UI
 
@@ -32,7 +31,7 @@ next_project_number: 669
 
 ### 668. Add default_task_type support to task creation pipeline
 - **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
