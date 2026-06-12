@@ -901,7 +901,7 @@
         {
           "path": "specs/669_hard_mode_agent_system/plans/02_hard-mode-implementation.md",
           "type": "plan",
-          "summary": "6-phase implementation plan for --hard routing, prompt contracts, hard-mode agents/skills, team composability, and documentation (10 hours estimated)"
+          "summary": "Revised plan v2: 7 phases incl. follow-up task creation; all 4 design decisions settled (no sticky mode, full orchestrate-hard variant, follow-up tasks phase, token cost docs)"
         }
       ],
       "next_artifact_number": 3,
