@@ -65,7 +65,7 @@
       "description": "CSLib CI pipeline: lake test, checkInitImports, lint-style, lake shake commands",
       "tags": ["cslib", "ci", "pipeline", "lake"],
       "load_when": {
-        "languages": ["cslib"],
+        "languages": ["cslib", "pr"],
         "agents": ["cslib-implementation-agent"]
       },
       "domain": "project",
@@ -77,7 +77,7 @@
       "description": "CSLib PR title conventions, conventional commits, review process",
       "tags": ["cslib", "pr", "git", "commits"],
       "load_when": {
-        "languages": ["cslib"],
+        "languages": ["cslib", "pr"],
         "agents": ["cslib-implementation-agent"]
       },
       "domain": "project",
@@ -89,7 +89,7 @@
       "description": "CSLib PR description canonical format: Summary, Context, file-by-file summary, AI Disclosure",
       "tags": ["cslib", "pr", "format", "description", "template"],
       "load_when": {
-        "languages": ["cslib"],
+        "languages": ["cslib", "pr"],
         "agents": ["cslib-implementation-agent"]
       },
       "domain": "project",

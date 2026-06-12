@@ -14,7 +14,8 @@
     ],
     "skills": [
       "skill-cslib-research",
-      "skill-cslib-implementation"
+      "skill-cslib-implementation",
+      "skill-pr-implementation"
     ],
     "commands": ["pr.md"],
     "rules": [
@@ -28,13 +29,16 @@
   },
   "routing": {
     "research": {
-      "cslib": "skill-cslib-research"
+      "cslib": "skill-cslib-research",
+      "pr": "skill-researcher"
     },
     "plan": {
-      "cslib": "skill-planner"
+      "cslib": "skill-planner",
+      "pr": "skill-planner"
     },
     "implement": {
-      "cslib": "skill-cslib-implementation"
+      "cslib": "skill-cslib-implementation",
+      "pr": "skill-pr-implementation"
     }
   },
   "merge_targets": {
