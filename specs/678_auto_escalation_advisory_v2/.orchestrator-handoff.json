@@ -1,0 +1,15 @@
+{
+  "status": "researched",
+  "summary": "Research complete. Standard orchestrator has no churn detection. Advisory implementation: extend loop guard with 3 counters (plan revisions, implement no-progress, analysis-only), add check_churn_advisory() function to Stage 5 of skill-orchestrate/SKILL.md, emit [orchestrate] ADVISORY: consider --hard warning once per task. ~60-80 lines added to one file, no new files required.",
+  "phases_completed": 0,
+  "phases_total": 0,
+  "blockers": [],
+  "continuation_context": null,
+  "artifacts": [
+    {
+      "path": "specs/678_auto_escalation_advisory_v2/reports/01_auto-escalation-research.md",
+      "type": "report",
+      "summary": "Churn detection signals (3 signals, measurement approach, thresholds), loop guard schema extension, check_churn_advisory() pseudocode, Stage 5 integration point, non-escalation constraint verification"
+    }
+  ]
+}
