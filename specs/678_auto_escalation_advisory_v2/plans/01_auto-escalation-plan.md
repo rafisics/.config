@@ -1,7 +1,7 @@
 # Implementation Plan: Task #678
 
 - **Task**: 678 - auto_escalation_advisory_v2
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 1.5 hours
 - **Dependencies**: None (task 669 hard_mode_agent_system already completed)
 - **Research Inputs**: specs/678_auto_escalation_advisory_v2/reports/01_auto-escalation-research.md
@@ -139,14 +139,14 @@ Phases within the same wave can execute in parallel.
 
 ## Testing & Validation
 
-- [ ] Read the modified SKILL.md and verify all three insertion points are present and syntactically correct
-- [ ] Verify loop guard JSON schema includes `churn_advisory` sub-object in the fresh-start `jq -n` command
-- [ ] Verify resume branch reads all five churn fields with `// DEFAULT` fallback pattern
-- [ ] Verify `check_churn_advisory()` function definition is complete with all three signals
-- [ ] Verify the function call site is between postflight status update and artifact linking in Stage 5
-- [ ] Verify Stage 7 loop guard update does not touch `churn_advisory` fields
-- [ ] Verify no changes to multi-task mode sections (MT-1 through MT-5)
-- [ ] Grep the modified file for `ADVISORY` to confirm warning output format matches `[orchestrate] ADVISORY:` pattern
+- [x] Read the modified SKILL.md and verify all three insertion points are present and syntactically correct *(completed)*
+- [x] Verify loop guard JSON schema includes `churn_advisory` sub-object in the fresh-start `jq -n` command *(completed)*
+- [x] Verify resume branch reads all five churn fields with `// DEFAULT` fallback pattern *(completed)*
+- [x] Verify `check_churn_advisory()` function definition is complete with all three signals *(completed)*
+- [x] Verify the function call site is between postflight status update and artifact linking in Stage 5 *(completed)*
+- [x] Verify Stage 7 loop guard update does not touch `churn_advisory` fields *(completed)*
+- [x] Verify no changes to multi-task mode sections (MT-1 through MT-5) *(completed)*
+- [x] Grep the modified file for `ADVISORY` to confirm warning output format matches `[orchestrate] ADVISORY:` pattern *(completed)*
 
 ## Artifacts & Outputs
 
