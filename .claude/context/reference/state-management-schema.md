@@ -7,7 +7,6 @@ Complete schema reference for state.json, TODO.md, and artifact formats. For beh
 ```json
 {
   "next_project_number": 346,
-  "default_task_type": null,
   "active_projects": [
     {
       "project_number": 334,
@@ -70,26 +69,6 @@ Complete schema reference for state.json, TODO.md, and artifact formats. For beh
 | `dependencies` | array | No | Array of task numbers this depends on |
 | `artifacts` | array | No | Array of artifact objects |
 | `next_artifact_number` | number | No | Next artifact sequence number (default: 1) |
-
-### default_task_type Field
-
-The optional `default_task_type` top-level field sets a project-level default that overrides the keyword table in `/task` step 4 when present.
-
-| Field | Type | Required | Default | Description |
-|-------|------|----------|---------|-------------|
-| `default_task_type` | string or null | No | null | Project default task type; overrides keyword table when set |
-
-**Precedence** (highest to lowest):
-1. **Meta keywords** (`"meta"`, `"agent"`, `"command"`, `"skill"` in description) -- always resolve to `meta`, unconditional
-2. **`default_task_type`** -- if non-empty and no meta keyword matched, use this value
-3. **Keyword table** -- full keyword-to-type mapping (lean4, latex, nix, etc.)
-4. **`general`** -- final fallback when nothing else matches
-
-**Backward Compatibility**: When `default_task_type` is absent or null, step 4 behaves exactly as before (keyword table runs as the primary detection mechanism). Setting the field is purely additive.
-
-**Use case**: Projects where the keyword table would mis-classify descriptions. For example, a logic/CS library project can set `"default_task_type": "cslib"` so that descriptions containing "proof", "theorem", or "logic" route to the project extension instead of `lean4` or `formal`.
-
----
 
 ### task_type Field
 

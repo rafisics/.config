@@ -38,9 +38,8 @@ command.
 
 ```bash
 source .claude/scripts/parse-command-args.sh "$ARGUMENTS"
-# Exports: TASK_NUMBERS (space-separated), FOCUS_PROMPT, REMAINING_ARGS, EFFORT_FLAG
+# Exports: TASK_NUMBERS (space-separated), FOCUS_PROMPT, REMAINING_ARGS
 focus_prompt="${FOCUS_PROMPT:-}"
-effort_flag="${EFFORT_FLAG:-}"
 ```
 
 If `len(TASK_NUMBERS) == 1`: extract `task_number=$(echo "$TASK_NUMBERS" | awk '{print $1}')` and fall through to CHECKPOINT 1: GATE IN.
@@ -190,23 +189,13 @@ done
 task_numbers_json=$(printf '%s\n' "${validated_tasks[@]}" | jq -R 'tonumber' | jq -s '.')
 ```
 
-Determine orchestrate skill (hard-mode routing applies in multi-task mode too):
-
-```bash
-if [ "$effort_flag" = "hard" ] && [ -f ".claude/skills/skill-orchestrate-hard/SKILL.md" ]; then
-  orchestrate_skill="skill-orchestrate-hard"
-else
-  orchestrate_skill="skill-orchestrate"
-fi
-```
-
-Invoke a single orchestrate skill instance with all task context:
+Invoke a single `skill-orchestrate` instance with all task context:
 
 ```
 Tool: Skill
 Parameters:
-  skill: "{orchestrate_skill}"
-  args: "multi_task_mode=true task_numbers={task_numbers_json} waves={waves_json} dependency_graph={dep_graph_json} session_id={batch_session_id} focus_prompt={focus_prompt} effort_flag={effort_flag}"
+  skill: "skill-orchestrate"
+  args: "multi_task_mode=true task_numbers={task_numbers_json} waves={waves_json} dependency_graph={dep_graph_json} session_id={batch_session_id} focus_prompt={focus_prompt}"
 ```
 
 The delegation context passed to the skill must include:
@@ -217,8 +206,7 @@ The delegation context passed to the skill must include:
   "task_numbers": [42, 43, 44],
   "waves": [[42], [43, 44]],
   "dependency_graph": {"42": [], "43": [42], "44": [42]},
-  "focus_prompt": "{focus_prompt}",
-  "effort_flag": "{effort_flag}"
+  "focus_prompt": "{focus_prompt}"
 }
 ```
 
@@ -328,23 +316,11 @@ valid entry points for the orchestrator.
 
 **EXECUTE NOW**: After CHECKPOINT 1 completes, immediately invoke the Skill tool.
 
-**Hard Mode Routing**: When `effort_flag="hard"`, route to `skill-orchestrate-hard` if it exists:
-
-```bash
-# Determine orchestrate skill based on effort_flag
-if [ "$effort_flag" = "hard" ] && [ -f ".claude/skills/skill-orchestrate-hard/SKILL.md" ]; then
-  orchestrate_skill="skill-orchestrate-hard"
-  echo "[hard-mode] Hard mode active. Cost: ~3-5x standard. Using skill-orchestrate-hard." >&2
-else
-  orchestrate_skill="skill-orchestrate"
-fi
-```
-
-Invoke the selected orchestrate skill via the Skill tool:
+Invoke `skill-orchestrate` via the Skill tool:
 
 ```
-skill: "{orchestrate_skill}"
-args: "task_number={N} session_id={SESSION_ID} orchestrator_mode=true effort_flag={effort_flag}"
+skill: "skill-orchestrate"
+args: "task_number={N} session_id={SESSION_ID} orchestrator_mode=true"
 ```
 
 The delegation context passed to the skill must include:
@@ -352,7 +328,7 @@ The delegation context passed to the skill must include:
 {
   "session_id": "{SESSION_ID}",
   "delegation_depth": 1,
-  "delegation_path": ["orchestrator", "orchestrate", "{orchestrate_skill}"],
+  "delegation_path": ["orchestrator", "orchestrate", "skill-orchestrate"],
   "task_context": {
     "task_number": N,
     "task_name": "{PROJECT_NAME}",
@@ -360,8 +336,7 @@ The delegation context passed to the skill must include:
     "task_type": "{TASK_TYPE}"
   },
   "orchestrator_mode": true,
-  "focus_prompt": "{FOCUS_PROMPT}",
-  "effort_flag": "{effort_flag}"
+  "focus_prompt": "{FOCUS_PROMPT}"
 }
 ```
 

@@ -1,7 +1,95 @@
 {
   "version": "1.1.0",
-  "next_project_number": 679,
+  "next_project_number": 682,
   "active_projects": [
+    {
+      "project_number": 679,
+      "project_name": "research_tts_best_practices",
+      "title": "Research June 2026 TTS best practices for Claude Code hooks",
+      "status": "planned",
+      "task_type": "meta",
+      "topic": "Terminal UI",
+      "dependencies": [],
+      "description": "Web research on current Claude Code hook patterns for TTS/audio notifications as of June 2026. Compare with the existing Piper TTS + WezTerm tab color notification pipeline. Identify: (1) any new hook events beyond Stop/Notification/SubagentStop that could improve notification targeting, (2) best practices for deduplication and cooldown in multi-agent workflows, (3) whether the Notification hook matcher \"permission_prompt|elicitation_dialog\" is still the correct set of actionable notification types, (4) integration patterns between TTS announcements and terminal tab visual indicators. Document findings for tasks 680 and 681.",
+      "created": "2026-06-12T00:00:00Z",
+      "last_updated": "2026-06-12T20:12:51Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/679_research_tts_best_practices/reports/01_tts-best-practices.md",
+          "type": "report",
+          "summary": "TTS best practices research: hook events catalog, notification matchers, dedup strategies, fix recommendations"
+        },
+        {
+          "path": "specs/679_research_tts_best_practices/plans/01_tts-research-plan.md",
+          "type": "plan",
+          "summary": "Minimal 1-phase verification plan confirming research report completeness and file path accuracy for downstream tasks 680 and 681"
+        }
+      ],
+      "session_id": "sess_1749783612_a7b3c2_679",
+      "memory_candidates": [
+        {
+          "content": "Claude Code Notification hook (June 2026) has 6 notification_type values: permission_prompt (actionable), idle_prompt (actionable - Claude waiting 60s+), auth_success (non-actionable), elicitation_dialog (actionable), elicitation_complete (non-actionable), elicitation_response (non-actionable). Recommended TTS matcher: 'permission_prompt|idle_prompt|elicitation_dialog'. The 'idle_prompt' type was missing from the project's settings.json matcher.",
+          "category": "INSIGHT",
+          "source_artifact": "specs/679_research_tts_best_practices/reports/01_tts-best-practices.md",
+          "confidence": 0.9,
+          "suggested_keywords": [
+            "claude-code",
+            "hooks",
+            "notification",
+            "TTS",
+            "idle_prompt",
+            "matcher"
+          ]
+        },
+        {
+          "content": "Claude Code Stop hook input JSON includes 'stop_hook_active' boolean field (true when already continuing due to previous Stop hook block). This is the official mechanism for preventing infinite loops in blocking Stop hooks. The Stop hook has no matcher support and no fields to identify the 'reason' for stopping (e.g., lifecycle vs interactive). Subagent stops are routed to SubagentStop event which includes agent_id and agent_type fields.",
+          "category": "PATTERN",
+          "source_artifact": "specs/679_research_tts_best_practices/reports/01_tts-best-practices.md",
+          "confidence": 0.95,
+          "suggested_keywords": [
+            "claude-code",
+            "hooks",
+            "Stop",
+            "stop_hook_active",
+            "SubagentStop",
+            "subagent"
+          ]
+        }
+      ]
+    },
+    {
+      "project_number": 680,
+      "project_name": "fix_stop_hook_tts",
+      "title": "Fix Stop hook to fire TTS when user attention is needed",
+      "status": "not_started",
+      "task_type": "meta",
+      "topic": "Terminal UI",
+      "dependencies": [
+        679
+      ],
+      "description": "Modify claude-stop-notify.sh to call tts-notify.sh when no workflow-active marker exists (= agent halted, user must act). When workflow-active marker IS present (mid-orchestrate pause), skip TTS so tab stays dim with no announcement. Add cooldown dedup to prevent rapid stop/start from spamming TTS. The current claude-stop-notify.sh (line 59) explicitly skips TTS with comment \"no TTS for non-lifecycle stops\" — this is the root cause of TTS never firing on /implement, /todo, /orchestrate completion. Files: .claude/hooks/claude-stop-notify.sh, .claude/hooks/tts-notify.sh (verify cooldown mechanism). Also harmonize with the global ~/.config/.claude/hooks/tts-notify.sh which does fire TTS on Stop but lacks the workflow-active marker pattern.",
+      "created": "2026-06-12T00:00:00Z",
+      "last_updated": "2026-06-12T00:00:00Z",
+      "next_artifact_number": 1,
+      "artifacts": []
+    },
+    {
+      "project_number": 681,
+      "project_name": "fix_orchestrator_final_tts",
+      "title": "Fix orchestrator final-completion TTS and tab opacity integration",
+      "status": "not_started",
+      "task_type": "meta",
+      "topic": "Terminal UI",
+      "dependencies": [
+        679
+      ],
+      "description": "Fix orchestrator-postflight.sh Stage 8b to pass --quiet only for mid-orchestrate transitions (research->plan, plan->implement) and call lifecycle-notify.sh WITHOUT --quiet on final completion so TTS fires. Currently line 313 always passes --quiet with comment \"this script is called mid-orchestrate where the orchestrator itself fires the final TTS on true completion\" but no such final TTS code exists. The fix requires: (1) orchestrator-postflight.sh must know whether this is a mid-orchestrate call or final completion — add an argument or env var from the caller, (2) for final completion (implement postflight in non-orchestrate mode, or orchestrate final phase), call lifecycle-notify.sh without --quiet, (3) clear workflow-active marker before final Stop so claude-stop-notify.sh fires needs_input tab color + TTS, (4) verify dim-to-bright tab color transitions work correctly during orchestrate cycles (dim for in-progress, bright for completed, needs_input for awaiting user). Files: .claude/scripts/orchestrator-postflight.sh, .claude/scripts/lifecycle-notify.sh, .claude/hooks/claude-stop-notify.sh (workflow-active marker cleanup).",
+      "created": "2026-06-12T00:00:00Z",
+      "last_updated": "2026-06-12T00:00:00Z",
+      "next_artifact_number": 1,
+      "artifacts": []
+    },
     {
       "project_number": 678,
       "project_name": "auto_escalation_advisory_v2",

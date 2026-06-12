@@ -46,26 +46,6 @@ This skill activates when:
 # Use model_flag if provided, otherwise default to sonnet (cost-effective for team mode)
 teammate_model="${model_flag:-sonnet}"
 model_preference_line="Model preference: Use Claude ${teammate_model^} 4.6 for this task."
-
-# Hard-mode branch: when effort_flag="hard" or hard_team_mode=true, enforce H8 plan requirements
-if [ "$hard_team_mode" = "true" ] || [ "$effort_flag" = "hard" ]; then
-  echo "[team-plan] Hard mode: injecting H8 phase sizing and postmortem requirements into teammate prompts" >&2
-  teammate_subagent_type="planner-hard-agent"
-  hard_mode_preamble="
-HARD MODE PLANNING DISPATCH. The following requirements are mandatory:
-
-1. Phase Sizing (H8): Each phase must be completable in one agent run (~100-500 lines output).
-   Split any phase estimated at >4 hours into sub-phases.
-2. Postmortem Constraints: Include a ## Postmortem Constraints section with specific Do-Not rules
-   derived from research report warnings and risk factors.
-3. Preserved Assets: If prior plan exists, include a Preserved Assets table.
-4. Wave Map: Declare explicit dependency wave table with parallel opportunities.
-5. Concrete phase titles: Phase titles must name the exact artifact or milestone produced.
-"
-else
-  teammate_subagent_type="planner-agent"
-  hard_mode_preamble=""
-fi
 ```
 
 ---
@@ -232,7 +212,6 @@ Create teammate prompts and spawn wave. Pass `artifact_number` and `teammate_let
 
 **Teammate A - Plan Version A (Incremental Delivery)**:
 ```
-{hard_mode_preamble}
 Create an implementation plan for task {task_number}: {description}
 
 {model_preference_line}
@@ -260,7 +239,6 @@ Format: Standard implementation plan format with:
 
 **Teammate B - Plan Version B (Alternative Boundaries)**:
 ```
-{hard_mode_preamble}
 Create an alternative implementation plan for task {task_number}: {description}
 
 {model_preference_line}
@@ -286,7 +264,6 @@ Format: Same as Teammate A
 
 **Teammate C - Risk/Dependency Analysis (if team_size >= 3)**:
 ```
-{hard_mode_preamble}
 Analyze dependencies and risks for implementing task {task_number}: {description}
 
 {model_preference_line}
@@ -314,8 +291,7 @@ Format: Risk analysis with dependency graph and critical path
 **Spawn teammates using Agent tool**.
 
 **IMPORTANT**: Pass the `model` parameter to enforce model selection:
-- Use `model: "${teammate_model}"` (from model_flag if provided, otherwise "sonnet")
-- In hard mode, use `subagent_type: "${teammate_subagent_type}"` (set to `planner-hard-agent` when `hard_team_mode=true`)
+- Use `model: "sonnet"` for all tasks
 
 **Synthesis uses base number without letter**: After all teammates complete, the synthesis plan uses `{run_padded}_{slug}.md` (e.g., `01_implementation-plan.md`).
 

@@ -129,12 +129,6 @@ if [ -f "$loop_guard_file" ] && jq empty "$loop_guard_file" 2>/dev/null; then
   # Resume: read existing guard
   cycle_count=$(jq -r '.cycle_count // 0' "$loop_guard_file")
   echo "[orchestrate] Resuming — cycle $cycle_count of $MAX_CYCLES"
-  # Read churn advisory counters from existing guard
-  churn_plan_revisions=$(jq -r '.churn_advisory.plan_revision_count // 0' "$loop_guard_file")
-  churn_no_progress=$(jq -r '.churn_advisory.implement_no_progress_count // 0' "$loop_guard_file")
-  churn_analysis_only=$(jq -r '.churn_advisory.analysis_only_count // 0' "$loop_guard_file")
-  churn_advisory_emitted=$(jq -r '.churn_advisory.advisory_emitted // false' "$loop_guard_file")
-  last_impl_phases=$(jq -r '.churn_advisory.last_implement_phases_completed // 0' "$loop_guard_file")
 else
   # Fresh start: create guard
   cycle_count=0
@@ -148,22 +142,9 @@ else
       "max_cycles": $max_cycles,
       "current_state": "reading",
       "started": $started,
-      "last_updated": $started,
-      "churn_advisory": {
-        "plan_revision_count": 0,
-        "implement_no_progress_count": 0,
-        "analysis_only_count": 0,
-        "advisory_emitted": false,
-        "last_implement_phases_completed": 0
-      }
+      "last_updated": $started
     }' > "$loop_guard_file"
   echo "[orchestrate] Starting fresh — MAX_CYCLES=$MAX_CYCLES"
-  # Initialize churn advisory shell variables for fresh start
-  churn_plan_revisions=0
-  churn_no_progress=0
-  churn_analysis_only=0
-  churn_advisory_emitted=false
-  last_impl_phases=0
 fi
 
 # Blocker escalation counter (reset each /orchestrate invocation)
@@ -400,9 +381,6 @@ else
       ;;
   esac
 
-  # Churn advisory check: evaluate deflection signals and emit one-time warning if needed
-  check_churn_advisory
-
   # Artifact linking: extract artifact path/type from handoff and link in TODO.md + state.json
   handoff_artifact_path=$(echo "$handoff" | jq -r '.artifacts[0].path // ""')
   handoff_artifact_type=$(echo "$handoff" | jq -r '.artifacts[0].type // ""')
@@ -506,73 +484,6 @@ invoke_drift_inspection() {
   else
     echo "[orchestrate] Drift check passed ($drift_pct <= $DRIFT_REVISION_THRESHOLD). Continuing."
   fi
-}
-```
-
----
-
-### Stage 5b: Churn Advisory Function
-
-Called from Stage 5 after the postflight status update block. Tracks three deflection signals
-and emits a one-time advisory warning when any threshold is crossed. Advisory only — never
-alters dispatch routing or auto-escalates to `--hard`.
-
-```bash
-check_churn_advisory() {
-  # Skip churn check for research/planning dispatches (phases_completed is meaningless)
-  if [ "$dispatch_status" = "researched" ] || [ "$dispatch_status" = "planned" ]; then
-    return 0
-  fi
-
-  # Signal 1: plan revision count — count *.md files in plans/ directory
-  churn_plan_revisions=$(ls -1 "${TASK_DIR}/plans/"*.md 2>/dev/null | wc -l | tr -d ' ')
-
-  # Signal 2: implement no-progress — compare phases_completed against last recorded
-  if [ "$dispatch_status" = "partial" ] || [ "$dispatch_status" = "implemented" ]; then
-    phases_delta=$(( phases_completed - last_impl_phases ))
-    if [ "$phases_delta" -le 0 ]; then
-      churn_no_progress=$(( churn_no_progress + 1 ))
-    else
-      churn_no_progress=0
-    fi
-    last_impl_phases="$phases_completed"
-  fi
-
-  # Signal 3: analysis-only output — zero phases + partial + analysis-marker phrases
-  if [ "$phases_completed" -eq 0 ] && [ "$dispatch_status" = "partial" ]; then
-    analysis_markers="analysis complete\|reviewed the\|examined the\|no changes made\|no files written"
-    if echo "$dispatch_summary" | grep -qi "$analysis_markers"; then
-      churn_analysis_only=$(( churn_analysis_only + 1 ))
-    fi
-  fi
-
-  # Threshold check: emit advisory once if any signal crosses its threshold
-  threshold_crossed=false
-  [ "$churn_plan_revisions" -ge 2 ] && threshold_crossed=true
-  [ "$churn_no_progress" -ge 3 ] && threshold_crossed=true
-  [ "$churn_analysis_only" -ge 1 ] && threshold_crossed=true
-
-  if [ "$threshold_crossed" = "true" ] && [ "$churn_advisory_emitted" = "false" ]; then
-    echo "[orchestrate] ADVISORY: Churn pattern detected for task $task_number." >&2
-    echo "[orchestrate] ADVISORY: Signals: plan_revisions=$churn_plan_revisions, no_progress_dispatches=$churn_no_progress, analysis_only=$churn_analysis_only" >&2
-    echo "[orchestrate] ADVISORY: Repeated deflection may indicate a hard coordination problem." >&2
-    echo "[orchestrate] ADVISORY: Consider: /orchestrate $task_number --hard" >&2
-    churn_advisory_emitted=true
-  fi
-
-  # Persist updated counters back to loop guard
-  jq \
-    --argjson plan_rev "$churn_plan_revisions" \
-    --argjson no_prog "$churn_no_progress" \
-    --argjson analysis "$churn_analysis_only" \
-    --argjson emitted "$( [ "$churn_advisory_emitted" = "true" ] && echo true || echo false )" \
-    --argjson last_phases "$last_impl_phases" \
-    '.churn_advisory.plan_revision_count = $plan_rev |
-     .churn_advisory.implement_no_progress_count = $no_prog |
-     .churn_advisory.analysis_only_count = $analysis |
-     .churn_advisory.advisory_emitted = $emitted |
-     .churn_advisory.last_implement_phases_completed = $last_phases' \
-    "$loop_guard_file" > "${loop_guard_file}.tmp" && mv "${loop_guard_file}.tmp" "$loop_guard_file"
 }
 ```
 
@@ -977,9 +888,6 @@ for task_num in "${active_tasks[@]}"; do
       else
         implement_tasks+=("$task_num")
       fi
-      ;;
-    pr_ready)
-      echo "[orchestrate-mt] Task $task_num is PR READY — use /merge to submit the pull request. Skipping auto-dispatch."
       ;;
     blocked|researching|planning)
       echo "[orchestrate-mt] Task $task_num in in-flight or blocked state [$status] — skipping this cycle"
