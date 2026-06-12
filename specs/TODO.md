@@ -36,7 +36,9 @@ next_project_number: 670
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
-- **Research**: [669_hard_mode_agent_system/reports/01_hard-mode-orchestration-approach.md]
+- **Research**:
+  - [669_hard_mode_agent_system/reports/01_hard-mode-orchestration-approach.md]
+  - [669_hard_mode_agent_system/reports/02_team-research.md]
 
 **Description**: Create hard-mode variants of the agent system for very complex, deflection-prone tasks (e.g., deep Lean formalization): route --hard in /implement, /research, /plan, /orchestrate to hard-mode skills (skill-lean-implementation-hard, skill-orchestrate-hard, skill-planner-hard, skill-{domain}-research-hard) calling hard-mode agents. Hard mode encodes: per-phase dispatch (one bounded milestone per agent run), anti-analysis prompt contracts (read budgets, forbidden conclusions, counterexample bar for defect claims), prior-art transcription mandates with PDF-level citation, adversarial verification of research reports, divergence-audit trigger after repeated deflections (churn counters in loop guard), territory contracts for parallel dispatch, roadmap handoffs with incremental commit discipline, and hard-mode plan format (phases sized for single runs, postmortem constraints, lemma-to-source mapping, preserved-assets accounting). See report 01 for the full methodology distilled from the BimodalLogic task-273 session, measured outcomes, and a 7-step implementation breakdown.
 
