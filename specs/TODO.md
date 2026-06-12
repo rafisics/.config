@@ -11,19 +11,17 @@ next_project_number: 679
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,652,669,670 | -- | agent-system, Terminal UI, artifact-management, ... |
-| 2 | 675,676,677,678 | 669 | agent-system |
+| 1 | 78,87,652,670,675,676,677,678 | -- | agent-system, Terminal UI, artifact-management, ... |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Agent System
 
 652 [NOT STARTED] — After ~1 week of the new pipeline running, review logs to verify 
-669 [IMPLEMENTING] — Create hard-mode variants of the agent system for very complex, d
-  └─ 675 [NOT STARTED] — Add hard-mode routing to the lean4 extension: routing_hard manife
-  └─ 676 [NOT STARTED] — Add hard-mode routing to the cslib extension following the same p
-  └─ 677 [NOT STARTED] — Design and implement a testing strategy for hard-mode behavioral 
-  └─ 678 [NOT STARTED] — Implement churn detection that emits a 'consider --hard' warning 
+675 [NOT STARTED] — Add hard-mode routing to the lean4 extension: routing_hard manife
+676 [NOT STARTED] — Add hard-mode routing to the cslib extension following the same p
+677 [NOT STARTED] — Design and implement a testing strategy for hard-mode behavioral 
+678 [NOT STARTED] — Implement churn detection that emits a 'consider --hard' warning 
 
 ### Terminal UI
 
@@ -144,7 +142,7 @@ next_project_number: 679
 
 ### 669. Add hard-mode routing (--hard) with hard-mode skills and agents for very complex tasks
 - **Effort**: 8-12 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
