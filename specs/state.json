@@ -92,6 +92,11 @@
           "path": "specs/674_upgrade_pr_command_task_integration/plans/01_pr-command-plan.md",
           "type": "plan",
           "summary": "5-phase plan: pr.md task-mode redesign, base_branch, cross-repo cslib scripts"
+        },
+        {
+          "path": "specs/674_upgrade_pr_command_task_integration/summaries/01_implementation-summary.md",
+          "type": "summary",
+          "summary": "/pr task-mode redesign, path bug fix, base_branch, cross-repo cslib scripts"
         }
       ],
       "session_id": "sess_1781284922_643662_674"
