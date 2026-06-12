@@ -142,6 +142,55 @@ if [ "$artifact_type" = "plan" ]; then
   if ! grep -qF "Dependency Analysis" "$artifact_path"; then
     log_warn "Missing Dependency Analysis table under Implementation Phases"
   fi
+
+  # --- Hard-mode plan checks ---
+  # Detect hard-mode plans by presence of hard-mode markers in plan metadata header or title.
+  # Gates on specific metadata signals to avoid false positives on plans that merely
+  # reference or discuss hard-mode (e.g., a plan about testing hard-mode scripts).
+  # Detection signals (any one is sufficient):
+  #   - H1 title contains "--hard" (e.g., "# Implementation Plan: ... --hard")
+  #   - Metadata block contains "planner-hard-agent" (agent identity)
+  #   - Metadata block contains "skill-planner-hard" (skill identity)
+  #   - First 30 lines contain "**Effort Mode**: hard" or "**Mode**: hard"
+  is_hard_plan=false
+  if head -5 "$artifact_path" | grep -qiE "\-\-hard" 2>/dev/null; then
+    is_hard_plan=true
+  elif head -30 "$artifact_path" | grep -qE "planner-hard-agent|skill-planner-hard" 2>/dev/null; then
+    is_hard_plan=true
+  elif head -30 "$artifact_path" | grep -qiE "\*\*Effort Mode\*\*:.*hard|\*\*Mode\*\*:.*hard" 2>/dev/null; then
+    is_hard_plan=true
+  fi
+
+  if [ "$is_hard_plan" = "true" ]; then
+    log_info "Hard-mode plan detected -- checking hard-mode required sections"
+
+    # Check for Postmortem Constraints section (H8 requirement)
+    if grep -qE '^## Postmortem Constraints' "$artifact_path"; then
+      log_info "Hard-mode: ## Postmortem Constraints section present"
+    else
+      log_warn "Hard-mode plan: missing '## Postmortem Constraints' section (H8 requirement)"
+    fi
+
+    # Check for phase sizing annotations: at least one Phase has "Estimated output" and "Done when"
+    has_estimated_output=false
+    has_done_when=false
+    if grep -qiE "Estimated output|estimated_output" "$artifact_path" 2>/dev/null; then
+      has_estimated_output=true
+    fi
+    if grep -qiE "Done when|done_when" "$artifact_path" 2>/dev/null; then
+      has_done_when=true
+    fi
+
+    if [ "$has_estimated_output" = "true" ] && [ "$has_done_when" = "true" ]; then
+      log_info "Hard-mode: phase sizing annotations (Estimated output, Done when) present"
+    elif [ "$has_estimated_output" = "false" ] && [ "$has_done_when" = "false" ]; then
+      log_warn "Hard-mode plan: missing phase sizing annotations ('Estimated output', 'Done when') for H8 compliance"
+    elif [ "$has_estimated_output" = "false" ]; then
+      log_warn "Hard-mode plan: missing 'Estimated output' phase sizing annotation (H8)"
+    else
+      log_warn "Hard-mode plan: missing 'Done when' phase sizing annotation (H8)"
+    fi
+  fi
 fi
 
 # --- Summary ---

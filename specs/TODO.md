@@ -38,7 +38,7 @@ next_project_number: 679
 ## Tasks
 
 ### 678. Adaptive auto-escalation advisory (v2)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 669

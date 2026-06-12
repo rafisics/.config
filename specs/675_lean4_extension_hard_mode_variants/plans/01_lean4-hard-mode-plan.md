@@ -95,7 +95,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Lean4 Hard Agents [NOT STARTED]
+### Phase 2: Lean4 Hard Agents [IN PROGRESS]
 
 **Goal**: Create the two lean4 hard agent definition files.
 

@@ -98,25 +98,25 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Create hard-mode agent files [NOT STARTED]
+### Phase 2: Create hard-mode agent files [COMPLETED]
 
 **Goal**: Create the two cslib-specific hard-mode agent definition files that combine base cslib agent domain knowledge with hard-mode behavioral contracts.
 
 **Tasks**:
-- [ ] Create `cslib-research-hard-agent.md` (~200 lines) extending base cslib-research-agent with:
+- [x] Create `cslib-research-hard-agent.md` (~200 lines) extending base cslib-research-agent with:
   - Frontmatter: name, description, model: opus
   - @-references to anti-analysis.md (H2), reference-grounding.md (H3) contracts
   - Adversarial self-verification pass (H4): re-examine 3 most load-bearing claims
   - CSLib-specific H3 enrichment: BibKey verification against references.bib
-  - All base agent constraints carried forward: blocked tools, reuse check, zero-debt, Lean MCP tools, rate limits
-- [ ] Create `cslib-implementation-hard-agent.md` (~280 lines) extending base cslib-implementation-agent with:
+  - All base agent constraints carried forward: blocked tools, reuse check, zero-debt, Lean MCP tools, rate limits *(completed)*
+- [x] Create `cslib-implementation-hard-agent.md` (~280 lines) extending base cslib-implementation-agent with:
   - Frontmatter: name, description, model: sonnet
   - @-references to anti-analysis.md (H2), wrap-up.md (H9), territory.md (H7) contracts
   - Per-phase focus: expects phase_number in delegation context
   - Settled-Design Preamble Protocol from H2 contract
-  - All base agent constraints carried forward: blocked tools, zero-debt, CI pipeline, escalation protocol
-- [ ] Verify both agent files reference the same base contracts (no divergence from lean4 formulation)
-- [ ] Verify BLOCKED TOOLS sections are present in both agent files
+  - All base agent constraints carried forward: blocked tools, zero-debt, CI pipeline, escalation protocol *(completed)*
+- [x] Verify both agent files reference the same base contracts (no divergence from lean4 formulation) *(completed)*
+- [x] Verify BLOCKED TOOLS sections are present in both agent files *(completed)*
 
 **Timing**: 1 hour
 

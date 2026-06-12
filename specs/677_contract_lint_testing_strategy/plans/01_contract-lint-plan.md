@@ -122,7 +122,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Hard-Mode Plan Artifact Checks [NOT STARTED]
+### Phase 3: Hard-Mode Plan Artifact Checks [IN PROGRESS]
 
 **Goal**: Extend `validate-artifact.sh` to detect hard-mode plans and verify they contain required sections (postmortem constraints, phase sizing annotations, dependency wave maps).
 
