@@ -18,10 +18,10 @@ next_project_number: 679
 ### Agent System
 
 652 [NOT STARTED] — After ~1 week of the new pipeline running, review logs to verify 
-675 [NOT STARTED] — Add hard-mode routing to the lean4 extension: routing_hard manife
-676 [NOT STARTED] — Add hard-mode routing to the cslib extension following the same p
-677 [NOT STARTED] — Design and implement a testing strategy for hard-mode behavioral 
-678 [NOT STARTED] — Implement churn detection that emits a 'consider --hard' warning 
+675 [PLANNING] — Add hard-mode routing to the lean4 extension: routing_hard manife
+676 [PLANNING] — Add hard-mode routing to the cslib extension following the same p
+677 [PLANNED] — Design and implement a testing strategy for hard-mode behavioral 
+678 [PLANNED] — Implement churn detection that emits a 'consider --hard' warning 
 
 ### Terminal UI
 
@@ -38,7 +38,7 @@ next_project_number: 679
 ## Tasks
 
 ### 678. Adaptive auto-escalation advisory (v2)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 669
@@ -48,17 +48,18 @@ next_project_number: 679
 ---
 
 ### 677. Contract lint and testing strategy for hard-mode behavioral correctness
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 669
+- **Plan**: [677_contract_lint_testing_strategy/plans/01_contract-lint-plan.md]
 
 **Description**: Design and implement a testing strategy for hard-mode behavioral correctness: contract lint rules that verify agents honor anti-analysis budgets, reference grounding requirements, and convergence policing thresholds. May include test harnesses that replay known deflection-prone prompts against hard-mode agents and check for contract violations. Research inputs: specs/669_hard_mode_agent_system/reports/01_hard-mode-orchestration-approach.md, specs/669_hard_mode_agent_system/reports/02_team-research.md.
 
 ---
 
 ### 676. Add hard-mode routing to cslib extension
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 669
@@ -68,7 +69,7 @@ next_project_number: 679
 ---
 
 ### 675. Add hard-mode routing to lean4 extension
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 669

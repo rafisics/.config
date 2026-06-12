@@ -6,7 +6,7 @@
       "project_number": 678,
       "project_name": "auto_escalation_advisory_v2",
       "title": "Adaptive auto-escalation advisory (v2)",
-      "status": "researched",
+      "status": "planned",
       "task_type": "meta",
       "topic": "agent-system",
       "dependencies": [
@@ -14,7 +14,7 @@
       ],
       "description": "Implement churn detection that emits a 'consider --hard' warning when repeated deflection patterns are observed: 2+ plan revisions on a single task, 3+ implement dispatches with no phase completion, or analysis-only output in implementation phases. This is advisory only -- does not auto-escalate. v2 trajectory item. Research inputs: specs/669_hard_mode_agent_system/reports/01_hard-mode-orchestration-approach.md, specs/669_hard_mode_agent_system/reports/02_team-research.md.",
       "created": "2026-06-12T00:00:00Z",
-      "last_updated": "2026-06-12T18:29:41Z",
+      "last_updated": "2026-06-12T18:34:41Z",
       "next_artifact_number": 1,
       "artifacts": [],
       "session_id": "sess_1781288710_ad1e5a_678"
@@ -23,7 +23,7 @@
       "project_number": 677,
       "project_name": "contract_lint_testing_strategy",
       "title": "Contract lint and testing strategy for hard-mode behavioral correctness",
-      "status": "not_started",
+      "status": "planned",
       "task_type": "meta",
       "topic": "agent-system",
       "dependencies": [
@@ -31,15 +31,47 @@
       ],
       "description": "Design and implement a testing strategy for hard-mode behavioral correctness: contract lint rules that verify agents honor anti-analysis budgets, reference grounding requirements, and convergence policing thresholds. May include test harnesses that replay known deflection-prone prompts against hard-mode agents and check for contract violations. Research inputs: specs/669_hard_mode_agent_system/reports/01_hard-mode-orchestration-approach.md, specs/669_hard_mode_agent_system/reports/02_team-research.md.",
       "created": "2026-06-12T00:00:00Z",
-      "last_updated": "2026-06-12T00:00:00Z",
+      "last_updated": "2026-06-12T18:34:04Z",
       "next_artifact_number": 1,
-      "artifacts": []
+      "artifacts": [
+        {
+          "type": "plan",
+          "path": "specs/677_contract_lint_testing_strategy/plans/01_contract-lint-plan.md"
+        }
+      ],
+      "session_id": "sess_1781288710_ad1e5a_677",
+      "plan_metadata": {
+        "phases": 4,
+        "total_effort_hours": 5,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            4
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_contract-lint-research.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-06-12"
+          }
+        ]
+      }
     },
     {
       "project_number": 676,
       "project_name": "cslib_extension_hard_mode_variants",
       "title": "Add hard-mode routing to cslib extension",
-      "status": "researched",
+      "status": "planned",
       "task_type": "meta",
       "topic": "agent-system",
       "dependencies": [
@@ -47,16 +79,22 @@
       ],
       "description": "Add hard-mode routing to the cslib extension following the same pattern as lean4: routing_hard manifest entries, skill-cslib-research-hard, skill-cslib-implementation-hard, cslib hard agents with domain-specific H-technique overrides. Research inputs: specs/669_hard_mode_agent_system/reports/01_hard-mode-orchestration-approach.md, specs/669_hard_mode_agent_system/reports/02_team-research.md.",
       "created": "2026-06-12T00:00:00Z",
-      "last_updated": "2026-06-12T18:29:07Z",
+      "last_updated": "2026-06-12T18:34:43Z",
       "next_artifact_number": 1,
-      "artifacts": [],
+      "artifacts": [
+        {
+          "type": "plan",
+          "path": "specs/676_cslib_extension_hard_mode_variants/plans/01_cslib-hard-mode-plan.md",
+          "summary": "4-phase plan: manifest, agents, skills, docs"
+        }
+      ],
       "session_id": "sess_1781288710_ad1e5a_676"
     },
     {
       "project_number": 675,
       "project_name": "lean4_extension_hard_mode_variants",
       "title": "Add hard-mode routing to lean4 extension",
-      "status": "researched",
+      "status": "planning",
       "task_type": "meta",
       "topic": "agent-system",
       "dependencies": [
@@ -64,7 +102,7 @@
       ],
       "description": "Add hard-mode routing to the lean4 extension: routing_hard manifest entries, skill-lean-research-hard, skill-lean-implementation-hard, lean hard agents with H3 strict transcription mandate, H5 formal divergence audit, H8 lemma-to-source mapping, H9 sorry inventory. Research inputs: specs/669_hard_mode_agent_system/reports/01_hard-mode-orchestration-approach.md, specs/669_hard_mode_agent_system/reports/02_team-research.md.",
       "created": "2026-06-12T00:00:00Z",
-      "last_updated": "2026-06-12T18:29:27Z",
+      "last_updated": "2026-06-12T18:32:42Z",
       "next_artifact_number": 1,
       "artifacts": [],
       "session_id": "sess_1781288710_ad1e5a_675"
