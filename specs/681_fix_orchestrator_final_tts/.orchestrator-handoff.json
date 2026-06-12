@@ -1,13 +1,15 @@
 {
-  "status": "planned",
-  "summary": "Created 4-phase implementation plan: (1) add orchestrate-active marker lifecycle to skill-orchestrate with workflow-active cleanup, (2) suppress mid-orchestrate TTS via orchestrate-active check in lifecycle-notify.sh, (3) fix orchestrator-postflight.sh Stage 8b --quiet removal and add dim tab color transitions, (4) end-to-end verification. Estimated 2 hours.",
+  "status": "implemented",
+  "summary": "Added orchestrate-active marker lifecycle to skill-orchestrate (write at Stage 2, clear at all exit points); added orchestrate-active check in lifecycle-notify.sh to suppress TTS mid-orchestrate while preserving tab color; removed --quiet from orchestrator-postflight.sh Stage 8b; added dim tab color transitions before plan/implement dispatches; added orchestrate-active crash recovery cleanup to wezterm-preflight-status.sh Tier 2.",
   "artifacts": [
     {
-      "path": "specs/681_fix_orchestrator_final_tts/plans/01_orchestrator-tts-plan.md",
-      "type": "plan",
-      "summary": "Implementation plan with 4 phases covering orchestrate-active marker, mid-orchestrate TTS suppression, postflight --quiet fix, and dim tab color transitions"
+      "path": "specs/681_fix_orchestrator_final_tts/summaries/01_implementation-summary.md",
+      "type": "summary",
+      "summary": "Implementation summary covering 4 phases: orchestrate-active marker lifecycle, TTS suppression in lifecycle-notify.sh, postflight --quiet fix, and end-to-end signal flow verification."
     }
   ],
   "blockers": [],
-  "next_action_hint": "implement"
+  "phases_completed": 4,
+  "phases_total": 4,
+  "next_action_hint": "complete"
 }

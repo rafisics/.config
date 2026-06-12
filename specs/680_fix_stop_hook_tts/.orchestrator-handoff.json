@@ -1,13 +1,15 @@
 {
-  "status": "planned",
-  "summary": "3-phase plan: (1) add 10s cooldown dedup to tts-notify.sh using shared /tmp/claude-tts-last-notify, (2) add tts-notify.sh call to claude-stop-notify.sh non-workflow-active branch, (3) add idle_prompt to settings.json Notification matcher. Total effort: 1.5 hours.",
+  "status": "implemented",
+  "summary": "Added TTS call to Stop hook non-workflow-active branch, 10-second cooldown dedup to tts-notify.sh (shared /tmp/claude-tts-last-notify with global version), and idle_prompt to Notification matcher in settings.json. All 3 phases completed with full verification.",
   "artifacts": [
     {
-      "path": "specs/680_fix_stop_hook_tts/plans/01_stop-hook-tts-plan.md",
-      "type": "plan",
-      "summary": "Implementation plan with 3 sequential phases for Stop hook TTS, cooldown dedup, and settings.json matcher update"
+      "path": "specs/680_fix_stop_hook_tts/summaries/01_implementation-summary.md",
+      "type": "summary",
+      "summary": "Implementation summary covering cooldown mechanism in tts-notify.sh, TTS call insertion in claude-stop-notify.sh, and idle_prompt addition to settings.json Notification matcher"
     }
   ],
   "blockers": [],
-  "next_action_hint": "implement"
+  "phases_completed": 3,
+  "phases_total": 3,
+  "next_action_hint": "complete"
 }

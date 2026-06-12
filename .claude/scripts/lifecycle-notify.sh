@@ -15,6 +15,15 @@
 # Behavior:
 #   Always calls wezterm-notify.sh STATUS for tab color update
 #   In normal mode (no --quiet): also calls tts-notify.sh --lifecycle STATUS
+#
+# orchestrate-active marker:
+#   When .claude/tmp/orchestrate-active exists, TTS is automatically suppressed (tab color
+#   still updates) to implement the UX decision table:
+#     - standalone /research N completes: no orchestrate-active -> TTS fires
+#     - mid-orchestrate research completes: orchestrate-active exists -> TTS suppressed, tab color only
+#     - orchestrate final completion: orchestrate-active cleared by Stage 8 -> subsequent Stop hook
+#       fires TTS (via task 680 tts-notify.sh integration)
+#     - orchestrate paused/blocked: orchestrate-active cleared by Stage 8 partial -> Stop hook fires TTS
 
 set -uo pipefail
 
@@ -28,6 +37,12 @@ QUIET="${2:-}"
 # No-op if status is empty
 if [[ -z "$STATUS" ]]; then
     exit 0
+fi
+
+# Auto-suppress TTS when running mid-orchestrate (orchestrate-active marker exists)
+# Tab color still updates; only TTS is suppressed.
+if [[ -f "$SCRIPT_DIR/../tmp/orchestrate-active" ]]; then
+    QUIET="--quiet"
 fi
 
 # Always update WezTerm tab color via wezterm-notify.sh

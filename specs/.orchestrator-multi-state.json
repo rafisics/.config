@@ -1,56 +1,25 @@
 {
-  "session_id": "sess_1781288710_ad1e5a",
+  "session_id": "sess_1749783612_a7b3c2",
   "task_numbers": [
-    675,
-    676,
-    677,
-    678
-  ],
-  "task_types": {
-    "675": "meta",
-    "676": "meta",
-    "677": "meta",
-    "678": "meta"
-  },
-  "task_dirs": {
-    "675": "specs/675_lean4_extension_hard_mode_variants",
-    "676": "specs/676_cslib_extension_hard_mode_variants",
-    "677": "specs/677_contract_lint_testing_strategy",
-    "678": "specs/678_auto_escalation_advisory_v2"
-  },
-  "current_statuses": {
-    "675": "completed",
-    "676": "completed",
-    "677": "completed",
-    "678": "completed"
-  },
-  "research_agents": {
-    "675": "general-research-agent",
-    "676": "general-research-agent",
-    "677": "general-research-agent",
-    "678": "general-research-agent"
-  },
-  "implement_agents": {
-    "675": "general-implementation-agent",
-    "676": "general-implementation-agent",
-    "677": "general-implementation-agent",
-    "678": "general-implementation-agent"
-  },
-  "cycle_count": 3,
-  "max_cycles": 20,
-  "failed_tasks": [],
-  "completed_tasks": [
-    675,
-    676,
-    677,
-    678
+    679,
+    680,
+    681
   ],
   "waves": [
     [
-      675,
-      676,
-      677,
-      678
+      679
+    ],
+    [
+      680,
+      681
     ]
-  ]
+  ],
+  "completed_tasks": [
+    679,
+    680,
+    681
+  ],
+  "failed_tasks": [],
+  "cycle_count": 5,
+  "max_cycles": 15
 }

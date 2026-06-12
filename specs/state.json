@@ -63,7 +63,7 @@
       "project_number": 680,
       "project_name": "fix_stop_hook_tts",
       "title": "Fix Stop hook to fire TTS when user attention is needed",
-      "status": "planned",
+      "status": "completed",
       "task_type": "meta",
       "topic": "Terminal UI",
       "dependencies": [
@@ -71,7 +71,7 @@
       ],
       "description": "Modify claude-stop-notify.sh to call tts-notify.sh when no workflow-active marker exists (= agent halted, user must act). When workflow-active marker IS present (mid-orchestrate pause), skip TTS so tab stays dim with no announcement. Add cooldown dedup to prevent rapid stop/start from spamming TTS. The current claude-stop-notify.sh (line 59) explicitly skips TTS with comment \"no TTS for non-lifecycle stops\" — this is the root cause of TTS never firing on /implement, /todo, /orchestrate completion. Files: .claude/hooks/claude-stop-notify.sh, .claude/hooks/tts-notify.sh (verify cooldown mechanism). Also harmonize with the global ~/.config/.claude/hooks/tts-notify.sh which does fire TTS on Stop but lacks the workflow-active marker pattern.",
       "created": "2026-06-12T00:00:00Z",
-      "last_updated": "2026-06-12T20:25:48Z",
+      "last_updated": "2026-06-12T20:33:43Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -83,6 +83,11 @@
           "path": "specs/680_fix_stop_hook_tts/plans/01_stop-hook-tts-plan.md",
           "type": "plan",
           "summary": "3-phase implementation plan: tts-notify.sh cooldown, claude-stop-notify.sh TTS call, settings.json idle_prompt matcher"
+        },
+        {
+          "path": "specs/680_fix_stop_hook_tts/summaries/01_implementation-summary.md",
+          "type": "summary",
+          "summary": "Stop hook TTS fix: cooldown added, TTS call in non-workflow branch, idle_prompt matcher"
         }
       ],
       "session_id": "sess_1749783612_a7b3c2_680",
@@ -115,13 +120,14 @@
             "double-announcement"
           ]
         }
-      ]
+      ],
+      "completion_summary": "Stop hook TTS fix: cooldown added, TTS call in non-workflow branch, idle_prompt matcher"
     },
     {
       "project_number": 681,
       "project_name": "fix_orchestrator_final_tts",
       "title": "Fix orchestrator final-completion TTS and tab opacity integration",
-      "status": "planned",
+      "status": "completed",
       "task_type": "meta",
       "topic": "Terminal UI",
       "dependencies": [
@@ -129,7 +135,7 @@
       ],
       "description": "Fix orchestrator-postflight.sh Stage 8b to pass --quiet only for mid-orchestrate transitions (research->plan, plan->implement) and call lifecycle-notify.sh WITHOUT --quiet on final completion so TTS fires. Currently line 313 always passes --quiet with comment \"this script is called mid-orchestrate where the orchestrator itself fires the final TTS on true completion\" but no such final TTS code exists. The fix requires: (1) orchestrator-postflight.sh must know whether this is a mid-orchestrate call or final completion — add an argument or env var from the caller, (2) for final completion (implement postflight in non-orchestrate mode, or orchestrate final phase), call lifecycle-notify.sh without --quiet, (3) clear workflow-active marker before final Stop so claude-stop-notify.sh fires needs_input tab color + TTS, (4) verify dim-to-bright tab color transitions work correctly during orchestrate cycles (dim for in-progress, bright for completed, needs_input for awaiting user). Files: .claude/scripts/orchestrator-postflight.sh, .claude/scripts/lifecycle-notify.sh, .claude/hooks/claude-stop-notify.sh (workflow-active marker cleanup).",
       "created": "2026-06-12T00:00:00Z",
-      "last_updated": "2026-06-12T20:28:33Z",
+      "last_updated": "2026-06-12T20:35:41Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -141,6 +147,11 @@
           "path": "specs/681_fix_orchestrator_final_tts/plans/01_orchestrator-tts-plan.md",
           "type": "plan",
           "summary": "Implementation plan with 4 phases covering orchestrate-active marker, mid-orchestrate TTS suppression, postflight --quiet fix, and dim tab color transitions"
+        },
+        {
+          "path": "specs/681_fix_orchestrator_final_tts/summaries/01_implementation-summary.md",
+          "type": "summary",
+          "summary": "Implemented orchestrate-active file-based marker enabling lifecycle-notify.sh to suppress TTS during mid-orchestrate transitions while preserving tab colors, clearing markers at all exit paths so the Stop hook fires TTS on final completion."
         }
       ],
       "session_id": "sess_1749783612_a7b3c2_681",
@@ -172,7 +183,8 @@
             "suppression"
           ]
         }
-      ]
+      ],
+      "completion_summary": "Implemented orchestrate-active file-based marker enabling lifecycle-notify.sh to suppress TTS during mid-orchestrate transitions while preserving tab colors, clearing markers at all exit paths so the Stop hook fires TTS on final completion."
     },
     {
       "project_number": 678,

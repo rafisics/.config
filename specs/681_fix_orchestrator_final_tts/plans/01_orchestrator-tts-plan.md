@@ -1,7 +1,7 @@
 # Implementation Plan: Fix Orchestrator Final-Completion TTS and Tab Opacity Integration
 
 - **Task**: 681 - Fix orchestrator final-completion TTS and tab opacity integration
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 2 hours
 - **Dependencies**: Task 680 (Stop hook TTS + cooldown in tts-notify.sh)
 - **Research Inputs**: [specs/681_fix_orchestrator_final_tts/reports/01_orchestrator-tts-research.md]
@@ -66,16 +66,16 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Add orchestrate-active marker lifecycle to skill-orchestrate [NOT STARTED]
+### Phase 1: Add orchestrate-active marker lifecycle to skill-orchestrate [COMPLETED]
 
 **Goal**: Create the orchestrate-active marker file at orchestration start and clear it (along with workflow-active) at all exit points, enabling downstream scripts to distinguish mid-orchestrate from standalone execution.
 
 **Tasks**:
-- [ ] In `.claude/skills/skill-orchestrate/SKILL.md` Stage 2 (after loop guard creation, around line 147), add a write of `.claude/tmp/orchestrate-active` marker file containing the task number and timestamp
-- [ ] In Stage 8 clean exit (around line 602-605), add `rm -f ".claude/tmp/orchestrate-active" 2>/dev/null || true` and `rm -f ".claude/tmp/workflow-active" 2>/dev/null || true` after the existing `rm -f "$loop_guard_file"`
-- [ ] In Stage 8 partial exit (around line 612-614), add `rm -f ".claude/tmp/orchestrate-active" 2>/dev/null || true` and `rm -f ".claude/tmp/workflow-active" 2>/dev/null || true` so that paused/blocked orchestrations also enable the final Stop hook TTS
-- [ ] In Stage MT-5 multi-task postflight (around line 1093), add the same orchestrate-active and workflow-active cleanup after `rm -f "$mt_state_file"`
-- [ ] In Stage MT-5 partial exit path (around line 1097), add the same cleanup
+- [x] In `.claude/skills/skill-orchestrate/SKILL.md` Stage 2 (after loop guard creation, around line 147), add a write of `.claude/tmp/orchestrate-active` marker file containing the task number and timestamp *(completed)*
+- [x] In Stage 8 clean exit (around line 602-605), add `rm -f ".claude/tmp/orchestrate-active" 2>/dev/null || true` and `rm -f ".claude/tmp/workflow-active" 2>/dev/null || true` after the existing `rm -f "$loop_guard_file"` *(completed)*
+- [x] In Stage 8 partial exit (around line 612-614), add `rm -f ".claude/tmp/orchestrate-active" 2>/dev/null || true` and `rm -f ".claude/tmp/workflow-active" 2>/dev/null || true` so that paused/blocked orchestrations also enable the final Stop hook TTS *(completed)*
+- [x] In Stage MT-5 multi-task postflight (around line 1093), add the same orchestrate-active and workflow-active cleanup after `rm -f "$mt_state_file"` *(completed)*
+- [x] In Stage MT-5 partial exit path (around line 1097), add the same cleanup *(completed)*
 
 **Timing**: 30 minutes
 
@@ -91,17 +91,13 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Suppress mid-orchestrate TTS via orchestrate-active check in lifecycle-notify.sh [NOT STARTED]
+### Phase 2: Suppress mid-orchestrate TTS via orchestrate-active check in lifecycle-notify.sh [COMPLETED]
 
 **Goal**: Modify lifecycle-notify.sh to check for the orchestrate-active marker and suppress TTS (but not tab color) when it exists, implementing the UX decision table.
 
 **Tasks**:
-- [ ] In `.claude/scripts/lifecycle-notify.sh`, after the STATUS empty check (line 31) and before the wezterm-notify call (line 33), add a check for `.claude/tmp/orchestrate-active`: if the file exists, set `QUIET="--quiet"` to suppress TTS while preserving tab color updates
-- [ ] Update the script header comment (lines 1-17) to document the orchestrate-active marker behavior and the UX decision table:
-  - standalone `/research N` completes: no orchestrate-active -> TTS fires
-  - mid-orchestrate research completes: orchestrate-active exists -> TTS suppressed, tab color only
-  - orchestrate final completion: orchestrate-active cleared by Stage 8 -> subsequent Stop hook fires TTS (via task 680)
-  - orchestrate paused/blocked: orchestrate-active cleared -> Stop hook fires TTS
+- [x] In `.claude/scripts/lifecycle-notify.sh`, after the STATUS empty check (line 31) and before the wezterm-notify call (line 33), add a check for `.claude/tmp/orchestrate-active`: if the file exists, set `QUIET="--quiet"` to suppress TTS while preserving tab color updates *(completed)*
+- [x] Update the script header comment (lines 1-17) to document the orchestrate-active marker behavior and the UX decision table *(completed)*
 
 **Timing**: 20 minutes
 
@@ -117,18 +113,15 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Fix orchestrator-postflight.sh Stage 8b and add mid-orchestrate dim tab colors [NOT STARTED]
+### Phase 3: Fix orchestrator-postflight.sh Stage 8b and add mid-orchestrate dim tab colors [COMPLETED]
 
 **Goal**: Remove the misleading `--quiet` flag from Stage 8b (making it correct for future callers), update comments, and add mid-orchestrate dim tab color transitions in the orchestrate state machine.
 
 **Tasks**:
-- [ ] In `.claude/scripts/orchestrator-postflight.sh` Stage 8b (lines 304-314), remove `--quiet` from the lifecycle-notify.sh call on line 313: change `bash "$lifecycle_script" "$notify_status" --quiet &` to `bash "$lifecycle_script" "$notify_status" &`
-- [ ] Update the Stage 8b comment block (lines 304-307) to remove "this script is called mid-orchestrate" and replace with accurate documentation: "Fires lifecycle notification for tab color and TTS. TTS is automatically suppressed during orchestration via the orchestrate-active marker in lifecycle-notify.sh."
-- [ ] In `.claude/skills/skill-orchestrate/SKILL.md` Stage 4, add a `wezterm-notify.sh` call before each dispatch to set the dim "in-progress" color for the NEXT phase:
-  - Before research dispatch (State: `not_started`): `bash .claude/hooks/wezterm-notify.sh researching 2>/dev/null &` (this is already handled by wezterm-preflight-status.sh, skip)
-  - Before plan dispatch (State: `researched`): `bash .claude/hooks/wezterm-notify.sh planning 2>/dev/null &`
-  - Before implement dispatch (State: `planned` or `implementing`): `bash .claude/hooks/wezterm-notify.sh implementing 2>/dev/null &`
-- [ ] Add cleanup of `orchestrate-active` to `.claude/hooks/wezterm-preflight-status.sh` Tier 2 (where workflow-active is already cleaned up) to handle crash/timeout recovery
+- [x] In `.claude/scripts/orchestrator-postflight.sh` Stage 8b (lines 304-314), remove `--quiet` from the lifecycle-notify.sh call on line 313: change `bash "$lifecycle_script" "$notify_status" --quiet &` to `bash "$lifecycle_script" "$notify_status" &` *(completed)*
+- [x] Update the Stage 8b comment block (lines 304-307) to remove "this script is called mid-orchestrate" and replace with accurate documentation: "Fires lifecycle notification for tab color and TTS. TTS is automatically suppressed during orchestration via the orchestrate-active marker in lifecycle-notify.sh." *(completed)*
+- [x] In `.claude/skills/skill-orchestrate/SKILL.md` Stage 4, add a `wezterm-notify.sh` call before plan dispatch (State: `researched`) and implement dispatch (State: `planned` or `implementing`) to set the dim "in-progress" color *(completed)*
+- [x] Add cleanup of `orchestrate-active` to `.claude/hooks/wezterm-preflight-status.sh` Tier 2 (where workflow-active is already cleaned up) to handle crash/timeout recovery *(completed)*
 
 **Timing**: 30 minutes
 
@@ -147,16 +140,16 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: End-to-end verification and documentation [NOT STARTED]
+### Phase 4: End-to-end verification and documentation [COMPLETED]
 
 **Goal**: Verify the complete signal flow for all scenarios in the UX decision table and ensure documentation is consistent.
 
 **Tasks**:
-- [ ] Trace the standalone `/research N` signal flow through the modified files and verify: update-task-status.sh writes workflow-active -> skill runs -> Stage 8a calls lifecycle-notify -> no orchestrate-active marker -> TTS fires -> Stop hook fires -> workflow-active exists -> Stop suppressed (correct: lifecycle TTS already fired)
-- [ ] Trace the `/orchestrate N` signal flow: Stage 2 writes orchestrate-active -> update-task-status.sh writes workflow-active -> research dispatch -> skill Stage 8a calls lifecycle-notify -> orchestrate-active EXISTS -> TTS suppressed, tab color only -> plan dispatch (dim blue fired first) -> skill Stage 8a calls lifecycle-notify -> TTS suppressed -> implement dispatch (dim gold fired first) -> skill Stage 8a calls lifecycle-notify -> TTS suppressed -> Stage 8 clean exit removes orchestrate-active AND workflow-active -> Stop hook fires -> no markers -> TTS fires via task 680 + needs_input tab color
-- [ ] Verify the tab color timeline during `/orchestrate N` now shows: researching (dim green, from preflight) -> researched (bright green, from lifecycle-notify) -> planning (dim blue, from new dispatch call) -> planned (bright blue, from lifecycle-notify) -> implementing (dim gold, from new dispatch call) -> completed (bright gold, from lifecycle-notify) -> needs_input (gray, from Stop hook after marker cleared)
-- [ ] Verify the cooldown dedup: lifecycle TTS from final implement completes -> orchestrate-active marker cleared -> Stop hook fires -> tts-notify.sh cooldown (task 680) suppresses the second TTS within 10s window. Wait -- in orchestrate mode, the final implement's lifecycle-notify TTS is SUPPRESSED by orchestrate-active. So the Stop hook TTS is the ONLY TTS. No double-announce risk. Confirm this.
-- [ ] Review orchestrator-postflight.sh header comments (lines 29-42) and verify Stage 8b documentation is accurate
+- [x] Trace the standalone `/research N` signal flow: no orchestrate-active -> lifecycle-notify fires TTS normally *(verified)*
+- [x] Trace the `/orchestrate N` signal flow: Stage 2 writes orchestrate-active -> each dispatch's lifecycle-notify suppresses TTS (orchestrate-active exists) -> Stage 8 clean exit removes both markers -> Stop hook fires TTS *(verified)*
+- [x] Verify the tab color timeline: researching -> researched -> planning (dim, new dispatch call) -> planned -> implementing (dim, new dispatch call) -> completed -> needs_input *(verified)*
+- [x] Verify no double-announce: in orchestrate mode, lifecycle-notify TTS suppressed -> orchestrate-active cleared -> Stop hook is the ONLY TTS *(verified)*
+- [x] Review orchestrator-postflight.sh Stage 8b documentation: accurate (removed "mid-orchestrate" claim, documents orchestrate-active mechanism) *(verified)*
 
 **Timing**: 30 minutes
 

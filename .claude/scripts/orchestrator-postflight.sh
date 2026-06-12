@@ -302,15 +302,16 @@ bash .claude/scripts/generate-todo.sh || echo "[postflight] WARNING: generate-to
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Stage 8b: Lifecycle TTS notification (non-blocking, background)
-# --quiet: tab color only, no TTS -- this script is called mid-orchestrate
-# where the orchestrator itself fires the final TTS on true completion.
+# Fires lifecycle notification for tab color and TTS. TTS is automatically
+# suppressed during orchestration via the orchestrate-active marker in
+# lifecycle-notify.sh. Standalone completions fire TTS unconditionally.
 # implemented->completed: wezterm.lua only has "completed" in its color table.
 # ─────────────────────────────────────────────────────────────────────────────
 lifecycle_script=".claude/scripts/lifecycle-notify.sh"
 if [ -f "$lifecycle_script" ]; then
   notify_status="$status"
   [ "$notify_status" = "implemented" ] && notify_status="completed"
-  bash "$lifecycle_script" "$notify_status" --quiet &
+  bash "$lifecycle_script" "$notify_status" &
 fi
 
 # ─────────────────────────────────────────────────────────────────────────────

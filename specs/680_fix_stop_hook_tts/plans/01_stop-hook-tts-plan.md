@@ -1,7 +1,7 @@
 # Implementation Plan: Fix Stop Hook TTS
 
 - **Task**: 680 - Fix Stop hook to fire TTS when user attention is needed
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 1.5 hours
 - **Dependencies**: Task 679 (TTS best practices research, completed)
 - **Research Inputs**: specs/680_fix_stop_hook_tts/reports/01_stop-hook-tts-research.md
@@ -64,15 +64,15 @@ No ROADMAP.md found.
 | 2 | 2 | 1 |
 | 3 | 3 | 2 |
 
-### Phase 1: Add Cooldown to tts-notify.sh [NOT STARTED]
+### Phase 1: Add Cooldown to tts-notify.sh [COMPLETED]
 
 **Goal**: Add timestamp-based cooldown dedup to the project `tts-notify.sh`, matching the global version's pattern. This must land first because Phase 2 adds a new caller that could trigger double-announcement without it.
 
 **Tasks**:
-- [ ] Add `TTS_COOLDOWN` and `LAST_NOTIFY_FILE` variable declarations after line 30 (after `LOG_FILE` declaration)
-- [ ] Add cooldown check block after line 105 (after the piper model check `fi`, before the LIFECYCLE_MODE section at line 107) -- checks elapsed time against `TTS_COOLDOWN`, exits if within window
-- [ ] Add `date +%s > "$LAST_NOTIFY_FILE"` timestamp write after each successful `speak` call in both lifecycle mode (after line 114) and interactive mode (after line 125)
-- [ ] Update the script header comment block to document `TTS_COOLDOWN` env var (matching global version's documentation pattern)
+- [x] Add `TTS_COOLDOWN` and `LAST_NOTIFY_FILE` variable declarations after line 30 (after `LOG_FILE` declaration) *(completed)*
+- [x] Add cooldown check block after line 105 (after the piper model check `fi`, before the LIFECYCLE_MODE section at line 107) -- checks elapsed time against `TTS_COOLDOWN`, exits if within window *(completed)*
+- [x] Add `date +%s > "$LAST_NOTIFY_FILE"` timestamp write after each successful `speak` call in both lifecycle mode (after line 114) and interactive mode (after line 125) *(completed)*
+- [x] Update the script header comment block to document `TTS_COOLDOWN` env var (matching global version's documentation pattern) *(completed)*
 
 **Interface contract for task 681**: Task 681's lifecycle path calls this same `tts-notify.sh` with `--lifecycle STATUS`. Both modes share the cooldown file at `/tmp/claude-tts-last-notify`. Task 681 does not need to add cooldown logic -- it gets it for free from this change.
 
@@ -92,14 +92,14 @@ No ROADMAP.md found.
 
 ---
 
-### Phase 2: Add TTS Call to claude-stop-notify.sh [NOT STARTED]
+### Phase 2: Add TTS Call to claude-stop-notify.sh [COMPLETED]
 
 **Goal**: Insert a `tts-notify.sh` call in the non-workflow-active branch of the Stop hook, alongside the existing `wezterm-notify.sh` call. After this change, when Claude stops without a workflow-active marker, the user hears "Tab N" and sees the tab turn gray.
 
 **Tasks**:
-- [ ] Update comment on line 59: change "Fire needs_input wezterm color only (no TTS for non-lifecycle stops)" to "Fire needs_input wezterm color + TTS announcement for user attention"
-- [ ] Insert TTS call block between the wezterm `fi` (line 63) and `exit_success` (line 65): check for `tts-notify.sh` existence, call with `2>/dev/null || true`
-- [ ] No arguments to `tts-notify.sh` -- interactive mode speaks "Tab N"
+- [x] Update comment on line 59: change "Fire needs_input wezterm color only (no TTS for non-lifecycle stops)" to "Fire needs_input wezterm color + TTS announcement for user attention" *(completed)*
+- [x] Insert TTS call block between the wezterm `fi` (line 63) and `exit_success` (line 65): check for `tts-notify.sh` existence, call with `2>/dev/null || true` *(completed)*
+- [x] No arguments to `tts-notify.sh` -- interactive mode speaks "Tab N" *(completed)*
 
 **Timing**: 20 minutes
 
@@ -116,16 +116,16 @@ No ROADMAP.md found.
 
 ---
 
-### Phase 3: Update settings.json Matcher and End-to-End Verification [NOT STARTED]
+### Phase 3: Update settings.json Matcher and End-to-End Verification [COMPLETED]
 
 **Goal**: Add `idle_prompt` to the Notification hook matcher in `settings.json` so TTS fires when Claude is idle for 60+ seconds. Verify all three changes work together.
 
 **Tasks**:
-- [ ] Edit `.claude/settings.json` line 140: change `"permission_prompt|elicitation_dialog"` to `"permission_prompt|idle_prompt|elicitation_dialog"`
-- [ ] Run `jq . .claude/settings.json > /dev/null` to verify JSON validity
-- [ ] Run `bash -n .claude/hooks/claude-stop-notify.sh && bash -n .claude/hooks/tts-notify.sh` to verify both scripts pass syntax check
-- [ ] Verify cooldown dedup end-to-end: confirm `/tmp/claude-tts-last-notify` path appears in both project `tts-notify.sh` and global `~/.config/.claude/hooks/tts-notify.sh`
-- [ ] Verify subagent suppression: confirm `agent_id` check in `claude-stop-notify.sh` still precedes the TTS branch
+- [x] Edit `.claude/settings.json` line 140: change `"permission_prompt|elicitation_dialog"` to `"permission_prompt|idle_prompt|elicitation_dialog"` *(completed)*
+- [x] Run `jq . .claude/settings.json > /dev/null` to verify JSON validity *(completed)*
+- [x] Run `bash -n .claude/hooks/claude-stop-notify.sh && bash -n .claude/hooks/tts-notify.sh` to verify both scripts pass syntax check *(completed)*
+- [x] Verify cooldown dedup end-to-end: confirm `/tmp/claude-tts-last-notify` path appears in both project `tts-notify.sh` and global `~/.config/.claude/hooks/tts-notify.sh` *(completed)*
+- [x] Verify subagent suppression: confirm `agent_id` check in `claude-stop-notify.sh` still precedes the TTS branch *(completed)*
 
 **Timing**: 20 minutes
 
@@ -143,14 +143,14 @@ No ROADMAP.md found.
 
 ## Testing & Validation
 
-- [ ] `bash -n .claude/hooks/claude-stop-notify.sh` -- syntax valid
-- [ ] `bash -n .claude/hooks/tts-notify.sh` -- syntax valid
-- [ ] `jq . .claude/settings.json > /dev/null` -- JSON valid
-- [ ] `TTS_ENABLED=0 bash .claude/hooks/tts-notify.sh` -- exits 0 (disabled path)
-- [ ] `TTS_ENABLED=0 bash .claude/hooks/tts-notify.sh --lifecycle researched` -- exits 0 (lifecycle disabled path)
-- [ ] Cooldown file path `/tmp/claude-tts-last-notify` is shared between project and global `tts-notify.sh`
-- [ ] Subagent suppression: `echo '{"agent_id":"sub1"}' | bash .claude/hooks/claude-stop-notify.sh` exits without firing TTS
-- [ ] Workflow-active suppression: `touch .claude/tmp/workflow-active && bash .claude/hooks/claude-stop-notify.sh` exits without firing TTS; `rm .claude/tmp/workflow-active`
+- [x] `bash -n .claude/hooks/claude-stop-notify.sh` -- syntax valid *(completed)*
+- [x] `bash -n .claude/hooks/tts-notify.sh` -- syntax valid *(completed)*
+- [x] `jq . .claude/settings.json > /dev/null` -- JSON valid *(completed)*
+- [x] `TTS_ENABLED=0 bash .claude/hooks/tts-notify.sh` -- exits 0 (disabled path) *(completed)*
+- [x] `TTS_ENABLED=0 bash .claude/hooks/tts-notify.sh --lifecycle researched` -- exits 0 (lifecycle disabled path) *(completed)*
+- [x] Cooldown file path `/tmp/claude-tts-last-notify` is shared between project and global `tts-notify.sh` *(completed)*
+- [x] Subagent suppression: `echo '{"agent_id":"sub1"}' | bash .claude/hooks/claude-stop-notify.sh` exits without firing TTS *(completed)*
+- [x] Workflow-active suppression: `touch .claude/tmp/workflow-active && bash .claude/hooks/claude-stop-notify.sh` exits without firing TTS; `rm .claude/tmp/workflow-active` *(completed)*
 
 ## Artifacts & Outputs
 
