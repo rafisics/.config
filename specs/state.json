@@ -123,6 +123,11 @@
           "path": "specs/672_pr_description_format_standard/plans/01_pr-description-format-plan.md",
           "type": "plan",
           "summary": "4-phase plan for canonical PR description format"
+        },
+        {
+          "path": "specs/672_pr_description_format_standard/summaries/01_implementation-summary.md",
+          "type": "summary",
+          "summary": "Canonical PR format file created, index registered, pr-conventions and pr.md STEP 9 updated"
         }
       ],
       "session_id": "sess_1781284922_643662_672"
@@ -149,6 +154,11 @@
           "path": "specs/671_pr_ready_status_lifecycle/plans/01_pr-ready-status-plan.md",
           "type": "plan",
           "summary": "4-phase plan for pr_ready status across 14 files"
+        },
+        {
+          "path": "specs/671_pr_ready_status_lifecycle/summaries/01_implementation-summary.md",
+          "type": "summary",
+          "summary": "All 4 phases, 14 files modified for pr_ready status"
         }
       ],
       "session_id": "sess_1781284922_643662_671"

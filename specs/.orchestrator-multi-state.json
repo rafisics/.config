@@ -1,41 +1,53 @@
 {
-  "session_id": "sess_1749673500_a3b2c1",
+  "session_id": "sess_1781284922_643662",
   "task_numbers": [
-    663,
-    664,
-    665,
-    666
+    671,
+    672,
+    673,
+    674
   ],
   "waves": [
     [
-      663
+      671,
+      672
     ],
     [
-      664,
-      665,
-      666
+      673
+    ],
+    [
+      674
     ]
   ],
   "dependency_graph": {
-    "663": [],
-    "664": [
-      663
+    "671": [],
+    "672": [],
+    "673": [
+      671,
+      672
     ],
-    "665": [
-      663
-    ],
-    "666": [
-      663
+    "674": [
+      671,
+      672,
+      673
     ]
   },
-  "cycle_count": 0,
+  "cycle_count": 4,
   "max_cycles": 20,
   "failed_tasks": [],
-  "completed_tasks": [],
+  "completed_tasks": [
+    671,
+    672
+  ],
   "current_statuses": {
-    "663": "not_started",
-    "664": "not_started",
-    "665": "not_started",
-    "666": "not_started"
+    "671": "completed",
+    "672": "completed",
+    "673": "not_started",
+    "674": "not_started"
+  },
+  "task_types": {
+    "671": "meta",
+    "672": "meta",
+    "673": "meta",
+    "674": "meta"
   }
 }
