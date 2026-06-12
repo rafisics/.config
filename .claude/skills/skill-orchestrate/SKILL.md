@@ -129,6 +129,12 @@ if [ -f "$loop_guard_file" ] && jq empty "$loop_guard_file" 2>/dev/null; then
   # Resume: read existing guard
   cycle_count=$(jq -r '.cycle_count // 0' "$loop_guard_file")
   echo "[orchestrate] Resuming — cycle $cycle_count of $MAX_CYCLES"
+  # Read churn advisory counters from existing guard
+  churn_plan_revisions=$(jq -r '.churn_advisory.plan_revision_count // 0' "$loop_guard_file")
+  churn_no_progress=$(jq -r '.churn_advisory.implement_no_progress_count // 0' "$loop_guard_file")
+  churn_analysis_only=$(jq -r '.churn_advisory.analysis_only_count // 0' "$loop_guard_file")
+  churn_advisory_emitted=$(jq -r '.churn_advisory.advisory_emitted // false' "$loop_guard_file")
+  last_impl_phases=$(jq -r '.churn_advisory.last_implement_phases_completed // 0' "$loop_guard_file")
 else
   # Fresh start: create guard
   cycle_count=0
@@ -142,9 +148,22 @@ else
       "max_cycles": $max_cycles,
       "current_state": "reading",
       "started": $started,
-      "last_updated": $started
+      "last_updated": $started,
+      "churn_advisory": {
+        "plan_revision_count": 0,
+        "implement_no_progress_count": 0,
+        "analysis_only_count": 0,
+        "advisory_emitted": false,
+        "last_implement_phases_completed": 0
+      }
     }' > "$loop_guard_file"
   echo "[orchestrate] Starting fresh — MAX_CYCLES=$MAX_CYCLES"
+  # Initialize churn advisory shell variables for fresh start
+  churn_plan_revisions=0
+  churn_no_progress=0
+  churn_analysis_only=0
+  churn_advisory_emitted=false
+  last_impl_phases=0
 fi
 
 # Blocker escalation counter (reset each /orchestrate invocation)

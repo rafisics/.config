@@ -1,7 +1,7 @@
 # Implementation Plan: Task #678
 
 - **Task**: 678 - auto_escalation_advisory_v2
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 1.5 hours
 - **Dependencies**: None (task 669 hard_mode_agent_system already completed)
 - **Research Inputs**: specs/678_auto_escalation_advisory_v2/reports/01_auto-escalation-research.md
@@ -61,14 +61,14 @@ No ROADMAP.md items directly correspond to this task. This is an internal agent 
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Extend Loop Guard Schema in Stage 2 [NOT STARTED]
+### Phase 1: Extend Loop Guard Schema in Stage 2 [COMPLETED]
 
 **Goal**: Add churn advisory counter fields to the loop guard initialization (fresh start) and resume reading (existing guard) in Stage 2.
 
 **Tasks**:
-- [ ] In Stage 2 fresh-start branch: add `churn_advisory` sub-object to the `jq -n` command that creates the loop guard, with fields: `plan_revision_count` (0), `implement_no_progress_count` (0), `analysis_only_count` (0), `advisory_emitted` (false), `last_implement_phases_completed` (0)
-- [ ] In Stage 2 resume branch: read the five churn advisory fields from the existing loop guard using `jq -r '.churn_advisory.FIELD // DEFAULT'` pattern, storing them in shell variables `churn_plan_revisions`, `churn_no_progress`, `churn_analysis_only`, `churn_advisory_emitted`, `last_impl_phases`
-- [ ] Initialize the same shell variables in the fresh-start branch (all zeros, emitted=false)
+- [x] In Stage 2 fresh-start branch: add `churn_advisory` sub-object to the `jq -n` command that creates the loop guard, with fields: `plan_revision_count` (0), `implement_no_progress_count` (0), `analysis_only_count` (0), `advisory_emitted` (false), `last_implement_phases_completed` (0) *(completed)*
+- [x] In Stage 2 resume branch: read the five churn advisory fields from the existing loop guard using `jq -r '.churn_advisory.FIELD // DEFAULT'` pattern, storing them in shell variables `churn_plan_revisions`, `churn_no_progress`, `churn_analysis_only`, `churn_advisory_emitted`, `last_impl_phases` *(completed)*
+- [x] Initialize the same shell variables in the fresh-start branch (all zeros, emitted=false) *(completed)*
 
 **Timing**: 30 minutes
 
