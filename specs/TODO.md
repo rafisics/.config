@@ -68,7 +68,7 @@ next_project_number: 679
 ---
 
 ### 675. Add hard-mode routing to lean4 extension
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 669
