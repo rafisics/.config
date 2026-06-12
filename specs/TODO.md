@@ -25,11 +25,11 @@ next_project_number: 679
   └─ 676 [NOT STARTED] — Add hard-mode routing to the cslib extension following the same p
   └─ 677 [NOT STARTED] — Design and implement a testing strategy for hard-mode behavioral 
   └─ 678 [NOT STARTED] — Implement churn detection that emits a 'consider --hard' warning 
-671 [RESEARCHED] — Add [PR READY] as a new non-terminal task status in the task life
+671 [PLANNED] — Add [PR READY] as a new non-terminal task status in the task life
   └─ 673 [NOT STARTED] — Add a `pr` task type to the cslib extension manifest routing (.cl
     └─ 674 [NOT STARTED] — Upgrade the existing /pr command (cslib extension) to integrate w
   └─ 674 [NOT STARTED] — Upgrade the existing /pr command (cslib extension) to integrate w (see above)
-672 [RESEARCHED] — Create a canonical PR description format file in the cslib extens
+672 [PLANNED] — Create a canonical PR description format file in the cslib extens
   └─ 673 [NOT STARTED] — Add a `pr` task type to the cslib extension manifest routing (.cl (see above)
   └─ 674 [NOT STARTED] — Upgrade the existing /pr command (cslib extension) to integrate w (see above)
 
@@ -108,22 +108,24 @@ next_project_number: 679
 ---
 
 ### 672. Standardize CSLib PR description format
-- **Status**: [RESEARCHED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
 - **Research**: [672_pr_description_format_standard/reports/01_pr-description-format.md]
+- **Plan**: [672_pr_description_format_standard/plans/01_pr-description-format-plan.md]
 
 **Description**: Create a canonical PR description format file in the cslib extension context (.claude/extensions/cslib/context/project/cslib/standards/ alongside pr-conventions.md), based on the leanprover/cslib PR #635/#637 pattern and the 6 existing pr-description.md files in the cslib project specs/. The format should define required and optional sections: Title (conventional commit format), Summary (2-4 sentences), Context/Motivation (Zulip links, stacked PR info, literature references), File-by-file change summary (### per file with bullets), Dependencies (stacked on #NNN), AI Disclosure (standardized boilerplate, always last), and optional design rationale sections. Key insight from PR #635: no CI checklist in the body (CI is verified in the pipeline, not claimed in the description). Add the file to index-entries.json so it is loaded for pr-type tasks, and update pr-conventions.md to reference the new format file instead of its outdated inline template.
 
 ---
 
 ### 671. Add [PR READY] status to task lifecycle
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
 - **Research**: [671_pr_ready_status_lifecycle/reports/01_pr-ready-status.md]
+- **Plan**: [671_pr_ready_status_lifecycle/plans/01_pr-ready-status-plan.md]
 
 **Description**: Add [PR READY] as a new non-terminal task status in the task lifecycle, gating between [IMPLEMENTING] and the /pr submission step. Changes needed (both live copies and extension sources per the sync convention): (1) Update .claude/rules/state-management.md and extensions/core/rules/state-management.md status transition documentation to include [PR READY] (state.json value: pr_ready) and its transitions ([IMPLEMENTING] -> [PR READY] for pr tasks, [PR READY] -> [COMPLETED] after /pr submission, [PR READY] -> [IMPLEMENTING] if issues found). (2) Update .claude/scripts/generate-todo.sh and extensions/core copy to render [PR READY]. (3) Update .claude/scripts/update-task-status.sh and extensions/core copy to accept the new status. (4) Update CLAUDE.md merge-source Status Markers section. (5) Verify generate-todo.sh correctly renders [PR READY] tasks in TODO.md. [PR READY] is NOT terminal.
 

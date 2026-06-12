@@ -85,6 +85,18 @@
       "summary": "CSLib PR title conventions, conventional commits, review process"
     },
     {
+      "path": "project/cslib/standards/pr-description-format.md",
+      "description": "CSLib PR description canonical format: Summary, Context, file-by-file summary, AI Disclosure",
+      "tags": ["cslib", "pr", "format", "description", "template"],
+      "load_when": {
+        "languages": ["cslib"],
+        "agents": ["cslib-implementation-agent"]
+      },
+      "domain": "project",
+      "subdomain": "cslib",
+      "summary": "Canonical PR description format with required sections, optional sections, and AI disclosure boilerplate"
+    },
+    {
       "path": "project/cslib/standards/mathlib-style.md",
       "description": "Mathlib-style Lean coding standards applied to CSLib",
       "tags": ["cslib", "mathlib", "style"],

@@ -82,26 +82,6 @@ PR description. Explain:
 This follows the [Mathlib AI usage policy](https://leanprover-community.github.io/contribute/index.html#use-of-ai).
 Reviewers can then focus on areas where AI tools are known to make characteristic mistakes.
 
-## PR Description Template
+## PR Description Format
 
-```markdown
-## Summary
-
-Brief description of what this PR adds or fixes.
-
-## Changes
-
-- List of specific changes made
-
-## CI
-
-- [ ] `lake build` passes
-- [ ] `lake exe checkInitImports` passes
-- [ ] `lake lint` passes
-- [ ] `lake exe lint-style` passes
-- [ ] `lake test` passes
-
-## AI Disclosure (if applicable)
-
-Describe any AI tool usage here.
-```
+See [pr-description-format.md](pr-description-format.md) for the canonical PR description template and section-by-section guidance.

@@ -558,33 +558,35 @@ git diff --name-only HEAD 2>&1 | head -30
 git diff --cached --name-only 2>&1 | head -30
 ```
 
-Compose draft PR description using the CSLib template:
+Compose draft PR description using the CSLib canonical format:
 
 ```markdown
 ## Summary
 
-{working_desc}
+{working_desc — 2-4 sentences about what this PR adds/changes, naming key constructs}
 
-## Changes
+## Context
 
-{list of changed files with brief description of what changed in each}
+{Include this section only if applicable:
+- Stacked on another PR: "This PR is **stacked on #{NNN}** ("{PR title}"), which introduces {what it provides}. Please review/merge #{NNN} first."
+- Zulip discussion exists: "**Zulip topic**: [{channel/topic}]({URL})"
+- Literature motivation: full citation (Author, Year, *Title*. Publisher.)}
 
-## CI
+## File-by-file change summary
 
-- [x] `lake build` passes
-- [x] `lake exe checkInitImports` passes
-- [x] `lake lint` passes
-- [x] `lake exe lint-style` passes
-- [x] `lake test` passes
+{git diff --stat output in a code fence}
+
+### {filename.lean} (+N, -M)
+- {bullet points describing key changes in this file}
 
 ## AI Disclosure
 
-This PR was developed with assistance from Claude (Anthropic). Claude was used for:
-- Proof search and formalization assistance
-- Code generation and refactoring
-- Documentation drafting
+This PR was prepared with the assistance of Claude Code (Anthropic). The AI tool was used for:
+- Drafting and extracting files from a development branch to create a clean PR branch
+- Running CI verification commands
+- Drafting this PR description
 
-The mathematical content has been verified by the contributor.
+All Lean code was written by the author (Benjamin Brast-McKie) and verified to compile cleanly on the PR branch.
 ```
 
 Display the draft to the user and ask via AskUserQuestion:
