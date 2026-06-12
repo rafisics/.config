@@ -6,13 +6,13 @@
       "project_number": 679,
       "project_name": "research_tts_best_practices",
       "title": "Research June 2026 TTS best practices for Claude Code hooks",
-      "status": "planned",
+      "status": "completed",
       "task_type": "meta",
       "topic": "Terminal UI",
       "dependencies": [],
       "description": "Web research on current Claude Code hook patterns for TTS/audio notifications as of June 2026. Compare with the existing Piper TTS + WezTerm tab color notification pipeline. Identify: (1) any new hook events beyond Stop/Notification/SubagentStop that could improve notification targeting, (2) best practices for deduplication and cooldown in multi-agent workflows, (3) whether the Notification hook matcher \"permission_prompt|elicitation_dialog\" is still the correct set of actionable notification types, (4) integration patterns between TTS announcements and terminal tab visual indicators. Document findings for tasks 680 and 681.",
       "created": "2026-06-12T00:00:00Z",
-      "last_updated": "2026-06-12T20:12:51Z",
+      "last_updated": "2026-06-12T20:15:39Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -56,7 +56,8 @@
             "subagent"
           ]
         }
-      ]
+      ],
+      "completion_summary": "Verified research report covers all 4 TTS hook question areas with actionable code-level recommendations, confirmed all cited file paths exist, and confirmed tasks 680 and 681 descriptions align precisely with report findings."
     },
     {
       "project_number": 680,

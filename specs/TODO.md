@@ -11,8 +11,7 @@ next_project_number: 682
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,652,670,679 | -- | agent-system, Terminal UI, artifact-management, ... |
-| 2 | 680,681 | 679 | Terminal UI |
+| 1 | 78,87,652,670,680,681 | -- | agent-system, Terminal UI, artifact-management, ... |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -23,9 +22,8 @@ next_project_number: 682
 ### Terminal UI
 
 87 [RESEARCHED] — Investigate why the terminal working directory changes to a proje
-679 [PLANNED] — Web research on current Claude Code hook patterns for TTS/audio n
-  └─ 680 [NOT STARTED] — Modify claude-stop-notify.sh to call tts-notify.sh when no workfl
-  └─ 681 [NOT STARTED] — Fix orchestrator-postflight.sh Stage 8b to pass --quiet only for 
+680 [NOT STARTED] — Modify claude-stop-notify.sh to call tts-notify.sh when no workfl
+681 [NOT STARTED] — Fix orchestrator-postflight.sh Stage 8b to pass --quiet only for 
 
 ### Email Integration
 
@@ -58,7 +56,7 @@ next_project_number: 682
 ---
 
 ### 679. Research June 2026 TTS best practices for Claude Code hooks
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: Terminal UI
 - **Dependencies**: None

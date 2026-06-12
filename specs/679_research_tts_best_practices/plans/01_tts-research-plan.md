@@ -1,7 +1,7 @@
 # Implementation Plan: Task #679
 
 - **Task**: 679 - Research June 2026 TTS best practices for Claude Code hooks
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 0.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/679_research_tts_best_practices/reports/01_tts-best-practices.md
@@ -53,18 +53,18 @@ No ROADMAP.md found.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Verify Research Completeness and Cross-Reference Accuracy [NOT STARTED]
+### Phase 1: Verify Research Completeness and Cross-Reference Accuracy [COMPLETED]
 
 **Goal**: Confirm the research report is complete, internally consistent, and that all file path references point to real files in the current codebase.
 
 **Tasks**:
-- [ ] Verify report covers question 1: new hook events beyond Stop/Notification/SubagentStop
-- [ ] Verify report covers question 2: deduplication and cooldown best practices
-- [ ] Verify report covers question 3: Notification hook matcher correctness (idle_prompt finding)
-- [ ] Verify report covers question 4: TTS + terminal tab integration patterns
-- [ ] Confirm file paths referenced in recommendations exist: `claude-stop-notify.sh`, `orchestrator-postflight.sh`, `lifecycle-notify.sh`, `tts-notify.sh`, `wezterm-notify.sh`
-- [ ] Confirm task 680 and 681 descriptions align with research recommendations
-- [ ] Mark task 679 as complete if all checks pass
+- [x] Verify report covers question 1: new hook events beyond Stop/Notification/SubagentStop *(completed)*
+- [x] Verify report covers question 2: deduplication and cooldown best practices *(completed)*
+- [x] Verify report covers question 3: Notification hook matcher correctness (idle_prompt finding) *(completed)*
+- [x] Verify report covers question 4: TTS + terminal tab integration patterns *(completed)*
+- [x] Confirm file paths referenced in recommendations exist: `claude-stop-notify.sh`, `orchestrator-postflight.sh`, `lifecycle-notify.sh`, `tts-notify.sh`, `wezterm-notify.sh` *(completed)*
+- [x] Confirm task 680 and 681 descriptions align with research recommendations *(completed)*
+- [x] Mark task 679 as complete if all checks pass *(completed)*
 
 **Timing**: 30 minutes
 
@@ -80,9 +80,9 @@ Phases within the same wave can execute in parallel.
 
 ## Testing & Validation
 
-- [ ] Each of the 4 research questions has at least one concrete recommendation
-- [ ] File paths in the recommendations section resolve to existing files
-- [ ] No contradictions between research findings and downstream task descriptions
+- [x] Each of the 4 research questions has at least one concrete recommendation *(completed)*
+- [x] File paths in the recommendations section resolve to existing files *(completed)*
+- [x] No contradictions between research findings and downstream task descriptions *(completed)*
 
 ## Artifacts & Outputs
 
