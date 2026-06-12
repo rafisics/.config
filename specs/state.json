@@ -6,7 +6,7 @@
       "project_number": 678,
       "project_name": "auto_escalation_advisory_v2",
       "title": "Adaptive auto-escalation advisory (v2)",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "meta",
       "topic": "agent-system",
       "dependencies": [
@@ -14,7 +14,7 @@
       ],
       "description": "Implement churn detection that emits a 'consider --hard' warning when repeated deflection patterns are observed: 2+ plan revisions on a single task, 3+ implement dispatches with no phase completion, or analysis-only output in implementation phases. This is advisory only -- does not auto-escalate. v2 trajectory item. Research inputs: specs/669_hard_mode_agent_system/reports/01_hard-mode-orchestration-approach.md, specs/669_hard_mode_agent_system/reports/02_team-research.md.",
       "created": "2026-06-12T00:00:00Z",
-      "last_updated": "2026-06-12T18:34:41Z",
+      "last_updated": "2026-06-12T18:37:00Z",
       "next_artifact_number": 1,
       "artifacts": [],
       "session_id": "sess_1781288710_ad1e5a_678"
@@ -71,7 +71,7 @@
       "project_number": 676,
       "project_name": "cslib_extension_hard_mode_variants",
       "title": "Add hard-mode routing to cslib extension",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "meta",
       "topic": "agent-system",
       "dependencies": [
@@ -79,7 +79,7 @@
       ],
       "description": "Add hard-mode routing to the cslib extension following the same pattern as lean4: routing_hard manifest entries, skill-cslib-research-hard, skill-cslib-implementation-hard, cslib hard agents with domain-specific H-technique overrides. Research inputs: specs/669_hard_mode_agent_system/reports/01_hard-mode-orchestration-approach.md, specs/669_hard_mode_agent_system/reports/02_team-research.md.",
       "created": "2026-06-12T00:00:00Z",
-      "last_updated": "2026-06-12T18:34:43Z",
+      "last_updated": "2026-06-12T18:36:49Z",
       "next_artifact_number": 1,
       "artifacts": [
         {

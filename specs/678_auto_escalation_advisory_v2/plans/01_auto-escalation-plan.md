@@ -84,7 +84,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Add check_churn_advisory() Function [NOT STARTED]
+### Phase 2: Add check_churn_advisory() Function [IN PROGRESS]
 
 **Goal**: Implement the churn detection function that evaluates three signals and emits the advisory warning.
 

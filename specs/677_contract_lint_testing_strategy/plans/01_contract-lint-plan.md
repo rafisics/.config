@@ -64,7 +64,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Static Contract Lint Script [NOT STARTED]
+### Phase 1: Static Contract Lint Script [IN PROGRESS]
 
 **Goal**: Create the core lint script that validates hard-mode contract structural compliance across agent files, skill files, contract files, and index.json.
 

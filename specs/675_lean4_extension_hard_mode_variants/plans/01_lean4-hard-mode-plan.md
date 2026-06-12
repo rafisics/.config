@@ -71,7 +71,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Lean4 Contract Overrides [NOT STARTED]
+### Phase 1: Lean4 Contract Overrides [IN PROGRESS]
 
 **Goal**: Create the lean4-specific contract override files that hard agents will reference.
 
