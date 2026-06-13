@@ -28,6 +28,10 @@ Knowledge capture and retrieval via the memory vault. Supports text, file, direc
 
 Memory retrieval is automatic: when the memory extension is loaded, `/research`, `/plan`, and `/implement` preflight stages call `memory-retrieve.sh` to inject relevant memories as `<memory-context>` into the agent context. The `--clean` flag on these commands suppresses auto-retrieval.
 
+### Literature-Augmented Research
+
+The `--lit` flag is the complementary context-injection mechanism to memory retrieval. While `--clean` suppresses memory retrieval, `--lit` adds literature file injection from `specs/literature/`. The two flags are independent and combinable: `--clean --lit` suppresses memory but still injects literature; `--lit` alone injects both memory (if available) and literature. See the "Literature Mode (`--lit`)" section in CLAUDE.md for full details on `specs/literature/` conventions, token budget, and composability with other flags.
+
 ### Memory Lifecycle
 
 ```

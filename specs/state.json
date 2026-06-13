@@ -107,7 +107,7 @@
       "project_number": 691,
       "project_name": "document_lit_flag_claude_md",
       "title": "Document --lit flag in CLAUDE.md and command reference",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "meta",
       "topic": "agent-system",
       "effort": "30 minutes",
@@ -115,7 +115,28 @@
         689,
         690
       ],
-      "description": "Add --lit flag documentation to: (1) CLAUDE.md merge source Command Reference table (add --lit to /research, /plan, /implement, /orchestrate usage patterns). (2) CLAUDE.md merge source Hard Mode section or new Literature Mode section describing the --lit flag behavior. (3) Update the EXTENSION.md if the memory extension documents --clean in a way that --lit should parallel. (4) Add a specs/literature/ directory convention note explaining what files should be placed there and how they are consumed. Regenerate CLAUDE.md after updating merge sources."
+      "description": "Add --lit flag documentation to: (1) CLAUDE.md merge source Command Reference table (add --lit to /research, /plan, /implement, /orchestrate usage patterns). (2) CLAUDE.md merge source Hard Mode section or new Literature Mode section describing the --lit flag behavior. (3) Update the EXTENSION.md if the memory extension documents --clean in a way that --lit should parallel. (4) Add a specs/literature/ directory convention note explaining what files should be placed there and how they are consumed. Regenerate CLAUDE.md after updating merge sources.",
+      "last_updated": "2026-06-13T01:33:34Z",
+      "session_id": "sess_1749775200_b7d3e9_691",
+      "artifacts": [
+        {
+          "path": "specs/691_document_lit_flag_claude_md/reports/01_document-lit-flag.md",
+          "type": "report",
+          "summary": "Merge source locations, regeneration mechanism, 3 insertion points"
+        },
+        {
+          "path": "specs/691_document_lit_flag_claude_md/plans/01_document-lit-flag-plan.md",
+          "type": "plan",
+          "summary": "2-phase plan: edit merge sources + EXTENSION.md, mirror into generated CLAUDE.md"
+        },
+        {
+          "path": "specs/691_document_lit_flag_claude_md/summaries/01_document-lit-flag-summary.md",
+          "type": "summary",
+          "summary": "Literature Mode docs in merge source, memory EXTENSION.md, and generated CLAUDE.md"
+        }
+      ],
+      "next_artifact_number": 2,
+      "completion_summary": "Documented --lit flag: Command Reference table rows, new Literature Mode section (behavior, specs/literature/ convention, --clean independence table, composability), and Literature-Augmented Research subsection in memory extension. Merge source and generated CLAUDE.md both updated."
     },
     {
       "project_number": 687,

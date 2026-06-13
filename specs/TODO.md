@@ -11,7 +11,7 @@ next_project_number: 692
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,652,670,682,691 | -- | agent-system, Terminal UI, artifact-management, ... |
+| 1 | 78,87,652,670,682 | -- | agent-system, Terminal UI, artifact-management, ... |
 | 2 | 683 | 682 | -- |
 
 **Grouped by Topic** (indented = depends on parent):
@@ -19,7 +19,6 @@ next_project_number: 692
 ### Agent System
 
 652 [NOT STARTED] — After ~1 week of the new pipeline running, review logs to verify 
-691 [NOT STARTED] — Add --lit flag documentation to: (1) CLAUDE.md merge source Comma
 
 ### Terminal UI
 
@@ -42,10 +41,13 @@ next_project_number: 692
 
 ### 691. Document --lit flag in CLAUDE.md and command reference
 - **Effort**: 30 minutes
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 689, Task 690
+- **Research**: [691_document_lit_flag_claude_md/reports/01_document-lit-flag.md]
+- **Plan**: [691_document_lit_flag_claude_md/plans/01_document-lit-flag-plan.md]
+- **Summary**: [691_document_lit_flag_claude_md/summaries/01_document-lit-flag-summary.md]
 
 **Description**: Add --lit flag documentation to: (1) CLAUDE.md merge source Command Reference table (add --lit to /research, /plan, /implement, /orchestrate usage patterns). (2) CLAUDE.md merge source Hard Mode section or new Literature Mode section describing the --lit flag behavior. (3) Update the EXTENSION.md if the memory extension documents --clean in a way that --lit should parallel. (4) Add a specs/literature/ directory convention note explaining what files should be placed there and how they are consumed. Regenerate CLAUDE.md after updating merge sources.
 

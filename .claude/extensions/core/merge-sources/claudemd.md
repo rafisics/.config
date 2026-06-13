@@ -87,9 +87,9 @@ All commands use checkpoint-based execution: GATE IN (preflight) -> DELEGATE (sk
 |---------|-------|-------------|
 | `/task` | `/task "Description"` | Create task |
 | `/task` | `/task --recover N`, `--expand N`, `--sync`, `--abandon N` | Manage tasks |
-| `/research` | `/research N[,N-N] [focus] [--team] [--clean] [--fast\|--hard] [--haiku\|--sonnet\|--opus]` | Research task(s), route by task type |
-| `/plan` | `/plan N[,N-N] [--team] [--clean] [--fast\|--hard] [--haiku\|--sonnet\|--opus]` | Create implementation plan(s) |
-| `/implement` | `/implement N[,N-N] [--team] [--force] [--clean] [--fast\|--hard] [--haiku\|--sonnet\|--opus]` | Execute plan(s), resume from incomplete phase |
+| `/research` | `/research N[,N-N] [focus] [--team] [--clean] [--lit] [--fast\|--hard] [--haiku\|--sonnet\|--opus]` | Research task(s), route by task type |
+| `/plan` | `/plan N[,N-N] [--team] [--clean] [--lit] [--fast\|--hard] [--haiku\|--sonnet\|--opus]` | Create implementation plan(s) |
+| `/implement` | `/implement N[,N-N] [--team] [--force] [--clean] [--lit] [--fast\|--hard] [--haiku\|--sonnet\|--opus]` | Execute plan(s), resume from incomplete phase |
 | `/revise` | `/revise N` | Create new plan version |
 | `/review` | `/review` | Analyze codebase |
 | `/project-overview` | `/project-overview` | Interactive repo scan and project-overview.md generation |
@@ -99,7 +99,7 @@ All commands use checkpoint-based execution: GATE IN (preflight) -> DELEGATE (sk
 | `/fix-it` | `/fix-it [PATH...]` | Scan for FIX:/NOTE:/TODO:/QUESTION: tags |
 | `/refresh` | `/refresh [--dry-run] [--force]` | Clean orphaned processes and old files |
 | `/tag` | `/tag [--patch|--minor|--major]` | Create semantic version tag (user-only) |
-| `/orchestrate` | `/orchestrate N` | Drive task autonomously through full lifecycle (no confirmation gates) |
+| `/orchestrate` | `/orchestrate N [--lit]` | Drive task autonomously through full lifecycle (no confirmation gates) |
 | `/spawn` | `/spawn N [blocker description]` | Spawn new tasks to unblock a blocked task |
 | `/merge` | `/merge` | Create pull/merge request for current branch (user-only) |
 
@@ -283,6 +283,60 @@ Use `--hard` when one or more of the following apply:
 `--hard` is a per-invocation flag only. There is no sticky hard mode or `effort_mode` field
 in state.json. Each invocation of `/research`, `/plan`, `/implement`, or `/orchestrate` must
 explicitly pass `--hard` to activate hard mode.
+
+## Literature Mode (`--lit`)
+
+Literature mode injects reference files from `specs/literature/` as `<literature-context>` into
+agent prompts. Use this when a task involves implementing from a paper, specification, or
+reference document.
+
+### What `--lit` Does
+
+When `--lit` is passed to `/research`, `/plan`, `/implement`, or `/orchestrate`:
+- `literature-retrieve.sh` reads all `.md` and `.txt` files from `specs/literature/`
+- Files are included up to TOKEN_BUDGET=4000 tokens (MAX_FILES=10)
+- A `<literature-context>` block is injected after `<memory-context>` (if any) and before
+  task-specific instructions
+- If `specs/literature/` does not exist or is empty, the flag is silently ignored (no error)
+
+### specs/literature/ Directory Convention
+
+The `specs/literature/` directory is user-maintained and not task-scoped:
+- Place paper summaries, specification documents, algorithm descriptions, or reference PDFs
+  (converted to .md/.txt) here
+- All files in the directory are available to any task when `--lit` is active
+- The directory is not created automatically — create it before using `--lit`
+- Suitable content: academic paper summaries, RFC/spec excerpts, algorithm pseudocode,
+  mathematical definitions the agent should treat as ground truth
+
+### When to Use `--lit`
+
+- Task requires implementing from a paper or formal specification
+- Agent needs stable reference material beyond what is in memory
+- Using `--hard` with H3 reference grounding tier "literature"
+- Task description mentions "paper to code", "spec to implementation", or cites a specific document
+
+### Relationship to `--clean`
+
+The two flags are independent:
+
+| Flag combination | Memory retrieval | Literature injection |
+|------------------|-----------------|---------------------|
+| (neither)        | active          | inactive            |
+| `--clean`        | suppressed      | inactive            |
+| `--lit`          | active          | active              |
+| `--clean --lit`  | suppressed      | active              |
+
+### Composability
+
+- `--lit` works with `--team`, `--hard`, `--fast`, and model flags
+- `--lit` is threaded through all dispatch contexts in skill-orchestrate
+- Per-invocation only: no sticky state in state.json
+
+### Per-Invocation Only
+
+`--lit` has no persistent state. Each invocation of `/research`, `/plan`, `/implement`, or
+`/orchestrate` must explicitly pass `--lit` to activate literature injection.
 
 ## Rules References
 
