@@ -39,27 +39,69 @@
       "project_number": 689,
       "project_name": "lit_context_injection_skill_preflight",
       "title": "Add --lit context injection to skill preflight (researcher, planner, implementer)",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "meta",
       "topic": "agent-system",
       "effort": "1-2 hours",
       "dependencies": [
         688
       ],
-      "description": "Add literature context injection to skill-researcher, skill-planner, and skill-implementer preflight stages, mirroring the memory-retrieve pattern used by --clean. When lit_flag is true in the delegation context: (1) check if specs/literature/ directory exists, (2) if it exists, list files and read relevant content, (3) inject as <literature-context> block into the agent delegation prompt alongside existing <memory-context>. If specs/literature/ does not exist, silently skip (no error, no warning). The injection should happen in the same preflight stage where memory retrieval occurs (after GATE IN, before agent dispatch). Create a .claude/scripts/literature-retrieve.sh script following the memory-retrieve.sh pattern: accepts task description and task_type as args, scans specs/literature/ for matching files, returns formatted context block. Also update skill-orchestrate to thread lit_flag through its dispatch calls to research/plan/implement skills."
+      "description": "Add literature context injection to skill-researcher, skill-planner, and skill-implementer preflight stages, mirroring the memory-retrieve pattern used by --clean. When lit_flag is true in the delegation context: (1) check if specs/literature/ directory exists, (2) if it exists, list files and read relevant content, (3) inject as <literature-context> block into the agent delegation prompt alongside existing <memory-context>. If specs/literature/ does not exist, silently skip (no error, no warning). The injection should happen in the same preflight stage where memory retrieval occurs (after GATE IN, before agent dispatch). Create a .claude/scripts/literature-retrieve.sh script following the memory-retrieve.sh pattern: accepts task description and task_type as args, scans specs/literature/ for matching files, returns formatted context block. Also update skill-orchestrate to thread lit_flag through its dispatch calls to research/plan/implement skills.",
+      "last_updated": "2026-06-13T01:22:27Z",
+      "session_id": "sess_1749775200_b7d3e9_689",
+      "artifacts": [
+        {
+          "path": "specs/689_lit_context_injection_skill_preflight/reports/01_lit-context-injection.md",
+          "type": "report",
+          "summary": "Injection points in 3 skills + orchestrate threading + literature-retrieve.sh skeleton"
+        },
+        {
+          "path": "specs/689_lit_context_injection_skill_preflight/plans/01_lit-context-injection-plan.md",
+          "type": "plan",
+          "summary": "3-phase plan: literature-retrieve.sh, skill injection, orchestrate threading + core sync"
+        },
+        {
+          "path": "specs/689_lit_context_injection_skill_preflight/summaries/01_lit-context-injection-summary.md",
+          "type": "summary",
+          "summary": "literature-retrieve.sh + lit_flag injection in 3 skills + orchestrate threading, core copies synced"
+        }
+      ],
+      "next_artifact_number": 2,
+      "completion_summary": "Created literature-retrieve.sh (silent skip when specs/literature/ absent) and added lit_flag-gated literature context injection to skill-researcher/planner/implementer plus skill-orchestrate threading through all 7 dispatch contexts. Core copies synced."
     },
     {
       "project_number": 690,
       "project_name": "wire_lit_flag_commands",
       "title": "Wire --lit flag through /research, /plan, /implement, /orchestrate commands",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "meta",
       "topic": "agent-system",
       "effort": "1 hour",
       "dependencies": [
         688
       ],
-      "description": "Thread the LIT_FLAG through all four workflow commands. For each command (research.md, plan.md, implement.md, orchestrate.md): (1) Add --lit to the Options table documentation. (2) Add lit_flag extraction in STAGE 1.5 (PARSE FLAGS) following the --clean pattern. (3) Pass lit_flag={lit_flag} in the skill invocation args string (STAGE 2: DELEGATE). (4) Include lit_flag in multi-task dispatch skill args. Also sync extension core copies of these command files."
+      "description": "Thread the LIT_FLAG through all four workflow commands. For each command (research.md, plan.md, implement.md, orchestrate.md): (1) Add --lit to the Options table documentation. (2) Add lit_flag extraction in STAGE 1.5 (PARSE FLAGS) following the --clean pattern. (3) Pass lit_flag={lit_flag} in the skill invocation args string (STAGE 2: DELEGATE). (4) Include lit_flag in multi-task dispatch skill args. Also sync extension core copies of these command files.",
+      "last_updated": "2026-06-13T01:19:06Z",
+      "session_id": "sess_1749775200_b7d3e9_690",
+      "artifacts": [
+        {
+          "path": "specs/690_wire_lit_flag_commands/reports/01_wire-lit-commands.md",
+          "type": "report",
+          "summary": "Per-command insertion points for --lit wiring across 4 commands + extension core sync"
+        },
+        {
+          "path": "specs/690_wire_lit_flag_commands/plans/01_wire-lit-commands-plan.md",
+          "type": "plan",
+          "summary": "2-phase plan: edit 4 command files, sync core copies"
+        },
+        {
+          "path": "specs/690_wire_lit_flag_commands/summaries/01_wire-lit-commands-summary.md",
+          "type": "summary",
+          "summary": "All 4 command files wired with lit_flag, core copies synced byte-identical"
+        }
+      ],
+      "next_artifact_number": 2,
+      "completion_summary": "Wired --lit flag through all four workflow commands: Options table docs, STAGE 1.5 extraction, lit_flag in all skill invocation args. All 4 extension core copies synced byte-identical."
     },
     {
       "project_number": 691,

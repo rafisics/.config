@@ -11,18 +11,15 @@ next_project_number: 692
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,652,670,682,689,690 | -- | agent-system, Terminal UI, artifact-management, ... |
-| 2 | 683,691 | 682,689,690 | agent-system |
+| 1 | 78,87,652,670,682,691 | -- | agent-system, Terminal UI, artifact-management, ... |
+| 2 | 683 | 682 | -- |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Agent System
 
 652 [NOT STARTED] — After ~1 week of the new pipeline running, review logs to verify 
-689 [NOT STARTED] — Add literature context injection to skill-researcher, skill-plann
-  └─ 691 [NOT STARTED] — Add --lit flag documentation to: (1) CLAUDE.md merge source Comma
-690 [NOT STARTED] — Thread the LIT_FLAG through all four workflow commands. For each 
-  └─ 691 [NOT STARTED] — Add --lit flag documentation to: (1) CLAUDE.md merge source Comma (see above)
+691 [NOT STARTED] — Add --lit flag documentation to: (1) CLAUDE.md merge source Comma
 
 ### Terminal UI
 
@@ -56,10 +53,13 @@ next_project_number: 692
 
 ### 690. Wire --lit flag through /research, /plan, /implement, /orchestrate commands
 - **Effort**: 1 hour
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 688
+- **Research**: [690_wire_lit_flag_commands/reports/01_wire-lit-commands.md]
+- **Plan**: [690_wire_lit_flag_commands/plans/01_wire-lit-commands-plan.md]
+- **Summary**: [690_wire_lit_flag_commands/summaries/01_wire-lit-commands-summary.md]
 
 **Description**: Thread the LIT_FLAG through all four workflow commands. For each command (research.md, plan.md, implement.md, orchestrate.md): (1) Add --lit to the Options table documentation. (2) Add lit_flag extraction in STAGE 1.5 (PARSE FLAGS) following the --clean pattern. (3) Pass lit_flag={lit_flag} in the skill invocation args string (STAGE 2: DELEGATE). (4) Include lit_flag in multi-task dispatch skill args. Also sync extension core copies of these command files.
 
@@ -67,10 +67,13 @@ next_project_number: 692
 
 ### 689. Add --lit context injection to skill preflight (researcher, planner, implementer)
 - **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 688
+- **Research**: [689_lit_context_injection_skill_preflight/reports/01_lit-context-injection.md]
+- **Plan**: [689_lit_context_injection_skill_preflight/plans/01_lit-context-injection-plan.md]
+- **Summary**: [689_lit_context_injection_skill_preflight/summaries/01_lit-context-injection-summary.md]
 
 **Description**: Add literature context injection to skill-researcher, skill-planner, and skill-implementer preflight stages, mirroring the memory-retrieve pattern used by --clean. When lit_flag is true in the delegation context: (1) check if specs/literature/ directory exists, (2) if it exists, list files and read relevant content, (3) inject as <literature-context> block into the agent delegation prompt alongside existing <memory-context>. If specs/literature/ does not exist, silently skip (no error, no warning). The injection should happen in the same preflight stage where memory retrieval occurs (after GATE IN, before agent dispatch). Create a .claude/scripts/literature-retrieve.sh script following the memory-retrieve.sh pattern: accepts task description and task_type as args, scans specs/literature/ for matching files, returns formatted context block. Also update skill-orchestrate to thread lit_flag through its dispatch calls to research/plan/implement skills.
 

@@ -27,6 +27,7 @@ Execute implementation plan with automatic resume support by delegating to the a
 | `--sonnet` | Use Sonnet model (balanced cost/quality) | false |
 | `--opus` | Use Opus model (highest quality, same as agent default) | false |
 | `--clean` | Skip automatic memory retrieval | false |
+| `--lit` | Literature mode: pass lit_flag=true to skill for paper/spec-based implementation | false |
 
 ## Anti-Bypass Constraint
 
@@ -43,7 +44,7 @@ Execute implementation plan with automatic resume support by delegating to the a
 ```bash
 source .claude/scripts/parse-command-args.sh "$ARGUMENTS"
 # Exports: TASK_NUMBERS, REMAINING_ARGS, TEAM_MODE, TEAM_SIZE, EFFORT_FLAG, MODEL_FLAG,
-#          CLEAN_FLAG, FORCE_FLAG, FOCUS_PROMPT
+#          CLEAN_FLAG, FORCE_FLAG, LIT_FLAG, FOCUS_PROMPT
 [ "$TEAM_SIZE" -gt 4 ] && TEAM_SIZE=4
 ```
 
@@ -140,11 +141,11 @@ skill_name="$SKILL_NAME"
 ```
 # For team mode:
 skill: "skill-team-implement"
-args: "task_number={N} plan_path={path} resume_phase={phase} team_size={TEAM_SIZE} session_id={SESSION_ID} effort_flag={EFFORT_FLAG} model_flag={MODEL_FLAG} clean_flag={CLEAN_FLAG} orchestrator_mode=false"
+args: "task_number={N} plan_path={path} resume_phase={phase} team_size={TEAM_SIZE} session_id={SESSION_ID} effort_flag={EFFORT_FLAG} model_flag={MODEL_FLAG} clean_flag={CLEAN_FLAG} lit_flag={LIT_FLAG} orchestrator_mode=false"
 
 # For single-agent mode:
 skill: "{skill_name}"
-args: "task_number={N} plan_path={path} resume_phase={phase} session_id={SESSION_ID} effort_flag={EFFORT_FLAG} model_flag={MODEL_FLAG} clean_flag={CLEAN_FLAG} orchestrator_mode=false"
+args: "task_number={N} plan_path={path} resume_phase={phase} session_id={SESSION_ID} effort_flag={EFFORT_FLAG} model_flag={MODEL_FLAG} clean_flag={CLEAN_FLAG} lit_flag={LIT_FLAG} orchestrator_mode=false"
 ```
 
 Pass `model` parameter if `MODEL_FLAG` is set. Pass `effort_flag` as prompt context if set.
