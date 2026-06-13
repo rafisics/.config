@@ -1,5 +1,5 @@
 ---
-next_project_number: 688
+next_project_number: 692
 ---
 
 # TODO
@@ -11,14 +11,18 @@ next_project_number: 688
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,652,670,682 | -- | agent-system, Terminal UI, artifact-management, ... |
-| 2 | 683 | 682 | -- |
+| 1 | 78,87,652,670,682,689,690 | -- | agent-system, Terminal UI, artifact-management, ... |
+| 2 | 683,691 | 682,689,690 | agent-system |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Agent System
 
 652 [NOT STARTED] — After ~1 week of the new pipeline running, review logs to verify 
+689 [NOT STARTED] — Add literature context injection to skill-researcher, skill-plann
+  └─ 691 [NOT STARTED] — Add --lit flag documentation to: (1) CLAUDE.md merge source Comma
+690 [NOT STARTED] — Thread the LIT_FLAG through all four workflow commands. For each 
+  └─ 691 [NOT STARTED] — Add --lit flag documentation to: (1) CLAUDE.md merge source Comma (see above)
 
 ### Terminal UI
 
@@ -38,6 +42,53 @@ next_project_number: 688
   └─ 683 [NOT STARTED] — Add keyword_overrides field to the cslib extension manifest.json.
 
 ## Tasks
+
+### 691. Document --lit flag in CLAUDE.md and command reference
+- **Effort**: 30 minutes
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: Task 689, Task 690
+
+**Description**: Add --lit flag documentation to: (1) CLAUDE.md merge source Command Reference table (add --lit to /research, /plan, /implement, /orchestrate usage patterns). (2) CLAUDE.md merge source Hard Mode section or new Literature Mode section describing the --lit flag behavior. (3) Update the EXTENSION.md if the memory extension documents --clean in a way that --lit should parallel. (4) Add a specs/literature/ directory convention note explaining what files should be placed there and how they are consumed. Regenerate CLAUDE.md after updating merge sources.
+
+---
+
+### 690. Wire --lit flag through /research, /plan, /implement, /orchestrate commands
+- **Effort**: 1 hour
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: Task 688
+
+**Description**: Thread the LIT_FLAG through all four workflow commands. For each command (research.md, plan.md, implement.md, orchestrate.md): (1) Add --lit to the Options table documentation. (2) Add lit_flag extraction in STAGE 1.5 (PARSE FLAGS) following the --clean pattern. (3) Pass lit_flag={lit_flag} in the skill invocation args string (STAGE 2: DELEGATE). (4) Include lit_flag in multi-task dispatch skill args. Also sync extension core copies of these command files.
+
+---
+
+### 689. Add --lit context injection to skill preflight (researcher, planner, implementer)
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: Task 688
+
+**Description**: Add literature context injection to skill-researcher, skill-planner, and skill-implementer preflight stages, mirroring the memory-retrieve pattern used by --clean. When lit_flag is true in the delegation context: (1) check if specs/literature/ directory exists, (2) if it exists, list files and read relevant content, (3) inject as <literature-context> block into the agent delegation prompt alongside existing <memory-context>. If specs/literature/ does not exist, silently skip (no error, no warning). The injection should happen in the same preflight stage where memory retrieval occurs (after GATE IN, before agent dispatch). Create a .claude/scripts/literature-retrieve.sh script following the memory-retrieve.sh pattern: accepts task description and task_type as args, scans specs/literature/ for matching files, returns formatted context block. Also update skill-orchestrate to thread lit_flag through its dispatch calls to research/plan/implement skills.
+
+---
+
+### 688. Add --lit flag to parse-command-args.sh
+- **Effort**: 30 minutes
+- **Status**: [COMPLETED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+- **Research**: [688_add_lit_flag_parse_command_args/reports/01_lit-flag-parse.md]
+- **Plan**: [688_add_lit_flag_parse_command_args/plans/01_lit-flag-parse-plan.md]
+- **Summary**: [688_add_lit_flag_parse_command_args/summaries/01_lit-flag-parse-summary.md]
+
+**Description**: Add LIT_FLAG variable to .claude/scripts/parse-command-args.sh. Parse --lit from remaining args (same pattern as --clean, --exploit, --explore). Export LIT_FLAG ("true" or "false"). Strip --lit from FOCUS_PROMPT in the sed cleanup chain. Update the export line to include LIT_FLAG. Also sync the extension core copy at .claude/extensions/core/scripts/parse-command-args.sh.
+
+---
 
 ### 687. Create agent-level PR prohibition rule
 - **Effort**: 30 minutes

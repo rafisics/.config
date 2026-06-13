@@ -147,15 +147,6 @@ else
   echo "[orchestrate] Starting fresh — MAX_CYCLES=$MAX_CYCLES"
 fi
 
-# Write orchestrate-active marker (enables mid-orchestrate TTS suppression in lifecycle-notify.sh)
-mkdir -p ".claude/tmp"
-jq -n \
-  --arg task "$task_number" \
-  --arg started "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-  '{"task_number": $task, "started": $started}' \
-  > ".claude/tmp/orchestrate-active"
-echo "[orchestrate] orchestrate-active marker written for task $task_number"
-
 # Blocker escalation counter (reset each /orchestrate invocation)
 blocker_escalation_count=0
 MAX_BLOCKER_ESCALATIONS=2
@@ -234,9 +225,6 @@ Dispatch planning via named subagent.
 ```
 research_artifacts=$(jq -c '[.active_projects[] | select(.project_number == N) | .artifacts // [] | .[] | select(.type == "report")] | .[0].path // ""' specs/state.json)
 
-# Set dim "planning" tab color before dispatching planner (visual transition signal)
-bash .claude/hooks/wezterm-notify.sh planning 2>/dev/null &
-
 dispatch_instructions = dispatch_agent "planner-agent" \
   "Create implementation plan for task $task_number${focus_prompt:+. User focus: $focus_prompt}" \
   '{"task_number": N, "task_type": "T", "session_id": "S", "research_artifacts": [...], "orchestrator_mode": false}' \
@@ -260,9 +248,6 @@ plan_path=$(ls -1 "${TASK_DIR}/plans/"*.md 2>/dev/null | sort -V | tail -1)
 ```
 
 ```
-# Set dim "implementing" tab color before dispatching implementer (visual transition signal)
-bash .claude/hooks/wezterm-notify.sh implementing 2>/dev/null &
-
 dispatch_instructions = dispatch_agent "$IMPLEMENT_AGENT" \
   "Implement task $task_number following the plan${focus_prompt:+. User focus: $focus_prompt}" \
   '{"task_number": N, "task_type": "T", "session_id": "S", "orchestrator_mode": true,
@@ -617,9 +602,6 @@ On clean exit (task completed or terminal state):
 rm -f "$loop_guard_file"
 # Clean up drift inspection artifact if present
 rm -f "${TASK_DIR}/.drift-inspection.json"
-# Clear orchestrate-active and workflow-active markers so the final Stop hook fires TTS
-rm -f ".claude/tmp/orchestrate-active" 2>/dev/null || true
-rm -f ".claude/tmp/workflow-active" 2>/dev/null || true
 echo "[orchestrate] Task $task_number: orchestration complete."
 echo "Final status: $current_status | Cycles used: $cycle_count/$MAX_CYCLES"
 ```
@@ -628,9 +610,6 @@ On partial exit (MAX_CYCLES, in-flight warning, escalation cap):
 
 ```bash
 # Preserve loop guard for next /orchestrate invocation
-# Clear orchestrate-active and workflow-active markers so the Stop hook fires TTS even on pause
-rm -f ".claude/tmp/orchestrate-active" 2>/dev/null || true
-rm -f ".claude/tmp/workflow-active" 2>/dev/null || true
 echo "[orchestrate] Task $task_number: orchestration paused."
 echo "Status: $current_status | Cycles: $cycle_count/$MAX_CYCLES | Run /orchestrate $task_number to continue."
 ```
@@ -1112,16 +1091,10 @@ if [ "$failed_count" -eq 0 ]; then
   echo "[orchestrate-mt] All $total_count tasks completed. Cycles used: $cycles_used/$MAX_CYCLES_MT"
   # On clean exit: remove multi-state file
   rm -f "$mt_state_file"
-  # Clear orchestrate-active and workflow-active markers so the final Stop hook fires TTS
-  rm -f ".claude/tmp/orchestrate-active" 2>/dev/null || true
-  rm -f ".claude/tmp/workflow-active" 2>/dev/null || true
   exit_status="implemented"
 else
   echo "[orchestrate-mt] Partial: $completed_count/$total_count completed, $failed_count failed."
   echo "[orchestrate-mt] Multi-state preserved at: $mt_state_file (for diagnostics)"
-  # Clear orchestrate-active and workflow-active markers so the Stop hook fires TTS even on partial exit
-  rm -f ".claude/tmp/orchestrate-active" 2>/dev/null || true
-  rm -f ".claude/tmp/workflow-active" 2>/dev/null || true
   exit_status="partial"
 fi
 

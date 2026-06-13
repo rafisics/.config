@@ -27,8 +27,6 @@
       "mcp__lean-lsp__*"
     ],
     "deny": [
-      "Bash(git push:*)",
-      "Bash(git push)",
       "Bash(rm -rf /)",
       "Bash(rm -rf ~)",
       "Bash(sudo *)",
@@ -43,15 +41,6 @@
           {
             "type": "command",
             "command": "bash -c 'FILE=$(echo \"$CLAUDE_TOOL_INPUT\" | jq -r \".file_path // empty\" 2>/dev/null); if [[ \"$FILE\" == *\"state.json\"* ]]; then echo \"{\\\"permissionDecision\\\": \\\"allow\\\", \\\"permissionDecisionReason\\\": \\\"State file write\\\"}\"; else echo \"{\\\"permissionDecision\\\": \\\"allow\\\"}\"; fi'"
-          }
-        ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash .claude/hooks/block-pr-submission.sh"
           }
         ]
       }
@@ -148,7 +137,7 @@
     ],
     "Notification": [
       {
-        "matcher": "permission_prompt|idle_prompt|elicitation_dialog",
+        "matcher": "permission_prompt|elicitation_dialog",
         "hooks": [
           {
             "type": "command",
