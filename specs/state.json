@@ -1,7 +1,148 @@
 {
   "version": "1.1.0",
-  "next_project_number": 682,
+  "next_project_number": 688,
   "active_projects": [
+    {
+      "project_number": 687,
+      "project_name": "agent_pr_prohibition_rule",
+      "title": "Create agent-level PR prohibition rule",
+      "status": "completed",
+      "task_type": "meta",
+      "topic": "agent-system",
+      "effort": "30 minutes",
+      "dependencies": [],
+      "description": "Create .claude/rules/pr-prohibition.md (path pattern: **/*) that explicitly forbids all agents from: (1) creating PRs via gh pr create or glab mr create, (2) pushing to remote repositories via git push, (3) invoking the /merge command autonomously. The rule directs that only the user-invoked /pr command may submit PRs, and only after explicit user approval via AskUserQuestion. This is the documentation layer that instructs agents at the prompt level.",
+      "completion_summary": "Created pr-prohibition.md rule with universal **/* path pattern forbidding PR creation, pushing, and autonomous /merge. Synced to extension core.",
+      "created": "2026-06-12T23:00:00Z",
+      "last_updated": "2026-06-13T00:25:32Z",
+      "session_id": "sess_1749772800_a4c1e8_687",
+      "artifacts": [
+        {
+          "path": "specs/687_agent_pr_prohibition_rule/reports/01_pr-prohibition-research.md",
+          "type": "report"
+        },
+        {
+          "path": "specs/687_agent_pr_prohibition_rule/plans/01_pr-prohibition-plan.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/687_agent_pr_prohibition_rule/summaries/01_pr-prohibition-summary.md",
+          "type": "summary"
+        }
+      ],
+      "next_artifact_number": 2
+    },
+    {
+      "project_number": 686,
+      "project_name": "merge_command_approval_gate",
+      "title": "Add user approval gate to /merge command",
+      "status": "completed",
+      "task_type": "meta",
+      "topic": "agent-system",
+      "effort": "1 hour",
+      "dependencies": [],
+      "description": "Add an AskUserQuestion confirmation step to .claude/commands/merge.md between STEP 3 (validate branch) and STEP 4 (push). Present the branch name, target branch, draft status, and a summary of commits for user review before proceeding with push and PR creation. Match the approval pattern used by the cslib /pr command (lines 792-803). Also add a prohibition note in the command header documentation stating that agents must never invoke /merge autonomously — it is a user-only command. Update the extension core copy at .claude/extensions/core/commands/merge.md to match.",
+      "completion_summary": "Added user-only prohibition and AskUserQuestion approval gate (STEP 4) to /merge command with Yes/Draft/Cancel options. Synced extension core copy.",
+      "created": "2026-06-12T23:00:00Z",
+      "last_updated": "2026-06-13T00:25:32Z",
+      "session_id": "sess_1749772800_a4c1e8_686",
+      "artifacts": [
+        {
+          "path": "specs/686_merge_command_approval_gate/reports/01_merge-approval-research.md",
+          "type": "report"
+        },
+        {
+          "path": "specs/686_merge_command_approval_gate/plans/01_merge-approval-plan.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/686_merge_command_approval_gate/summaries/01_merge-approval-summary.md",
+          "type": "summary"
+        }
+      ],
+      "next_artifact_number": 2
+    },
+    {
+      "project_number": 685,
+      "project_name": "restrict_git_push_permissions",
+      "title": "Restrict Bash(git:*) permissions to exclude git push",
+      "status": "completed",
+      "task_type": "meta",
+      "topic": "agent-system",
+      "effort": "30 minutes",
+      "dependencies": [],
+      "description": "Replace the blanket Bash(git:*) permission in .claude/settings.json with granular git operation entries that exclude git push. New entries: Bash(git status*), Bash(git diff*), Bash(git add*), Bash(git commit*), Bash(git log*), Bash(git branch*), Bash(git checkout*), Bash(git stash*), Bash(git fetch*), Bash(git rebase*), Bash(git merge*), Bash(git remote*), Bash(git rev-parse*), Bash(git show*), Bash(git blame*), Bash(git tag*), Bash(git cherry-pick*), Bash(git clean*), Bash(git reset*). This ensures any git push triggers a permission prompt requiring user approval. Do NOT modify the cslib project settings.json — the user will reload the agent system there separately.",
+      "completion_summary": "Added Bash(git push:*) and Bash(git push) to deny list in settings.json. Deny rules take precedence over Bash(git:*) allow.",
+      "created": "2026-06-12T23:00:00Z",
+      "last_updated": "2026-06-13T00:25:32Z",
+      "session_id": "sess_1749772800_a4c1e8_685",
+      "artifacts": [
+        {
+          "path": "specs/685_restrict_git_push_permissions/reports/01_git-permissions-research.md",
+          "type": "report"
+        },
+        {
+          "path": "specs/685_restrict_git_push_permissions/plans/01_git-permissions-plan.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/685_restrict_git_push_permissions/summaries/01_git-permissions-summary.md",
+          "type": "summary"
+        }
+      ],
+      "next_artifact_number": 2
+    },
+    {
+      "project_number": 684,
+      "project_name": "pretooluse_hook_pr_block",
+      "title": "Add PreToolUse hook to block PR/push operations",
+      "status": "completed",
+      "task_type": "meta",
+      "topic": "agent-system",
+      "effort": "1 hour",
+      "dependencies": [],
+      "description": "Add a PreToolUse hook in .claude/settings.json that intercepts any Bash tool call and checks if the command contains gh pr create, glab mr create, or git push. If detected, return permissionDecision: deny with a message explaining that PR submission requires the /pr command with explicit user approval. The hook should use a matcher of Bash and inspect CLAUDE_TOOL_INPUT for the command field. This is the hardest enforcement layer since it operates at the tool-call level before execution and cannot be bypassed by agent prompt instructions. Create the hook script at .claude/hooks/block-pr-submission.sh for testability and maintainability rather than inlining the logic in settings.json. Do NOT modify the cslib project settings.json.",
+      "completion_summary": "Created PreToolUse hook (block-pr-submission.sh) that blocks prohibited operations via exit code 2. Added Bash matcher hook to settings.json.",
+      "created": "2026-06-12T23:00:00Z",
+      "last_updated": "2026-06-13T00:25:32Z",
+      "session_id": "sess_1749772800_a4c1e8_684",
+      "artifacts": [
+        {
+          "path": "specs/684_pretooluse_hook_pr_block/reports/01_pretooluse-hook-research.md",
+          "type": "report"
+        },
+        {
+          "path": "specs/684_pretooluse_hook_pr_block/plans/01_pretooluse-hook-plan.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/684_pretooluse_hook_pr_block/summaries/01_pretooluse-hook-summary.md",
+          "type": "summary"
+        }
+      ],
+      "next_artifact_number": 2
+    },
+    {
+      "project_number": 683,
+      "project_name": "cslib_manifest_keyword_overrides",
+      "status": "not_started",
+      "task_type": "meta",
+      "description": "Add keyword_overrides field to the cslib extension manifest.json. Map lean-related keywords (lean, lean4, mathlib, theorem, proof) to cslib task type with aliases: [\"lean4\"], and map PR-related keywords (pr, pull request, submit, upstream, branch, rebase, cherry-pick) to pr task type. This enables deterministic task type detection when the cslib extension is loaded, replacing agent judgment.",
+      "dependencies": [
+        682
+      ],
+      "created": "2026-06-12T22:37:14Z",
+      "last_updated": "2026-06-12T22:37:14Z"
+    },
+    {
+      "project_number": 682,
+      "project_name": "extension_keyword_overrides_task_command",
+      "status": "not_started",
+      "task_type": "meta",
+      "description": "Add extension keyword_overrides support to the /task command (task.md step 4). After meta keyword check but before the hardcoded keyword table, scan loaded extension manifests for a keyword_overrides field. Schema: {\"task_type\": {\"aliases\": [\"existing_type\"], \"keywords\": [\"word1\", ...]}}. Aliases remap an existing keyword table result to the extension type. Keywords add new entries alongside the hardcoded table. Extension overrides take precedence over the hardcoded table so extensions can claim keywords from types they supersede.",
+      "created": "2026-06-12T22:37:14Z",
+      "last_updated": "2026-06-12T22:37:14Z"
+    },
     {
       "project_number": 679,
       "project_name": "research_tts_best_practices",

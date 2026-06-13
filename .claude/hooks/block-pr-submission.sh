@@ -18,11 +18,23 @@ if [ -z "$COMMAND" ]; then
   exit 0
 fi
 
-# Block PR creation and git push commands
-if echo "$COMMAND" | grep -qE 'git push|gh pr create|glab mr create'; then
-  echo "BLOCKED: PR submission and git push operations are not allowed directly." >&2
-  echo "Use the /merge command (GitHub PR or GitLab MR) or /pr command instead." >&2
-  echo "These commands include proper CI verification and user approval gates." >&2
+# Block actual git push / PR creation commands.
+# Match patterns that start a command or follow && ; | — not strings inside quotes/variables.
+# Uses word-boundary-aware patterns to avoid false positives on commands that merely
+# mention "git push" in string literals (e.g., jq --arg val "... git push ...").
+if echo "$COMMAND" | grep -qE '(^|[;&|] *)git push( |$)'; then
+  echo "BLOCKED: git push is not allowed directly." >&2
+  echo "Use /merge (GitHub/GitLab) or /pr (CSLib) to push and create PRs." >&2
+  exit 2
+fi
+if echo "$COMMAND" | grep -qE '(^|[;&|] *)gh pr create'; then
+  echo "BLOCKED: gh pr create is not allowed directly." >&2
+  echo "Use /merge or /pr to create pull requests with proper approval." >&2
+  exit 2
+fi
+if echo "$COMMAND" | grep -qE '(^|[;&|] *)glab mr create'; then
+  echo "BLOCKED: glab mr create is not allowed directly." >&2
+  echo "Use /merge to create merge requests with proper approval." >&2
   exit 2
 fi
 
