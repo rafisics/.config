@@ -11,7 +11,7 @@ next_project_number: 693
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,652,670,682,692 | -- | agent-system, Terminal UI, artifact-management, ... |
+| 1 | 78,87,652,670,682 | -- | agent-system, Terminal UI, artifact-management, ... |
 | 2 | 683 | 682 | -- |
 
 **Grouped by Topic** (indented = depends on parent):
@@ -19,7 +19,6 @@ next_project_number: 693
 ### Agent System
 
 652 [NOT STARTED] — After ~1 week of the new pipeline running, review logs to verify 
-692 [NOT STARTED] — Add description and title persistence to all task creation flows 
 
 ### Terminal UI
 
@@ -41,10 +40,13 @@ next_project_number: 693
 ## Tasks
 
 ### 692. Persist description in task creation flows
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
+- **Research**: [692_persist_description_in_task_creation_flows/reports/01_research-description-persistence.md]
+- **Plan**: [692_persist_description_in_task_creation_flows/plans/01_implementation-plan.md]
+- **Summary**: [692_persist_description_in_task_creation_flows/summaries/01_execution-summary.md]
 
 **Description**: Add description and title persistence to all task creation flows in state.json. Currently, the improved description computed during task creation is never stored, so TODO.md entries lack descriptions.
 

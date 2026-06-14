@@ -1,7 +1,7 @@
 # Implementation Plan: Persist description in task creation flows
 
 - **Task**: 692 - Persist description in task creation flows
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/692_persist_description_in_task_creation_flows/reports/01_research-description-persistence.md
