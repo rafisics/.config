@@ -1,7 +1,17 @@
 {
   "version": "1.1.0",
-  "next_project_number": 692,
+  "next_project_number": 693,
   "active_projects": [
+    {
+      "project_number": 692,
+      "project_name": "persist_description_in_task_creation_flows",
+      "status": "not_started",
+      "task_type": "meta",
+      "topic": "agent-system",
+      "description": "Add description and title persistence to all task creation flows in state.json. Currently, the improved description computed during task creation is never stored, so TODO.md entries lack descriptions.\n\nRoot cause: The state.json task entry jq template omits description/title fields.\n\nAffected locations (4 flows missing description):\n1. commands/task.md step 6 (Create Task Mode) - improved description computed but not in jq template\n2. agents/meta-builder-agent.md Stage 6 (CreateTasks) - has titles from interview, not persisted\n3. skills/skill-fix-it/SKILL.md Step 9.1 - internal title/description not in state.json entry\n4. commands/task.md expand mode (step 3) - uses same Create Task jq pattern\n\nReference: commands/task.md --review mode (step 8) correctly includes description - use as template.\n\nFix: Add \"description\": $desc (and optionally \"title\": $title) to each state.json entry template. The generate-todo.sh script already renders descriptions when present - no changes needed there.",
+      "created": "2026-06-14T17:49:11Z",
+      "last_updated": "2026-06-14T17:49:11Z"
+    },
     {
       "project_number": 688,
       "project_name": "add_lit_flag_parse_command_args",

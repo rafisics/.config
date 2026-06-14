@@ -1,17 +1,17 @@
 ---
-next_project_number: 692
+next_project_number: 693
 ---
 
 # TODO
 
 ## Task Order
 
-*Updated 2026-06-13. Generated from state.json dependency graph.*
+*Updated 2026-06-14. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,652,670,682 | -- | agent-system, Terminal UI, artifact-management, ... |
+| 1 | 78,87,652,670,682,692 | -- | agent-system, Terminal UI, artifact-management, ... |
 | 2 | 683 | 682 | -- |
 
 **Grouped by Topic** (indented = depends on parent):
@@ -19,6 +19,7 @@ next_project_number: 692
 ### Agent System
 
 652 [NOT STARTED] — After ~1 week of the new pipeline running, review logs to verify 
+692 [NOT STARTED] — Add description and title persistence to all task creation flows 
 
 ### Terminal UI
 
@@ -38,6 +39,28 @@ next_project_number: 692
   └─ 683 [NOT STARTED] — Add keyword_overrides field to the cslib extension manifest.json.
 
 ## Tasks
+
+### 692. Persist description in task creation flows
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: Add description and title persistence to all task creation flows in state.json. Currently, the improved description computed during task creation is never stored, so TODO.md entries lack descriptions.
+
+Root cause: The state.json task entry jq template omits description/title fields.
+
+Affected locations (4 flows missing description):
+1. commands/task.md step 6 (Create Task Mode) - improved description computed but not in jq template
+2. agents/meta-builder-agent.md Stage 6 (CreateTasks) - has titles from interview, not persisted
+3. skills/skill-fix-it/SKILL.md Step 9.1 - internal title/description not in state.json entry
+4. commands/task.md expand mode (step 3) - uses same Create Task jq pattern
+
+Reference: commands/task.md --review mode (step 8) correctly includes description - use as template.
+
+Fix: Add "description": $desc (and optionally "title": $title) to each state.json entry template. The generate-todo.sh script already renders descriptions when present - no changes needed there.
+
+---
 
 ### 691. Document --lit flag in CLAUDE.md and command reference
 - **Effort**: 30 minutes
