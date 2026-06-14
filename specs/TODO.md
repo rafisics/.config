@@ -1,5 +1,5 @@
 ---
-next_project_number: 697
+next_project_number: 698
 ---
 
 # TODO
@@ -28,6 +28,19 @@ next_project_number: 697
 78 [PLANNED] — Fix Gmail SMTP authentication failure when sending emails via Him
 
 ## Tasks
+
+### 697. Fix literature retrieve keyword matching
+- **Status**: [COMPLETED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+- **Research**: [697_fix_literature_retrieve_keyword_matching/reports/01_literature-retrieve-research.md]
+- **Plan**: [697_fix_literature_retrieve_keyword_matching/plans/01_implementation-plan.md]
+- **Summary**: [697_fix_literature_retrieve_keyword_matching/summaries/01_implementation-summary.md]
+
+**Description**: Rewrite .claude/scripts/literature-retrieve.sh to use specs/literature/index.json for keyword-based file selection instead of naive alphabetical top-level file scanning. Current script has 4 defects identified by cslib audit (task 200): (1) -maxdepth 1 only finds top-level files, missing chapter splits in subdirectories; (2) description and task_type arguments captured but never used for selection; (3) no index.json integration for keyword matching; (4) alphabetical ordering instead of relevance-based selection. Fix should: read index.json entries, tokenize description into keywords, score entries by keyword overlap, sort by relevance score (descending), select top matches within TOKEN_BUDGET=4000 and MAX_FILES=10, read matched files and output <literature-context> block. When index.json is absent, fall back to current behavior (scan for small files). Sync extension core copy at .claude/extensions/core/scripts/literature-retrieve.sh. Reference: /home/benjamin/Projects/cslib/specs/200_fix_literature_directory_quality/reports/01_literature-quality-audit.md Priority 1 recommendation.
+
+---
 
 ### 696. Apply pr deny rules fix hook
 - **Status**: [COMPLETED]

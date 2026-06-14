@@ -1,7 +1,37 @@
 {
   "version": "1.1.0",
-  "next_project_number": 697,
+  "next_project_number": 698,
   "active_projects": [
+    {
+      "project_number": 697,
+      "project_name": "fix_literature_retrieve_keyword_matching",
+      "status": "completed",
+      "task_type": "meta",
+      "topic": "agent-system",
+      "description": "Rewrite .claude/scripts/literature-retrieve.sh to use specs/literature/index.json for keyword-based file selection instead of naive alphabetical top-level file scanning. Current script has 4 defects identified by cslib audit (task 200): (1) -maxdepth 1 only finds top-level files, missing chapter splits in subdirectories; (2) description and task_type arguments captured but never used for selection; (3) no index.json integration for keyword matching; (4) alphabetical ordering instead of relevance-based selection. Fix should: read index.json entries, tokenize description into keywords, score entries by keyword overlap, sort by relevance score (descending), select top matches within TOKEN_BUDGET=4000 and MAX_FILES=10, read matched files and output <literature-context> block. When index.json is absent, fall back to current behavior (scan for small files). Sync extension core copy at .claude/extensions/core/scripts/literature-retrieve.sh. Reference: /home/benjamin/Projects/cslib/specs/200_fix_literature_directory_quality/reports/01_literature-quality-audit.md Priority 1 recommendation.",
+      "created": "2026-06-14T21:00:00Z",
+      "last_updated": "2026-06-14T21:01:12Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/697_fix_literature_retrieve_keyword_matching/reports/01_literature-retrieve-research.md",
+          "type": "research",
+          "summary": "Primary blocker: literature-retrieve.sh missing from core manifest provides.scripts; 4 script defects confirmed; rewrite pattern from memory-retrieve.sh"
+        },
+        {
+          "path": "specs/697_fix_literature_retrieve_keyword_matching/plans/01_implementation-plan.md",
+          "type": "plan",
+          "summary": "1-phase plan: manifest fix + script rewrite following memory-retrieve.sh pattern"
+        },
+        {
+          "path": "specs/697_fix_literature_retrieve_keyword_matching/summaries/01_implementation-summary.md",
+          "type": "summary",
+          "summary": "Added literature-retrieve.sh to core manifest provides.scripts; rewrote script with index.json keyword matching"
+        }
+      ],
+      "session_id": "sess_1781470284_58cfdb",
+      "completion_summary": "Added literature-retrieve.sh to core extension manifest provides.scripts (deployment blocker fix) and rewrote the script with index.json keyword-based selection: keyword extraction from description, jq scoring against entry keywords/summary, greedy selection within TOKEN_BUDGET=4000, fallback to recursive file scan when index.json absent. Both copies synced."
+    },
     {
       "project_number": 696,
       "project_name": "apply_pr_deny_rules_fix_hook",
