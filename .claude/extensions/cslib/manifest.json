@@ -59,6 +59,16 @@
       "pr": "skill-implementer-hard"
     }
   },
+  "keyword_overrides": {
+    "cslib": {
+      "keywords": ["lean", "lean4", "mathlib", "theorem", "proof"],
+      "aliases": ["lean4"]
+    },
+    "pr": {
+      "keywords": ["pr", "pull request", "submit", "upstream", "branch", "rebase", "cherry-pick"],
+      "aliases": []
+    }
+  },
   "merge_targets": {
     "claudemd": {
       "source": "EXTENSION.md",

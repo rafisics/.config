@@ -11,16 +11,13 @@ next_project_number: 694
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,652,682,693 | -- | agent-system, Terminal UI, Email Integration |
-| 2 | 683 | 682 | agent-system |
+| 1 | 78,87,652,693 | -- | agent-system, Terminal UI, Email Integration |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Agent System
 
 652 [NOT STARTED] — After ~1 week of the new pipeline running, review logs to verify 
-682 [IMPLEMENTED] — Add extension keyword_overrides support to the /task command (tas
-  └─ 683 [NOT STARTED] — Add keyword_overrides field to the cslib extension manifest.json.
 693 [NOT STARTED] — The --lit flag is non-functional because literature-retrieve.sh d
 
 ### Terminal UI
@@ -181,17 +178,20 @@ Fix: Add "description": $desc (and optionally "title": $title) to each state.jso
 ---
 
 ### 683. Cslib manifest keyword overrides
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 682
+- **Research**: [683_cslib_manifest_keyword_overrides/reports/01_cslib-keyword-overrides.md]
+- **Plan**: [683_cslib_manifest_keyword_overrides/plans/01_cslib-keyword-overrides.md]
+- **Summary**: [683_cslib_manifest_keyword_overrides/summaries/03_execution-summary.md]
 
 **Description**: Add keyword_overrides field to the cslib extension manifest.json. Map lean-related keywords (lean, lean4, mathlib, theorem, proof) to cslib task type with aliases: ["lean4"], and map PR-related keywords (pr, pull request, submit, upstream, branch, rebase, cherry-pick) to pr task type. This enables deterministic task type detection when the cslib extension is loaded, replacing agent judgment.
 
 ---
 
 ### 682. Extension keyword overrides task command
-- **Status**: [IMPLEMENTED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None

@@ -291,24 +291,63 @@
     {
       "project_number": 683,
       "project_name": "cslib_manifest_keyword_overrides",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "meta",
       "description": "Add keyword_overrides field to the cslib extension manifest.json. Map lean-related keywords (lean, lean4, mathlib, theorem, proof) to cslib task type with aliases: [\"lean4\"], and map PR-related keywords (pr, pull request, submit, upstream, branch, rebase, cherry-pick) to pr task type. This enables deterministic task type detection when the cslib extension is loaded, replacing agent judgment.",
       "dependencies": [
         682
       ],
       "created": "2026-06-12T22:37:14Z",
-      "last_updated": "2026-06-12T22:37:14Z",
-      "topic": "agent-system"
+      "last_updated": "2026-06-14T00:00:00Z",
+      "topic": "agent-system",
+      "session_id": "sess_1781461813_4483e1_683",
+      "artifacts": [
+        {
+          "path": "specs/683_cslib_manifest_keyword_overrides/reports/01_cslib-keyword-overrides.md",
+          "type": "report",
+          "summary": "Research report: keyword_overrides schema, manifest structure, required entries"
+        },
+        {
+          "path": "specs/683_cslib_manifest_keyword_overrides/plans/01_cslib-keyword-overrides.md",
+          "type": "plan",
+          "summary": "1-phase plan: insert keyword_overrides into cslib manifest.json"
+        },
+        {
+          "path": "specs/683_cslib_manifest_keyword_overrides/summaries/03_execution-summary.md",
+          "type": "summary",
+          "summary": "Single-phase implementation: keyword_overrides field added to cslib manifest.json with cslib and pr entries"
+        }
+      ],
+      "next_artifact_number": 3,
+      "plan_metadata": {
+        "phases": 1,
+        "total_effort_hours": 0.5,
+        "complexity": "simple",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_cslib-keyword-overrides.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-06-14"
+          }
+        ]
+      },
+      "completion_summary": "Added keyword_overrides field to cslib extension manifest.json: cslib entry maps lean/lean4/mathlib/theorem/proof keywords with lean4 alias; pr entry maps pr/pull request/submit/upstream/branch/rebase/cherry-pick keywords."
     },
     {
       "project_number": 682,
       "project_name": "extension_keyword_overrides_task_command",
-      "status": "implemented",
+      "status": "completed",
       "task_type": "meta",
       "description": "Add extension keyword_overrides support to the /task command (task.md step 4). After meta keyword check but before the hardcoded keyword table, scan loaded extension manifests for a keyword_overrides field. Schema: {\"task_type\": {\"aliases\": [\"existing_type\"], \"keywords\": [\"word1\", ...]}}. Aliases remap an existing keyword table result to the extension type. Keywords add new entries alongside the hardcoded table. Extension overrides take precedence over the hardcoded table so extensions can claim keywords from types they supersede.",
       "created": "2026-06-12T22:37:14Z",
-      "last_updated": "2026-06-14T18:42:37Z",
+      "last_updated": "2026-06-14T00:00:00Z",
       "topic": "agent-system",
       "artifacts": [
         {
