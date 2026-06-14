@@ -30,11 +30,22 @@
       "Bash(rm -rf /)",
       "Bash(rm -rf ~)",
       "Bash(sudo *)",
-      "Bash(chmod 777 *)"
+      "Bash(chmod 777 *)",
+      "Bash(gh pr create*)",
+      "Bash(gh pr merge*)"
     ]
   },
   "hooks": {
     "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/block-pr-submission.sh 2>/dev/null || echo '{}'"
+          }
+        ]
+      },
       {
         "matcher": "Write",
         "hooks": [

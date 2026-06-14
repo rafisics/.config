@@ -1,5 +1,5 @@
 ---
-next_project_number: 696
+next_project_number: 697
 ---
 
 # TODO
@@ -28,6 +28,19 @@ next_project_number: 696
 78 [PLANNED] — Fix Gmail SMTP authentication failure when sending emails via Him
 
 ## Tasks
+
+### 696. Apply pr deny rules fix hook
+- **Status**: [COMPLETED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+- **Research**: [696_apply_pr_deny_rules_fix_hook/reports/01_pr-deny-rules-research.md]
+- **Plan**: [696_apply_pr_deny_rules_fix_hook/plans/01_implementation-plan.md]
+- **Summary**: [696_apply_pr_deny_rules_fix_hook/summaries/01_pr-deny-rules-summary.md]
+
+**Description**: Apply PR deny rules to settings.json and fix the block-pr-submission.sh hook. Three changes: (1) Add Bash(gh pr create*) and Bash(gh pr merge*) to permissions.deny in .claude/settings.json — these force a harness-level permission prompt that cannot be bypassed by model behavior. Do NOT add git push to deny (user wants push allowed). (2) Update .claude/hooks/block-pr-submission.sh to remove the git push block (lines 25-28) — user explicitly wants agents to be able to push branches. Keep gh pr create and glab mr create blocks. (3) Register block-pr-submission.sh in the PreToolUse hooks array in .claude/settings.json with matcher Bash — Task 684 created the script but never wired it into settings.json. Also sync the hook script to .claude/extensions/core/hooks/block-pr-submission.sh if that path exists. Background: Tasks 684-685 were marked completed but their settings.json changes were never applied. The /orchestrate command then submitted a PR to upstream leanprover/cslib without user approval because Bash(git:*) in the allow list auto-approved all git/gh commands.
+
+---
 
 ### 695. Artifact reconciliation sync
 - **Status**: [COMPLETED]

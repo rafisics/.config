@@ -1,10 +1,11 @@
 #!/bin/bash
 # block-pr-submission.sh
-# PreToolUse hook: block git push, gh pr create, and glab mr create operations.
+# PreToolUse hook: block gh pr create and glab mr create operations.
 #
 # These operations require explicit user approval via the /merge command (GitHub PR
 # or GitLab MR) or /pr command (CSLib PRs). The /merge and /pr commands include
 # proper CI verification and user approval gates.
+# Note: git push is allowed directly; only PR/MR creation commands are blocked.
 #
 # Blocking mechanism: exit code 2 (takes precedence over allow rules, fires before
 # permission evaluation). Does NOT use permissionDecision: deny due to documented
@@ -18,15 +19,10 @@ if [ -z "$COMMAND" ]; then
   exit 0
 fi
 
-# Block actual git push / PR creation commands.
+# Block PR/MR creation commands.
 # Match patterns that start a command or follow && ; | — not strings inside quotes/variables.
 # Uses word-boundary-aware patterns to avoid false positives on commands that merely
-# mention "git push" in string literals (e.g., jq --arg val "... git push ...").
-if echo "$COMMAND" | grep -qE '(^|[;&|] *)git push( |$)'; then
-  echo "BLOCKED: git push is not allowed directly." >&2
-  echo "Use /merge (GitHub/GitLab) or /pr (CSLib) to push and create PRs." >&2
-  exit 2
-fi
+# mention these commands in string literals.
 if echo "$COMMAND" | grep -qE '(^|[;&|] *)gh pr create'; then
   echo "BLOCKED: gh pr create is not allowed directly." >&2
   echo "Use /merge or /pr to create pull requests with proper approval." >&2
