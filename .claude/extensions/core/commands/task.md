@@ -158,14 +158,18 @@ When $ARGUMENTS contains a description (no flags).
    ```bash
    # Include topic field only if not null/skipped
    # Build topic from step 4.5 result
+   # $improved_desc is the final description from step 3 text transformation
    jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
      --arg topic "$topic" \
+     --arg desc "$improved_desc" \
      '.next_project_number = {NEW_NUMBER} |
       .active_projects = [{
         "project_number": {N},
         "project_name": "slug",
         "status": "not_started",
         "task_type": "detected",
+        "title": $desc,
+        "description": $desc,
         "topic": (if ($topic == "" | not) then $topic else null end),
         "created": $ts,
         "last_updated": $ts
@@ -298,6 +302,10 @@ Parse task number and optional prompt:
 
 3. **Create 2-5 subtasks** using the Create Task jq pattern for each, inheriting parent topic:
    ```bash
+   # Each subtask jq entry MUST include "title" and "description" fields:
+   #   "title": $subtask_desc,
+   #   "description": $subtask_desc,
+   # where $subtask_desc is the subtask's description derived from the parent task analysis.
    # Include "topic": parent_topic in each subtask jq entry (if parent has a topic)
    # After each subtask entry is written to state.json, call manage-topics.sh set:
    if [[ -n "$parent_topic" ]]; then
