@@ -11,15 +11,13 @@ next_project_number: 696
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,652,694,695 | -- | agent-system, Terminal UI, Email Integration |
+| 1 | 78,87,652 | -- | agent-system, Terminal UI, Email Integration |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Agent System
 
 652 [NOT STARTED] — After ~1 week of the new pipeline running, review logs to verify 
-694 [PLANNED] — Fix task title derivation in task.md step 6. Currently sets "titl
-695 [PLANNED] — Add artifact reconciliation to /task --sync. Currently, tasks can
 
 ### Terminal UI
 
@@ -32,25 +30,28 @@ next_project_number: 696
 ## Tasks
 
 ### 695. Artifact reconciliation sync
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
 - **Research**: [695_artifact_reconciliation_sync/reports/01_artifact-reconciliation-research.md]
 - **Plan**: [695_artifact_reconciliation_sync/plans/01_implementation-plan.md]
+- **Summary**: [695_artifact_reconciliation_sync/summaries/02_artifact-reconciliation-summary.md]
 
 **Description**: Add artifact reconciliation to /task --sync. Currently, tasks can have artifact files on disk (reports/, plans/, summaries/) that are not tracked in state.json artifacts array, making them invisible in TODO.md. Add a reconciliation step to --sync mode that scans each active task directory for .md files in reports/, plans/, and summaries/ subdirectories, compares against state.json artifacts entries, and backfills any missing entries with inferred type (research/plan/summary from directory name). Evidence: cslib tasks 191 and 193 have artifacts on disk but not in state.json. Postflight scripts correctly register new artifacts but pre-existing gaps are never repaired.
 
 ---
 
 ### 694. Fix task title derivation
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
 - **Research**: [694_fix_task_title_derivation/reports/01_title-derivation-research.md]
 - **Plan**: [694_fix_task_title_derivation/plans/01_implementation-plan.md]
-- **Summary**: [694_fix_task_title_derivation/summaries/02_title-derivation-summary.md]
+- **Summary**:
+  - [694_fix_task_title_derivation/summaries/02_title-derivation-summary.md]
+  - [694_fix_task_title_derivation/summaries/02_title-derivation-summary.md]
 
 **Description**: Fix task title derivation in task.md step 6. Currently sets "title": $desc which makes the title identical to the full description (see cslib task 197 for example). The title should be a short human-readable string derived from project_name (capitalize first letter, replace underscores with spaces), matching the fallback behavior in generate-todo.sh lines 192-196. The description field should remain as-is. Also applies to task.md expand mode (step 3) and any other task creation flows that use the same jq template pattern. Fix should also clean up cslib task 197 state.json entry to remove the overly long title field.
 

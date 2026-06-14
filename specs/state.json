@@ -5,12 +5,12 @@
     {
       "project_number": 694,
       "project_name": "fix_task_title_derivation",
-      "status": "planned",
+      "status": "completed",
       "task_type": "meta",
       "topic": "agent-system",
       "description": "Fix task title derivation in task.md step 6. Currently sets \"title\": $desc which makes the title identical to the full description (see cslib task 197 for example). The title should be a short human-readable string derived from project_name (capitalize first letter, replace underscores with spaces), matching the fallback behavior in generate-todo.sh lines 192-196. The description field should remain as-is. Also applies to task.md expand mode (step 3) and any other task creation flows that use the same jq template pattern. Fix should also clean up cslib task 197 state.json entry to remove the overly long title field.",
       "created": "2026-06-14T19:17:48Z",
-      "last_updated": "2026-06-14T19:37:37Z",
+      "last_updated": "2026-06-14T19:43:04Z",
       "researched": "2026-06-14T19:34:08Z",
       "session_id": "sess_1781465115_64292a",
       "next_artifact_number": 3,
@@ -29,18 +29,24 @@
           "path": "specs/694_fix_task_title_derivation/summaries/02_title-derivation-summary.md",
           "type": "summary",
           "summary": "title derivation summary (backfilled by --sync)"
+        },
+        {
+          "path": "specs/694_fix_task_title_derivation/summaries/02_title-derivation-summary.md",
+          "type": "summary",
+          "summary": "Execution summary for title derivation fix"
         }
-      ]
+      ],
+      "completion_summary": "Removed title=$desc from jq templates in task.md Create and Expand modes across 3 file copies (nvim, extension core, cslib). Tasks now rely on generate-todo.sh fallback to derive short titles from project_name."
     },
     {
       "project_number": 695,
       "project_name": "artifact_reconciliation_sync",
-      "status": "planned",
+      "status": "completed",
       "task_type": "meta",
       "topic": "agent-system",
       "description": "Add artifact reconciliation to /task --sync. Currently, tasks can have artifact files on disk (reports/, plans/, summaries/) that are not tracked in state.json artifacts array, making them invisible in TODO.md. Add a reconciliation step to --sync mode that scans each active task directory for .md files in reports/, plans/, and summaries/ subdirectories, compares against state.json artifacts entries, and backfills any missing entries with inferred type (research/plan/summary from directory name). Evidence: cslib tasks 191 and 193 have artifacts on disk but not in state.json. Postflight scripts correctly register new artifacts but pre-existing gaps are never repaired.",
       "created": "2026-06-14T19:17:48Z",
-      "last_updated": "2026-06-14T19:37:37Z",
+      "last_updated": "2026-06-14T19:43:04Z",
       "researched": "2026-06-14T19:34:08Z",
       "session_id": "sess_1781465115_64292a",
       "next_artifact_number": 3,
@@ -54,8 +60,14 @@
           "path": "specs/695_artifact_reconciliation_sync/plans/01_implementation-plan.md",
           "type": "plan",
           "summary": "3-phase plan: create reconcile-artifacts.sh, integrate in --sync mode, validate"
+        },
+        {
+          "path": "specs/695_artifact_reconciliation_sync/summaries/02_artifact-reconciliation-summary.md",
+          "type": "summary",
+          "summary": "Execution summary for artifact reconciliation implementation"
         }
-      ]
+      ],
+      "completion_summary": "Created reconcile-artifacts.sh (110 lines) with append-only backfill and --dry-run support. Integrated as Step 2.5 in /task --sync. Backfilled 54 missing artifacts across 22 tasks. Validated idempotency and zero duplicates."
     },
     {
       "project_number": 692,
