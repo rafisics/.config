@@ -1800,13 +1800,22 @@
     {
       "project_number": 693,
       "project_name": "fix_lit_flag_missing_script",
-      "status": "not_started",
+      "status": "abandoned",
       "task_type": "meta",
       "topic": "agent-system",
       "description": "The --lit flag is non-functional because literature-retrieve.sh does not exist. Create .claude/scripts/literature-retrieve.sh that reads all .md and .txt files from specs/literature/ (up to TOKEN_BUDGET=4000 tokens, MAX_FILES=10), and outputs a <literature-context> block for injection into agent prompts. Verify integration points in skill-base.sh or skill preflight stages that call literature-retrieve.sh.",
       "dependencies": [],
       "created": "2026-06-14T00:00:00Z",
-      "last_updated": "2026-06-14T00:00:00Z"
+      "last_updated": "2026-06-14T00:00:00Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/693_fix_lit_flag_missing_script/reports/01_lit-flag-research.md",
+          "type": "research",
+          "summary": "Confirms literature-retrieve.sh was already created by tasks 689-690; no implementation needed."
+        }
+      ],
+      "completion_summary": "False positive: literature-retrieve.sh already exists (created by tasks 689-690 in commit ff9980cc3). All integration call sites are correct and --lit flag is fully wired."
     }
   ],
   "completed_projects": [],

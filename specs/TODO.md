@@ -11,14 +11,13 @@ next_project_number: 694
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,652,693 | -- | agent-system, Terminal UI, Email Integration |
+| 1 | 78,87,652 | -- | agent-system, Terminal UI, Email Integration |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Agent System
 
 652 [NOT STARTED] — After ~1 week of the new pipeline running, review logs to verify 
-693 [NOT STARTED] — The --lit flag is non-functional because literature-retrieve.sh d
 
 ### Terminal UI
 
@@ -31,10 +30,11 @@ next_project_number: 694
 ## Tasks
 
 ### 693. Fix lit flag missing script
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
+- **Research**: [693_fix_lit_flag_missing_script/reports/01_lit-flag-research.md]
 
 **Description**: The --lit flag is non-functional because literature-retrieve.sh does not exist. Create .claude/scripts/literature-retrieve.sh that reads all .md and .txt files from specs/literature/ (up to TOKEN_BUDGET=4000 tokens, MAX_FILES=10), and outputs a <literature-context> block for injection into agent prompts. Verify integration points in skill-base.sh or skill preflight stages that call literature-retrieve.sh.
 
