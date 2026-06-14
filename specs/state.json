@@ -1,6 +1,6 @@
 {
   "version": "1.1.0",
-  "next_project_number": 693,
+  "next_project_number": 694,
   "active_projects": [
     {
       "project_number": 692,
@@ -304,11 +304,11 @@
     {
       "project_number": 682,
       "project_name": "extension_keyword_overrides_task_command",
-      "status": "planned",
+      "status": "implemented",
       "task_type": "meta",
       "description": "Add extension keyword_overrides support to the /task command (task.md step 4). After meta keyword check but before the hardcoded keyword table, scan loaded extension manifests for a keyword_overrides field. Schema: {\"task_type\": {\"aliases\": [\"existing_type\"], \"keywords\": [\"word1\", ...]}}. Aliases remap an existing keyword table result to the extension type. Keywords add new entries alongside the hardcoded table. Extension overrides take precedence over the hardcoded table so extensions can claim keywords from types they supersede.",
       "created": "2026-06-12T22:37:14Z",
-      "last_updated": "2026-06-14T18:40:00Z",
+      "last_updated": "2026-06-14T18:42:37Z",
       "topic": "agent-system",
       "artifacts": [
         {
@@ -347,7 +347,8 @@
             "integrated_date": "2026-06-14"
           }
         ]
-      }
+      },
+      "completion_summary": "Rewrote task.md step 4 with 5-step keyword_overrides precedence chain (4a meta, 4b extension keywords, 4c project default, 4d hardcoded table, 4e alias remapping); documented schema in extension-development.md and updated CLAUDE.md merge source."
     },
     {
       "project_number": 679,
@@ -1705,14 +1706,14 @@
     {
       "project_number": 670,
       "project_name": "fix_artifact_counter_system",
-      "status": "implemented",
+      "status": "completed",
       "task_type": "meta",
       "description": "Fix 4 bugs in the artifact counter system (next_artifact_number): (1) Revision does not increment counter — causes collisions when multiple plan revisions share the same number, (2) No collision detection when computed artifact number matches existing files, (3) Counter drift for legacy tasks that predate the unified numbering, (4) plan_version vs artifact sequence number confusion in filenames. Root cause observed during BimodalLogic task 273 (21 plan versions). Fix requires ~80 lines across 5-7 skill files.",
       "priority": "high",
       "topic": "agent-system",
       "dependencies": [],
       "created": "2026-06-12T17:05:54Z",
-      "last_updated": "2026-06-14T18:39:00Z",
+      "last_updated": "2026-06-14T00:00:00Z",
       "researched": "2026-06-12T17:05:54Z",
       "artifacts": [
         {
@@ -1756,6 +1757,17 @@
         ]
       },
       "completion_summary": "Fixed 4 bugs in artifact counter system: reviser now increments counter on each revision (Bug 1), added disk reconciliation to handle legacy drift (Bug 3), added collision detection to all skills (Bug 2), and documented that plan_version is metadata-only not a filename component (Bug 4). Changes made to skill-reviser, skill-planner, skill-researcher, and skill-team-research plus extension core copies and documentation."
+    },
+    {
+      "project_number": 693,
+      "project_name": "fix_lit_flag_missing_script",
+      "status": "not_started",
+      "task_type": "meta",
+      "topic": "agent-system",
+      "description": "The --lit flag is non-functional because literature-retrieve.sh does not exist. Create .claude/scripts/literature-retrieve.sh that reads all .md and .txt files from specs/literature/ (up to TOKEN_BUDGET=4000 tokens, MAX_FILES=10), and outputs a <literature-context> block for injection into agent prompts. Verify integration points in skill-base.sh or skill preflight stages that call literature-retrieve.sh.",
+      "dependencies": [],
+      "created": "2026-06-14T00:00:00Z",
+      "last_updated": "2026-06-14T00:00:00Z"
     }
   ],
   "completed_projects": [],

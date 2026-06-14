@@ -115,29 +115,76 @@ When $ARGUMENTS contains a description (no flags).
    default_type=$(jq -r '.default_task_type // empty' specs/state.json)
    ```
 
-   Then apply precedence rules:
-   - **Meta keywords always win (unconditional)**: "meta", "agent", "command", "skill" → meta
-   - **Project default** (if `default_type` is non-empty and no meta keyword matched): use `default_type`
-   - **Keyword table** (if no meta keyword and no project default):
-     - "lean", "lean4", "mathlib", "theorem", "proof" → lean4
-     - "latex", "tex", "document", "typeset" → latex
-     - "typst" → typst
-     - "python", "pytest", "pip" → python
-     - "z3", "smt", "solver", "constraint" → z3
-     - "nix", "nixos", "home-manager", "flake" → nix
-     - "web", "astro", "tailwind", "cloudflare" → web
-     - "epidemiology", "epi", "cohort", "case-control", "strobe" → epi:study
-     - "formal", "logic", "math", "physics", "modal", "kripke" → formal
-     - "deck", "slide", "presentation", "pitch deck" → founder:deck
-     - "spreadsheet", "sheet", "excel" → founder:sheet
-     - "finance", "financial", "revenue", "burn rate" → founder:finance
-     - "market size", "tam", "sam", "som" → founder:market
-     - "competitive", "competitor" → founder:analyze
-     - "strategy", "strategic", "roadmap" → founder:strategy
-     - "legal", "contract", "agreement" → founder:legal
-     - "project plan", "timeline", "milestone" → founder:project
-     - "founder", "go-to-market", "gtm" → founder
-     - Otherwise → general
+   Then apply precedence rules (first match wins, stop checking):
+
+   **4a. Meta keywords (always win, unconditional)**:
+   - "meta", "agent", "command", "skill" in description → task_type = `meta`, done
+
+   **4b. Extension keyword_overrides (scan manifests)**:
+   Scan `.claude/extensions/*/manifest.json` for `keyword_overrides` fields.
+   For each manifest that has `keyword_overrides`:
+   - For each task_type key in `keyword_overrides`:
+     - If any string in `keywords` array appears as a whole word in the
+       description (case-insensitive) → task_type = that key, done
+
+   Reference jq pattern for keyword scanning:
+   ```bash
+   for manifest in .claude/extensions/*/manifest.json; do
+     [ -f "$manifest" ] || continue
+     matched=$(jq -r --arg desc "$description_lower" '
+       .keyword_overrides // {} | to_entries[] |
+       select(.value.keywords[]? as $kw |
+         ($desc | test("\\b" + $kw + "\\b"))) |
+       .key' "$manifest" 2>/dev/null | head -1)
+     [ -n "$matched" ] && break
+   done
+   ```
+   If `matched` is non-empty → task_type = `matched`, skip to step 4e.
+
+   **4c. Project default** (if `default_type` is non-empty): task_type = `default_type`, skip to step 4e.
+
+   **4d. Hardcoded keyword table** (fallback):
+   - "lean", "lean4", "mathlib", "theorem", "proof" → lean4
+   - "latex", "tex", "document", "typeset" → latex
+   - "typst" → typst
+   - "python", "pytest", "pip" → python
+   - "z3", "smt", "solver", "constraint" → z3
+   - "nix", "nixos", "home-manager", "flake" → nix
+   - "web", "astro", "tailwind", "cloudflare" → web
+   - "epidemiology", "epi", "cohort", "case-control", "strobe" → epi:study
+   - "formal", "logic", "math", "physics", "modal", "kripke" → formal
+   - "deck", "slide", "presentation", "pitch deck" → founder:deck
+   - "spreadsheet", "sheet", "excel" → founder:sheet
+   - "finance", "financial", "revenue", "burn rate" → founder:finance
+   - "market size", "tam", "sam", "som" → founder:market
+   - "competitive", "competitor" → founder:analyze
+   - "strategy", "strategic", "roadmap" → founder:strategy
+   - "legal", "contract", "agreement" → founder:legal
+   - "project plan", "timeline", "milestone" → founder:project
+   - "founder", "go-to-market", "gtm" → founder
+   - Otherwise → general
+
+   **4e. Extension alias remapping** (post-resolution):
+   After 4c or 4d resolves a task_type, scan manifests for alias matches:
+   - For each manifest with `keyword_overrides`:
+     - For each task_type key: if `aliases` array contains the current
+       task_type → remap to the extension's task_type, done
+
+   Reference jq pattern for alias remapping:
+   ```bash
+   for manifest in .claude/extensions/*/manifest.json; do
+     [ -f "$manifest" ] || continue
+     aliased=$(jq -r --arg tt "$task_type" '
+       .keyword_overrides // {} | to_entries[] |
+       select(.value.aliases[]? == $tt) |
+       .key' "$manifest" 2>/dev/null | head -1)
+     [ -n "$aliased" ] && { task_type="$aliased"; break; }
+   done
+   ```
+
+   Note: Alias remapping applies only to results from 4c/4d (project default
+   and hardcoded table). Extension keyword matches from 4b are final and
+   not subject to alias remapping by other extensions.
 
 4.5. **Assign topic** to this task:
 

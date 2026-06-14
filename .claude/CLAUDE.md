@@ -88,6 +88,8 @@ Extensions can declare dependencies on other extensions via the `dependencies` a
 
 Extensions may also declare lifecycle hooks in a top-level `hooks` object in `manifest.json` (distinct from `provides.hooks` which are file-copy targets). Hook scripts run at skill lifecycle stages (preflight, context_injection, verification, postflight) via `skill-base.sh`. See `.claude/docs/guides/creating-extensions.md#lifecycle-hooks` for the hook schema and execution contract.
 
+Extensions can register `keyword_overrides` in their manifest.json to automatically detect their task type from keywords in the task description during `/task` creation. See `.claude/context/guides/extension-development.md` for the keyword_overrides schema.
+
 ## Command Reference
 
 All commands use checkpoint-based execution: GATE IN (preflight) -> DELEGATE (skill/agent) -> GATE OUT (postflight) -> COMMIT.
@@ -143,7 +145,7 @@ TODO.md is generated from state.json. Update state.json first, then call `bash .
 }
 ```
 
-**`default_task_type`** (optional, null by default): When set to a non-null string, overrides the keyword table in `/task` step 4 for all new tasks in this project. Meta keywords ("meta", "agent", "command", "skill") always resolve to `meta` regardless of this field. Precedence: meta keywords > `default_task_type` > keyword table > `general`.
+**`default_task_type`** (optional, null by default): When set to a non-null string, overrides the keyword table in `/task` step 4 for all new tasks in this project. Meta keywords ("meta", "agent", "command", "skill") always resolve to `meta` regardless of this field. Precedence: meta keywords > extension `keyword_overrides` > `default_task_type` > keyword table > `general`.
 
 ### Completion Workflow
 - Non-meta tasks: `completion_summary` + optional `roadmap_items` -> /todo annotates ROADMAP.md

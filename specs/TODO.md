@@ -1,5 +1,5 @@
 ---
-next_project_number: 693
+next_project_number: 694
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 693
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,652,670,682 | -- | agent-system, Terminal UI, Email Integration |
+| 1 | 78,87,652,682,693 | -- | agent-system, Terminal UI, Email Integration |
 | 2 | 683 | 682 | agent-system |
 
 **Grouped by Topic** (indented = depends on parent):
@@ -19,9 +19,9 @@ next_project_number: 693
 ### Agent System
 
 652 [NOT STARTED] — After ~1 week of the new pipeline running, review logs to verify 
-670 [IMPLEMENTED] — Fix 4 bugs in the artifact counter system (next_artifact_number):
-682 [PLANNED] — Add extension keyword_overrides support to the /task command (tas
+682 [IMPLEMENTED] — Add extension keyword_overrides support to the /task command (tas
   └─ 683 [NOT STARTED] — Add keyword_overrides field to the cslib extension manifest.json.
+693 [NOT STARTED] — The --lit flag is non-functional because literature-retrieve.sh d
 
 ### Terminal UI
 
@@ -32,6 +32,16 @@ next_project_number: 693
 78 [PLANNED] — Fix Gmail SMTP authentication failure when sending emails via Him
 
 ## Tasks
+
+### 693. Fix lit flag missing script
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: The --lit flag is non-functional because literature-retrieve.sh does not exist. Create .claude/scripts/literature-retrieve.sh that reads all .md and .txt files from specs/literature/ (up to TOKEN_BUDGET=4000 tokens, MAX_FILES=10), and outputs a <literature-context> block for injection into agent prompts. Verify integration points in skill-base.sh or skill preflight stages that call literature-retrieve.sh.
+
+---
 
 ### 692. Persist description in task creation flows
 - **Status**: [COMPLETED]
@@ -181,7 +191,7 @@ Fix: Add "description": $desc (and optionally "title": $title) to each state.jso
 ---
 
 ### 682. Extension keyword overrides task command
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
@@ -325,7 +335,7 @@ Fix: Add "description": $desc (and optionally "title": $title) to each state.jso
 ---
 
 ### 670. Fix artifact counter system
-- **Status**: [IMPLEMENTED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None

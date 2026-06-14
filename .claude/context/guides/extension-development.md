@@ -81,9 +81,78 @@ For the full directory layout including agents, skills, rules, context, and opti
 | `dependencies` | array | No | Other extensions required |
 | `provides` | object | Yes | Agents, skills, commands, rules, context, scripts, hooks, docs, templates, systemd, root_files, data |
 | `routing` | object | No | Task-type to skill mapping for research/plan/implement |
+| `keyword_overrides` | object | No | Keyword-to-task_type mappings for /task command detection (see below) |
 | `merge_targets` | object | Yes | Source-to-target file mappings for system integration |
 
 For the complete manifest schema with all fields and examples, see [Extension System Architecture](../../docs/architecture/extension-system.md#manifest-schema).
+
+## Keyword Overrides
+
+Extensions can register keywords that influence task-type detection during `/task` creation.
+When a user creates a task, the description is scanned for extension-registered keywords
+before falling through to the hardcoded keyword table.
+
+### Schema
+
+```json
+"keyword_overrides": {
+  "<task_type>": {
+    "aliases": ["<existing_type>", ...],
+    "keywords": ["<word1>", "<word2>", ...]
+  }
+}
+```
+
+### Field Semantics
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `<task_type>` (key) | string | The task type to assign when a keyword matches |
+| `aliases` | array of strings | Existing task types to remap. If the hardcoded table or project default would assign one of these types, remap to this extension's type instead |
+| `keywords` | array of strings | New keywords. If any appears in the task description (case-insensitive, whole-word), assign this extension's type |
+
+### Precedence
+
+Extension keyword overrides sit in the middle of the detection chain:
+
+1. **Meta keywords** (always win): "meta", "agent", "command", "skill" -> meta
+2. **Extension keywords** (from `keyword_overrides.*.keywords`): first match wins
+3. **Project default** (`default_task_type` in state.json)
+4. **Hardcoded keyword table** (built into task.md)
+5. **Fallback**: general
+
+Alias remapping applies after steps 3 and 4: if the resolved type matches an
+extension's `aliases` array, it is remapped to that extension's type.
+
+### Example
+
+```json
+{
+  "keyword_overrides": {
+    "cslib": {
+      "aliases": ["lean4"],
+      "keywords": ["cslib", "bisimulation", "lts"]
+    }
+  }
+}
+```
+
+This configuration:
+- Assigns `cslib` type when "cslib", "bisimulation", or "lts" appears in the description
+- Remaps any task that would have been `lean4` (from hardcoded table or project default) to `cslib`
+
+### Conflict Resolution
+
+When multiple extensions register the same keyword, the first match wins (determined by
+filesystem glob ordering of `.claude/extensions/*/manifest.json`). Extensions should use
+specific, non-overlapping keywords to avoid conflicts.
+
+### Best Practices
+
+- Use domain-specific keywords that are unlikely to appear in unrelated task descriptions
+- Keep the `keywords` array focused (5-15 entries)
+- Use `aliases` sparingly -- only when your extension genuinely supersedes another type
+- Do not alias `meta` -- meta keywords are unconditional and cannot be overridden
 
 ## Merge Process
 
