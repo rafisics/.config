@@ -298,16 +298,56 @@
         682
       ],
       "created": "2026-06-12T22:37:14Z",
-      "last_updated": "2026-06-12T22:37:14Z"
+      "last_updated": "2026-06-12T22:37:14Z",
+      "topic": "agent-system"
     },
     {
       "project_number": 682,
       "project_name": "extension_keyword_overrides_task_command",
-      "status": "not_started",
+      "status": "planned",
       "task_type": "meta",
       "description": "Add extension keyword_overrides support to the /task command (task.md step 4). After meta keyword check but before the hardcoded keyword table, scan loaded extension manifests for a keyword_overrides field. Schema: {\"task_type\": {\"aliases\": [\"existing_type\"], \"keywords\": [\"word1\", ...]}}. Aliases remap an existing keyword table result to the extension type. Keywords add new entries alongside the hardcoded table. Extension overrides take precedence over the hardcoded table so extensions can claim keywords from types they supersede.",
       "created": "2026-06-12T22:37:14Z",
-      "last_updated": "2026-06-12T22:37:14Z"
+      "last_updated": "2026-06-14T18:40:00Z",
+      "topic": "agent-system",
+      "artifacts": [
+        {
+          "path": "specs/682_extension_keyword_overrides_task_command/reports/01_keyword-overrides-research.md",
+          "type": "report",
+          "summary": "Research on keyword_overrides schema, task.md step 4, manifest scanning patterns"
+        },
+        {
+          "path": "specs/682_extension_keyword_overrides_task_command/plans/02_keyword-overrides-plan.md",
+          "type": "plan",
+          "summary": "3-phase plan: task.md step 4 rewrite, extension-development.md docs, CLAUDE.md merge source update"
+        }
+      ],
+      "next_artifact_number": 3,
+      "plan_metadata": {
+        "phases": 3,
+        "total_effort_hours": 1.5,
+        "complexity": "simple",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_keyword-overrides-research.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-06-14"
+          }
+        ]
+      }
     },
     {
       "project_number": 679,
@@ -1665,23 +1705,57 @@
     {
       "project_number": 670,
       "project_name": "fix_artifact_counter_system",
-      "status": "researched",
+      "status": "implemented",
       "task_type": "meta",
       "description": "Fix 4 bugs in the artifact counter system (next_artifact_number): (1) Revision does not increment counter — causes collisions when multiple plan revisions share the same number, (2) No collision detection when computed artifact number matches existing files, (3) Counter drift for legacy tasks that predate the unified numbering, (4) plan_version vs artifact sequence number confusion in filenames. Root cause observed during BimodalLogic task 273 (21 plan versions). Fix requires ~80 lines across 5-7 skill files.",
       "priority": "high",
-      "topic": "artifact-management",
+      "topic": "agent-system",
       "dependencies": [],
       "created": "2026-06-12T17:05:54Z",
-      "last_updated": "2026-06-12T17:05:54Z",
+      "last_updated": "2026-06-14T18:39:00Z",
       "researched": "2026-06-12T17:05:54Z",
       "artifacts": [
         {
           "path": "specs/670_fix_artifact_counter_system/reports/01_artifact-counter-analysis.md",
           "type": "report",
           "summary": "4 bugs identified: revision no-increment, no collision detection, counter drift, plan_version confusion. Test cases and fixes specified."
+        },
+        {
+          "path": "specs/670_fix_artifact_counter_system/plans/02_fix-artifact-counter.md",
+          "type": "plan",
+          "summary": "4-phase plan: reviser increment, reconciliation+collision detection, documentation clarity, extension core sync"
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "plan_metadata": {
+        "phases": 4,
+        "total_effort_hours": 2.5,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_artifact-counter-analysis.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-06-14"
+          }
+        ]
+      },
+      "completion_summary": "Fixed 4 bugs in artifact counter system: reviser now increments counter on each revision (Bug 1), added disk reconciliation to handle legacy drift (Bug 3), added collision detection to all skills (Bug 2), and documented that plan_version is metadata-only not a filename component (Bug 4). Changes made to skill-reviser, skill-planner, skill-researcher, and skill-team-research plus extension core copies and documentation."
     }
   ],
   "completed_projects": [],

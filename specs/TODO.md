@@ -11,14 +11,17 @@ next_project_number: 693
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,652,670,682 | -- | agent-system, Terminal UI, artifact-management, ... |
-| 2 | 683 | 682 | -- |
+| 1 | 78,87,652,670,682 | -- | agent-system, Terminal UI, Email Integration |
+| 2 | 683 | 682 | agent-system |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Agent System
 
 652 [NOT STARTED] — After ~1 week of the new pipeline running, review logs to verify 
+670 [IMPLEMENTED] — Fix 4 bugs in the artifact counter system (next_artifact_number):
+682 [PLANNED] — Add extension keyword_overrides support to the /task command (tas
+  └─ 683 [NOT STARTED] — Add keyword_overrides field to the cslib extension manifest.json.
 
 ### Terminal UI
 
@@ -27,15 +30,6 @@ next_project_number: 693
 ### Email Integration
 
 78 [PLANNED] — Fix Gmail SMTP authentication failure when sending emails via Him
-
-### Artifact Management
-
-670 [RESEARCHED] — Fix 4 bugs in the artifact counter system (next_artifact_number):
-
-### Uncategorized
-
-682 [NOT STARTED] — Add extension keyword_overrides support to the /task command (tas
-  └─ 683 [NOT STARTED] — Add keyword_overrides field to the cslib extension manifest.json.
 
 ## Tasks
 
@@ -179,6 +173,7 @@ Fix: Add "description": $desc (and optionally "title": $title) to each state.jso
 ### 683. Cslib manifest keyword overrides
 - **Status**: [NOT STARTED]
 - **Task Type**: meta
+- **Topic**: agent-system
 - **Dependencies**: Task 682
 
 **Description**: Add keyword_overrides field to the cslib extension manifest.json. Map lean-related keywords (lean, lean4, mathlib, theorem, proof) to cslib task type with aliases: ["lean4"], and map PR-related keywords (pr, pull request, submit, upstream, branch, rebase, cherry-pick) to pr task type. This enables deterministic task type detection when the cslib extension is loaded, replacing agent judgment.
@@ -186,9 +181,12 @@ Fix: Add "description": $desc (and optionally "title": $title) to each state.jso
 ---
 
 ### 682. Extension keyword overrides task command
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNED]
 - **Task Type**: meta
+- **Topic**: agent-system
 - **Dependencies**: None
+- **Research**: [682_extension_keyword_overrides_task_command/reports/01_keyword-overrides-research.md]
+- **Plan**: [682_extension_keyword_overrides_task_command/plans/02_keyword-overrides-plan.md]
 
 **Description**: Add extension keyword_overrides support to the /task command (task.md step 4). After meta keyword check but before the hardcoded keyword table, scan loaded extension manifests for a keyword_overrides field. Schema: {"task_type": {"aliases": ["existing_type"], "keywords": ["word1", ...]}}. Aliases remap an existing keyword table result to the extension type. Keywords add new entries alongside the hardcoded table. Extension overrides take precedence over the hardcoded table so extensions can claim keywords from types they supersede.
 
@@ -327,11 +325,12 @@ Fix: Add "description": $desc (and optionally "title": $title) to each state.jso
 ---
 
 ### 670. Fix artifact counter system
-- **Status**: [RESEARCHED]
+- **Status**: [IMPLEMENTED]
 - **Task Type**: meta
-- **Topic**: artifact-management
+- **Topic**: agent-system
 - **Dependencies**: None
 - **Research**: [670_fix_artifact_counter_system/reports/01_artifact-counter-analysis.md]
+- **Plan**: [670_fix_artifact_counter_system/plans/02_fix-artifact-counter.md]
 
 **Description**: Fix 4 bugs in the artifact counter system (next_artifact_number): (1) Revision does not increment counter — causes collisions when multiple plan revisions share the same number, (2) No collision detection when computed artifact number matches existing files, (3) Counter drift for legacy tasks that predate the unified numbering, (4) plan_version vs artifact sequence number confusion in filenames. Root cause observed during BimodalLogic task 273 (21 plan versions). Fix requires ~80 lines across 5-7 skill files.
 

@@ -42,6 +42,7 @@ All artifact types share a single sequence number per task within a "round" of w
 **Round Concept**: A research report starts a new round, and the corresponding plan and summary share that round's number:
 - **Research**: Advances the sequence (reads `next_artifact_number`, uses it, increments)
 - **Plan**: Uses current round (`next_artifact_number - 1`)
+- **Revision**: Advances the sequence (reads `next_artifact_number`, uses it, increments) -- same as research, since each revision is a new planning attempt
 - **Summary**: Uses current round (`next_artifact_number - 1`)
 
 **Single-Agent Mode**: `{NN}_{slug}.md`
@@ -62,9 +63,13 @@ Round 1:
   /plan 309      -> creates 01_plan.md (uses round 1)
   /implement 309 -> creates 01_summary.md (uses round 1)
 
-Round 2 (after blocker/revision):
-  /research 309  -> creates 02_report.md (next_artifact_number becomes 3)
-  /plan 309      -> creates 02_plan.md (uses round 2)
+Revision:
+  /revise 309    -> creates 02_plan.md (next_artifact_number becomes 3)
+  /revise 309    -> creates 03_plan.md (next_artifact_number becomes 4)
+
+Round 4:
+  /research 309  -> creates 04_report.md (next_artifact_number becomes 5)
+  /plan 309      -> creates 04_plan.md (uses round 4)
 ```
 
 **Team Mode Example**:
