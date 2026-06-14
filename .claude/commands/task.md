@@ -215,7 +215,6 @@ When $ARGUMENTS contains a description (no flags).
         "project_name": "slug",
         "status": "not_started",
         "task_type": "detected",
-        "title": $desc,
         "description": $desc,
         "topic": (if ($topic == "" | not) then $topic else null end),
         "created": $ts,
@@ -349,9 +348,7 @@ Parse task number and optional prompt:
 
 3. **Create 2-5 subtasks** using the Create Task jq pattern for each, inheriting parent topic:
    ```bash
-   # Each subtask jq entry MUST include "title" and "description" fields:
-   #   "title": $subtask_desc,
-   #   "description": $subtask_desc,
+   # Each subtask jq entry MUST include a "description" field:
    # where $subtask_desc is the subtask's description derived from the parent task analysis.
    # Include "topic": parent_topic in each subtask jq entry (if parent has a topic)
    # After each subtask entry is written to state.json, call manage-topics.sh set:
@@ -400,6 +397,11 @@ state.json is the authoritative source of truth. Sync validates integrity and re
        echo "Warning: Task $task_num in TODO.md not found in state.json (orphan)"
      fi
    done
+   ```
+
+2.5. **Artifact reconciliation** — backfill missing artifact registrations:
+   ```bash
+   bash .claude/scripts/reconcile-artifacts.sh
    ```
 
 3. **Regenerate TODO.md from state.json** (single authoritative operation):

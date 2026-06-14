@@ -18,8 +18,8 @@ next_project_number: 696
 ### Agent System
 
 652 [NOT STARTED] — After ~1 week of the new pipeline running, review logs to verify 
-694 [NOT STARTED] — Fix task title derivation in task.md step 6. Currently sets "titl
-695 [NOT STARTED] — Add artifact reconciliation to /task --sync. Currently, tasks can
+694 [PLANNED] — Fix task title derivation in task.md step 6. Currently sets "titl
+695 [PLANNED] — Add artifact reconciliation to /task --sync. Currently, tasks can
 
 ### Terminal UI
 
@@ -32,20 +32,25 @@ next_project_number: 696
 ## Tasks
 
 ### 695. Artifact reconciliation sync
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
+- **Research**: [695_artifact_reconciliation_sync/reports/01_artifact-reconciliation-research.md]
+- **Plan**: [695_artifact_reconciliation_sync/plans/01_implementation-plan.md]
 
 **Description**: Add artifact reconciliation to /task --sync. Currently, tasks can have artifact files on disk (reports/, plans/, summaries/) that are not tracked in state.json artifacts array, making them invisible in TODO.md. Add a reconciliation step to --sync mode that scans each active task directory for .md files in reports/, plans/, and summaries/ subdirectories, compares against state.json artifacts entries, and backfills any missing entries with inferred type (research/plan/summary from directory name). Evidence: cslib tasks 191 and 193 have artifacts on disk but not in state.json. Postflight scripts correctly register new artifacts but pre-existing gaps are never repaired.
 
 ---
 
 ### 694. Fix task title derivation
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
+- **Research**: [694_fix_task_title_derivation/reports/01_title-derivation-research.md]
+- **Plan**: [694_fix_task_title_derivation/plans/01_implementation-plan.md]
+- **Summary**: [694_fix_task_title_derivation/summaries/02_title-derivation-summary.md]
 
 **Description**: Fix task title derivation in task.md step 6. Currently sets "title": $desc which makes the title identical to the full description (see cslib task 197 for example). The title should be a short human-readable string derived from project_name (capitalize first letter, replace underscores with spaces), matching the fallback behavior in generate-todo.sh lines 192-196. The description field should remain as-is. Also applies to task.md expand mode (step 3) and any other task creation flows that use the same jq template pattern. Fix should also clean up cslib task 197 state.json entry to remove the overly long title field.
 
@@ -219,6 +224,7 @@ Fix: Add "description": $desc (and optionally "title": $title) to each state.jso
 - **Dependencies**: None
 - **Research**: [682_extension_keyword_overrides_task_command/reports/01_keyword-overrides-research.md]
 - **Plan**: [682_extension_keyword_overrides_task_command/plans/02_keyword-overrides-plan.md]
+- **Summary**: [682_extension_keyword_overrides_task_command/summaries/03_execution-summary.md]
 
 **Description**: Add extension keyword_overrides support to the /task command (task.md step 4). After meta keyword check but before the hardcoded keyword table, scan loaded extension manifests for a keyword_overrides field. Schema: {"task_type": {"aliases": ["existing_type"], "keywords": ["word1", ...]}}. Aliases remap an existing keyword table result to the extension type. Keywords add new entries alongside the hardcoded table. Extension overrides take precedence over the hardcoded table so extensions can claim keywords from types they supersede.
 
@@ -257,6 +263,7 @@ Fix: Add "description": $desc (and optionally "title": $title) to each state.jso
 - **Dependencies**: None
 - **Research**: [679_research_tts_best_practices/reports/01_tts-best-practices.md]
 - **Plan**: [679_research_tts_best_practices/plans/01_tts-research-plan.md]
+- **Summary**: [679_research_tts_best_practices/summaries/01_verification-summary.md]
 
 **Description**: Web research on current Claude Code hook patterns for TTS/audio notifications as of June 2026. Compare with the existing Piper TTS + WezTerm tab color notification pipeline. Identify: (1) any new hook events beyond Stop/Notification/SubagentStop that could improve notification targeting, (2) best practices for deduplication and cooldown in multi-agent workflows, (3) whether the Notification hook matcher "permission_prompt|elicitation_dialog" is still the correct set of actionable notification types, (4) integration patterns between TTS announcements and terminal tab visual indicators. Document findings for tasks 680 and 681.
 
@@ -267,6 +274,9 @@ Fix: Add "description": $desc (and optionally "title": $title) to each state.jso
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 669
+- **Research**: [678_auto_escalation_advisory_v2/reports/01_auto-escalation-research.md]
+- **Plan**: [678_auto_escalation_advisory_v2/plans/01_auto-escalation-plan.md]
+- **Summary**: [678_auto_escalation_advisory_v2/summaries/01_auto-escalation-summary.md]
 
 **Description**: Implement churn detection that emits a 'consider --hard' warning when repeated deflection patterns are observed: 2+ plan revisions on a single task, 3+ implement dispatches with no phase completion, or analysis-only output in implementation phases. This is advisory only -- does not auto-escalate. v2 trajectory item. Research inputs: specs/669_hard_mode_agent_system/reports/01_hard-mode-orchestration-approach.md, specs/669_hard_mode_agent_system/reports/02_team-research.md.
 
@@ -278,6 +288,8 @@ Fix: Add "description": $desc (and optionally "title": $title) to each state.jso
 - **Topic**: agent-system
 - **Dependencies**: Task 669
 - **Plan**: [677_contract_lint_testing_strategy/plans/01_contract-lint-plan.md]
+- **Research**: [677_contract_lint_testing_strategy/reports/01_contract-lint-research.md]
+- **Summary**: [677_contract_lint_testing_strategy/summaries/01_contract-lint-summary.md]
 
 **Description**: Design and implement a testing strategy for hard-mode behavioral correctness: contract lint rules that verify agents honor anti-analysis budgets, reference grounding requirements, and convergence policing thresholds. May include test harnesses that replay known deflection-prone prompts against hard-mode agents and check for contract violations. Research inputs: specs/669_hard_mode_agent_system/reports/01_hard-mode-orchestration-approach.md, specs/669_hard_mode_agent_system/reports/02_team-research.md.
 
@@ -289,6 +301,8 @@ Fix: Add "description": $desc (and optionally "title": $title) to each state.jso
 - **Topic**: agent-system
 - **Dependencies**: Task 669
 - **Plan**: [676_cslib_extension_hard_mode_variants/plans/01_cslib-hard-mode-plan.md]
+- **Research**: [676_cslib_extension_hard_mode_variants/reports/01_cslib-hard-mode-research.md]
+- **Summary**: [676_cslib_extension_hard_mode_variants/summaries/01_cslib-hard-mode-summary.md]
 
 **Description**: Add hard-mode routing to the cslib extension following the same pattern as lean4: routing_hard manifest entries, skill-cslib-research-hard, skill-cslib-implementation-hard, cslib hard agents with domain-specific H-technique overrides. Research inputs: specs/669_hard_mode_agent_system/reports/01_hard-mode-orchestration-approach.md, specs/669_hard_mode_agent_system/reports/02_team-research.md.
 
@@ -299,6 +313,9 @@ Fix: Add "description": $desc (and optionally "title": $title) to each state.jso
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 669
+- **Research**: [675_lean4_extension_hard_mode_variants/reports/01_lean4-hard-mode-research.md]
+- **Plan**: [675_lean4_extension_hard_mode_variants/plans/01_lean4-hard-mode-plan.md]
+- **Summary**: [675_lean4_extension_hard_mode_variants/summaries/01_lean4-hard-mode-summary.md]
 
 **Description**: Add hard-mode routing to the lean4 extension: routing_hard manifest entries, skill-lean-research-hard, skill-lean-implementation-hard, lean hard agents with H3 strict transcription mandate, H5 formal divergence audit, H8 lemma-to-source mapping, H9 sorry inventory. Research inputs: specs/669_hard_mode_agent_system/reports/01_hard-mode-orchestration-approach.md, specs/669_hard_mode_agent_system/reports/02_team-research.md.
 
@@ -363,6 +380,7 @@ Fix: Add "description": $desc (and optionally "title": $title) to each state.jso
 - **Dependencies**: None
 - **Research**: [670_fix_artifact_counter_system/reports/01_artifact-counter-analysis.md]
 - **Plan**: [670_fix_artifact_counter_system/plans/02_fix-artifact-counter.md]
+- **Summary**: [670_fix_artifact_counter_system/summaries/03_execution-summary.md]
 
 **Description**: Fix 4 bugs in the artifact counter system (next_artifact_number): (1) Revision does not increment counter — causes collisions when multiple plan revisions share the same number, (2) No collision detection when computed artifact number matches existing files, (3) Counter drift for legacy tasks that predate the unified numbering, (4) plan_version vs artifact sequence number confusion in filenames. Root cause observed during BimodalLogic task 273 (21 plan versions). Fix requires ~80 lines across 5-7 skill files.
 
@@ -377,7 +395,12 @@ Fix: Add "description": $desc (and optionally "title": $title) to each state.jso
 - **Research**:
   - [669_hard_mode_agent_system/reports/01_hard-mode-orchestration-approach.md]
   - [669_hard_mode_agent_system/reports/02_team-research.md]
+  - [669_hard_mode_agent_system/reports/02_teammate-a-findings.md]
+  - [669_hard_mode_agent_system/reports/02_teammate-b-findings.md]
+  - [669_hard_mode_agent_system/reports/02_teammate-c-findings.md]
+  - [669_hard_mode_agent_system/reports/02_teammate-d-findings.md]
 - **Plan**: [669_hard_mode_agent_system/plans/02_hard-mode-implementation.md]
+- **Summary**: [669_hard_mode_agent_system/summaries/02_hard-mode-implementation-summary.md]
 
 **Description**: Create hard-mode variants of the agent system for very complex, deflection-prone tasks (e.g., deep Lean formalization): route --hard in /implement, /research, /plan, /orchestrate to hard-mode skills (skill-lean-implementation-hard, skill-orchestrate-hard, skill-planner-hard, skill-{domain}-research-hard) calling hard-mode agents. Hard mode encodes: per-phase dispatch (one bounded milestone per agent run), anti-analysis prompt contracts (read budgets, forbidden conclusions, counterexample bar for defect claims), prior-art transcription mandates with PDF-level citation, adversarial verification of research reports, divergence-audit trigger after repeated deflections (churn counters in loop guard), territory contracts for parallel dispatch, roadmap handoffs with incremental commit discipline, and hard-mode plan format (phases sized for single runs, postmortem constraints, lemma-to-source mapping, preserved-assets accounting). See report 01 for the full methodology distilled from the BimodalLogic task-273 session, measured outcomes, and a 7-step implementation breakdown.
 
@@ -389,6 +412,9 @@ Fix: Add "description": $desc (and optionally "title": $title) to each state.jso
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
+- **Research**: [668_add_default_task_type_support/reports/01_default-task-type.md]
+- **Plan**: [668_add_default_task_type_support/plans/01_default-task-type.md]
+- **Summary**: [668_add_default_task_type_support/summaries/01_default-task-type-summary.md]
 
 **Description**: Add a default_task_type field to state.json that projects can set to override the hardcoded keyword table in task.md step 4. When default_task_type is present, task.md uses it as the task type for all new tasks except those matching meta keywords (meta/agent/command/skill), which always override to meta since they modify .claude/ itself. This fixes the problem where CSLib tasks get lean4 or formal instead of cslib because the keyword table matches proof/theorem/lean/logic keywords before the cslib extension routing is consulted. Changes: (1) Modify task.md step 4 to read default_task_type from state.json via jq, use it as default when set, only allow meta keywords to override. (2) Sync extension copy at extensions/core/commands/task.md. (3) Update state-management-schema.md to document the new field. (4) Document in CLAUDE.md state.json schema section.
 
@@ -400,6 +426,9 @@ Fix: Add "description": $desc (and optionally "title": $title) to each state.jso
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 663
+- **Research**: [667_create_cslib_pr_command/reports/01_pr-command-research.md]
+- **Plan**: [667_create_cslib_pr_command/plans/01_pr-command-plan.md]
+- **Summary**: [667_create_cslib_pr_command/summaries/01_pr-command-summary.md]
 
 **Description**: Create a /pr command for the cslib extension that accepts a task number, path (file or directory), or description to cherry-pick elements from main branch onto a feature branch, clean up code to CSLib quality standards, run the full CI pipeline (lake build, lake exe checkInitImports, lake lint, lake exe lint-style, lake shake --add-public --keep-implied --keep-prefix, lake exe mk_all --module, lake test), submit PR with user approval (conventional commit title: feat/fix/doc/style/refactor/test/chore/perf, AI disclosure in description), and merge back to main with user approval. Deliverables: command file at .claude/extensions/cslib/commands/pr.md, manifest.json provides.commands update, and optionally a dedicated skill-cslib-pr skill if complexity warrants separation.
 
@@ -411,6 +440,9 @@ Fix: Add "description": $desc (and optionally "title": $title) to each state.jso
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 663
+- **Research**: [666_create_cslib_context_rules/reports/01_cslib-context-rules-research.md]
+- **Plan**: [666_create_cslib_context_rules/plans/01_cslib-context-rules-plan.md]
+- **Summary**: [666_create_cslib_context_rules/summaries/01_context-rules-summary.md]
 
 **Description**: Create rules/cslib.md (path pattern: **/*.lean for CSLib project) and context files under context/project/cslib/ covering: domain/ (CONTRIBUTING standards, notation conventions, project organization), patterns/ (proof structure, module organization, reuse-first philosophy), standards/ (CI pipeline, PR conventions, conventional commits, mathlib style), tools/ (lake commands, linters, checkInitImports, mk_all, lint-style, lake shake). CSLib-specific encoding: alpha equivalence notation, LTS transitions, reduction arrows from NOTATION.md. Working groups model and AI usage policy from CONTRIBUTING.md. Additionally, incorporate citation conventions from /home/benjamin/Projects/cslib/.claude/context/standards/citation-conventions.md as a new context file at context/project/cslib/standards/citation-conventions.md — this covers BibKey format (CamelCase, e.g. Blackburn2001), the references.bib workflow, canonical citation display format in module docstrings, and legacy pattern conversion rules.
 
@@ -422,6 +454,9 @@ Fix: Add "description": $desc (and optionally "title": $title) to each state.jso
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 663
+- **Research**: [665_create_cslib_skills/reports/01_cslib-skills-research.md]
+- **Plan**: [665_create_cslib_skills/plans/01_cslib-skills-plan.md]
+- **Summary**: [665_create_cslib_skills/summaries/01_skills-summary.md]
 
 **Description**: Create skill-cslib-research/SKILL.md and skill-cslib-implementation/SKILL.md at .claude/extensions/cslib/skills/. Research skill delegates to cslib-research-agent with tools: lean-lsp MCP (inherited via lean dependency), WebSearch, WebFetch, Read, Bash. Implementation skill delegates to cslib-implementation-agent with tools: Read, Write, Edit, Bash (lake build, lake test, lake lint, lake exe checkInitImports, lake exe lint-style, lake shake). Both skills follow thin-wrapper pattern delegating to their respective agents.
 
@@ -433,6 +468,9 @@ Fix: Add "description": $desc (and optionally "title": $title) to each state.jso
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 663
+- **Research**: [664_create_cslib_agents/reports/01_cslib-agents-research.md]
+- **Plan**: [664_create_cslib_agents/plans/01_cslib-agents-plan.md]
+- **Summary**: [664_create_cslib_agents/summaries/01_agents-summary.md]
 
 **Description**: Create cslib-research-agent.md (model: opus) and cslib-implementation-agent.md (model: sonnet) at .claude/extensions/cslib/agents/. Research agent: inherits lean-lsp MCP tools via lean dependency, focuses on CSLib-specific formalization patterns, mathlib API discovery, typeclass-based abstraction. Implementation agent: CI verification pipeline (lake test, lake exe checkInitImports, lake lint, lake exe lint-style, lake shake --add-public --keep-implied --keep-prefix), Cslib.Init import enforcement, mathlib style compliance, proof readability over golfing.
 
@@ -444,6 +482,9 @@ Fix: Add "description": $desc (and optionally "title": $title) to each state.jso
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
+- **Research**: [663_create_cslib_extension_scaffold/reports/01_extension-scaffold-research.md]
+- **Plan**: [663_create_cslib_extension_scaffold/plans/01_extension-scaffold-plan.md]
+- **Summary**: [663_create_cslib_extension_scaffold/summaries/01_scaffold-summary.md]
 
 **Description**: Create the cslib extension scaffold at .claude/extensions/cslib/ modeled after the lean extension. Includes: manifest.json (task_type: "cslib", dependencies: ["core", "lean"], provides agents/skills/rules/context, routing table for research/plan/implement, no mcp_servers since lean-lsp inherited via lean dependency), EXTENSION.md (CLAUDE.md merge content for cslib section), README.md (extension documentation), index-entries.json (context discovery entries for cslib agents/task_types), and directory structure (agents/, skills/, commands/, rules/, context/project/cslib/{domain,patterns,standards,tools}/).
 
@@ -455,6 +496,8 @@ Fix: Add "description": $desc (and optionally "title": $title) to each state.jso
 - **Task Type**: neovim
 - **Topic**: Terminal UI
 - **Dependencies**: Task 661
+- **Research**: [662_wire_postflight_lifecycle_notifications/reports/01_wire-lifecycle-notify.md]
+- **Plan**: [662_wire_postflight_lifecycle_notifications/plans/01_wire-lifecycle-notify.md]
 
 **Description**: Wire lifecycle-notify.sh into the postflight pipeline for both standalone and orchestrate flows. Update orchestrator-postflight.sh to pass --quiet for mid-orchestrate phase completions (dim color change only, no TTS). Wire standalone command postflight (skill-base.sh) to call lifecycle-notify.sh on completion (with TTS). Ensure workflow-active marker cleanup so Stop hook fires needs_input at the right time. The dim/bright color distinction in wezterm.lua already exists — dim bg+fg for in-progress states (researching/planning/implementing), bright bg+fg for completed states (researched/planned/completed). Mid-orchestrate transitions should use the in-progress color of the NEXT phase (e.g., research done -> set planning dim color). Final completion or standalone completion should use the bright completed color + TTS announcement. Test: /research N standalone (bright researched + TTS), /orchestrate N multi-phase (dim color transitions, bright + TTS only at final stop).
 
@@ -535,6 +578,9 @@ Fix: Add "description": $desc (and optionally "title": $title) to each state.jso
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 654
+- **Research**: [656_add_topic_assignment_gaps/reports/01_add-topic-gaps.md]
+- **Plan**: [656_add_topic_assignment_gaps/plans/01_add-topic-gaps-plan.md]
+- **Summary**: [656_add_topic_assignment_gaps/summaries/01_add-topic-gaps-summary.md]
 
 **Description**: Add topic assignment to 6 task creation points that currently have missing or incomplete topic handling, using the shared topic-assignment-pattern.md and manage-topics.sh:
 
@@ -555,6 +601,9 @@ Also update extension copies (.claude/extensions/core/) to match all changes.
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 654
+- **Research**: [655_refactor_existing_topic_pickers/reports/01_refactor-topic-pickers.md]
+- **Plan**: [655_refactor_existing_topic_pickers/plans/01_refactor-topic-pickers-plan.md]
+- **Summary**: [655_refactor_existing_topic_pickers/summaries/01_refactor-topic-pickers-summary.md]
 
 **Description**: Replace duplicated inline topic picker logic in 4 existing commands/agents with references to the shared topic-assignment-pattern.md and calls to manage-topics.sh:
 
@@ -576,6 +625,8 @@ Net reduction: ~200 lines of duplicated picker instructions replaced by pattern 
 - **Topic**: agent-system
 - **Dependencies**: None
 - **Plan**: [654_create_topic_management_utilities/plans/01_topic-management-plan.md]
+- **Research**: [654_create_topic_management_utilities/reports/01_topic-management-research.md]
+- **Summary**: [654_create_topic_management_utilities/summaries/01_topic-management-summary.md]
 
 **Description**: Create two shared topic management artifacts to replace ~200 lines of duplicated topic picker logic across commands:
 
@@ -683,7 +734,10 @@ This task creates the foundation; tasks 655 and 656 consume these utilities.
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
-- **Research**: [647_enrich_state_json_schema/reports/01_team-research.md]
+- **Research**:
+  - [647_enrich_state_json_schema/reports/01_team-research.md]
+  - [647_enrich_state_json_schema/reports/01_teammate-a-findings.md]
+  - [647_enrich_state_json_schema/reports/01_teammate-c-findings.md]
 - **Plan**: [647_enrich_state_json_schema/plans/01_enrich-state-schema.md]
 - **Summary**: [647_enrich_state_json_schema/summaries/01_enrichment-summary.md]
 
@@ -796,6 +850,8 @@ This task creates the foundation; tasks 655 and 656 consume these utilities.
 - **Topic**: agent-system
 - **Dependencies**: None
 - **Summary**: [639_fix_orchestrate_todo_sync/summaries/01_fix-summary.md]
+- **Research**: [639_fix_orchestrate_todo_sync/reports/01_todo-sync-analysis.md]
+- **Plan**: [639_fix_orchestrate_todo_sync/plans/01_fix-todo-sync-plan.md]
 
 **Description**: Replace bash function references in skill-orchestrate/SKILL.md with explicit, standalone bash commands that the orchestrator agent can execute directly via the Bash tool. The orchestrator currently updates state.json correctly but never updates TODO.md status markers or links artifacts because it treats skill_preflight_update, skill_postflight_update, and skill_link_artifact_from_handoff as pseudocode rather than callable functions (they require source skill-base.sh which agents don't run). Changes needed in both single-task (Stages 4-5) and multi-task (Stages MT-3/MT-4) sections.
 
@@ -807,6 +863,9 @@ This task creates the foundation; tasks 655 and 656 consume these utilities.
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
+- **Research**: [638_fix_generate_task_order_missing_section/reports/01_missing-section-analysis.md]
+- **Plan**: [638_fix_generate_task_order_missing_section/plans/01_fix-task-order-bootstrap.md]
+- **Summary**: [638_fix_generate_task_order_missing_section/summaries/01_fix-summary.md]
 
 **Description**: Fix generate-task-order.sh to handle the case where ## Task Order doesn't exist in TODO.md. In --update-todo mode, if the ## Task Order section is not found, INSERT it before the first ## Tasks section instead of failing with a warning. This makes the script idempotent -- it creates the section on first run and replaces it on subsequent runs. Also verify the script generates clean output matching the BimodalLogic format (waves table + topic tree, no artifact links in task order entries).
 
