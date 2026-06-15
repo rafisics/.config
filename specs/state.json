@@ -151,7 +151,7 @@
         699
       ],
       "session_id": "sess_1781483401_860158016",
-      "completion_summary": "Updated PR workflow documentation across 4 files: EXTENSION.md skill table now describes skill-pr-implementation as description-only, pr-prohibition.md (both copies) now includes CSLib /pr workflow section, pr.md stale branch-creation references removed"
+      "completion_summary": "Updated PR workflow docs to reflect separation: skill produces pr-description.md only, /pr handles branch/CI/submit"
     },
     {
       "project_number": 697,
