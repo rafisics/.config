@@ -16,6 +16,9 @@
     ],
     "skills": [
       "skill-literature"
+    ],
+    "scripts": [
+      "scripts/zotero-search.sh"
     ]
   },
   "merge_targets": {

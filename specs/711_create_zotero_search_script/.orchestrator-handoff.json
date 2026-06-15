@@ -1,0 +1,15 @@
+{
+  "status": "researched",
+  "summary": "CSL-JSON structure confirmed via Better BibTeX format and migrate-from-repo.sh reference: top-level array, citation-key field, author as [{family,given}] array, issued[date-parts][0][0] for year, attachments[].path for PDFs. zotero-library.json does not exist yet (user must configure Better BibTeX auto-export). Script should use ZOTERO_LIBRARY env var with fallback to LITERATURE_DIR/zotero-library.json. PDF path verification via bash [ -f ] post-pass after single jq scoring pass. Extension has no scripts/ dir yet; manifest.json needs provides.scripts array added. Relevance scoring: title (3x), keywords (2x), abstract/author (1x each).",
+  "phases_completed": 1,
+  "phases_total": 1,
+  "blockers": [],
+  "continuation_context": null,
+  "artifacts": [
+    {
+      "path": "specs/711_create_zotero_search_script/reports/01_zotero-search-research.md",
+      "type": "report",
+      "summary": "CSL-JSON format analysis, PDF path resolution strategy, jq search implementation design, manifest registration approach, and output format specification for zotero-search.sh"
+    }
+  ]
+}
