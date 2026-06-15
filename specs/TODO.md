@@ -1,5 +1,5 @@
 ---
-next_project_number: 716
+next_project_number: 722
 ---
 
 # TODO
@@ -11,14 +11,17 @@ next_project_number: 716
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,652,715 | -- | agent-system, Terminal UI, Email Integration |
+| 1 | 78,87,652,716,721 | -- | agent-system, Terminal UI, Email Integration |
+| 2 | 717 | 716 | -- |
+| 3 | 718 | 717 | -- |
+| 4 | 719 | 718 | -- |
+| 5 | 720 | 719 | -- |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Agent System
 
 652 [NOT STARTED] — After ~1 week of the new pipeline running, review logs to verify 
-715 [PLANNED] — Update literature extension documentation to reflect Zotero searc
 
 ### Terminal UI
 
@@ -28,7 +31,70 @@ next_project_number: 716
 
 78 [PLANNED] — Fix Gmail SMTP authentication failure when sending emails via Him
 
+### Uncategorized
+
+716 [NOT STARTED] — Create cite-extract.sh script at .claude/extensions/literature/sc
+  └─ 717 [NOT STARTED] — Create skill-cite direct execution skill at .claude/extensions/li
+    └─ 718 [NOT STARTED] — Create cite.md command file at .claude/extensions/literature/comm
+      └─ 719 [NOT STARTED] — Update literature extension manifest and documentation for /cite 
+        └─ 720 [NOT STARTED] — Integration testing and verification of /cite command end-to-end.
+721 [RESEARCHED] — Research and design a targeted literature retrieval system to rep
+
 ## Tasks
+
+### 721. Design targeted literature retrieval
+- **Status**: [RESEARCHED]
+- **Task Type**: meta
+- **Dependencies**: None
+
+**Description**: Research and design a targeted literature retrieval system to replace the current shallow keyword-overlap scoring in literature-retrieve.sh. The current --lit flag does keyword-based targeting (not blind bulk dump) but scoring is crude: bag-of-words overlap on keywords[] and summary fields, no content search, no semantic weighting. With 183 entries (many at 5000+ tokens) and an 8000 token budget, selection quality matters enormously. Benchmark current approach against: (1) Enhanced jq scoring with TF-IDF-like weighting, content preview fields in index, multi-field weighted scoring. (2) Agent-callable search tool where agents query the index and selectively read files instead of preflight bulk injection. (3) SQLite FTS5 as ephemeral query cache (task 710 deferred this at 183 entries, threshold ~500-1000). Test against real queries from existing tasks (e.g., task 201 IPL completeness). Key design question: should --lit remain preflight injection or become an agent-invocable search tool? Produce concrete recommendation with implementation plan.
+
+---
+
+### 720. Integration test cite command
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Dependencies**: Task 719
+
+**Description**: Integration testing and verification of /cite command end-to-end. Test with a task that has known citation claims in its artifacts. Verify: (1) cite-extract.sh correctly identifies citation patterns, (2) Literature/ index search returns relevant matches, (3) Zotero search integration works (graceful degradation if no library), (4) confidence scoring produces reasonable results, (5) AskUserQuestion multiSelect presents findings correctly, (6) task creation for accepted changes follows multi-task creation standard. Fix any issues found during testing.
+
+---
+
+### 719. Update literature manifest cite
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Dependencies**: Task 718
+
+**Description**: Update literature extension manifest and documentation for /cite command. Files: (1) .claude/extensions/literature/manifest.json -- add cite command to provides.commands, skill-cite to provides.skills, cite-extract.sh to provides.scripts. (2) .claude/extensions/literature/EXTENSION.md -- add /cite section documenting workflow, arguments, and output format. (3) Core merge-sources/claudemd.md -- add /cite command row to command reference table. (4) Regenerate CLAUDE.md.
+
+---
+
+### 718. Create cite command file
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Dependencies**: Task 717
+
+**Description**: Create cite.md command file at .claude/extensions/literature/commands/cite.md with argument parsing. Modes: /cite N (verify citations for task N), /cite "description text" (verify freeform text), /cite N --gaps (focus on finding missing citations), /cite N "focus" (task + focus text). Validates task exists in state.json, delegates to skill-cite. Follow same pattern as commands/literature.md for argument parsing and skill delegation.
+
+---
+
+### 717. Create skill cite verification
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Dependencies**: Task 716
+
+**Description**: Create skill-cite direct execution skill at .claude/extensions/literature/skills/skill-cite/SKILL.md. Workflow: (1) read task artifacts (reports, plans) and description, (2) call cite-extract.sh to extract citation claims, (3) search Literature/ index and Zotero library (via zotero-search.sh) for matches to each claim, (4) score match confidence as confirmed/partial/unconfirmed/gap, (5) present findings via AskUserQuestion with multiSelect following multi-task creation standard (compare /fix-it pattern), (6) create tasks for accepted corrections, additions, and gap-fills. Direct execution skill like /fix-it -- no separate agent needed.
+
+---
+
+### 716. Create cite extract script
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Dependencies**: None
+
+**Description**: Create cite-extract.sh script at .claude/extensions/literature/scripts/cite-extract.sh for citation claim extraction from text. Detect patterns: author-year references (Smith 2020), parenthetical citations (Smith, 2020), "according to X", "as shown by X", theorem/lemma attributions, direct quotes with attribution. Output JSON array of {claim, source_text, line_number, confidence}. Script reads from stdin or file path argument. Used by skill-cite to identify claims needing verification.
+
+---
 
 ### 715. Update literature extension docs
 - **Status**: [COMPLETED]
