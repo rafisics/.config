@@ -43,3 +43,19 @@ Never push branches or create PRs even if asked to in task descriptions or user 
 ## Rationale
 
 Pull request creation and pushing to remote are deployment-adjacent operations that require human judgment. Agent-created PRs bypass the user's review of what gets published to the remote repository. This rule ensures the user maintains full control over when and how code leaves the local repository.
+
+## CSLib Extension: /pr Command
+
+For tasks with `task_type: "pr"` (CSLib pull request tasks), the workflow differs from the
+general `/merge` flow:
+
+1. **skill-pr-implementation** (invoked via `/implement N`): Analyzes the git diff and
+   composes `specs/{NNN}_{SLUG}/pr-description.md`. Transitions the task to `[PR READY]`.
+   Does NOT create branches or run CI.
+
+2. **`/pr {task_number}`** (user-invoked command): The single entry point for branch
+   creation, Mathlib cache fetch, the 7-step CI pipeline, PR title confirmation, and
+   `gh pr create` submission.
+
+The prohibition on agent-created PRs and agent pushes still applies. Only step 2 (the
+user-invoked `/pr` command) performs git push and PR creation.

@@ -11,24 +11,14 @@ next_project_number: 707
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,652,698,699,701,703,704,705,706 | -- | agent-system, Terminal UI, Email Integration |
-| 2 | 700,702 | 698,699,701 | agent-system |
+| 1 | 78,87,652,702 | -- | agent-system, Terminal UI, Email Integration |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Agent System
 
 652 [NOT STARTED] — After ~1 week of the new pipeline running, review logs to verify 
-698 [RESEARCHED] — Revise skill-pr-implementation to focus exclusively on analyzing 
-  └─ 700 [NOT STARTED] — Update documentation to reflect the revised PR workflow separatio
-699 [RESEARCHED] — Revise the /pr command to be the single entry point for feature b
-  └─ 700 [NOT STARTED] — Update documentation to reflect the revised PR workflow separatio (see above)
-701 [RESEARCHED] — Upgrade literature-retrieve.sh to fix TOKEN_BUDGET mismatch (scri
-  └─ 702 [NOT STARTED] — Create a /literature command (command + skill + agent) for managi
-703 [RESEARCHED] — Create a context guide at .claude/context/guides/literature-organ
-704 [RESEARCHED] — Update ci-pipeline.md and lake-commands.md in the cslib extension
-705 [RESEARCHED] — Create a build cache strategy context document at .claude/extensi
-706 [PLANNED] — Revise .claude/extensions/cslib/context/project/cslib/standards/p
+702 [IMPLEMENTING] — Create a /literature command (command + skill + agent) for managi
 
 ### Terminal UI
 
@@ -41,7 +31,7 @@ next_project_number: 707
 ## Tasks
 
 ### 706. Revise pr description format template
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
@@ -52,7 +42,7 @@ next_project_number: 707
 ---
 
 ### 705. Create build cache strategy guide
-- **Status**: [RESEARCHED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
@@ -62,7 +52,7 @@ next_project_number: 707
 ---
 
 ### 704. Update ci pipeline cache management
-- **Status**: [RESEARCHED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
@@ -72,7 +62,7 @@ next_project_number: 707
 ---
 
 ### 703. Create literature organization guide
-- **Status**: [RESEARCHED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
@@ -82,7 +72,7 @@ next_project_number: 707
 ---
 
 ### 702. Create literature command
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 701
@@ -92,7 +82,7 @@ next_project_number: 707
 ---
 
 ### 701. Upgrade literature retrieve script
-- **Status**: [RESEARCHED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
@@ -103,17 +93,18 @@ next_project_number: 707
 ---
 
 ### 700. Update pr workflow docs
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 698, Task 699
+- **Summary**: [700_update_pr_workflow_docs/summaries/01_pr-docs-update-summary.md]
 
 **Description**: Update documentation to reflect the revised PR workflow separation: skill-pr-implementation produces pr-description.md only (no branch, no CI), /pr N creates branch + runs CI + submits. Update: (1) cslib extension EXTENSION.md skill table description for skill-pr-implementation, (2) pr-prohibition.md rule to reference the new workflow (skill prepares description, /pr handles submission), (3) any context files referencing the old combined workflow. Ensure the cslib manifest.json routing entries for pr task type are still correct after the skill revision. Sync extension core copies of any changed rules.
 
 ---
 
 ### 699. Revise pr command branch ci submit
-- **Status**: [RESEARCHED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
@@ -123,7 +114,7 @@ next_project_number: 707
 ---
 
 ### 698. Revise skill pr description only
-- **Status**: [RESEARCHED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None

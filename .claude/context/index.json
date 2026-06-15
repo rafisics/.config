@@ -835,6 +835,36 @@
       "path": "guides/loader-reference.md"
     },
     {
+      "summary": "literature-organization guide: specs/literature/ directory layout, index.json schema, naming conventions, chunk sizing, and --lit injection mechanics",
+      "domain": "core",
+      "keywords": [
+        "literature",
+        "inject",
+        "index",
+        "papers",
+        "research",
+        "specifications"
+      ],
+      "subdomain": "guides",
+      "line_count": 318,
+      "load_when": {
+        "commands": [
+          "/research",
+          "/plan",
+          "/implement"
+        ],
+        "task_types": [],
+        "agents": [
+          "general-research-agent"
+        ]
+      },
+      "topics": [
+        "literature",
+        "research"
+      ],
+      "path": "guides/literature-organization.md"
+    },
+    {
       "summary": "Guide for revising context documentation",
       "domain": "core",
       "keywords": [

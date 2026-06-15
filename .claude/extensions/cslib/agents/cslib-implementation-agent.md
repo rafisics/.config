@@ -129,6 +129,31 @@ Annotate the corresponding checklist item inline:
 
 This verification happens at the END of implementation, after all phases are complete but BEFORE writing final metadata.
 
+### PR Description Mode (Skip Verification)
+
+**Detection**: If `task_type == "pr"` in the delegation context, OR if `delegation_path` contains `"skill-pr-implementation"`, you are in PR Description Mode.
+
+**In PR Description Mode**:
+- Your outputs are: `pr-description.md` and `.return-meta.json`
+- Skip the CSLib CI Pipeline entirely (branch creation and CI are handled by the `/pr` command)
+- Skip the sorry/axiom/vacuous checks (no Lean files were modified)
+- Write final metadata with the following mock verification block and return immediately:
+
+```json
+{
+  "status": "implemented",
+  "verification": {
+    "verification_passed": true,
+    "mode": "pr_description_only",
+    "note": "CI deferred to /pr command -- only pr-description.md was composed"
+  }
+}
+```
+
+Proceed directly to writing the summary file and `.return-meta.json`; do NOT execute the CSLib CI Pipeline steps below.
+
+---
+
 ### CSLib CI Pipeline (Ordered -- Run All Steps)
 
 1. **Scoped build**:
@@ -366,7 +391,7 @@ When approaching context limit:
 4. Always use `lean_goal` before and after each tactic application
 5. Use `lean_multi_attempt` BEFORE applying edits to trial candidate tactics
 6. Use `lean_verify` for axiom/sorry checks at the per-step level
-7. **Run the full CSLib CI pipeline** (all 7 steps) before returning implemented status
+7. **Run the full CSLib CI pipeline** (all 7 steps) before returning implemented status -- EXCEPT in PR description mode (`task_type=pr`), where CI is deferred to the `/pr` command
 8. Always verify proofs are actually complete ("no goals")
 9. **ALWAYS update plan file phase markers with Edit tool**
 10. Always create summary file before returning implemented status
@@ -380,7 +405,7 @@ When approaching context limit:
 **MUST NOT**:
 1. Return JSON to the console
 2. Mark proof complete if goals remain
-3. Skip CSLib CI pipeline verification
+3. Skip CSLib CI pipeline verification (exception: PR description mode skips CI by design)
 4. Leave plan file with stale status markers
 5. Create empty or placeholder proofs (sorry, admit) or introduce axioms
 6. Ignore build errors

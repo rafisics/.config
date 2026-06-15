@@ -1,0 +1,14 @@
+{
+  "session_id": "sess_1781482254_239635",
+  "task_numbers": [701, 702, 703],
+  "waves": [[701, 703], [702]],
+  "dependency_graph": {"701": [], "702": [701], "703": []},
+  "cycle_count": 0,
+  "max_cycles": 15,
+  "failed_tasks": [],
+  "completed_tasks": [],
+  "current_statuses": {"701": "not_started", "702": "not_started", "703": "not_started"},
+  "task_types": {"701": "meta", "702": "meta", "703": "meta"},
+  "research_agents": {"701": "general-research-agent", "702": "general-research-agent", "703": "general-research-agent"},
+  "implement_agents": {"701": "general-implementation-agent", "702": "general-implementation-agent", "703": "general-implementation-agent"}
+}

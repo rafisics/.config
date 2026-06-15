@@ -7,12 +7,26 @@ from the cslib project PR history (PRs #635, #637, and subsequent sub-PRs).
 
 All CSLib PRs must include these sections, in this order:
 
+1. Title (H1)
+2. Summary
+3. Context / Motivation (when applicable, no fixed slot — after Summary when stacked PRs or Zulip discussions apply)
+4. Design Rationale (when applicable)
+5. Relationship to Other PRs (when applicable)
+6. Contribution Roadmap (optional)
+7. Changed Files
+8. Breaking Changes (when applicable)
+9. AI Tools Used (always last)
+
+---
+
 ### 1. Title (H1 heading)
 
-The PR title as the document heading:
+The document heading uses the "PR Description:" prefix to distinguish it from the
+GitHub PR title field. The GitHub PR title field uses just the conventional commit
+string without the prefix.
 
 ```
-# {conventional commit title}
+# PR Description: {conventional commit title}
 ```
 
 The conventional commit title uses the format from `pr-conventions.md`:
@@ -22,10 +36,12 @@ The conventional commit title uses the format from `pr-conventions.md`:
 
 Examples:
 ```
-# feat(Logics/Temporal): temporal logic formula type with primitives and derived operators
-# refactor: Proposition type to Lukasiewicz convention
-# fix(Foundations): correct substitution lemma in HasSubstitution
+# PR Description: feat(Logics/Temporal): temporal logic formula type with primitives and derived operators
+# PR Description: refactor: Proposition type to Lukasiewicz convention
+# PR Description: fix(Foundations): correct substitution lemma in HasSubstitution
 ```
+
+---
 
 ### 2. Summary
 
@@ -37,6 +53,8 @@ modules, or definitions introduced. For large PRs, include scope (N files, ~M li
 
 {2-4 sentences. Name key constructs. State scope for large PRs.}
 ```
+
+---
 
 ### 3. Context / Motivation (when applicable)
 
@@ -59,12 +77,101 @@ This PR is **stacked on #{NNN}** ("{PR title}"), which introduces {what it provi
 {Author, A. & Author, B. (year). *Title*. Publisher. {Specific chapter/section if relevant.}}
 ```
 
-### 4. File-by-file change summary
+---
 
-Always present. Shows the git diff --stat followed by per-file bullet summaries.
+### 4. Design Rationale (when applicable)
+
+Use for novel design decisions that require explanation. Name the section after the
+specific design question.
+
+Include when:
+- The primitive/representation choice is non-obvious and needs justification
+- Literature references support the design
+- The choice will affect all downstream PRs
+
+```markdown
+## Why {X} as the primitives
+## Design: {component} architecture
+## Argument convention: {name}
+```
+
+---
+
+### 5. Relationship to Other PRs (when applicable)
+
+Include when: concurrent PRs exist that touch the same files or related concerns. This
+is distinct from "stacked on" (merge ordering) in Context -- Relationship to Other PRs
+covers lateral coordination with concurrent/parallel PRs.
+
+```markdown
+## Relationship to Other PRs
+
+### PR #{N}
+
+{Description of what PR #N does and how it relates to this PR. State: which files overlap,
+whether changes are orthogonal or dependent, and what coordination is needed.}
+
+### PR #{M}
+
+{Same structure for each related PR.}
+```
+
+Format:
+- H2 heading "Relationship to Other PRs"
+- H3 subsection per named PR, identified by number
+- Each subsection describes overlap, dependency direction, and coordination strategy
+
+---
+
+### 6. Contribution Roadmap (optional)
+
+Include when: this PR is part of a multi-PR planned contribution series.
+
+```markdown
+## Contribution Roadmap
+
+{Introductory sentence stating this is the N-th PR in a series and what the series contributes.}
+
+1. **This PR**: {scope summary}
+2. **PR 2**: {scope summary}
+3. **PR 3**: {scope summary}
+...
+
+All results in this roadmap have been completed in our development branch:
+{URL to development branch}
+```
+
+Format:
+- Numbered list with bolded PR labels (`**This PR**`, `**PR 2**`, etc.)
+- Brief scope summary per planned PR (1-2 lines)
+- Trailing link to development branch (optional but recommended)
+- Only used for multi-PR contribution series
+
+---
+
+### 7. Changed Files
+
+Always present. Choose the format based on PR size.
+
+**Format A: Linked list (small PRs, fewer than ~10 files)**
+
+```markdown
+## Changed Files
+
+- [`Path/To/File.lean`](Path/To/File.lean) — **New**: description of what was added
+- [`Path/To/Other.lean`](Path/To/Other.lean) — **Modified**: description of changes
+```
+
+Format A notes:
+- Em dash (—) separator, not double hyphen (--)
+- Bold **New** or **Modified** label
+- Inline description following the label
+- Use for PRs with fewer than ~10 changed files
+
+**Format B: Diff-stat + H3 per file (large PRs, 10+ files)**
 
 ````markdown
-## File-by-file change summary
+## Changed Files
 
 {Paste git diff --stat output in a code fence:}
 ```
@@ -83,7 +190,7 @@ Always present. Shows the git diff --stat followed by per-file bullet summaries.
 - {Bullet describing the key change}
 ````
 
-For large PRs with many files (10+), use a markdown table instead of per-file bullets:
+**Format C: Markdown table (large PRs with many files)**
 
 ```markdown
 | File | Lines | Role |
@@ -91,12 +198,44 @@ For large PRs with many files (10+), use a markdown table instead of per-file bu
 | `Path/To/File.lean` | N | Brief role description |
 ```
 
-### 5. AI Disclosure (always last)
+**Format selection guidance**:
+- Format A (linked list): fewer than ~10 changed files
+- Format B (diff-stat + H3): 10+ files, where per-file detail matters
+- Format C (table): 10+ files, where a compact overview suffices
+
+---
+
+### 8. Breaking Changes (when applicable)
+
+Include when: any identifier is renamed, any typeclass constraint is removed, any public
+instance is deleted, or any function signature changes.
+
+```markdown
+## Breaking Changes
+
+- `{OldIdentifier}` renamed to `{NewIdentifier}`
+- `{ConstraintName}` constraint removed from `{TypeOrTheorem}` and related instances
+- `{InstanceName}` removed; replaced by `{NewInstanceName}`
+
+Files affected upstream: `{File1.lean}`, `{File2.lean}` (only consumers)
+```
+
+Format:
+- Bullet list of specific renamed identifiers, removed constraints, or removed instances
+- Trailing "Files affected upstream:" line naming downstream consumers
+- Placed after Changed Files, before AI Tools Used
+
+---
+
+### 9. AI Tools Used (always last)
 
 Required for all CSLib PRs per the Mathlib AI usage policy. Always the last section.
 
+Note: Older PRs used the heading "AI Disclosure"; "AI Tools Used" is the preferred
+heading for new PRs. Both names are acceptable.
+
 ```markdown
-## AI Disclosure
+## AI Tools Used
 
 This PR was prepared with the assistance of Claude Code (Anthropic). The AI tool was used for:
 - Drafting and extracting files from a development branch to create a clean PR branch
@@ -109,7 +248,7 @@ All Lean code was written by the {author(s) — names} and verified to compile c
 Short variant (for smaller PRs):
 
 ```markdown
-## AI Disclosure
+## AI Tools Used
 
 This PR was prepared with the assistance of Claude Code (Anthropic), used for drafting/extracting
 files from a development branch, running CI verification commands, and drafting this description.
@@ -119,24 +258,6 @@ All Lean code was written by the author ({name}) and verified to compile on the 
 ---
 
 ## Optional Sections
-
-These sections appear in some PRs but are not required:
-
-### Design Rationale
-
-Use for novel design decisions that require explanation. Name the section after the specific
-design question:
-
-```markdown
-## Why {X} as the primitives
-## Design: {component} architecture
-## Argument convention: {name}
-```
-
-Include when:
-- The primitive/representation choice is non-obvious and needs justification
-- Literature references support the design
-- The choice will affect all downstream PRs
 
 ### Dependency Graph
 

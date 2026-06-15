@@ -155,6 +155,18 @@
       "domain": "project",
       "subdomain": "cslib",
       "summary": "7-step CSLib CI pipeline required before returning implemented status in hard-mode"
+    },
+    {
+      "path": "project/cslib/tools/build-cache-strategy.md",
+      "description": "CSLib build cache strategy: Mathlib cloud cache, lake exe cache get, feature branch workflow",
+      "tags": ["cslib", "cache", "lake", "build", "mathlib"],
+      "load_when": {
+        "languages": ["cslib", "pr"],
+        "agents": ["cslib-implementation-agent"]
+      },
+      "domain": "project",
+      "subdomain": "cslib",
+      "summary": "CSLib build cache strategy: Mathlib cloud cache, lake exe cache get, feature branch workflow"
     }
   ]
 }

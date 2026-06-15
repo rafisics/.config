@@ -7,6 +7,21 @@ and `lakefile.toml`.
 
 Run these steps in order before submitting a PR. Each step catches different issues.
 
+### Step 0: `lake exe cache get`
+
+**Purpose**: Download pre-built Mathlib `.olean` files from the Mathlib cache.
+
+Run this once when setting up a new branch that is based on upstream/main. This is
+especially critical when the local fork's main has diverged from upstream — without
+cache fetching, `lake build` triggers a near-full rebuild of Mathlib (30+ minutes).
+
+```bash
+lake exe cache get
+```
+
+**When to run**: Once per branch setup, not on every build. Re-run only if switching
+to a different Mathlib revision (e.g., after a `lake update`).
+
 ### Step 1: `lake build`
 
 **Purpose**: Compile the library and run syntax linters.
@@ -108,6 +123,7 @@ removed by the auto-fixer.
 
 | Step | Command | When |
 |------|---------|------|
+| 0 | `lake exe cache get` | Once per branch setup (when based on upstream/main) |
 | 1 | `lake build` | Always |
 | 2 | `lake exe checkInitImports` | Always |
 | 3 | `lake lint` | Always |

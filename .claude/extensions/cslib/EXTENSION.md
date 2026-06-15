@@ -15,7 +15,7 @@ This project includes CSLib Lean 4 computer science library support via the csli
 |-------|-------|-------|---------|
 | skill-cslib-research | cslib-research-agent | opus | CSLib formalization research with lean-lsp MCP |
 | skill-cslib-implementation | cslib-implementation-agent | sonnet | CSLib proof implementation with CI verification |
-| skill-pr-implementation | cslib-implementation-agent | sonnet | PR branch/description preparation, transitions task to [PR READY] |
+| skill-pr-implementation | cslib-implementation-agent | sonnet | PR description preparation only -- produces pr-description.md, transitions task to [PR READY]; branch creation and CI handled by /pr |
 | skill-cslib-research-hard | cslib-research-hard-agent | opus | Hard-mode CSLib research: adversarial verification (H4), BibKey citation grounding (H3) |
 | skill-cslib-implementation-hard | cslib-implementation-hard-agent | sonnet | Hard-mode CSLib proof implementation: anti-analysis (H2), sorry_inventory (H9), territory (H7) |
 

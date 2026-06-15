@@ -115,9 +115,10 @@ if [ -f "$pr_desc_path" ]; then
   echo "Found pr-description.md: $pr_desc_path"
   echo "PR title from file: $pr_title"
 else
-  has_pr_description=false
-  echo "Warning: pr-description.md not found at $pr_desc_path"
-  echo "The description will be composed interactively (STEP 9)."
+  echo "ERROR: pr-description.md not found at $pr_desc_path"
+  echo "Task-mode /pr requires a pre-built pr-description.md."
+  echo "Run skill-pr-implementation to generate this file before submitting."
+  # STOP -- cannot continue without pr-description.md in task mode
 fi
 
 # Read base_branch from state.json task metadata (defaults to "main")
@@ -267,10 +268,10 @@ remote_exists=$(git ls-remote --heads origin "$proposed_branch" 2>/dev/null)
 ```
 
 **Task mode** (`input_mode="task"`): If a `feat/` branch matching the task slug already exists
-locally (as would be created by `skill-pr-implementation`), offer to reuse it:
+locally (from a previous /pr run or manual branch creation), offer to reuse it:
 ```bash
 if [ -n "$local_exists" ] || [ -n "$remote_exists" ]; then
-  echo "Branch '$proposed_branch' already exists (created by skill-pr-implementation)."
+  echo "Branch '$proposed_branch' already exists."
   # Ask user to reuse existing branch or create a new one
 fi
 ```
@@ -283,7 +284,7 @@ fi
   "multiSelect": false,
   "options": [
     {"label": "Yes, create '{proposed_branch}'", "description": "Create this branch from upstream/main and switch to it"},
-    {"label": "Reuse existing '{proposed_branch}'", "description": "Switch to the existing branch (if created by skill-pr-implementation)"},
+    {"label": "Reuse existing '{proposed_branch}'", "description": "Switch to the existing branch (if previously created)"},
     {"label": "Use a different name", "description": "Enter a custom branch name at the prompt"},
     {"label": "Cancel", "description": "Abort the PR workflow"}
   ]
@@ -311,7 +312,37 @@ Branch created: {branch_name}
 Based on: upstream/main ({commit_hash})
 ```
 
-**On success**: **IMMEDIATELY CONTINUE** to STEP 6.
+**On success**: **IMMEDIATELY CONTINUE** to STEP 5b.
+
+---
+
+### STEP 5b: Fetch Mathlib Cache
+
+**EXECUTE NOW**: Fetch the pre-built Mathlib `.olean` cache so CI does not trigger a near-full rebuild.
+
+When a feature branch is created from `upstream/main`, Lean's build cache may be invalidated
+because the new branch diverges from the branch the existing `.olean` files were built on.
+Running `lake exe cache get` restores the Mathlib pre-built cache so only CSLib modules need
+to be rebuilt during CI.
+
+```bash
+cd /home/benjamin/Projects/cslib
+lake exe cache get 2>&1
+CACHE_STATUS=$?
+
+if [ $CACHE_STATUS -eq 0 ]; then
+  echo "[OK] Mathlib cache fetched successfully."
+else
+  echo "Warning: lake exe cache get exited with status $CACHE_STATUS."
+  echo "CI may take significantly longer due to a full Mathlib rebuild."
+  echo "Proceeding anyway -- this is non-fatal."
+fi
+```
+
+Cache fetch failure is **non-fatal**: CI will still run correctly, just more slowly. Always
+proceed to STEP 6 regardless of cache fetch exit status.
+
+**On success (or non-fatal failure)**: **IMMEDIATELY CONTINUE** to STEP 6.
 
 ---
 
@@ -561,7 +592,7 @@ Store `pr_title` and **IMMEDIATELY CONTINUE** to STEP 9.
 
 ---
 
-**Path mode or Description mode** (or task mode when `has_pr_description` is false):
+**Path mode or Description mode:**
 Fall through to the full interactive 3-step title selection:
 
 Display the prefix options and **Ask user** via AskUserQuestion:
@@ -684,7 +715,7 @@ PR description from pr-description.md ({pr_desc_path}):
 
 ---
 
-**Path mode, Description mode, or Task mode when `has_pr_description` is false**:
+**Path mode or Description mode:**
 Fall through to template-based description generation:
 
 Collect the list of changed files:

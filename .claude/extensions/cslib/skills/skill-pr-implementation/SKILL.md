@@ -1,6 +1,6 @@
 ---
 name: skill-pr-implementation
-description: PR branch and description preparation for CSLib tasks. Delegates to cslib-implementation-agent with PR-specific context and transitions task to [PR READY] instead of [COMPLETED]. Invoke for pr implementation tasks.
+description: PR description preparation for CSLib tasks. Analyzes task description and git diff to produce pr-description.md. Delegates to cslib-implementation-agent and transitions task to [PR READY]. Branch creation and CI are handled by the /pr command. Invoke for pr implementation tasks.
 allowed-tools: Agent, Bash, Edit, Read, Write
 ---
 
@@ -9,14 +9,14 @@ allowed-tools: Agent, Bash, Edit, Read, Write
 Thin wrapper that delegates PR preparation work to `cslib-implementation-agent` subagent with
 PR-specific delegation context. The critical difference from `skill-cslib-implementation` is
 the postflight status transition: this skill calls `pr_ready` (not `implement`), setting the
-task to `[PR READY]` to direct the user to run `/merge`.
+task to `[PR READY]` to direct the user to run `/pr {task_number}`.
 
 ## Trigger Conditions
 
 This skill activates when:
 - Task type is "pr"
 - /implement command targets a PR preparation task
-- A PR branch, pr-description.md, and CI verification are needed
+- A pr-description.md needs to be composed based on the task description and git diff
 
 ## Execution Flow
 
@@ -35,9 +35,9 @@ bash .claude/scripts/update-task-status.sh preflight "$task_number" implement "$
 PR-specific context for the cslib-implementation-agent:
 
 - Target output: `specs/{NNN}_{SLUG}/pr-description.md` (canonical PR description file)
-- Branch strategy: Create from `upstream/main` using `git checkout upstream/main -b feat/{slug}`, or validate existing `feat/` branch
-- CI verification: Run the 7-step pipeline (lake test, checkInitImports, lint-style, lake shake)
+- Diff analysis: Run `git diff` to analyze what changes are present on the current branch
 - Standards: `pr-description-format.md` and `pr-conventions.md` (loaded via index-entries.json `languages: ["pr"]`)
+- Note: Branch creation and CI verification are handled by the `/pr` command
 
 ```json
 {
@@ -54,18 +54,16 @@ PR-specific context for the cslib-implementation-agent:
   "plan_path": "specs/{NNN}_{SLUG}/plans/MM_{short-slug}.md",
   "orchestrator_mode": true,
   "metadata_file_path": "specs/{NNN}_{SLUG}/.return-meta.json",
-  "pr_branch_strategy": "create_from_upstream_main",
-  "pr_description_path": "specs/{NNN}_{SLUG}/pr-description.md",
-  "ci_verification_mode": "full_7_step_pipeline"
+  "pr_description_path": "specs/{NNN}_{SLUG}/pr-description.md"
 }
 ```
 
-**Important**: The subagent's task is PR description generation and branch preparation --
-NOT Lean proof implementation. The agent should:
-1. Analyze code changes on the feature branch
-2. Generate pr-description.md following the canonical format from pr-description-format.md
-3. Create or validate the feature branch
-4. Run the CI verification pipeline
+**Important**: The subagent's task is PR description composition only --
+NOT branch creation, CI verification, or Lean proof implementation. The agent should:
+1. Read the task description and plan to understand what was implemented
+2. Run `git diff` (or `git diff upstream/main...HEAD`) to analyze changes on the current branch
+3. Compose `pr-description.md` following the canonical format from `pr-description-format.md`
+4. Determine `base_branch` (typically `"main"`) and include it in the return metadata
 5. Write `.return-meta.json` with status `implemented` when done
 
 ### Stage 4: Invoke Subagent
@@ -131,10 +129,10 @@ Commit changes with session ID.
 
 ### Stage 9: Return Brief Summary
 
-Include a message directing the user to run `/merge` now that the task is `[PR READY]`:
+Include a message directing the user to run `/pr {task_number}` now that the task is `[PR READY]`:
 
-> PR preparation complete. Task is now [PR READY].
-> Run `/merge` to create the pull request.
+> PR description complete. Task is now [PR READY].
+> Run `/pr {task_number}` to create the branch, run CI, and submit the pull request.
 
 ## MUST NOT (Postflight Boundary)
 
@@ -145,7 +143,9 @@ After the agent returns, this skill MUST NOT:
 3. **Use lean-lsp MCP tools** - Domain tools are for agent use only
 4. **Grep for sorries** - Debt analysis is agent work
 5. **Write pr-description.md** - Artifact creation is agent work
-6. **Call `postflight implement`** - This skill MUST use `postflight pr_ready` to set [PR READY]
+6. **Create feature branches** - Branch creation is handled by the `/pr` command, not this skill
+7. **Run CI pipeline** - CI verification (lake test, lint, shake) is handled by the `/pr` command, not this skill
+8. **Call `postflight implement`** - This skill MUST use `postflight pr_ready` to set [PR READY]
 
 > **PROHIBITION**: If the subagent returned partial or failed status, the lead skill MUST NOT attempt to continue, complete, or "fill in" the subagent's work. Report the partial/failed status and let the user re-run `/implement` to resume.
 

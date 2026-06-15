@@ -10,14 +10,14 @@
 # Exit 1 (empty stdout) when directory missing, no matches, or all exceed budget
 #
 # Constants:
-#   TOKEN_BUDGET=4000  - Maximum total tokens to include
-#   MAX_FILES=10       - Maximum number of files
-#   MIN_SCORE=1        - Minimum keyword overlap to include
+#   TOKEN_BUDGET=8000 (or index.json token_budget)  - Maximum total tokens to include
+#   MAX_FILES=10                                     - Maximum number of files
+#   MIN_SCORE=1                                      - Minimum keyword overlap to include
 
 set -euo pipefail
 
 # --- Constants ---
-TOKEN_BUDGET=4000
+TOKEN_BUDGET=8000
 MAX_FILES=10
 MIN_SCORE=1
 
@@ -39,6 +39,12 @@ fi
 # --- INDEX PATH (when index.json exists and description is non-empty) ---
 if [ -f "$INDEX_FILE" ] && [ -n "$description" ]; then
 
+  # Read token_budget from index.json, fallback to default
+  idx_budget=$(jq -r '.token_budget // empty' "$INDEX_FILE" 2>/dev/null)
+  if [[ "$idx_budget" =~ ^[0-9]+$ ]]; then
+    TOKEN_BUDGET="$idx_budget"
+  fi
+
   STOP_WORDS="the|a|an|and|or|but|in|on|at|of|to|for|is|are|was|were|be|been|being|have|has|had|do|does|did|will|would|could|should|may|might|can|shall|not|no|with|by|from|as|into|through|during|before|after|above|below|between|out|off|over|under|again|further|then|once|here|there|when|where|why|how|all|both|each|few|more|most|other|some|such|only|own|same|so|than|too|very|just|about|up|its|it|this|that|these|those|what|which|who|whom"
 
   keywords=$(echo "$description $task_type" | \
@@ -57,8 +63,41 @@ if [ -f "$INDEX_FILE" ] && [ -n "$description" ]; then
   else
     keywords_json=$(echo "$keywords" | tr ' ' '\n' | jq -R . | jq -s .)
 
-    scored_entries=$(jq --argjson kw "$keywords_json" '
-      .entries // [] |
+    # Extract root entries from index.json
+    root_entries=$(jq '.entries // []' "$INDEX_FILE" 2>/dev/null)
+
+    # Discover and normalize subdirectory index.json files (one level deep)
+    # Map chapters[] format (file field) to entries[] shape (path field) with subdir prefix
+    sub_entries='[]'
+    while IFS= read -r sub_index; do
+      subdir=$(basename "$(dirname "$sub_index")")
+      normalized=$(jq --arg subdir "$subdir" '
+        .chapters // [] |
+        map({
+          id: ($subdir + "_" + (.file // .id // "unknown")),
+          path: ($subdir + "/" + (.file // "")),
+          title: (.title // .file // .id // ""),
+          token_count: (.token_count // 0),
+          keywords: (.keywords // []),
+          summary: (.summary // "")
+        }) | map(select(.path != ($subdir + "/")))
+      ' "$sub_index" 2>/dev/null)
+      if [ -n "$normalized" ] && [ "$normalized" != "null" ] && [ "$normalized" != "[]" ]; then
+        sub_entries=$(jq -n --argjson a "$sub_entries" --argjson b "$normalized" '$a + $b')
+      fi
+    done < <(find "$LIT_DIR" -maxdepth 2 -name "index.json" ! -path "$INDEX_FILE" | sort)
+
+    # Merge root entries and subdirectory entries; root entries take precedence by path
+    # Build a unified deduplicated pool
+    all_entries=$(jq -n \
+      --argjson root "$root_entries" \
+      --argjson sub "$sub_entries" '
+      ($root | map({(.path): .}) | add // {}) as $root_by_path |
+      ($sub | map(select(.path != null and .path != "")) | map(select($root_by_path[.path] == null))) as $sub_unique |
+      $root + $sub_unique
+    ')
+
+    scored_entries=$(echo "$all_entries" | jq --argjson kw "$keywords_json" '
       map(
         . as $entry |
         ($entry.keywords // []) as $entry_kw |
@@ -80,7 +119,7 @@ if [ -f "$INDEX_FILE" ] && [ -n "$description" ]; then
           score: $total_score
         }
       ) | map(select(.score >= 1)) | sort_by(-.score)
-    ' "$INDEX_FILE" 2>/dev/null)
+    ' 2>/dev/null)
 
     if [ -n "$scored_entries" ] && [ "$scored_entries" != "[]" ] && [ "$scored_entries" != "null" ]; then
       selected=$(echo "$scored_entries" | jq --argjson budget "$TOKEN_BUDGET" --argjson max "$MAX_FILES" '
