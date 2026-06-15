@@ -1,12 +1,12 @@
 ---
 description: Manage specs/literature/ — scan, convert PDFs/DJVUs, and maintain index.json
 allowed-tools: Skill
-argument-hint: [--scan|--convert [FILE]|--validate|--index FILE]
+argument-hint: [--scan|--convert [FILE]|--validate|--index FILE|--search "QUERY"|--task N]
 ---
 
 # Command: /literature
 
-**Purpose**: Manages `specs/literature/` by scanning for unprocessed PDFs/DJVUs, converting them to markdown, maintaining `index.json`, and validating filesystem consistency.
+**Purpose**: Manages `specs/literature/` by scanning for unprocessed PDFs/DJVUs, converting them to markdown, maintaining `index.json`, validating filesystem consistency, and searching the Zotero library for import.
 **Layer**: 2 (Command File - Argument Parsing Agent)
 **Delegates To**: skill-literature (direct execution)
 
@@ -26,9 +26,13 @@ argument-hint: [--scan|--convert [FILE]|--validate|--index FILE]
     3. `--convert` -> Convert mode (convert specific or all unprocessed files)
     4. `--validate` -> Validate mode (check index.json against filesystem)
     5. `--index` -> Index mode (add/update index entry for existing markdown file)
+    6. `--search` -> Search mode (search Zotero library and Literature/ index)
+    7. `--task` -> Task-search mode (extract task description as Zotero search query)
 
     **Additional Flags**:
     - `FILE` (after --convert or --index) -> Target file path for the operation
+    - `QUERY` (after --search) -> Search query text (everything after --search flag)
+    - `N` (after --task) -> Task number to extract description from
 
     ```
     sub_mode = "status"  # default
@@ -45,6 +49,22 @@ argument-hint: [--scan|--convert [FILE]|--validate|--index FILE]
       sub_mode = "index"
       # Extract required FILE argument (next token after --index)
       file = extract_arg_after("--index", $ARGUMENTS) or ""
+    elif "--search" in $ARGUMENTS:
+      sub_mode = "search"
+      # Extract query text: everything after "--search" flag
+      query = extract_text_after("--search", $ARGUMENTS) or ""
+    elif "--task" in $ARGUMENTS:
+      sub_mode = "search"
+      # Extract task number N after "--task"
+      task_num = extract_arg_after("--task", $ARGUMENTS) or ""
+      # Read task description from specs/state.json via jq
+      if task_num != "":
+        query = $(jq -r --arg n "$task_num" '.active_projects[] | select(.project_number == ($n | tonumber)) | .project_name' specs/state.json 2>/dev/null)
+        # If project_name is just a slug, also try to get description from TODO.md
+        # Use task number as fallback query if description not found
+        if query == "" or query == "null":
+          error: "Error: Task $task_num not found in specs/state.json"
+          exit
     ```
   </step_1>
 </argument_parsing>
@@ -59,17 +79,27 @@ argument-hint: [--scan|--convert [FILE]|--validate|--index FILE]
     <process>
       Check if the requested sub-mode has required arguments:
 
-      | Sub-Mode | FILE Required | Description |
-      |----------|--------------|-------------|
-      | status   | No           | Show health report |
-      | scan     | No           | Find unprocessed PDFs/DJVUs |
-      | convert  | Optional     | Convert specific file or all unprocessed |
-      | validate | No           | Check index.json consistency |
-      | index    | Yes          | Add/update entry for existing markdown file |
+      | Sub-Mode | FILE Required | QUERY Required | Description |
+      |----------|--------------|----------------|-------------|
+      | status   | No           | No             | Show health report |
+      | scan     | No           | No             | Find unprocessed PDFs/DJVUs |
+      | convert  | Optional     | No             | Convert specific file or all unprocessed |
+      | validate | No           | No             | Check index.json consistency |
+      | index    | Yes          | No             | Add/update entry for existing markdown file |
+      | search   | No           | Yes (from --search) | Search Zotero + Literature/ index |
+      | search   | No           | Yes (from --task N) | Extract task description as search query |
 
-      If sub_mode = "index" AND file = "":
-        Print: "Error: --index requires a FILE argument. Usage: /literature --index path/to/file.md"
-        Exit without delegating.
+      Validation rules:
+      - If sub_mode = "index" AND file = "": Print error, exit without delegating
+      - If `--search` flag present AND query = "": Print error, exit without delegating
+      - If `--task` flag present AND task_num = "": Print error, exit without delegating
+      - If `--task N` AND task not found in state.json: Print error, exit without delegating
+
+      Error messages:
+      - --index without FILE: "Error: --index requires a FILE argument. Usage: /literature --index path/to/file.md"
+      - --search without QUERY: "Error: --search requires a query. Usage: /literature --search \"modal logic\""
+      - --task without N: "Error: --task requires a task number. Usage: /literature --task 714"
+      - --task N not found: "Error: Task N not found in specs/state.json"
     </process>
   </step_1>
 
@@ -77,7 +107,8 @@ argument-hint: [--scan|--convert [FILE]|--validate|--index FILE]
     <action>Delegate to Literature Skill</action>
     <input>
       - skill: "skill-literature"
-      - args: "mode={sub_mode} file={file}"
+      - args: "mode={sub_mode} file={file}" (for status/scan/convert/validate/index modes)
+      - args: "mode=search query={query text}" (for --search and --task N modes)
     </input>
     <expected_return>
       {
@@ -118,6 +149,11 @@ argument-hint: [--scan|--convert [FILE]|--validate|--index FILE]
       Index mode:
         - Confirm entry added/updated in index.json
         - Show keywords and summary used
+
+      Search mode (--search "QUERY" or --task N):
+        - Display multi-select results with availability tags
+        - Show import progress for selected entries
+        - Report any Zotero setup issues gracefully
     </process>
   </step_3>
 </workflow_execution>
@@ -128,14 +164,18 @@ argument-hint: [--scan|--convert [FILE]|--validate|--index FILE]
 
 <error_handling>
   <argument_errors>
-    - Unknown flag -> "Unknown flag: {flag}. Available: --scan, --convert [FILE], --validate, --index FILE"
+    - Unknown flag -> "Unknown flag: {flag}. Available: --scan, --convert [FILE], --validate, --index FILE, --search \"QUERY\", --task N"
     - --index without FILE -> "Error: --index requires a FILE argument. Usage: /literature --index path/to/file.md"
+    - --search without QUERY -> "Error: --search requires a query. Usage: /literature --search \"modal logic\""
+    - --task without N -> "Error: --task requires a task number. Usage: /literature --task 714"
+    - --task N not found -> "Error: Task N not found in specs/state.json. Check the task number and try again."
   </argument_errors>
 
   <execution_errors>
     - specs/literature/ missing -> "No specs/literature/ directory found. Create it and add PDF/DJVU files to convert."
     - pdftotext not available -> "pdftotext not found. Install with: nix-env -iA nixpkgs.poppler_utils"
     - djvutxt not available -> "djvutxt not found (DJVU files will be skipped). Install with: nix-env -iA nixpkgs.djvulibre"
+    - zotero-library.json not found -> Show setup instructions from zotero-search.sh; fall back to index-only search
     - Skill failure -> Return error details
   </execution_errors>
 </error_handling>
@@ -149,6 +189,8 @@ argument-hint: [--scan|--convert [FILE]|--validate|--index FILE]
     - specs/literature/ (PDF/DJVU source files — gitignored, co-located with markdown)
     - specs/literature/ (markdown conversion files)
     - specs/literature/index.json (current index state)
+    - specs/state.json (for --task N mode: read task description)
+    - $LITERATURE_DIR/zotero-library.json (via zotero-search.sh, for --search and --task modes)
   </reads>
 
   <writes>
@@ -156,6 +198,8 @@ argument-hint: [--scan|--convert [FILE]|--validate|--index FILE]
     - specs/literature/{docname}/sectionNN_{slug}.md (content-aware chunked sections)
     - specs/literature/{docname}/{docname}_partNN.md (mechanical fallback chunks)
     - specs/literature/index.json (index entries with enriched schema: authors, title, year, doc_type, source_format, parent_doc, page_range)
+    - $LITERATURE_DIR/pdfs/{citation_key}.pdf (symlink to Zotero PDF, for import)
+    - $LITERATURE_DIR/index.json (Zotero metadata fields: bib_key, zotero_key, zotero_path, project_tags)
   </writes>
 
   <source_file_convention>

@@ -1,7 +1,7 @@
 {
   "name": "literature",
   "version": "1.0.0",
-  "description": "Manage specs/literature/ — scan, convert PDFs/DJVUs, maintain index.json",
+  "description": "Manage specs/literature/ — scan, convert PDFs/DJVUs, maintain index.json, and search/import from Zotero",
   "dependencies": [
     "core",
     "filetypes"

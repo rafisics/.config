@@ -22,12 +22,15 @@ Reference (do not load eagerly):
 
 ### Step 1: Parse Arguments
 
-Extract mode and optional file from skill args:
+Extract mode, optional file, and optional query from skill args:
 
 ```bash
-# Parse from skill args: "mode={mode} file={file}"
+# Parse from skill args: "mode={mode} file={file}" or "mode=search query={query text}"
 mode=$(echo "$ARGUMENTS" | grep -oP 'mode=\K\S+' | head -1)
 file=$(echo "$ARGUMENTS" | grep -oP 'file=\K\S+' | head -1)
+
+# Extract query: everything after "query=" (supports spaces in query text)
+query=$(echo "$ARGUMENTS" | sed 's/.*query=//' | sed 's/^[[:space:]]*//')
 
 # Default to status mode if not specified
 if [ -z "$mode" ]; then
@@ -46,7 +49,12 @@ fi
 
 ```bash
 session_id="sess_$(date +%s)_$(od -An -N3 -tx1 /dev/urandom | tr -d ' ')"
-lit_dir="specs/literature"
+# Two-tier fallback: use LITERATURE_DIR if set and exists, otherwise use per-project specs/literature/
+if [ -n "${LITERATURE_DIR:-}" ] && [ -d "$LITERATURE_DIR" ]; then
+  lit_dir="$LITERATURE_DIR"
+else
+  lit_dir="specs/literature"
+fi
 index_file="$lit_dir/index.json"
 ```
 
@@ -71,8 +79,9 @@ case "$mode" in
   convert)  handle_convert ;;
   validate) handle_validate ;;
   index)    handle_index ;;
+  search)   handle_search ;;
   *)
-    echo "Error: Unknown mode '$mode'. Available: status, scan, convert, validate, index"
+    echo "Error: Unknown mode '$mode'. Available: status, scan, convert, validate, index, search"
     exit 1
     ;;
 esac
@@ -1025,6 +1034,434 @@ fi
 
 ---
 
+## Mode: Search
+
+Search the Zotero library and Literature/ index, present interactive multi-select results, and trigger import for selected entries.
+
+### Search Step 1: Resolve zotero-search.sh Path
+
+```bash
+# Find zotero-search.sh relative to this skill's extension directory
+zotero_script=""
+for candidate in \
+  ".claude/extensions/literature/scripts/zotero-search.sh" \
+  "$(dirname "$0")/../../scripts/zotero-search.sh"; do
+  if [ -f "$candidate" ]; then
+    zotero_script="$candidate"
+    break
+  fi
+done
+
+# Validate query is not empty
+if [ -z "$query" ]; then
+  echo "Error: search mode requires a query. Usage: /literature --search \"modal logic\""
+  exit 1
+fi
+
+# Split query into terms for scoring
+IFS=' ' read -ra query_terms <<< "$query"
+```
+
+### Search Step 2: Run zotero-search.sh (with Graceful Degradation)
+
+```bash
+zotero_results=""
+zotero_available=false
+zotero_exit_code=0
+
+if [ -n "$zotero_script" ] && [ -x "$zotero_script" ]; then
+  # Run zotero-search.sh with JSON output format, limit 20 results
+  zotero_results=$("$zotero_script" --format=json --limit=20 "${query_terms[@]}" 2>&1) || zotero_exit_code=$?
+
+  case "$zotero_exit_code" in
+    0)
+      zotero_available=true
+      ;;
+    1)
+      # Library not found — show setup instructions (zotero-search.sh prints them to stderr)
+      echo "## Zotero Library Not Configured"
+      echo ""
+      echo "No zotero-library.json found. To enable Zotero search:"
+      echo "1. Install Zotero with Better BibTeX plugin"
+      echo "2. Export your library: File > Export Library > Better CSL JSON"
+      echo "3. Save as: \$LITERATURE_DIR/zotero-library.json (default: ~/Projects/Literature/zotero-library.json)"
+      echo ""
+      echo "Falling back to Literature/ index search only..."
+      zotero_results=""
+      ;;
+    2)
+      # No results found — continue to index-only search
+      echo "No Zotero results for query: $query"
+      zotero_results=""
+      ;;
+  esac
+else
+  echo "Note: zotero-search.sh not found. Searching Literature/ index only."
+fi
+```
+
+### Search Step 3: Cross-Reference Zotero Results with Literature/ Index
+
+```bash
+# Parse Zotero results (JSON array of entries)
+declare -A result_status  # citation_key -> "already_converted" | "pdf_available" | "pdf_not_available"
+declare -A result_paths   # citation_key -> path in Literature/ index (for already_converted)
+declare -a result_keys    # ordered list of citation keys
+
+if [ -n "$zotero_results" ] && [ "$zotero_available" = "true" ]; then
+  # Extract citation keys from Zotero results
+  while IFS= read -r ckey; do
+    result_keys+=("$ckey")
+
+    # Check if already in Literature/ index (match on bib_key or zotero_key == citation_key)
+    if [ -f "$index_file" ]; then
+      match_path=$(jq -r --arg ck "$ckey" '
+        .entries[] | select(
+          (.bib_key == $ck) or
+          (.zotero_key == $ck) or
+          (.id == $ck)
+        ) | .path
+      ' "$index_file" 2>/dev/null | head -1)
+
+      if [ -n "$match_path" ] && [ "$match_path" != "null" ]; then
+        result_status["$ckey"]="already_converted"
+        result_paths["$ckey"]="$lit_dir/$match_path"
+        continue
+      fi
+    fi
+
+    # Check if PDF is available via Zotero
+    pdf_paths=$(echo "$zotero_results" | jq -r --arg ck "$ckey" '
+      .[] | select(.citation_key == $ck) | .pdf_paths[]?
+    ' 2>/dev/null)
+
+    if [ -n "$pdf_paths" ]; then
+      # Verify at least one PDF exists
+      has_pdf=false
+      while IFS= read -r pdf_path; do
+        if [ -f "$pdf_path" ]; then
+          has_pdf=true
+          break
+        fi
+      done <<< "$pdf_paths"
+
+      if [ "$has_pdf" = "true" ]; then
+        result_status["$ckey"]="pdf_available"
+      else
+        result_status["$ckey"]="pdf_not_available"
+      fi
+    else
+      result_status["$ckey"]="pdf_not_available"
+    fi
+  done < <(echo "$zotero_results" | jq -r '.[].citation_key' 2>/dev/null)
+fi
+```
+
+### Search Step 4: Search Literature/ Index Directly
+
+```bash
+# Score index entries against query terms (keyword overlap scoring)
+declare -A index_scores  # entry_id -> score
+declare -a index_keys    # ordered list of index entry ids
+
+if [ -f "$index_file" ]; then
+  while IFS=$'\t' read -r entry_id entry_path entry_keywords entry_title; do
+    score=0
+    combined="${entry_keywords} ${entry_title}"
+    combined_lower=$(echo "$combined" | tr '[:upper:]' '[:lower:]')
+
+    for term in "${query_terms[@]}"; do
+      term_lower=$(echo "$term" | tr '[:upper:]' '[:lower:]')
+      if echo "$combined_lower" | grep -q "$term_lower"; then
+        score=$(( score + 1 ))
+      fi
+    done
+
+    if [ "$score" -gt 0 ]; then
+      index_scores["$entry_id"]=$score
+      index_keys+=("$entry_id")
+
+      # Only add to results if not already present from Zotero search
+      bib_key=$(jq -r --arg id "$entry_id" '.entries[] | select(.id == $id) | .bib_key // ""' "$index_file" 2>/dev/null)
+      if [ -z "$bib_key" ] || [ -z "${result_status[$bib_key]+_}" ]; then
+        if [ -z "${result_status[$entry_id]+_}" ]; then
+          result_keys+=("$entry_id")
+          result_status["$entry_id"]="already_converted"
+          result_paths["$entry_id"]="$lit_dir/$entry_path"
+        fi
+      fi
+    fi
+  done < <(jq -r '.entries[] | [.id, .path, (.keywords // [] | join(" ")), (.title // "")] | @tsv' "$index_file" 2>/dev/null)
+fi
+```
+
+### Search Step 5: Merge and Sort Results
+
+```bash
+# Build display array sorted by score (Zotero score + index keyword overlap)
+declare -a display_entries  # "citation_key|title|authors|year|score|status" strings
+
+for ckey in "${result_keys[@]}"; do
+  # Get metadata from Zotero results or index
+  if [ "$zotero_available" = "true" ] && echo "$zotero_results" | jq -e --arg ck "$ckey" '.[] | select(.citation_key == $ck)' >/dev/null 2>&1; then
+    title=$(echo "$zotero_results" | jq -r --arg ck "$ckey" '.[] | select(.citation_key == $ck) | .title' 2>/dev/null | head -1)
+    authors=$(echo "$zotero_results" | jq -r --arg ck "$ckey" '.[] | select(.citation_key == $ck) | .authors | join(", ")' 2>/dev/null | head -1)
+    year=$(echo "$zotero_results" | jq -r --arg ck "$ckey" '.[] | select(.citation_key == $ck) | .year' 2>/dev/null | head -1)
+    score=$(echo "$zotero_results" | jq -r --arg ck "$ckey" '.[] | select(.citation_key == $ck) | .score' 2>/dev/null | head -1)
+  else
+    # Get from Literature/ index
+    title=$(jq -r --arg id "$ckey" '.entries[] | select(.id == $id) | .title // "Unknown"' "$index_file" 2>/dev/null)
+    authors=$(jq -r --arg id "$ckey" '.entries[] | select(.id == $id) | (.authors // []) | join(", ")' "$index_file" 2>/dev/null)
+    year=$(jq -r --arg id "$ckey" '.entries[] | select(.id == $id) | .year // "?"' "$index_file" 2>/dev/null)
+    score="${index_scores[$ckey]:-0}"
+  fi
+
+  status="${result_status[$ckey]:-pdf_not_available}"
+  display_entries+=("${ckey}|${title}|${authors}|${year}|${score}|${status}")
+done
+
+# Sort by score descending (simple bubble-pass sort on score field)
+IFS=$'\n' display_entries=($(printf '%s\n' "${display_entries[@]}" | sort -t'|' -k5 -rn))
+```
+
+### Search Step 6: Present Multi-Select Results via AskUserQuestion
+
+```bash
+# Build options array for AskUserQuestion
+options=()
+for entry in "${display_entries[@]}"; do
+  IFS='|' read -r ckey title authors year score status <<< "$entry"
+
+  # Format availability tag
+  case "$status" in
+    already_converted) tag="[IMPORTED]" ;;
+    pdf_available)     tag="[PDF AVAILABLE]" ;;
+    pdf_not_available) tag="[NO PDF]" ;;
+  esac
+
+  label="${tag} ${title}"
+  description="Authors: ${authors:-Unknown} | Year: ${year:-?} | Score: ${score} | Key: ${ckey}"
+  options+=("{\"label\": \"${label}\", \"description\": \"${description}\"}")
+done
+
+# Add escape option
+options+=("{\"label\": \"Done — no import\", \"description\": \"Exit search without importing\"}")
+```
+
+Present via AskUserQuestion:
+```json
+{
+  "question": "Search results for '{query}' ({N} results). Select entries to import:",
+  "header": "Literature Search Results",
+  "multiSelect": true,
+  "options": [
+    {
+      "label": "[IMPORTED] Title of Already-Converted Paper",
+      "description": "Authors: Author Name | Year: 2023 | Score: 5 | Key: author2023_title"
+    },
+    {
+      "label": "[PDF AVAILABLE] Title of Importable Paper",
+      "description": "Authors: Author Name | Year: 2022 | Score: 3 | Key: author2022_title"
+    },
+    {
+      "label": "[NO PDF] Title of Paper Without PDF",
+      "description": "Authors: Author Name | Year: 2021 | Score: 2 | Key: author2021_title"
+    },
+    {
+      "label": "Done — no import",
+      "description": "Exit search without importing"
+    }
+  ]
+}
+```
+
+### Search Step 7: Route Selected Entries
+
+```bash
+for selected in "${user_selections[@]}"; do
+  ckey=$(extract_citation_key_from_selection "$selected")
+  status="${result_status[$ckey]}"
+
+  case "$status" in
+    already_converted)
+      # Show path info — already in Literature/
+      path="${result_paths[$ckey]}"
+      echo "Already imported: $ckey"
+      echo "  Path: $path"
+      ;;
+
+    pdf_available)
+      # Trigger import pipeline (Steps 8-12 below)
+      handle_import "$ckey" "$zotero_results"
+      ;;
+
+    pdf_not_available)
+      echo "No PDF available for: $ckey"
+      echo "  Add the PDF to your Zotero library to enable import."
+      ;;
+  esac
+done
+```
+
+**Edge case**: If both Zotero search fails (exit 1) and the index has no matching entries, display:
+```
+No results found for query: "{query}"
+
+Zotero library not configured (or no matches). Literature/ index also returned no matches.
+Suggestions:
+  - Try broader search terms
+  - Run /literature --convert to add local PDFs
+  - Configure Zotero: set ZOTERO_LIBRARY or place zotero-library.json in $LITERATURE_DIR/
+```
+
+---
+
+## Mode: Import Pipeline (Steps 8-12)
+
+Import pipeline triggered from search selection for PDF-available entries. Invoked from Search Step 7 for each `pdf_available` entry.
+
+### Import Step 8: Confirm Import
+
+```bash
+function handle_import() {
+  local ckey="$1"
+  local zotero_results="$2"
+
+  # Extract Zotero metadata for this entry
+  local title=$(echo "$zotero_results" | jq -r --arg ck "$ckey" '.[] | select(.citation_key == $ck) | .title' 2>/dev/null)
+  local authors=$(echo "$zotero_results" | jq -r --arg ck "$ckey" '.[] | select(.citation_key == $ck) | .authors | join(", ")' 2>/dev/null)
+  local year=$(echo "$zotero_results" | jq -r --arg ck "$ckey" '.[] | select(.citation_key == $ck) | .year' 2>/dev/null)
+  local pdf_path=$(echo "$zotero_results" | jq -r --arg ck "$ckey" '.[] | select(.citation_key == $ck) | .pdf_paths[0]' 2>/dev/null)
+  local abstract=$(echo "$zotero_results" | jq -r --arg ck "$ckey" '.[] | select(.citation_key == $ck) | .abstract_snippet' 2>/dev/null)
+```
+
+Present confirmation:
+```json
+{
+  "question": "Import '{title}' ({year}) by {authors}?",
+  "header": "Confirm Import",
+  "multiSelect": false,
+  "options": [
+    {
+      "label": "Yes — import and convert",
+      "description": "Symlink PDF, convert to markdown, update index with Zotero metadata"
+    },
+    {
+      "label": "Skip this entry",
+      "description": "Do not import '{title}'"
+    }
+  ]
+}
+```
+
+If user selects "Skip this entry": return without importing.
+
+### Import Step 9: Create PDF Symlink
+
+```bash
+  # Ensure pdfs/ directory exists in Literature/ repo
+  mkdir -p "$lit_dir/pdfs"
+
+  # Symlink path: $LITERATURE_DIR/pdfs/{citation_key}.pdf
+  symlink_path="$lit_dir/pdfs/${ckey}.pdf"
+
+  if [ -L "$symlink_path" ]; then
+    echo "Symlink already exists: $symlink_path (skipping creation)"
+  elif [ -f "$symlink_path" ]; then
+    echo "File already exists at symlink path: $symlink_path (skipping)"
+  else
+    ln -s "$pdf_path" "$symlink_path"
+    echo "Created symlink: $symlink_path -> $pdf_path"
+  fi
+```
+
+### Import Step 10: Run Convert with Pre-Populated Zotero Metadata
+
+```bash
+  # Pre-populate metadata from Zotero to reduce user prompts during convert
+  # Pass as environment variables read by handle_convert()
+  export PREFILL_TITLE="$title"
+  export PREFILL_AUTHORS="$authors"
+  export PREFILL_YEAR="$year"
+  export PREFILL_DOC_TYPE="paper"
+  export PREFILL_SOURCE_FORMAT="pdf"
+
+  # Call existing handle_convert() with the symlinked PDF path
+  file="$symlink_path"
+  handle_convert
+
+  # Clear prefill variables
+  unset PREFILL_TITLE PREFILL_AUTHORS PREFILL_YEAR PREFILL_DOC_TYPE PREFILL_SOURCE_FORMAT
+```
+
+**Note**: handle_convert() checks PREFILL_* variables before prompting the user for each field:
+```bash
+# In handle_convert Convert Step 3f (metadata prompts), check PREFILL_* first:
+if [ -n "${PREFILL_TITLE:-}" ]; then
+  final_title="$PREFILL_TITLE"
+else
+  # ... prompt user
+fi
+```
+
+### Import Step 11: Patch Index Entry with Zotero-Specific Fields
+
+```bash
+  # After handle_convert() writes the index entry, patch it with Zotero-specific fields
+  # The entry_id is derived from the symlink basename (citation_key)
+  entry_id=$(echo "$ckey" | tr '[:upper:]' '[:lower:]' | tr ' -' '_')
+
+  # Get additional Zotero fields
+  local zotero_key=$(echo "$zotero_results" | jq -r --arg ck "$ckey" '.[] | select(.citation_key == $ck) | .zotero_key // ""' 2>/dev/null)
+  local zotero_path="$pdf_path"
+  local bib_key="$ckey"
+  # project_tags: derive from Zotero collections if available, else empty array
+  local project_tags=$(echo "$zotero_results" | jq -r --arg ck "$ckey" '.[] | select(.citation_key == $ck) | .collections // []' 2>/dev/null)
+
+  # Patch index.json with Zotero-specific fields via jq
+  if jq -e --arg id "$entry_id" '.entries[] | select(.id == $id)' "$index_file" >/dev/null 2>&1; then
+    tmp=$(mktemp)
+    jq --arg id "$entry_id" \
+       --arg zotero_key "$zotero_key" \
+       --arg zotero_path "$zotero_path" \
+       --arg bib_key "$bib_key" \
+       --argjson project_tags "$project_tags" \
+       '.entries = [.entries[] | if .id == $id then . + {
+         "zotero_key": (if $zotero_key == "" then null else $zotero_key end),
+         "zotero_path": $zotero_path,
+         "bib_key": $bib_key,
+         "project_tags": $project_tags
+       } else . end]' \
+       "$index_file" > "$tmp" && mv "$tmp" "$index_file"
+    echo "Patched index entry '$entry_id' with Zotero metadata"
+  else
+    echo "Warning: index entry '$entry_id' not found after convert — Zotero fields not patched"
+  fi
+```
+
+### Import Step 12: Git Commit to Literature/ Repo
+
+```bash
+  # Non-blocking git commit in $LITERATURE_DIR
+  if [ -d "$lit_dir/.git" ]; then
+    (
+      cd "$lit_dir" && \
+      git add -A && \
+      git commit -m "import: $title ($year)" 2>&1 | head -5
+    ) || echo "Note: git commit in $lit_dir failed (non-blocking)"
+  fi
+
+  echo ""
+  echo "Import complete: $ckey"
+  echo "  Markdown: $lit_dir/{converted_path}"
+  echo "  Index: $index_file (entry: $entry_id)"
+}  # end handle_import()
+```
+
+**Processing order**: Import processes entries sequentially (one at a time) to support interactive convert prompts. Each entry completes its full import pipeline (steps 9-12) before the next entry begins.
+
+---
+
 ## Error Handling
 
 See `rules/error-handling.md` for general patterns. Skill-specific behaviors:
@@ -1036,11 +1473,17 @@ See `rules/error-handling.md` for general patterns. Skill-specific behaviors:
 - **Empty pdftotext output**: Warn "no text extracted, OCR required", skip file, continue
 - **jq failure**: Use two-step write pattern (write to tmp file, then mv) to avoid corruption
 - **Git commit failure**: Non-blocking — log and continue
+- **zotero-library.json not found**: Exit code 1 from zotero-search.sh — show setup instructions, fall back to index-only search
+- **zotero-search.sh returns no results**: Exit code 2 — continue to index-only search; combine results
+- **Broken PDF symlink**: Validate mode will detect broken symlinks in pdfs/ directory; non-blocking for import
+- **Duplicate import**: Check index for existing bib_key/zotero_key match before importing; show [IMPORTED] tag
 
 ## Standards Reference
 
 - Token counting: `chars / 4 + 20` (matches memory-harvest.sh pattern)
 - Chunking: content-aware logical splitting at 4,000-line threshold — divide at chapter/section headings; merge small adjacent sections; fall back to mechanical 4,000-line splits when no headings detected
 - Source file convention: PDF/DJVU source files are co-located with their converted markdown in the same `specs/literature/` directory or subdirectory. Source files are gitignored via `specs/literature/**/*.pdf` and `specs/literature/**/*.djvu` patterns. Users must add source files manually after checkout.
-- Index schema: root `specs/literature/index.json` uses `entries[]` with enriched metadata fields (authors, title, year, doc_type, source_format, parent_doc, page_range)
+- Index schema: root `specs/literature/index.json` uses `entries[]` with enriched metadata fields (authors, title, year, doc_type, source_format, parent_doc, page_range, bib_key, zotero_key, zotero_path, project_tags)
 - Drift threshold: >20% change in token count triggers validation warning
+- Zotero search: invokes `.claude/extensions/literature/scripts/zotero-search.sh` with `--format=json --limit=20 {query_terms}`; handles exit codes 0 (success), 1 (library not found), 2 (no results)
+- Import pipeline: symlink PDF to `$LITERATURE_DIR/pdfs/{citation_key}.pdf`, convert via handle_convert() with PREFILL_* env vars, patch index with Zotero fields, git commit (non-blocking)
