@@ -11,9 +11,8 @@ next_project_number: 727
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,652,718,727,728 | -- | agent-system, Literature, Terminal UI, ... |
-| 2 | 719 | 718 | Literature |
-| 3 | 720 | 719 | Literature |
+| 1 | 78,87,652,719,727,728 | -- | agent-system, Literature, Terminal UI, ... |
+| 2 | 720 | 719 | Literature |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -31,9 +30,8 @@ next_project_number: 727
 
 ### Literature
 
-718 [NOT STARTED] — Create cite.md command file at .claude/extensions/literature/comm
-  └─ 719 [NOT STARTED] — Update literature extension manifest and documentation for /cite 
-    └─ 720 [NOT STARTED] — Integration testing and verification of /cite command end-to-end.
+719 [NOT STARTED] — Update literature extension manifest and documentation for /cite 
+  └─ 720 [NOT STARTED] — Integration testing and verification of /cite command end-to-end.
 
 ### Uncategorized
 
@@ -146,7 +144,7 @@ next_project_number: 727
 ---
 
 ### 718. Create cite command file
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: Literature
 - **Dependencies**: Task 717
