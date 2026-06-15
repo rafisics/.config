@@ -96,7 +96,9 @@ next_project_number: 716
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
-- **Research**: [710_research_centralized_literature_zotero/reports/01_team-research.md]
+- **Research**:
+  - [710_research_centralized_literature_zotero/reports/01_team-research.md]
+  - [710_research_centralized_literature_zotero/reports/02_sqlite-vs-json-research.md]
 
 **Description**: Research architecture for centralizing literature management across repos with Zotero.bib integration. Analyze: (1) Zotero.bib format at ~/texmf/bibtex/bib/Zotero.bib -- BibTeX parsing, file field for PDF paths, entry structure. (2) Current per-repo specs/literature/ in BimodalLogic (23 entries) and cslib (12 entries) -- overlap analysis, index.json schema differences. (3) Centralized ~/Projects/Literature/ repo structure design -- directory layout, unified index.json with enhanced metadata (author, year, bib_key, document type, source format). (4) Cross-repo path resolution via LITERATURE_DIR environment variable with ~/Projects/Literature/ default. (5) How /literature command and --lit flag should discover and operate on the centralized repo from any project. (6) PDF storage strategy -- copy from Zotero storage to Literature/ or symlink. Deliverable: architecture report covering all 6 areas with concrete design decisions.
 

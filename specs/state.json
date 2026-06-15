@@ -2422,16 +2422,21 @@
       "description": "Research architecture for centralizing literature management across repos with Zotero.bib integration. Analyze: (1) Zotero.bib format at ~/texmf/bibtex/bib/Zotero.bib -- BibTeX parsing, file field for PDF paths, entry structure. (2) Current per-repo specs/literature/ in BimodalLogic (23 entries) and cslib (12 entries) -- overlap analysis, index.json schema differences. (3) Centralized ~/Projects/Literature/ repo structure design -- directory layout, unified index.json with enhanced metadata (author, year, bib_key, document type, source format). (4) Cross-repo path resolution via LITERATURE_DIR environment variable with ~/Projects/Literature/ default. (5) How /literature command and --lit flag should discover and operate on the centralized repo from any project. (6) PDF storage strategy -- copy from Zotero storage to Literature/ or symlink. Deliverable: architecture report covering all 6 areas with concrete design decisions.",
       "dependencies": [],
       "created": "2026-06-15T04:40:00Z",
-      "last_updated": "2026-06-15T04:57:31Z",
-      "next_artifact_number": 2,
+      "last_updated": "2026-06-15T05:06:40Z",
+      "next_artifact_number": 3,
       "artifacts": [
         {
           "path": "specs/710_research_centralized_literature_zotero/reports/01_team-research.md",
           "type": "research",
           "summary": "Team research (4 teammates): centralized literature architecture with Zotero.bib integration"
+        },
+        {
+          "path": "specs/710_research_centralized_literature_zotero/reports/02_sqlite-vs-json-research.md",
+          "type": "research",
+          "summary": "SQLite vs JSON analysis for literature index"
         }
       ],
-      "session_id": "sess_1781498745_2e598e"
+      "session_id": "sess_1781499731_2231d4"
     },
     {
       "project_number": 711,
