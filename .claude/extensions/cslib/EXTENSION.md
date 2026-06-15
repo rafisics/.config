@@ -19,6 +19,7 @@ This project includes CSLib Lean 4 computer science library support via the csli
 | skill-cslib-research-hard | cslib-research-hard-agent | opus | Hard-mode CSLib research: adversarial verification (H4), BibKey citation grounding (H3) |
 | skill-cslib-implementation-hard | cslib-implementation-hard-agent | sonnet | Hard-mode CSLib proof implementation: anti-analysis (H2), sorry_inventory (H9), territory (H7) |
 | skill-pr-review-research | pr-review-research-agent | sonnet | Fetch and synthesize GitHub PR and Zulip discussion for review tasks |
+| skill-pr-review-implementation | pr-review-implementation-agent | sonnet | Compose pr-response.md and zulip-response.md for pr-type review tasks; falls back to legacy pr-description workflow when sources are absent |
 
 ### When to Use --hard for CSLib Tasks
 
@@ -58,3 +59,11 @@ CSLib implementations must pass:
 - `lake exe checkInitImports` - Verify Cslib.Init imports
 - `lake exe lint-style` - Style linting
 - `lake shake --add-public --keep-implied --keep-prefix` - Dependency analysis
+
+### Commands
+
+| Command | Usage | Description |
+|---------|-------|-------------|
+| `/pr` | `/pr <task_number\|path\|description> [--draft] [--dry-run]` | Submit CSLib PR: create branch, run CI, create PR on leanprover/cslib (user-only) |
+| `/pr` | `/pr --review <sources...>` | Create pr-type review task from GitHub PR URLs, Zulip URLs, or descriptions |
+| `/pr` | `/pr N` (when task is [PR READY] with sources) | Push changes, post GitHub PR comment, optionally send Zulip message |
