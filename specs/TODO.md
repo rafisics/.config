@@ -11,11 +11,10 @@ next_project_number: 727
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,652,716,727,728 | -- | agent-system, Literature, Terminal UI, ... |
-| 2 | 717 | 716 | Literature |
-| 3 | 718 | 717 | Literature |
-| 4 | 719 | 718 | Literature |
-| 5 | 720 | 719 | Literature |
+| 1 | 78,87,652,717,727,728 | -- | agent-system, Literature, Terminal UI, ... |
+| 2 | 718 | 717 | Literature |
+| 3 | 719 | 718 | Literature |
+| 4 | 720 | 719 | Literature |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -33,11 +32,10 @@ next_project_number: 727
 
 ### Literature
 
-716 [NOT STARTED] — Create cite-extract.sh script at .claude/extensions/literature/sc
-  └─ 717 [NOT STARTED] — Create skill-cite direct execution skill at .claude/extensions/li
-    └─ 718 [NOT STARTED] — Create cite.md command file at .claude/extensions/literature/comm
-      └─ 719 [NOT STARTED] — Update literature extension manifest and documentation for /cite 
-        └─ 720 [NOT STARTED] — Integration testing and verification of /cite command end-to-end.
+717 [NOT STARTED] — Create skill-cite direct execution skill at .claude/extensions/li
+  └─ 718 [NOT STARTED] — Create cite.md command file at .claude/extensions/literature/comm
+    └─ 719 [NOT STARTED] — Update literature extension manifest and documentation for /cite 
+      └─ 720 [NOT STARTED] — Integration testing and verification of /cite command end-to-end.
 
 ### Uncategorized
 
@@ -170,7 +168,7 @@ next_project_number: 727
 ---
 
 ### 716. Create cite extract script
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: Literature
 - **Dependencies**: None

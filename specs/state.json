@@ -2626,11 +2626,14 @@
     {
       "project_number": 716,
       "project_name": "create_cite_extract_script",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "meta",
       "description": "Create cite-extract.sh script at .claude/extensions/literature/scripts/cite-extract.sh for citation claim extraction from text. Detect patterns: author-year references (Smith 2020), parenthetical citations (Smith, 2020), \"according to X\", \"as shown by X\", theorem/lemma attributions, direct quotes with attribution. Output JSON array of {claim, source_text, line_number, confidence}. Script reads from stdin or file path argument. Used by skill-cite to identify claims needing verification.",
       "dependencies": [],
-      "topic": "Literature"
+      "topic": "Literature",
+      "last_updated": "2026-06-15T22:05:55Z",
+      "session_id": "sess_1781560221_abe690_716",
+      "completion_summary": "Created cite-extract.sh with 8 citation pattern families, JSON/pretty output, confidence filtering, dedup, stdin/file input"
     },
     {
       "project_number": 717,
