@@ -1,15 +1,15 @@
 {
-  "status": "planned",
-  "summary": "Created 3-phase plan: Phase 1 updates EXTENSION.md and claudemd.md merge source (command rows + descriptions), Phase 2 updates README.md (commands, index schema, Zotero workflow section, artifacts table), Phase 3 updates CLAUDE.md to match. Phases 1-2 are parallel (Wave 1), Phase 3 depends on Phase 1.",
-  "phases_completed": 1,
-  "phases_total": 1,
+  "status": "implemented",
+  "summary": "Updated EXTENSION.md, README.md, claudemd.md, and CLAUDE.md to document Zotero search and import capabilities. Added --search and --task command rows to all 4 files, enriched Index Schema with 4 new fields (bib_key, zotero_key, zotero_path, project_tags), added Zotero Search and Import workflow section to README.md, and updated skill-literature description across claudemd.md and CLAUDE.md.",
+  "phases_completed": 3,
+  "phases_total": 3,
   "blockers": [],
   "continuation_context": null,
   "artifacts": [
     {
-      "path": "specs/715_update_literature_extension_docs/plans/01_docs-update-plan.md",
-      "type": "plan",
-      "summary": "3-phase implementation plan for literature extension documentation updates"
+      "path": "specs/715_update_literature_extension_docs/summaries/01_docs-update-summary.md",
+      "type": "summary",
+      "summary": "Implementation summary for literature extension documentation updates"
     }
   ]
 }
