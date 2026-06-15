@@ -22,7 +22,7 @@ next_project_number: 716
 ### Agent System
 
 652 [NOT STARTED] — After ~1 week of the new pipeline running, review logs to verify 
-710 [NOT STARTED] — Research architecture for centralizing literature management acro
+710 [RESEARCHED] — Research architecture for centralizing literature management acro
   └─ 711 [NOT STARTED] — Create a Zotero BibTeX search script at .claude/extensions/litera
     └─ 714 [NOT STARTED] — Enhance the /literature command and skill-literature to support Z
       └─ 715 [NOT STARTED] — Update literature extension documentation to reflect the centrali
@@ -92,10 +92,11 @@ next_project_number: 716
 ---
 
 ### 710. Research centralized literature zotero
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
+- **Research**: [710_research_centralized_literature_zotero/reports/01_team-research.md]
 
 **Description**: Research architecture for centralizing literature management across repos with Zotero.bib integration. Analyze: (1) Zotero.bib format at ~/texmf/bibtex/bib/Zotero.bib -- BibTeX parsing, file field for PDF paths, entry structure. (2) Current per-repo specs/literature/ in BimodalLogic (23 entries) and cslib (12 entries) -- overlap analysis, index.json schema differences. (3) Centralized ~/Projects/Literature/ repo structure design -- directory layout, unified index.json with enhanced metadata (author, year, bib_key, document type, source format). (4) Cross-repo path resolution via LITERATURE_DIR environment variable with ~/Projects/Literature/ default. (5) How /literature command and --lit flag should discover and operate on the centralized repo from any project. (6) PDF storage strategy -- copy from Zotero storage to Literature/ or symlink. Deliverable: architecture report covering all 6 areas with concrete design decisions.
 
