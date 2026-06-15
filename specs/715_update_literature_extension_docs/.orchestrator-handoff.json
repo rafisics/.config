@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "summary": "Created 3-phase plan: Phase 1 updates EXTENSION.md and claudemd.md merge source (command rows + descriptions), Phase 2 updates README.md (commands, index schema, Zotero workflow section, artifacts table), Phase 3 updates CLAUDE.md to match. Phases 1-2 are parallel (Wave 1), Phase 3 depends on Phase 1.",
+  "phases_completed": 1,
+  "phases_total": 1,
+  "blockers": [],
+  "continuation_context": null,
+  "artifacts": [
+    {
+      "path": "specs/715_update_literature_extension_docs/plans/01_docs-update-plan.md",
+      "type": "plan",
+      "summary": "3-phase implementation plan for literature extension documentation updates"
+    }
+  ]
+}

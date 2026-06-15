@@ -1,7 +1,8 @@
 ## Literature Extension
 
 Manage literature directories: scan for unprocessed PDFs/DJVUs, convert them to markdown with
-content-aware chunking, maintain `index.json`, and validate filesystem consistency.
+content-aware chunking, maintain `index.json`, validate filesystem consistency, and search or
+import papers from Zotero via Better BibTeX CSL-JSON export.
 
 Supports both per-project `specs/literature/` directories and a shared centralized repository
 via the `LITERATURE_DIR` environment variable.
@@ -58,3 +59,5 @@ Better CSL JSON > "Keep updated" > save to `~/Projects/Literature/zotero-library
 | `/literature` | `/literature --convert [FILE]` | Convert PDF/DJVU to markdown with content-aware chunking |
 | `/literature` | `/literature --validate` | Validate index.json against filesystem |
 | `/literature` | `/literature --index FILE` | Add/update index entry for existing markdown file |
+| `/literature` | `/literature --search "QUERY"` | Search Zotero library and Literature/ index by keyword |
+| `/literature` | `/literature --task N` | Extract task N description as Zotero search query |
