@@ -1,0 +1,14 @@
+{
+  "status": "researched",
+  "summary": "The /pr command needs a new STEP 0.5 inserted between STEP 0 (--review flag) and STEP 1 (normal PR submission). Detection: pure-integer argument + task has sources[] + status==pr_ready. Flow: show changes, get approval, commit+push if needed, post pr-response.md via gh pr comment, optionally send zulip-response.md via zulip-send (check ~/.zuliprc for placeholder values first), transition task to [COMPLETED] via postflight pr_ready. zulip-send confirmed present at /home/benjamin/.nix-profile/bin/zulip-send but ~/.zuliprc has REPLACE_WITH_* placeholders. Stream/subject come from state.json sources[].parsed.stream_name and .topic.",
+  "artifacts": [
+    {
+      "path": "specs/725_add_pr_ready_push_zulip/reports/01_pr-ready-push-zulip.md",
+      "type": "report",
+      "summary": "Research report: /pr command structure, git push strategy, AskUserQuestion patterns, zulip-send CLI, gh pr comment, proposed STEP 0.5 structure"
+    }
+  ],
+  "blockers": [],
+  "continuation_context": null,
+  "next_action_hint": "plan"
+}

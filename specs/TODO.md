@@ -1,5 +1,5 @@
 ---
-next_project_number: 722
+next_project_number: 727
 ---
 
 # TODO
@@ -11,17 +11,19 @@ next_project_number: 722
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,652,716,721 | -- | agent-system, Terminal UI, Email Integration |
-| 2 | 717 | 716 | -- |
-| 3 | 718 | 717 | -- |
-| 4 | 719 | 718 | -- |
-| 5 | 720 | 719 | -- |
+| 1 | 78,87,652,716,721,725 | -- | agent-system, Literature, Terminal UI, ... |
+| 2 | 717,726 | 716,725 | agent-system, Literature |
+| 3 | 718 | 717 | Literature |
+| 4 | 719 | 718 | Literature |
+| 5 | 720 | 719 | Literature |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Agent System
 
 652 [NOT STARTED] — After ~1 week of the new pipeline running, review logs to verify 
+725 [RESEARCHED] — Extend /pr to handle PR READY tasks from the --review workflow. W
+  └─ 726 [NOT STARTED] — Register the new pr task type routing for the core agent system (
 
 ### Terminal UI
 
@@ -31,7 +33,7 @@ next_project_number: 722
 
 78 [PLANNED] — Fix Gmail SMTP authentication failure when sending emails via Him
 
-### Uncategorized
+### Literature
 
 716 [NOT STARTED] — Create cite-extract.sh script at .claude/extensions/literature/sc
   └─ 717 [NOT STARTED] — Create skill-cite direct execution skill at .claude/extensions/li
@@ -42,9 +44,61 @@ next_project_number: 722
 
 ## Tasks
 
+### 726. Update pr review routing docs
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: Task 722, Task 723, Task 724, Task 725
+
+**Description**: Register the new pr task type routing for the core agent system (not CSLib-specific). Add routing entries so /research on pr tasks routes to skill-pr-review-research and /implement routes to skill-pr-review-implementation. Handle coexistence with CSLib extension pr routing (CSLib pr tasks use skill-cslib-research and skill-pr-implementation for PR submission workflow; core pr tasks from --review use the new review skills). Update CLAUDE.md routing tables, pr-prohibition.md to document the --review workflow, and command reference table to show /pr --review usage. Update skill-to-agent mapping tables.
+
+---
+
+### 725. Add pr ready push zulip
+- **Status**: [RESEARCHED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: Task 724
+- **Research**: [725_add_pr_ready_push_zulip/reports/01_pr-ready-push-zulip.md]
+
+**Description**: Extend /pr to handle PR READY tasks from the --review workflow. When invoked on a PR READY pr-type task: (1) push a single next commit (no squash, preserving the commit as a reference for PR comments), (2) seek explicit user approval via AskUserQuestion before pushing, (3) if task has zulip-response.md artifact, offer to send Zulip message using zulip-send CLI with parsed stream/subject from the Zulip source URL. Zulip URL parsing: https://org.zulipchat.com/#narrow/stream/123-general/topic/my.20topic extracts --stream "general" --subject "my topic" (.20 = URL-encoded space). Support both stream messages (zulip-send --stream S --subject T --message M) and piped content (cat zulip-response.md | zulip-send --stream S --subject T). Seek separate explicit approval for Zulip messages. Transition task to [COMPLETED] after all actions.
+
+---
+
+### 724. Create pr review implementation skill
+- **Status**: [COMPLETED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: Task 723
+
+**Description**: Create skill-pr-review-implementation that handles /implement on pr-type tasks created by /pr --review. The implementation agent should: implement the solution addressing PR review feedback based on the research report, compose pr-response.md (summary of changes for GitHub PR comment) and/or zulip-response.md (message for Zulip thread) in the task directory as appropriate based on which source types are present, and transition the task to [PR READY]. Response files should reference the specific comments being addressed. The zulip-response.md should contain the message text ready to pipe to zulip-send.
+
+---
+
+### 723. Create pr review research skill
+- **Status**: [COMPLETED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: Task 722
+
+**Description**: Create skill-pr-review-research that handles /research on pr-type tasks created by /pr --review. The research agent should: fetch PR comments from GitHub URLs via gh api (repos/{owner}/{repo}/pulls/{num}/comments and /reviews), fetch Zulip thread content from Zulip URLs, synthesize the discussion across all sources, and produce a research report summarizing review feedback, requested changes, and open questions. Support multiple rounds of research as new comments arrive. The skill should read the sources array from task metadata in state.json to know which URLs to fetch.
+
+---
+
+### 722. Add pr review flag
+- **Status**: [COMPLETED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: Extend the /pr command (or create a core /pr command at .claude/commands/pr.md that coexists with the CSLib extension /pr) with a --review flag. When invoked as /pr --review, accept one or more arguments: GitHub PR URLs, Zulip chat URLs, and/or free-text descriptions. Create a task with task_type "pr" and store the provided URLs/descriptions as a "sources" array in the state.json task metadata. Each source entry should have {type: "github_pr" | "zulip_thread" | "description", url: "...", parsed: {...}} structure. Parse Zulip URLs (https://org.zulipchat.com/#narrow/stream/123-general/topic/my.20topic) to extract stream name and topic. Create the task directory and transition to [NOT STARTED]. Key design decisions during research: command location (core vs extension), source metadata schema, Zulip URL parsing utility.
+
+---
+
 ### 721. Design targeted literature retrieval
 - **Status**: [RESEARCHED]
 - **Task Type**: meta
+- **Topic**: Literature
 - **Dependencies**: None
 
 **Description**: Research and design a targeted literature retrieval system to replace the current shallow keyword-overlap scoring in literature-retrieve.sh. The current --lit flag does keyword-based targeting (not blind bulk dump) but scoring is crude: bag-of-words overlap on keywords[] and summary fields, no content search, no semantic weighting. With 183 entries (many at 5000+ tokens) and an 8000 token budget, selection quality matters enormously. Benchmark current approach against: (1) Enhanced jq scoring with TF-IDF-like weighting, content preview fields in index, multi-field weighted scoring. (2) Agent-callable search tool where agents query the index and selectively read files instead of preflight bulk injection. (3) SQLite FTS5 as ephemeral query cache (task 710 deferred this at 183 entries, threshold ~500-1000). Test against real queries from existing tasks (e.g., task 201 IPL completeness). Key design question: should --lit remain preflight injection or become an agent-invocable search tool? Produce concrete recommendation with implementation plan.
@@ -54,6 +108,7 @@ next_project_number: 722
 ### 720. Integration test cite command
 - **Status**: [NOT STARTED]
 - **Task Type**: meta
+- **Topic**: Literature
 - **Dependencies**: Task 719
 
 **Description**: Integration testing and verification of /cite command end-to-end. Test with a task that has known citation claims in its artifacts. Verify: (1) cite-extract.sh correctly identifies citation patterns, (2) Literature/ index search returns relevant matches, (3) Zotero search integration works (graceful degradation if no library), (4) confidence scoring produces reasonable results, (5) AskUserQuestion multiSelect presents findings correctly, (6) task creation for accepted changes follows multi-task creation standard. Fix any issues found during testing.
@@ -63,6 +118,7 @@ next_project_number: 722
 ### 719. Update literature manifest cite
 - **Status**: [NOT STARTED]
 - **Task Type**: meta
+- **Topic**: Literature
 - **Dependencies**: Task 718
 
 **Description**: Update literature extension manifest and documentation for /cite command. Files: (1) .claude/extensions/literature/manifest.json -- add cite command to provides.commands, skill-cite to provides.skills, cite-extract.sh to provides.scripts. (2) .claude/extensions/literature/EXTENSION.md -- add /cite section documenting workflow, arguments, and output format. (3) Core merge-sources/claudemd.md -- add /cite command row to command reference table. (4) Regenerate CLAUDE.md.
@@ -72,6 +128,7 @@ next_project_number: 722
 ### 718. Create cite command file
 - **Status**: [NOT STARTED]
 - **Task Type**: meta
+- **Topic**: Literature
 - **Dependencies**: Task 717
 
 **Description**: Create cite.md command file at .claude/extensions/literature/commands/cite.md with argument parsing. Modes: /cite N (verify citations for task N), /cite "description text" (verify freeform text), /cite N --gaps (focus on finding missing citations), /cite N "focus" (task + focus text). Validates task exists in state.json, delegates to skill-cite. Follow same pattern as commands/literature.md for argument parsing and skill delegation.
@@ -81,6 +138,7 @@ next_project_number: 722
 ### 717. Create skill cite verification
 - **Status**: [NOT STARTED]
 - **Task Type**: meta
+- **Topic**: Literature
 - **Dependencies**: Task 716
 
 **Description**: Create skill-cite direct execution skill at .claude/extensions/literature/skills/skill-cite/SKILL.md. Workflow: (1) read task artifacts (reports, plans) and description, (2) call cite-extract.sh to extract citation claims, (3) search Literature/ index and Zotero library (via zotero-search.sh) for matches to each claim, (4) score match confidence as confirmed/partial/unconfirmed/gap, (5) present findings via AskUserQuestion with multiSelect following multi-task creation standard (compare /fix-it pattern), (6) create tasks for accepted corrections, additions, and gap-fills. Direct execution skill like /fix-it -- no separate agent needed.
@@ -90,6 +148,7 @@ next_project_number: 722
 ### 716. Create cite extract script
 - **Status**: [NOT STARTED]
 - **Task Type**: meta
+- **Topic**: Literature
 - **Dependencies**: None
 
 **Description**: Create cite-extract.sh script at .claude/extensions/literature/scripts/cite-extract.sh for citation claim extraction from text. Detect patterns: author-year references (Smith 2020), parenthetical citations (Smith, 2020), "according to X", "as shown by X", theorem/lemma attributions, direct quotes with attribution. Output JSON array of {claim, source_text, line_number, confidence}. Script reads from stdin or file path argument. Used by skill-cite to identify claims needing verification.
