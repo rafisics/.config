@@ -7,7 +7,7 @@ This project includes CSLib Lean 4 computer science library support via the csli
 | Language | Research Tools | Implementation Tools |
 |----------|----------------|---------------------|
 | `cslib` | WebSearch, WebFetch, Read, lean-lsp MCP (inherited) | Read, Write, Edit, Bash (lake build, lake test, lake lint, lake exe checkInitImports, lake exe lint-style, lake shake) |
-| `pr` | WebSearch, WebFetch, Read, Bash | Read, Write, Edit, Bash (git, lake build, lake test) |
+| `pr` | gh api, python3 zulip client, Read, Bash | Read, Write, Edit, Bash (git, lake build, lake test) |
 
 ### Skill-Agent Mapping
 
@@ -18,6 +18,7 @@ This project includes CSLib Lean 4 computer science library support via the csli
 | skill-pr-implementation | cslib-implementation-agent | sonnet | PR description preparation only -- produces pr-description.md, transitions task to [PR READY]; branch creation and CI handled by /pr |
 | skill-cslib-research-hard | cslib-research-hard-agent | opus | Hard-mode CSLib research: adversarial verification (H4), BibKey citation grounding (H3) |
 | skill-cslib-implementation-hard | cslib-implementation-hard-agent | sonnet | Hard-mode CSLib proof implementation: anti-analysis (H2), sorry_inventory (H9), territory (H7) |
+| skill-pr-review-research | pr-review-research-agent | sonnet | Fetch and synthesize GitHub PR and Zulip discussion for review tasks |
 
 ### When to Use --hard for CSLib Tasks
 

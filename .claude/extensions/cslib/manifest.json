@@ -13,14 +13,16 @@
       "cslib-research-agent.md",
       "cslib-implementation-agent.md",
       "cslib-research-hard-agent.md",
-      "cslib-implementation-hard-agent.md"
+      "cslib-implementation-hard-agent.md",
+      "pr-review-research-agent.md"
     ],
     "skills": [
       "skill-cslib-research",
       "skill-cslib-implementation",
       "skill-pr-implementation",
       "skill-cslib-research-hard",
-      "skill-cslib-implementation-hard"
+      "skill-cslib-implementation-hard",
+      "skill-pr-review-research"
     ],
     "commands": ["pr.md"],
     "rules": [
@@ -35,7 +37,7 @@
   "routing": {
     "research": {
       "cslib": "skill-cslib-research",
-      "pr": "skill-researcher"
+      "pr": "skill-pr-review-research"
     },
     "plan": {
       "cslib": "skill-planner",
