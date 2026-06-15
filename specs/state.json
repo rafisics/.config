@@ -2416,13 +2416,13 @@
     {
       "project_number": 710,
       "project_name": "research_centralized_literature_zotero",
-      "status": "planned",
+      "status": "completed",
       "task_type": "meta",
       "topic": "agent-system",
       "description": "Research architecture for centralizing literature management across repos with Zotero.bib integration. Analyze: (1) Zotero.bib format at ~/texmf/bibtex/bib/Zotero.bib -- BibTeX parsing, file field for PDF paths, entry structure. (2) Current per-repo specs/literature/ in BimodalLogic (23 entries) and cslib (12 entries) -- overlap analysis, index.json schema differences. (3) Centralized ~/Projects/Literature/ repo structure design -- directory layout, unified index.json with enhanced metadata (author, year, bib_key, document type, source format). (4) Cross-repo path resolution via LITERATURE_DIR environment variable with ~/Projects/Literature/ default. (5) How /literature command and --lit flag should discover and operate on the centralized repo from any project. (6) PDF storage strategy -- copy from Zotero storage to Literature/ or symlink. Deliverable: architecture report covering all 6 areas with concrete design decisions.",
       "dependencies": [],
       "created": "2026-06-15T04:40:00Z",
-      "last_updated": "2026-06-15T05:12:05Z",
+      "last_updated": "2026-06-15T05:32:05Z",
       "next_artifact_number": 3,
       "artifacts": [
         {
@@ -2441,12 +2441,12 @@
           "summary": "6-phase implementation plan for centralized literature with Zotero integration"
         }
       ],
-      "session_id": "sess_1781500066_79b8a4"
+      "session_id": "sess_1781500889_343926"
     },
     {
       "project_number": 711,
       "project_name": "create_zotero_search_script",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "meta",
       "topic": "agent-system",
       "description": "Create a Zotero search script at .claude/extensions/literature/scripts/zotero-search.sh. The script searches ~/Projects/Literature/zotero-library.json (Better BibTeX CSL-JSON auto-export, configurable via ZOTERO_LIBRARY env var) using jq. Features: (1) CSL-JSON entry search via jq -- no BibTeX parsing or LaTeX escaping needed. (2) Multi-field search across title, author, abstract fields. (3) PDF availability check -- resolve file paths from Zotero storage, verify files exist on disk. (4) Ranked results by keyword relevance score. (5) JSON output format with bib_key, title, authors, year, type, pdf_paths (existing only), abstract snippet. Note: task 710 establishes the centralized Literature/ repo and LITERATURE_DIR env var; this script builds on that foundation. Register in literature extension manifest.",
@@ -2454,9 +2454,10 @@
         710
       ],
       "created": "2026-06-15T04:40:00Z",
-      "last_updated": "2026-06-15T04:40:00Z",
+      "last_updated": "2026-06-15T05:46:35Z",
       "next_artifact_number": 1,
-      "artifacts": []
+      "artifacts": [],
+      "session_id": "sess_1781500889_343926"
     },
     {
       "project_number": 712,
@@ -2494,7 +2495,7 @@
     {
       "project_number": 714,
       "project_name": "enhance_literature_command_zotero",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "meta",
       "topic": "agent-system",
       "description": "Enhance the /literature command and skill-literature to support Zotero search and import targeting the centralized Literature/ repo. Assumes task 710 has already implemented LITERATURE_DIR env var and centralized repo structure. New capabilities: (1) New search mode: /literature --search \"query\" -- searches zotero-library.json (via zotero-search.sh from task 711) and existing Literature/ index for matching entries. (2) Interactive source selection via AskUserQuestion -- present ranked results showing title, author, year, availability (PDF exists / already converted / not available). (3) Import pipeline: for selected Zotero entries with PDFs, symlink PDF to Literature/ repo, run convert flow, generate index entry, commit to Literature/ repo. (4) Task-number mode: /literature --task N reads the task description and uses it as the search query. Update commands/literature.md, skill-literature/SKILL.md, and agents/literature-agent.md.",
@@ -2502,14 +2503,15 @@
         711
       ],
       "created": "2026-06-15T04:40:00Z",
-      "last_updated": "2026-06-15T04:40:00Z",
+      "last_updated": "2026-06-15T06:03:06Z",
       "next_artifact_number": 1,
-      "artifacts": []
+      "artifacts": [],
+      "session_id": "sess_1781500889_343926_714"
     },
     {
       "project_number": 715,
       "project_name": "update_literature_extension_docs",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "meta",
       "topic": "agent-system",
       "description": "Update literature extension documentation to reflect Zotero search and import capabilities added by tasks 711 and 714. Assumes task 710 has already updated literature-organization.md and core documentation for centralized architecture. Files: (1) .claude/extensions/literature/manifest.json -- add zotero-search.sh to provides.scripts, update description. (2) .claude/extensions/literature/EXTENSION.md -- document Zotero search workflow and import pipeline. (3) .claude/extensions/literature/README.md -- update with new search/import capabilities. (4) CLAUDE.md merge source -- update /literature command usage table with --search and --task modes. (5) Regenerate CLAUDE.md. Also update any references in other extensions (lean, formal) that mention specs/literature/ to note centralized alternative.",
@@ -2517,9 +2519,10 @@
         714
       ],
       "created": "2026-06-15T04:40:00Z",
-      "last_updated": "2026-06-15T04:40:00Z",
+      "last_updated": "2026-06-15T06:15:14Z",
       "next_artifact_number": 1,
-      "artifacts": []
+      "artifacts": [],
+      "session_id": "sess_1781500889_343926_715"
     }
   ],
   "completed_projects": [],

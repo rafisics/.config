@@ -11,20 +11,14 @@ next_project_number: 716
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,652,710 | -- | agent-system, Terminal UI, Email Integration |
-| 2 | 711 | 710 | agent-system |
-| 3 | 714 | 711 | agent-system |
-| 4 | 715 | 714 | agent-system |
+| 1 | 78,87,652,715 | -- | agent-system, Terminal UI, Email Integration |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Agent System
 
 652 [NOT STARTED] — After ~1 week of the new pipeline running, review logs to verify 
-710 [PLANNED] — Research architecture for centralizing literature management acro
-  └─ 711 [NOT STARTED] — Create a Zotero search script at .claude/extensions/literature/sc
-    └─ 714 [NOT STARTED] — Enhance the /literature command and skill-literature to support Z
-      └─ 715 [NOT STARTED] — Update literature extension documentation to reflect Zotero searc
+715 [PLANNED] — Update literature extension documentation to reflect Zotero searc
 
 ### Terminal UI
 
@@ -37,7 +31,7 @@ next_project_number: 716
 ## Tasks
 
 ### 715. Update literature extension docs
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 714
@@ -47,7 +41,7 @@ next_project_number: 716
 ---
 
 ### 714. Enhance literature command zotero
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 711
@@ -77,7 +71,7 @@ next_project_number: 716
 ---
 
 ### 711. Create zotero search script
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 710

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #715
 
 - **Task**: 715 - Update literature extension documentation to reflect Zotero search and import capabilities
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 1.5 hours
 - **Dependencies**: Tasks 711 (zotero-search.sh), 714 (search + import pipeline)
 - **Research Inputs**: specs/715_update_literature_extension_docs/reports/01_docs-update-research.md
