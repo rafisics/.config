@@ -11,8 +11,8 @@ next_project_number: 727
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,652,716,721,725 | -- | agent-system, Literature, Terminal UI, ... |
-| 2 | 717,726 | 716,725 | agent-system, Literature |
+| 1 | 78,87,652,716,721,726 | -- | agent-system, Literature, Terminal UI, ... |
+| 2 | 717 | 716 | Literature |
 | 3 | 718 | 717 | Literature |
 | 4 | 719 | 718 | Literature |
 | 5 | 720 | 719 | Literature |
@@ -22,8 +22,7 @@ next_project_number: 727
 ### Agent System
 
 652 [NOT STARTED] — After ~1 week of the new pipeline running, review logs to verify 
-725 [PLANNED] — Extend /pr to handle PR READY tasks from the --review workflow. W
-  └─ 726 [NOT STARTED] — Register the new pr task type routing for the core agent system (
+726 [NOT STARTED] — Register the new pr task type routing for the core agent system (
 
 ### Terminal UI
 
@@ -55,12 +54,13 @@ next_project_number: 727
 ---
 
 ### 725. Add pr ready push zulip
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 724
 - **Research**: [725_add_pr_ready_push_zulip/reports/01_pr-ready-push-zulip.md]
 - **Plan**: [725_add_pr_ready_push_zulip/plans/01_pr-ready-push-zulip.md]
+- **Summary**: [725_add_pr_ready_push_zulip/summaries/01_pr-ready-push-zulip-summary.md]
 
 **Description**: Extend /pr to handle PR READY tasks from the --review workflow. When invoked on a PR READY pr-type task: (1) push a single next commit (no squash, preserving the commit as a reference for PR comments), (2) seek explicit user approval via AskUserQuestion before pushing, (3) if task has zulip-response.md artifact, offer to send Zulip message using zulip-send CLI with parsed stream/subject from the Zulip source URL. Zulip URL parsing: https://org.zulipchat.com/#narrow/stream/123-general/topic/my.20topic extracts --stream "general" --subject "my topic" (.20 = URL-encoded space). Support both stream messages (zulip-send --stream S --subject T --message M) and piped content (cat zulip-response.md | zulip-send --stream S --subject T). Seek separate explicit approval for Zulip messages. Transition task to [COMPLETED] after all actions.
 

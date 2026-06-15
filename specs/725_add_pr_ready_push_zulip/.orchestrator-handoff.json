@@ -1,14 +1,21 @@
 {
-  "status": "planned",
-  "summary": "Created 3-phase plan for STEP 0.5 in /pr command: (1) detection logic and context resolution, (2) push/GitHub comment with AskUserQuestion approval, (3) Zulip send with zuliprc validation and task completion. Single file modification to .claude/extensions/cslib/commands/pr.md, ~250-300 new lines.",
+  "status": "implemented",
+  "summary": "Added STEP 0.5 to /pr command for PR READY review tasks: detects pr_ready status + sources array, commits/pushes changes, posts GitHub PR comment via gh pr comment --body-file, optionally sends Zulip message via zulip-send with ~/.zuliprc placeholder detection, then transitions task to [COMPLETED] via update-task-status.sh postflight.",
   "artifacts": [
     {
-      "path": "specs/725_add_pr_ready_push_zulip/plans/01_pr-ready-push-zulip.md",
-      "type": "plan",
-      "summary": "3-phase implementation plan for PR READY review task handling in /pr command"
+      "path": "specs/725_add_pr_ready_push_zulip/summaries/01_pr-ready-push-zulip-summary.md",
+      "type": "summary",
+      "summary": "Implementation summary for task 725 documenting STEP 0.5 addition to pr.md"
+    },
+    {
+      "path": ".claude/extensions/cslib/commands/pr.md",
+      "type": "implementation",
+      "summary": "Modified pr.md with ~390 lines of STEP 0.5 (sub-steps 0.5.1-0.5.7)"
     }
   ],
   "blockers": [],
   "continuation_context": null,
-  "next_action_hint": "implement"
+  "phases_completed": 3,
+  "phases_total": 3,
+  "next_action_hint": "complete"
 }
