@@ -1,7 +1,20 @@
 {
   "version": "1.1.0",
-  "next_project_number": 709,
+  "next_project_number": 710,
   "active_projects": [
+    {
+      "project_number": 709,
+      "project_name": "add_pr_ready_orchestrate_support",
+      "status": "not_started",
+      "task_type": "meta",
+      "topic": "agent-system",
+      "description": "Add pr_ready state handling and pr_description artifact support to skill-orchestrate so the orchestate skill properly handles the PR lifecycle for cslib extension pr tasks. Four changes to .claude/skills/skill-orchestrate/SKILL.md: (1) Stage 4 state handler: add a pr_ready case (alongside completed) that exits cleanly with a message directing the user to run /pr N -- currently pr_ready falls through to Unknown state and exits with partial. (2) Stage 5 postflight dispatch_status: add pr_ready to the case statement (after implemented) so skill_postflight_update runs for the implement operation -- currently falls to * with no update. (3) Stage 5 artifact linking: add pr_description to the artifact type case so PR descriptions get linked in TODO.md using field name **PR Description** with next_field **Description**. (4) Multi-task section parity: apply the same three additions to the multi-task section (Stage MT state filtering at line ~830, dispatch_status case at line ~997, artifact type case at line ~1021). The full lifecycle (research -> plan -> implement -> pr_ready) is preserved. No testing pipeline changes needed.",
+      "dependencies": [],
+      "created": "2026-06-15T01:00:00Z",
+      "last_updated": "2026-06-15T01:00:00Z",
+      "next_artifact_number": 1,
+      "artifacts": []
+    },
     {
       "project_number": 706,
       "project_name": "revise_pr_description_format_template",
@@ -2386,13 +2399,14 @@
     {
       "project_number": 708,
       "project_name": "literature_filetypes_dependency",
-      "status": "not_started",
+      "status": "abandoned",
       "task_type": "meta",
       "title": "Add filetypes dependency to literature extension manifest",
       "description": "Add filetypes to the dependencies array in .claude/extensions/literature/manifest.json so that when literature is loaded via the <leader>al picker, filetypes tools (PDF/DJVU conversion via superdoc MCP) are automatically available. Change dependencies from [\"core\"] to [\"core\", \"filetypes\"].",
       "topic": "agent-system",
       "dependencies": [],
-      "artifacts": []
+      "artifacts": [],
+      "completion_summary": "Implemented directly: one-line manifest.json edit to add filetypes dependency"
     }
   ],
   "completed_projects": [],

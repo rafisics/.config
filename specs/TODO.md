@@ -1,5 +1,5 @@
 ---
-next_project_number: 709
+next_project_number: 710
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 709
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,652,707,708 | -- | agent-system, Terminal UI, Email Integration |
+| 1 | 78,87,652,707,709 | -- | agent-system, Terminal UI, Email Integration |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -19,7 +19,7 @@ next_project_number: 709
 
 652 [NOT STARTED] — After ~1 week of the new pipeline running, review logs to verify 
 707 [NOT STARTED] — Three convention changes to the literature extension: (1) PDF/DJV
-708 [NOT STARTED] — Add filetypes to the dependencies array in .claude/extensions/lit
+709 [NOT STARTED] — Add pr_ready state handling and pr_description artifact support t
 
 ### Terminal UI
 
@@ -31,8 +31,18 @@ next_project_number: 709
 
 ## Tasks
 
-### 708. Add filetypes dependency to literature extension manifest
+### 709. Add pr ready orchestrate support
 - **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: Add pr_ready state handling and pr_description artifact support to skill-orchestrate so the orchestate skill properly handles the PR lifecycle for cslib extension pr tasks. Four changes to .claude/skills/skill-orchestrate/SKILL.md: (1) Stage 4 state handler: add a pr_ready case (alongside completed) that exits cleanly with a message directing the user to run /pr N -- currently pr_ready falls through to Unknown state and exits with partial. (2) Stage 5 postflight dispatch_status: add pr_ready to the case statement (after implemented) so skill_postflight_update runs for the implement operation -- currently falls to * with no update. (3) Stage 5 artifact linking: add pr_description to the artifact type case so PR descriptions get linked in TODO.md using field name **PR Description** with next_field **Description**. (4) Multi-task section parity: apply the same three additions to the multi-task section (Stage MT state filtering at line ~830, dispatch_status case at line ~997, artifact type case at line ~1021). The full lifecycle (research -> plan -> implement -> pr_ready) is preserved. No testing pipeline changes needed.
+
+---
+
+### 708. Add filetypes dependency to literature extension manifest
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
