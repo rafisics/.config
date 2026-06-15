@@ -1,5 +1,5 @@
 ---
-next_project_number: 707
+next_project_number: 709
 ---
 
 # TODO
@@ -11,13 +11,15 @@ next_project_number: 707
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,652 | -- | agent-system, Terminal UI, Email Integration |
+| 1 | 78,87,652,707,708 | -- | agent-system, Terminal UI, Email Integration |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Agent System
 
 652 [NOT STARTED] — After ~1 week of the new pipeline running, review logs to verify 
+707 [NOT STARTED] — Three convention changes to the literature extension: (1) PDF/DJV
+708 [NOT STARTED] — Add filetypes to the dependencies array in .claude/extensions/lit
 
 ### Terminal UI
 
@@ -28,6 +30,26 @@ next_project_number: 707
 78 [PLANNED] — Fix Gmail SMTP authentication failure when sending emails via Him
 
 ## Tasks
+
+### 708. Add filetypes dependency to literature extension manifest
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: Add filetypes to the dependencies array in .claude/extensions/literature/manifest.json so that when literature is loaded via the <leader>al picker, filetypes tools (PDF/DJVU conversion via superdoc MCP) are automatically available. Change dependencies from ["core"] to ["core", "filetypes"].
+
+---
+
+### 707. Refactor literature extension: co-location, logical chunking, enhanced metadata
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: Three convention changes to the literature extension: (1) PDF/DJVU source files must be co-located with their markdown in the same directory, gitignored via specs/literature/**/*.pdf and *.djvu patterns. Update convert flow and SKILL.md accordingly. (2) Replace fixed 10-page-per-chunk approach with content-aware logical splitting at 4,000-line threshold -- divide books into chapters, long chapters into sections, etc. (3) Enhance index.json schema to include author, title, year, document type (paper/book/chapter/section), source format (pdf/djvu), parent document reference (for chunks), page range, and other retrieval-useful fields. Update SKILL.md, EXTENSION.md, agents/literature-agent.md, and commands/literature.md.
+
+---
 
 ### 706. Revise pr description format template
 - **Status**: [COMPLETED]

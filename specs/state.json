@@ -1,6 +1,6 @@
 {
   "version": "1.1.0",
-  "next_project_number": 707,
+  "next_project_number": 709,
   "active_projects": [
     {
       "project_number": 706,
@@ -2371,6 +2371,28 @@
         }
       ],
       "completion_summary": "False positive: literature-retrieve.sh already exists (created by tasks 689-690 in commit ff9980cc3). All integration call sites are correct and --lit flag is fully wired."
+    },
+    {
+      "project_number": 707,
+      "project_name": "refactor_literature_conventions",
+      "status": "not_started",
+      "task_type": "meta",
+      "title": "Refactor literature extension: co-location, logical chunking, enhanced metadata",
+      "description": "Three convention changes to the literature extension: (1) PDF/DJVU source files must be co-located with their markdown in the same directory, gitignored via specs/literature/**/*.pdf and *.djvu patterns. Update convert flow and SKILL.md accordingly. (2) Replace fixed 10-page-per-chunk approach with content-aware logical splitting at 4,000-line threshold -- divide books into chapters, long chapters into sections, etc. (3) Enhance index.json schema to include author, title, year, document type (paper/book/chapter/section), source format (pdf/djvu), parent document reference (for chunks), page range, and other retrieval-useful fields. Update SKILL.md, EXTENSION.md, agents/literature-agent.md, and commands/literature.md.",
+      "topic": "agent-system",
+      "dependencies": [],
+      "artifacts": []
+    },
+    {
+      "project_number": 708,
+      "project_name": "literature_filetypes_dependency",
+      "status": "not_started",
+      "task_type": "meta",
+      "title": "Add filetypes dependency to literature extension manifest",
+      "description": "Add filetypes to the dependencies array in .claude/extensions/literature/manifest.json so that when literature is loaded via the <leader>al picker, filetypes tools (PDF/DJVU conversion via superdoc MCP) are automatically available. Change dependencies from [\"core\"] to [\"core\", \"filetypes\"].",
+      "topic": "agent-system",
+      "dependencies": [],
+      "artifacts": []
     }
   ],
   "completed_projects": [],
