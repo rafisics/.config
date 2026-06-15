@@ -319,6 +319,15 @@ rm -f "$loop_guard_file"
 EXIT (success)
 ```
 
+#### State: `pr_ready`
+
+```
+echo "[orchestrate] Task $task_number is [PR READY]. Run /pr $task_number to create the branch and submit the pull request."
+# Clean up loop guard — pr_ready is a terminal state for orchestrate
+rm -f "$loop_guard_file"
+EXIT (success)
+```
+
 #### States: `abandoned`, `expanded`
 
 ```
@@ -379,6 +388,9 @@ else
     implemented)
       skill_postflight_update "$task_number" "implement" "$session_id" "$dispatch_status"
       ;;
+    pr_ready)
+      skill_postflight_update "$task_number" "implement" "$session_id" "$dispatch_status"
+      ;;
     *)
       echo "[orchestrate] Dispatch status '$dispatch_status' — no postflight update needed"
       ;;
@@ -400,6 +412,10 @@ else
         ;;
       summary)
         field_name='**Summary**'
+        next_field='**Description**'
+        ;;
+      pr_description)
+        field_name='**PR Description**'
         next_field='**Description**'
         ;;
       *)
@@ -828,7 +844,7 @@ for wave_idx in $(seq 0 $((wave_count - 1))); do
     fi
     
     case "$current_status" in
-      completed|abandoned|expanded)
+      completed|abandoned|expanded|pr_ready)
         echo "[orchestrate-mt] Task $task_num already in terminal state [$current_status], skipping"
         jq --argjson num "$task_num" \
           '.completed_tasks = (.completed_tasks + [$num] | unique)' \
@@ -1007,6 +1023,10 @@ for task_num in "${research_tasks[@]}" "${plan_tasks[@]}" "${implement_tasks[@]}
       operation="implement"
       skill_postflight_update "$task_num" "implement" "${session_id}_${task_num}" "$dispatch_status"
       ;;
+    pr_ready)
+      operation="implement"
+      skill_postflight_update "$task_num" "implement" "${session_id}_${task_num}" "$dispatch_status"
+      ;;
     *)
       operation="unknown"
       echo "[orchestrate-mt] Task $task_num status '$dispatch_status' — no postflight update"
@@ -1029,6 +1049,10 @@ for task_num in "${research_tasks[@]}" "${plan_tasks[@]}" "${implement_tasks[@]}
         ;;
       summary)
         field_name='**Summary**'
+        next_field='**Description**'
+        ;;
+      pr_description)
+        field_name='**PR Description**'
         next_field='**Description**'
         ;;
       *)

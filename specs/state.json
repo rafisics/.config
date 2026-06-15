@@ -5,15 +5,16 @@
     {
       "project_number": 709,
       "project_name": "add_pr_ready_orchestrate_support",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "meta",
       "topic": "agent-system",
       "description": "Add pr_ready state handling and pr_description artifact support to skill-orchestrate so the orchestate skill properly handles the PR lifecycle for cslib extension pr tasks. Four changes to .claude/skills/skill-orchestrate/SKILL.md: (1) Stage 4 state handler: add a pr_ready case (alongside completed) that exits cleanly with a message directing the user to run /pr N -- currently pr_ready falls through to Unknown state and exits with partial. (2) Stage 5 postflight dispatch_status: add pr_ready to the case statement (after implemented) so skill_postflight_update runs for the implement operation -- currently falls to * with no update. (3) Stage 5 artifact linking: add pr_description to the artifact type case so PR descriptions get linked in TODO.md using field name **PR Description** with next_field **Description**. (4) Multi-task section parity: apply the same three additions to the multi-task section (Stage MT state filtering at line ~830, dispatch_status case at line ~997, artifact type case at line ~1021). The full lifecycle (research -> plan -> implement -> pr_ready) is preserved. No testing pipeline changes needed.",
       "dependencies": [],
       "created": "2026-06-15T01:00:00Z",
-      "last_updated": "2026-06-15T01:00:00Z",
+      "last_updated": "2026-06-15T04:01:07Z",
       "next_artifact_number": 1,
-      "artifacts": []
+      "artifacts": [],
+      "session_id": "sess_1781495628_8ba2f3_709"
     },
     {
       "project_number": 706,
@@ -2388,13 +2389,15 @@
     {
       "project_number": 707,
       "project_name": "refactor_literature_conventions",
-      "status": "not_started",
+      "status": "planning",
       "task_type": "meta",
       "title": "Refactor literature extension: co-location, logical chunking, enhanced metadata",
       "description": "Three convention changes to the literature extension: (1) PDF/DJVU source files must be co-located with their markdown in the same directory, gitignored via specs/literature/**/*.pdf and *.djvu patterns. Update convert flow and SKILL.md accordingly. (2) Replace fixed 10-page-per-chunk approach with content-aware logical splitting at 4,000-line threshold -- divide books into chapters, long chapters into sections, etc. (3) Enhance index.json schema to include author, title, year, document type (paper/book/chapter/section), source format (pdf/djvu), parent document reference (for chunks), page range, and other retrieval-useful fields. Update SKILL.md, EXTENSION.md, agents/literature-agent.md, and commands/literature.md.",
       "topic": "agent-system",
       "dependencies": [],
-      "artifacts": []
+      "artifacts": [],
+      "last_updated": "2026-06-15T03:57:21Z",
+      "session_id": "sess_1781495628_8ba2f3_707"
     },
     {
       "project_number": 708,

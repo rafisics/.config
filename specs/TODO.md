@@ -32,7 +32,7 @@ next_project_number: 710
 ## Tasks
 
 ### 709. Add pr ready orchestrate support
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
@@ -52,7 +52,7 @@ next_project_number: 710
 ---
 
 ### 707. Refactor literature extension: co-location, logical chunking, enhanced metadata
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNING]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
