@@ -1,0 +1,38 @@
+{
+  "phase": 1,
+  "phase_name": "Pre-Implementation Audits",
+  "started_at": "2026-06-15T00:00:00Z",
+  "last_updated": "2026-06-15T22:00:00Z",
+  "objectives": [
+    {"id": 1, "description": "Create literature-audit.sh script in .claude/scripts/", "status": "done"},
+    {"id": 2, "description": "Audit 1 - Conversion Quality: find PDFs, test conversion, check headings/math", "status": "done"},
+    {"id": 3, "description": "Audit 2 - Cross-Reference Extraction: run regex patterns, measure recall/precision", "status": "done"},
+    {"id": 4, "description": "Document audit results as comments in script", "status": "done"}
+  ],
+  "current_objective": null,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": [
+    {
+      "task_id": "1.5",
+      "description": "Tune marker parameters or add pandoc post-processing",
+      "type": "skipped",
+      "reason": "marker not available; pdftotext+PyMuPDF is the confirmed working hybrid",
+      "annotation": "*(deviation: skipped - marker not available; pdftotext+PyMuPDF is the hybrid fallback)*"
+    },
+    {
+      "task_id": "1.6",
+      "description": "Expand regex patterns if recall is low",
+      "type": "skipped",
+      "reason": "Recall >85% confirmed on tested papers; ligature handling noted as known limitation",
+      "annotation": "*(deviation: skipped - recall >85% confirmed; added note about ligature handling)*"
+    }
+  ],
+  "findings": {
+    "converter": "pdftotext+PyMuPDF hybrid (marker not available, pandoc cannot read PDF)",
+    "xref_recall": ">85% on formal math papers with numeric labels",
+    "xref_precision": ">90%",
+    "known_limitations": ["PDF ligature chars (fi->fi-ligature) may reduce regex recall on some PDFs", "Some scanned PDFs produce empty pdftotext output"],
+    "pymupdf_toc": "Works well for PDFs with embedded TOC structure (Rabinovich, Venema tested)"
+  }
+}

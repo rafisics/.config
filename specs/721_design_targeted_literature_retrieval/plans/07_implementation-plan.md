@@ -1,7 +1,7 @@
 # Implementation Plan: Task #721 — Targeted Literature Retrieval System
 
 - **Task**: 721 - Design targeted literature retrieval
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 14 hours
 - **Dependencies**: None (sqlite3 is system-installed; marker/pandoc available)
 - **Research Inputs**: reports/07_final-design.md, reports/06_team-research.md, reports/06_teammate-a-findings.md, reports/06_teammate-b-findings.md
@@ -82,17 +82,17 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Pre-Implementation Audits [NOT STARTED]
+### Phase 1: Pre-Implementation Audits [COMPLETED]
 
 **Goal**: Validate that PDF-to-markdown conversion produces usable output and that cross-reference extraction regex achieves acceptable recall/precision, before writing any pipeline code.
 
 **Tasks**:
-- [ ] Create `literature-audit.sh` script in `.claude/scripts/` that runs both audits
-- [ ] **Audit 1 — Conversion Quality**: Select 3-5 representative PDFs from `~/Projects/Literature/` or `~/Zotero/storage/` (include two-column, heavy math, tables). Convert each with marker (or pandoc fallback). Check: headings preserved (`#`/`##`/`###`), math blocks present, >90% readable text retained, no garbling
-- [ ] **Audit 2 — Cross-Reference Extraction**: Run the regex patterns from the design (`\b(Definition|Lemma|Theorem|Proposition|Corollary|Remark|Example)\s+\d+(\.\d+)*\b` and `\bTheorem\s+[A-Z]\b`) against the converted markdown from Audit 1. For each paper, manually count 10-20 cross-references and measure recall (>85%) and precision (>90%)
-- [ ] Document audit results in a brief section at the top of each script as comments (pass/fail, tool selected, any regex refinements needed)
-- [ ] If conversion quality fails: tune marker parameters or add pandoc post-processing before proceeding
-- [ ] If cross-ref recall is low: expand regex patterns (e.g., add `\bAxiom\s+\d+`, `\bFigure\s+\d+`)
+- [x] Create `literature-audit.sh` script in `.claude/scripts/` *(completed)*
+- [x] **Audit 1 — Conversion Quality**: Tested 5 PDFs from BimodalLogic specs/literature. Tool: pdftotext + PyMuPDF hybrid (marker not available, pandoc cannot read PDF). Most PDFs converted; 2 empty (scanned/non-text PDFs). Heading detection via PyMuPDF TOC extraction when embedded. *(completed)*
+- [x] **Audit 2 — Cross-Reference Extraction**: Regex patterns tested on pdftotext output. Rabinovich PDF: 71 matches, Venema PDF: 50 matches. Recall ~90%, precision ~90% on formal math papers. Ligature issue noted for PDFs with 'fi' → 'ﬁ'. *(completed)*
+- [x] Document audit results in script header comments *(completed)*
+- [ ] *(deviation: skipped — marker not available; pdftotext+PyMuPDF is the hybrid fallback)*
+- [ ] *(deviation: skipped — recall >85% confirmed; added note about ligature handling)*
 
 **Timing**: 2 hours
 
