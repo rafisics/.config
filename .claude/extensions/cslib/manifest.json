@@ -5,7 +5,8 @@
   "task_type": "cslib",
   "dependencies": [
     "core",
-    "lean"
+    "lean",
+    "literature"
   ],
   "provides": {
     "agents": [

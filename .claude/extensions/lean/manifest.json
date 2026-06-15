@@ -4,7 +4,8 @@
   "description": "Lean 4 theorem prover support with MCP integration for proof assistance",
   "task_type": "lean4",
   "dependencies": [
-    "core"
+    "core",
+    "literature"
   ],
   "provides": {
     "agents": [

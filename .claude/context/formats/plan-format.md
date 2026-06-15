@@ -28,8 +28,6 @@
 
 Plans may include a `plan_metadata` object in state.json with fields: `phases` (int), `total_effort_hours` (int), `complexity` (simple/medium/complex), `research_integrated` (bool), `plan_version` (int), `dependency_waves` (array of phase-number arrays for parallel execution groups), and `reports_integrated` (array of `{path, integrated_in_plan_version, integrated_date}` objects). Plans without `reports_integrated` use empty array default.
 
-**Important**: `plan_version` tracks the semantic version of plan evolution and is used in commit messages and human reference (e.g., "v2"). It does NOT appear in filenames. Artifact filenames use the unified `next_artifact_number` sequence from state.json. Each call to `/revise` increments `next_artifact_number` and produces a new artifact (e.g., `02_plan.md`, `03_plan.md`), while `plan_version` reflects the logical revision count independently.
-
 ```json
 {
   "phases": 5,

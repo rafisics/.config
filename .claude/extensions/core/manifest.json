@@ -19,7 +19,6 @@
     "agents": [
       "code-reviewer-agent.md",
       "general-implementation-agent.md",
-      "literature-agent.md",
       "general-research-agent.md",
       "meta-builder-agent.md",
       "planner-agent.md",
@@ -43,8 +42,7 @@
       "tag.md",
       "task.md",
       "todo.md",
-      "project-overview.md",
-      "literature.md"
+      "project-overview.md"
     ],
     "rules": [
       "artifact-formats.md",
@@ -73,8 +71,7 @@
       "skill-team-plan",
       "skill-team-research",
       "skill-todo",
-      "skill-project-overview",
-      "skill-literature"
+      "skill-project-overview"
     ],
     "scripts": [
       "archive-task.sh",
