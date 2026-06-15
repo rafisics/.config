@@ -11,7 +11,7 @@ next_project_number: 727
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,652,716,721,726 | -- | agent-system, Literature, Terminal UI, ... |
+| 1 | 78,87,652,716,721 | -- | agent-system, Literature, Terminal UI, ... |
 | 2 | 717 | 716 | Literature |
 | 3 | 718 | 717 | Literature |
 | 4 | 719 | 718 | Literature |
@@ -22,7 +22,6 @@ next_project_number: 727
 ### Agent System
 
 652 [NOT STARTED] — After ~1 week of the new pipeline running, review logs to verify 
-726 [NOT STARTED] — Register the new pr task type routing for the core agent system (
 
 ### Terminal UI
 
@@ -39,7 +38,7 @@ next_project_number: 727
     └─ 718 [NOT STARTED] — Create cite.md command file at .claude/extensions/literature/comm
       └─ 719 [NOT STARTED] — Update literature extension manifest and documentation for /cite 
         └─ 720 [NOT STARTED] — Integration testing and verification of /cite command end-to-end.
-721 [RESEARCHED] — Research and design a targeted literature retrieval system to rep
+721 [RESEARCHING] — Research and design a targeted literature retrieval system to rep
 
 ## Tasks
 
