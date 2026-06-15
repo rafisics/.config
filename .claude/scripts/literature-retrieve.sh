@@ -1,24 +1,91 @@
 #!/usr/bin/env bash
-# literature-retrieve.sh - Keyword-based literature injection from specs/literature/
+# literature-retrieve.sh - Literature context injection for --lit flag
 #
 # Usage: literature-retrieve.sh <description> <task_type>
 #
-# When index.json exists: score entries by keyword overlap, greedy-select within budget
-# When index.json absent: recursive file scan with token budget enforcement
+# Two-tier behavior depending on database availability:
 #
-# Exit 0 with content on stdout when files found
+#   TIER 1 (FTS5 database present): Emit <literature-tool> context block that
+#     instructs the agent to use literature-search.sh for on-demand search.
+#     The agent queries, browses metadata, follows cross-refs, reads full
+#     content from disk, and decides when to stop. No preflight content injection.
+#     Uses: specs/literature/.literature.db OR $LITERATURE_DIR/.literature.db
+#
+#   TIER 2 (legacy, no database): Fall back to keyword-based content injection
+#     from specs/literature/. Score entries by keyword overlap, greedy-select
+#     within token budget. Used when no .literature.db exists.
+#
+# Exit 0 with content on stdout when context produced
 # Exit 1 (empty stdout) when directory missing, no matches, or all exceed budget
 #
 # Environment:
-#   LITERATURE_DIR  - Override the literature directory (two-tier fallback: if LITERATURE_DIR
-#                     is set but does not exist, falls back to per-project specs/literature/)
+#   LITERATURE_DIR  - Override global library path (default: ~/Projects/Literature)
+#                     Two-tier fallback: if set but non-existent, falls back to
+#                     per-project specs/literature/
 #
-# Constants:
+# Constants (legacy tier only):
 #   TOKEN_BUDGET=8000 (or index.json token_budget)  - Maximum total tokens to include
 #   MAX_FILES=10                                     - Maximum number of files
 #   MIN_SCORE=1                                      - Minimum keyword overlap to include
 
 set -euo pipefail
+
+# --- Check for FTS5 database (Tier 1 behavior) ---
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+GIT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+GLOBAL_LIT_DIR="${LITERATURE_DIR:-$HOME/Projects/Literature}"
+LOCAL_DB="$GIT_ROOT/specs/literature/.literature.db"
+GLOBAL_DB="$GLOBAL_LIT_DIR/.literature.db"
+SEARCH_SCRIPT="$SCRIPT_DIR/literature-search.sh"
+
+if { [ -f "$LOCAL_DB" ] || [ -f "$GLOBAL_DB" ]; } && [ -x "$SEARCH_SCRIPT" ]; then
+  # Tier 1: Emit search tool context block
+  DB_LOCATION=""
+  if [ -f "$LOCAL_DB" ] && [ -f "$GLOBAL_DB" ]; then
+    DB_LOCATION="both local (specs/literature/.literature.db) and global ($GLOBAL_LIT_DIR/.literature.db)"
+  elif [ -f "$LOCAL_DB" ]; then
+    DB_LOCATION="local (specs/literature/.literature.db)"
+  else
+    DB_LOCATION="global ($GLOBAL_LIT_DIR/.literature.db)"
+  fi
+
+  printf '<literature-tool>\n'
+  printf 'Literature is available via on-demand search. Use the literature-search.sh tool\n'
+  printf 'to find relevant content instead of reading files directly.\n\n'
+  printf 'Database: %s\n\n' "$DB_LOCATION"
+  printf 'SEARCH TOOL INTERFACE:\n\n'
+  printf '  literature-search.sh "query string"\n'
+  printf '    Returns: JSON array of ranked chunks with metadata (no full content).\n'
+  printf '    Fields: chunk_id, doc_id, section_path, title, summary, token_count,\n'
+  printf '            cross_refs, rank, snippet\n\n'
+  printf '  literature-search.sh --read <chunk_id>\n'
+  printf '    Returns: Full markdown content of the chunk from disk.\n'
+  printf '    Fields: chunk_id, content, token_count, title, section_path\n\n'
+  printf '  literature-search.sh --toc [doc_id]\n'
+  printf '    Returns: TOC listing (metadata only, no content) for one doc or all docs.\n'
+  printf '    Fields: chunk_id, doc_id, section_path, title, summary, token_count, level\n\n'
+  printf '  literature-search.sh --refs <chunk_id>\n'
+  printf '    Returns: Chunks linked via cross-references from this chunk.\n'
+  printf '    Use to navigate: "by Definition 2.1" -> fetch the definition chunk.\n\n'
+  printf '  literature-search.sh --next <chunk_id>\n'
+  printf '  literature-search.sh --prev <chunk_id>\n'
+  printf '    Returns: Next/previous chunk metadata + first paragraph.\n\n'
+  printf '  literature-search.sh --doc <doc_id>\n'
+  printf '    Returns: All chunks for a specific document.\n\n'
+  printf 'AGENT SEARCH PROTOCOL:\n\n'
+  printf '1. Initial search: Query for chunks matching the research question.\n'
+  printf '2. TOC browse: Call --toc on promising documents to understand structure.\n'
+  printf '3. Selective read: Call --read only for chunks likely to be relevant.\n'
+  printf '4. Cross-ref follow: When encountering "by Definition 2.1", use --refs.\n'
+  printf '5. Sequential navigation: Use --next/--prev for surrounding context.\n'
+  printf '6. Budget tracking: Track token_count of chunks read; stop when satisfied.\n\n'
+  printf 'STOPPING RULE: If you do not find relevant literature within 3 searches,\n'
+  printf 'proceed without it rather than searching exhaustively.\n'
+  printf '</literature-tool>\n'
+  exit 0
+fi
+
+# --- Tier 2: Legacy keyword-based injection (no FTS5 database) ---
 
 # --- Constants ---
 TOKEN_BUDGET=8000
