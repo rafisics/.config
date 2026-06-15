@@ -338,6 +338,400 @@ Next: Run /research {next_num} to begin reviewing sources,
 
 ---
 
+### STEP 0.5: Handle PR READY Review Response
+
+**EXECUTE NOW**: Check whether the task identified by `$ARGUMENTS` is a PR READY review task.
+This step triggers only when the argument is a pure integer AND the task has `status: "pr_ready"`
+AND a non-empty `sources` array in cslib's state.json.
+
+If conditions are NOT met, skip to STEP 1. If conditions ARE met, run STEP 0.5.1 through STEP 0.5.7
+and **STOP** — do not proceed to STEP 1.
+
+```bash
+# Detect: is $ARGUMENTS a pure integer?
+input_arg="$ARGUMENTS"
+if ! echo "$input_arg" | grep -qE '^[0-9]+$'; then
+  # Not a pure integer — skip to STEP 1
+  :
+else
+  CSLIB_DIR="/home/benjamin/Projects/cslib"
+  CSLIB_STATE="$CSLIB_DIR/specs/state.json"
+
+  # Check status and sources from cslib state.json
+  task_status_check=$(jq -r --argjson num "$input_arg" \
+    '.active_projects[] | select(.project_number == $num) | .status' \
+    "$CSLIB_STATE" 2>/dev/null)
+  sources_count=$(jq --argjson num "$input_arg" \
+    '.active_projects[] | select(.project_number == $num) | .sources | length' \
+    "$CSLIB_STATE" 2>/dev/null)
+
+  if [ "$task_status_check" = "pr_ready" ] && [ "${sources_count:-0}" -gt 0 ] 2>/dev/null; then
+    # Conditions met — this is a PR READY review task
+    # Proceed through STEP 0.5.1 to STEP 0.5.7 below
+    :
+  else
+    # Conditions not met — skip to STEP 1
+    :
+  fi
+fi
+```
+
+If any of the detection conditions fail (not an integer, status is not `pr_ready`, or
+`sources` is empty/missing), **IMMEDIATELY CONTINUE** to STEP 1.
+
+If conditions are met, **IMMEDIATELY CONTINUE** to STEP 0.5.1.
+
+---
+
+#### STEP 0.5.1: Resolve Task Context
+
+**EXECUTE NOW**: Read all necessary metadata from cslib's state.json.
+
+```bash
+CSLIB_DIR="/home/benjamin/Projects/cslib"
+CSLIB_STATE="$CSLIB_DIR/specs/state.json"
+input_value="$input_arg"
+
+# Generate session ID for status transition
+session_id="sess_$(date +%s)_$(head -c8 /dev/urandom | xxd -p 2>/dev/null || date +%N)"
+
+# Read task metadata
+task_name=$(jq -r --argjson num "$input_value" \
+  '.active_projects[] | select(.project_number == $num) | .project_name' \
+  "$CSLIB_STATE" 2>/dev/null)
+
+# Compute task directory path
+task_num_padded=$(printf '%03d' "$input_value")
+task_dir="$CSLIB_DIR/specs/${task_num_padded}_${task_name}"
+
+# Response file paths
+pr_response_path="$task_dir/pr-response.md"
+zulip_response_path="$task_dir/zulip-response.md"
+
+# Extract GitHub PR source fields
+pr_number=$(jq -r --argjson num "$input_value" \
+  '.active_projects[] | select(.project_number == $num) | .sources[] | select(.type == "github_pr") | .parsed.pr_number' \
+  "$CSLIB_STATE" 2>/dev/null | head -1)
+pr_owner=$(jq -r --argjson num "$input_value" \
+  '.active_projects[] | select(.project_number == $num) | .sources[] | select(.type == "github_pr") | .parsed.owner' \
+  "$CSLIB_STATE" 2>/dev/null | head -1)
+pr_repo=$(jq -r --argjson num "$input_value" \
+  '.active_projects[] | select(.project_number == $num) | .sources[] | select(.type == "github_pr") | .parsed.repo' \
+  "$CSLIB_STATE" 2>/dev/null | head -1)
+
+# Extract Zulip thread source fields (may not exist)
+stream_name=$(jq -r --argjson num "$input_value" \
+  '.active_projects[] | select(.project_number == $num) | .sources[] | select(.type == "zulip_thread") | .parsed.stream_name' \
+  "$CSLIB_STATE" 2>/dev/null | head -1)
+topic=$(jq -r --argjson num "$input_value" \
+  '.active_projects[] | select(.project_number == $num) | .sources[] | select(.type == "zulip_thread") | .parsed.topic' \
+  "$CSLIB_STATE" 2>/dev/null | head -1)
+
+# Determine Zulip availability
+has_zulip_source=false
+if [ -n "$stream_name" ] && [ "$stream_name" != "null" ]; then
+  has_zulip_source=true
+fi
+```
+
+---
+
+#### STEP 0.5.2: Show Summary
+
+**EXECUTE NOW**: Display all relevant information before asking for approval.
+
+```bash
+# Show git status in cslib
+cd "$CSLIB_DIR"
+git_status_output=$(git status --short 2>&1)
+unpushed_count=$(git log --oneline origin/HEAD..HEAD 2>/dev/null | wc -l | tr -d ' ')
+
+# Check if pr-response.md exists
+if [ ! -f "$pr_response_path" ]; then
+  echo "ERROR: pr-response.md not found at $pr_response_path"
+  echo "Cannot post GitHub PR comment without this file."
+  echo "Generate pr-response.md before running /pr $input_value."
+  # STOP
+fi
+
+# Preview first few lines of pr-response.md
+pr_response_preview=$(head -10 "$pr_response_path" 2>/dev/null)
+
+# Show summary
+echo ""
+echo "PR READY Review Response"
+echo "========================"
+echo "Task:        ${input_value} (${task_name})"
+echo "Status:      [PR READY]"
+echo ""
+echo "GitHub PR:   https://github.com/${pr_owner}/${pr_repo}/pull/${pr_number}"
+echo ""
+echo "Git Status (cslib):"
+if [ -n "$git_status_output" ]; then
+  echo "$git_status_output"
+else
+  echo "  (working tree clean)"
+fi
+echo "Unpushed commits: ${unpushed_count}"
+echo ""
+echo "pr-response.md preview:"
+echo "────────────────────────────────────"
+echo "$pr_response_preview"
+echo "..."
+echo ""
+if [ "$has_zulip_source" = "true" ]; then
+  echo "Zulip thread: ${stream_name} / ${topic}"
+  if [ -f "$zulip_response_path" ]; then
+    echo "zulip-response.md: FOUND (will prompt to send)"
+  else
+    echo "zulip-response.md: NOT FOUND (Zulip step will be skipped)"
+  fi
+else
+  echo "Zulip: No Zulip source in task (Zulip step will be skipped)"
+fi
+echo ""
+```
+
+**On success**: **IMMEDIATELY CONTINUE** to STEP 0.5.3.
+
+---
+
+#### STEP 0.5.3: Approval Gate — Push and GitHub Comment
+
+**EXECUTE NOW**: Ask the user to approve committing, pushing, and posting a GitHub PR comment.
+
+**Ask user** via AskUserQuestion:
+```json
+{
+  "question": "Ready to commit + push changes and post pr-response.md as a GitHub PR comment on PR #{pr_number}?",
+  "header": "PR READY: Push and Comment Approval",
+  "multiSelect": false,
+  "options": [
+    {
+      "label": "Yes, commit + push + post comment",
+      "description": "Commit any uncommitted changes, push to origin, and post pr-response.md to GitHub PR #{pr_number}"
+    },
+    {
+      "label": "Preview full pr-response.md first",
+      "description": "Show the complete pr-response.md content, then re-ask"
+    },
+    {
+      "label": "Cancel",
+      "description": "Abort without making any changes or posting any comments"
+    }
+  ]
+}
+```
+
+- If **Yes**: **IMMEDIATELY CONTINUE** to STEP 0.5.4
+- If **Preview first**: display the full content of `$pr_response_path`, then re-ask this question
+- If **Cancel**: display "Cancelled. No changes made." and **STOP** — do not update task status
+
+---
+
+#### STEP 0.5.4: Execute Push and Post GitHub Comment
+
+**EXECUTE NOW**: Commit any uncommitted changes, push to origin, and post the PR comment.
+
+```bash
+cd "$CSLIB_DIR"
+
+# Step A: Commit uncommitted changes if any
+git_status_porcelain=$(git status --porcelain 2>&1)
+if [ -n "$git_status_porcelain" ]; then
+  echo "Committing uncommitted changes..."
+  git add -A
+  git commit -m "task ${input_value}: apply review feedback"
+  echo "Committed."
+else
+  echo "Working tree clean — no commit needed."
+fi
+
+# Step B: Push unpushed commits if any
+unpushed=$(git log --oneline origin/HEAD..HEAD 2>/dev/null)
+if [ -n "$unpushed" ]; then
+  echo "Pushing to origin..."
+  git push origin HEAD
+  PUSH_STATUS=$?
+  if [ $PUSH_STATUS -ne 0 ]; then
+    echo "ERROR: Push failed. See output above."
+    echo "Fix the push issue and re-run /pr ${input_value}."
+    # STOP
+  fi
+  echo "Pushed successfully."
+else
+  echo "No unpushed commits — push skipped."
+fi
+
+# Step C: Post GitHub PR comment
+echo "Posting pr-response.md to GitHub PR #${pr_number}..."
+gh pr comment "$pr_number" --repo "${pr_owner}/${pr_repo}" --body-file "$pr_response_path"
+COMMENT_STATUS=$?
+if [ $COMMENT_STATUS -ne 0 ]; then
+  echo "ERROR: Failed to post GitHub PR comment. Exit status: $COMMENT_STATUS"
+  echo "Check gh auth status and try manually:"
+  echo "  gh pr comment $pr_number --repo ${pr_owner}/${pr_repo} --body-file $pr_response_path"
+  # STOP
+fi
+
+echo ""
+echo "GitHub comment posted to PR #${pr_number} at:"
+echo "  https://github.com/${pr_owner}/${pr_repo}/pull/${pr_number}"
+echo ""
+```
+
+**On success**: **IMMEDIATELY CONTINUE** to STEP 0.5.5.
+
+---
+
+#### STEP 0.5.5: Approval Gate — Zulip Send
+
+**EXECUTE NOW**: Only run this step if `zulip-response.md` exists (`$zulip_response_path`).
+
+If `$zulip_response_path` does not exist, or if `has_zulip_source` is `false`:
+- Display: "Zulip step skipped (no zulip-response.md or no Zulip source)."
+- **IMMEDIATELY CONTINUE** to STEP 0.5.7.
+
+If `zulip-response.md` exists:
+
+```bash
+# Check if ~/.zuliprc has placeholder values (unconfigured)
+zuliprc_unconfigured=false
+if grep -q "REPLACE_WITH" ~/.zuliprc 2>/dev/null; then
+  zuliprc_unconfigured=true
+fi
+```
+
+If `zuliprc_unconfigured` is `true`:
+
+Display:
+```
+Warning: ~/.zuliprc appears to contain placeholder values (REPLACE_WITH...).
+Zulip send requires a configured ~/.zuliprc with valid credentials.
+```
+
+**Ask user** via AskUserQuestion:
+```json
+{
+  "question": "~/.zuliprc has placeholder values. Cannot send Zulip message without configuration.",
+  "header": "Zulip: Configuration Incomplete",
+  "multiSelect": false,
+  "options": [
+    {
+      "label": "Skip Zulip",
+      "description": "Continue to task completion without sending the Zulip message"
+    }
+  ]
+}
+```
+
+- Select **Skip Zulip**: **IMMEDIATELY CONTINUE** to STEP 0.5.7.
+
+If `zuliprc_unconfigured` is `false` (zuliprc is configured):
+
+**Ask user** via AskUserQuestion:
+```json
+{
+  "question": "Send zulip-response.md to Zulip stream '{stream_name}' topic '{topic}'?",
+  "header": "Zulip Send Approval",
+  "multiSelect": false,
+  "options": [
+    {
+      "label": "Yes, send to Zulip",
+      "description": "Post zulip-response.md to stream '{stream_name}' topic '{topic}' via zulip-send"
+    },
+    {
+      "label": "Show message first",
+      "description": "Display the full zulip-response.md content, then re-ask"
+    },
+    {
+      "label": "Skip Zulip",
+      "description": "Continue to task completion without sending the Zulip message"
+    }
+  ]
+}
+```
+
+- If **Yes**: **IMMEDIATELY CONTINUE** to STEP 0.5.6
+- If **Show message first**: display full content of `$zulip_response_path`, then re-ask this question
+- If **Skip Zulip**: display "Zulip send skipped." and **IMMEDIATELY CONTINUE** to STEP 0.5.7
+
+---
+
+#### STEP 0.5.6: Execute Zulip Send
+
+**EXECUTE NOW**: Send `zulip-response.md` to the Zulip thread.
+
+```bash
+ZULIP_SEND="/home/benjamin/.nix-profile/bin/zulip-send"
+
+echo "Sending message to Zulip..."
+echo "  Stream: ${stream_name}"
+echo "  Topic:  ${topic}"
+echo ""
+
+cat "$zulip_response_path" | "$ZULIP_SEND" --stream "$stream_name" --subject "$topic"
+ZULIP_STATUS=$?
+
+if [ $ZULIP_STATUS -ne 0 ]; then
+  echo "Warning: zulip-send exited with status $ZULIP_STATUS."
+  echo "The message may not have been sent. Check your ~/.zuliprc configuration."
+  echo "You can send manually with:"
+  echo "  cat \"$zulip_response_path\" | $ZULIP_SEND --stream \"$stream_name\" --subject \"$topic\""
+else
+  echo "Zulip message sent to ${stream_name} / ${topic}."
+fi
+echo ""
+```
+
+**On success (or non-fatal failure)**: **IMMEDIATELY CONTINUE** to STEP 0.5.7.
+
+---
+
+#### STEP 0.5.7: Transition Task to COMPLETED
+
+**EXECUTE NOW**: Update task status to [COMPLETED] in cslib's state.json, regenerate TODO.md, and commit the state changes.
+
+```bash
+cd "$CSLIB_DIR"
+
+# Transition task to COMPLETED via update-task-status.sh
+if ! bash .claude/scripts/update-task-status.sh postflight "$input_value" pr_ready "$session_id" 2>/dev/null; then
+  echo "Note: Could not transition task $input_value to [COMPLETED] automatically."
+  echo "Update manually in: $CSLIB_STATE"
+else
+  echo "Task ${input_value} transitioned to [COMPLETED]."
+fi
+
+# Regenerate TODO.md
+bash .claude/scripts/generate-todo.sh
+echo "TODO.md regenerated."
+
+# Commit state changes
+git add specs/state.json specs/TODO.md
+git commit -m "task ${input_value}: complete pr review response"
+echo "State committed."
+```
+
+Display final completion summary:
+
+```
+PR Review Response Complete
+===========================
+Task ${input_value} (${task_name}) -> [COMPLETED]
+
+Actions taken:
+  - Committed and pushed cslib changes
+  - Posted pr-response.md to GitHub PR #${pr_number}
+    https://github.com/${pr_owner}/${pr_repo}/pull/${pr_number}
+  - {Sent zulip-response.md to ${stream_name} / ${topic}  OR  Zulip skipped}
+  - Task status updated to [COMPLETED]
+```
+
+**STOP** — do not proceed to STEP 1.
+
+---
+
 ### STEP 1: Parse Arguments
 
 **EXECUTE NOW**: Parse `$ARGUMENTS` to extract input mode, flags, and branch override.

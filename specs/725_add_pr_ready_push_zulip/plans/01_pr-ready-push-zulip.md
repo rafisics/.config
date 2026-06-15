@@ -1,7 +1,7 @@
 # Implementation Plan: Task #725
 
 - **Task**: 725 - Extend /pr to handle PR READY tasks from the --review workflow
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 2 hours
 - **Dependencies**: 724 (completed)
 - **Research Inputs**: specs/725_add_pr_ready_push_zulip/reports/01_pr-ready-push-zulip.md
@@ -69,18 +69,18 @@ No ROADMAP.md items directly addressed by this task.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: STEP 0.5 Detection and Context Resolution [NOT STARTED]
+### Phase 1: STEP 0.5 Detection and Context Resolution [COMPLETED]
 
 **Goal**: Insert the STEP 0.5 header and detection logic (STEP 0.5, 0.5.1, 0.5.2) into pr.md between STEP 0 and STEP 1.
 
 **Tasks**:
-- [ ] Insert STEP 0.5 header after STEP 0's `**STOP**` line (after line ~337) and before STEP 1 (line ~341)
-- [ ] Write detection logic: check if `$ARGUMENTS` is a pure integer, then query cslib state.json for `status == "pr_ready"` AND `sources_count > 0`
-- [ ] If conditions not met, skip to STEP 1 (continue normal flow)
-- [ ] Write STEP 0.5.1 (Resolve Task Context): define `CSLIB_DIR`, `CSLIB_STATE`, read task metadata, compute `task_dir`, `pr_response_path`, `zulip_response_path`
-- [ ] Extract PR source data: `pr_number`, `pr_owner`, `pr_repo` from `sources[].parsed` where `type == "github_pr"`
-- [ ] Extract Zulip source data: `stream_name`, `topic` from `sources[].parsed` where `type == "zulip_thread"` (may not exist)
-- [ ] Write STEP 0.5.2 (Show Summary): display git status in cslib, pr-response.md preview, PR URL, Zulip availability
+- [x] Insert STEP 0.5 header after STEP 0's `**STOP**` line (after line ~337) and before STEP 1 (line ~341) *(completed)*
+- [x] Write detection logic: check if `$ARGUMENTS` is a pure integer, then query cslib state.json for `status == "pr_ready"` AND `sources_count > 0` *(completed)*
+- [x] If conditions not met, skip to STEP 1 (continue normal flow) *(completed)*
+- [x] Write STEP 0.5.1 (Resolve Task Context): define `CSLIB_DIR`, `CSLIB_STATE`, read task metadata, compute `task_dir`, `pr_response_path`, `zulip_response_path` *(completed)*
+- [x] Extract PR source data: `pr_number`, `pr_owner`, `pr_repo` from `sources[].parsed` where `type == "github_pr"` *(completed)*
+- [x] Extract Zulip source data: `stream_name`, `topic` from `sources[].parsed` where `type == "zulip_thread"` (may not exist) *(completed)*
+- [x] Write STEP 0.5.2 (Show Summary): display git status in cslib, pr-response.md preview, PR URL, Zulip availability *(completed)*
 
 **Timing**: 0.75 hours
 
@@ -97,20 +97,20 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Approval Gates and Push/Comment Execution [NOT STARTED]
+### Phase 2: Approval Gates and Push/Comment Execution [COMPLETED]
 
 **Goal**: Add STEP 0.5.3 (push approval) and STEP 0.5.4 (execute push + GitHub comment) to pr.md.
 
 **Tasks**:
-- [ ] Write STEP 0.5.3 (AskUserQuestion - Push and GitHub Comment Approval): present options (Yes/Preview first/Cancel) showing what will happen
-- [ ] Handle "Preview first" option: display full pr-response.md content, then re-ask
-- [ ] Handle "Cancel" option: display message and STOP without changing task status
-- [ ] Write STEP 0.5.4 (Execute Push): check for uncommitted changes with `git status --porcelain` in cslib dir
-- [ ] If uncommitted changes: `git add -A && git commit -m "task {N}: apply review feedback"` in cslib
-- [ ] Check for unpushed commits with `git log --oneline origin/HEAD..HEAD` in cslib
-- [ ] If unpushed commits: `git push origin HEAD` (no force, no squash)
-- [ ] Post GitHub comment: `gh pr comment "$pr_number" --repo "${pr_owner}/${pr_repo}" --body-file "$pr_response_path"`
-- [ ] Display success confirmation for push and comment
+- [x] Write STEP 0.5.3 (AskUserQuestion - Push and GitHub Comment Approval): present options (Yes/Preview first/Cancel) showing what will happen *(completed)*
+- [x] Handle "Preview first" option: display full pr-response.md content, then re-ask *(completed)*
+- [x] Handle "Cancel" option: display message and STOP without changing task status *(completed)*
+- [x] Write STEP 0.5.4 (Execute Push): check for uncommitted changes with `git status --porcelain` in cslib dir *(completed)*
+- [x] If uncommitted changes: `git add -A && git commit -m "task {N}: apply review feedback"` in cslib *(completed)*
+- [x] Check for unpushed commits with `git log --oneline origin/HEAD..HEAD` in cslib *(completed)*
+- [x] If unpushed commits: `git push origin HEAD` (no force, no squash) *(completed)*
+- [x] Post GitHub comment: `gh pr comment "$pr_number" --repo "${pr_owner}/${pr_repo}" --body-file "$pr_response_path"` *(completed)*
+- [x] Display success confirmation for push and comment *(completed)*
 
 **Timing**: 0.75 hours
 
@@ -127,24 +127,24 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Zulip Send and Task Completion [NOT STARTED]
+### Phase 3: Zulip Send and Task Completion [COMPLETED]
 
 **Goal**: Add STEP 0.5.5 (Zulip approval), STEP 0.5.6 (Zulip send), and STEP 0.5.7 (task completion) to pr.md.
 
 **Tasks**:
-- [ ] Write STEP 0.5.5 (AskUserQuestion - Zulip Approval): only if zulip-response.md exists
-- [ ] Check ~/.zuliprc for `REPLACE_WITH` placeholder values; if found, warn and offer only "Skip Zulip" option
-- [ ] If configured: present options (Yes/Show message first/Skip Zulip)
-- [ ] Handle "Show message first": display zulip-response.md content, then re-ask
-- [ ] If no zulip-response.md exists: skip STEP 0.5.5 and 0.5.6 entirely
-- [ ] Write STEP 0.5.6 (Execute Zulip Send): `cat "$zulip_response_path" | zulip-send --stream "$stream_name" --subject "$topic"`
-- [ ] Display Zulip send success or skip confirmation
-- [ ] Write STEP 0.5.7 (Transition Task to COMPLETED):
-  - [ ] Call `bash "$CSLIB_DIR/.claude/scripts/update-task-status.sh" postflight "$input_value" pr_ready "$session_id"`
-  - [ ] Regenerate TODO.md: `bash "$CSLIB_DIR/.claude/scripts/generate-todo.sh"`
-  - [ ] Git commit state changes: `cd "$CSLIB_DIR" && git add specs/state.json specs/TODO.md && git commit -m "task ${input_value}: complete pr review response"`
-- [ ] Display final completion summary with all actions taken
-- [ ] End with **STOP** to prevent falling through to STEP 1
+- [x] Write STEP 0.5.5 (AskUserQuestion - Zulip Approval): only if zulip-response.md exists *(completed)*
+- [x] Check ~/.zuliprc for `REPLACE_WITH` placeholder values; if found, warn and offer only "Skip Zulip" option *(completed)*
+- [x] If configured: present options (Yes/Show message first/Skip Zulip) *(completed)*
+- [x] Handle "Show message first": display zulip-response.md content, then re-ask *(completed)*
+- [x] If no zulip-response.md exists: skip STEP 0.5.5 and 0.5.6 entirely *(completed)*
+- [x] Write STEP 0.5.6 (Execute Zulip Send): `cat "$zulip_response_path" | zulip-send --stream "$stream_name" --subject "$topic"` *(completed)*
+- [x] Display Zulip send success or skip confirmation *(completed)*
+- [x] Write STEP 0.5.7 (Transition Task to COMPLETED): *(completed)*
+  - [x] Call `bash "$CSLIB_DIR/.claude/scripts/update-task-status.sh" postflight "$input_value" pr_ready "$session_id"` *(completed)*
+  - [x] Regenerate TODO.md: `bash "$CSLIB_DIR/.claude/scripts/generate-todo.sh"` *(completed)*
+  - [x] Git commit state changes: `cd "$CSLIB_DIR" && git add specs/state.json specs/TODO.md && git commit -m "task ${input_value}: complete pr review response"` *(completed)*
+- [x] Display final completion summary with all actions taken *(completed)*
+- [x] End with **STOP** to prevent falling through to STEP 1 *(completed)*
 
 **Timing**: 0.5 hours
 
@@ -162,14 +162,14 @@ Phases within the same wave can execute in parallel.
 
 ## Testing & Validation
 
-- [ ] Read the modified pr.md and verify STEP 0.5 is structurally between STEP 0 and STEP 1
-- [ ] Verify detection logic: pure integer check, pr_ready status check, sources count check
-- [ ] Verify jq commands use safe patterns (no `!=` operator)
-- [ ] Verify two separate AskUserQuestion calls exist with correct option structures
-- [ ] Verify zuliprc placeholder detection logic uses `grep -q "REPLACE_WITH" ~/.zuliprc`
-- [ ] Verify STOP is placed at end of STEP 0.5.7 to prevent fallthrough
-- [ ] Verify all bash commands use absolute paths for CSLIB_DIR and tool locations
-- [ ] Verify the session_id generation matches the pattern used in STEP 2
+- [x] Read the modified pr.md and verify STEP 0.5 is structurally between STEP 0 and STEP 1 *(verified: STEP 0.5 at line 341, STEP 1 at line 735)*
+- [x] Verify detection logic: pure integer check, pr_ready status check, sources count check *(verified: grep -qE '^[0-9]+$', jq status/sources checks)*
+- [x] Verify jq commands use safe patterns (no `!=` operator) *(verified: all jq uses select(.type == "...") pattern)*
+- [x] Verify two separate AskUserQuestion calls exist with correct option structures *(verified: lines 506, 616/635)*
+- [x] Verify zuliprc placeholder detection logic uses `grep -q "REPLACE_WITH" ~/.zuliprc` *(verified: line 600)*
+- [x] Verify STOP is placed at end of STEP 0.5.7 to prevent fallthrough *(verified: line 731)*
+- [x] Verify all bash commands use absolute paths for CSLIB_DIR and tool locations *(verified: CSLIB_DIR, ZULIP_SEND absolute paths)*
+- [x] Verify the session_id generation matches the pattern used in STEP 2 *(verified: same pattern sess_$(date +%s)_$(head -c8 /dev/urandom | xxd -p))*
 
 ## Artifacts & Outputs
 
