@@ -51,7 +51,7 @@
     {
       "project_number": 725,
       "project_name": "add_pr_ready_push_zulip",
-      "status": "researched",
+      "status": "planned",
       "task_type": "meta",
       "topic": "agent-system",
       "description": "Extend /pr to handle PR READY tasks from the --review workflow. When invoked on a PR READY pr-type task: (1) push a single next commit (no squash, preserving the commit as a reference for PR comments), (2) seek explicit user approval via AskUserQuestion before pushing, (3) if task has zulip-response.md artifact, offer to send Zulip message using zulip-send CLI with parsed stream/subject from the Zulip source URL. Zulip URL parsing: https://org.zulipchat.com/#narrow/stream/123-general/topic/my.20topic extracts --stream \"general\" --subject \"my topic\" (.20 = URL-encoded space). Support both stream messages (zulip-send --stream S --subject T --message M) and piped content (cat zulip-response.md | zulip-send --stream S --subject T). Seek separate explicit approval for Zulip messages. Transition task to [COMPLETED] after all actions.",
@@ -59,13 +59,18 @@
         724
       ],
       "created": "2026-06-15T06:00:00Z",
-      "last_updated": "2026-06-15T19:41:24Z",
-      "next_artifact_number": 2,
+      "last_updated": "2026-06-15T19:45:40Z",
+      "next_artifact_number": 3,
       "artifacts": [
         {
           "path": "specs/725_add_pr_ready_push_zulip/reports/01_pr-ready-push-zulip.md",
           "type": "report",
           "summary": "Research report covering /pr command structure, git push approach, AskUserQuestion patterns, zulip-send CLI, gh pr comment, and proposed PR READY handler flow"
+        },
+        {
+          "path": "specs/725_add_pr_ready_push_zulip/plans/01_pr-ready-push-zulip.md",
+          "type": "plan",
+          "summary": "3-phase implementation plan for STEP 0.5 in /pr command: detection/context, push/comment approval, and Zulip/completion"
         }
       ],
       "session_id": "sess_1781547115_2dc6c5_725"
