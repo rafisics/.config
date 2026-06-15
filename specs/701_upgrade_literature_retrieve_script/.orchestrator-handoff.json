@@ -1,0 +1,16 @@
+{
+  "status": "researched",
+  "summary": "literature-retrieve.sh needs 3 upgrades: configurable TOKEN_BUDGET from index.json (BimodalLogic declares 40000 but script ignores it), recursive subdirectory index.json merging, and normalization of chapters[] format (file field) to entries[] shape (path field) before unified scoring.",
+  "blockers": [],
+  "continuation_context": null,
+  "next_action_hint": "plan",
+  "phases_completed": 0,
+  "phases_total": 0,
+  "artifacts": [
+    {
+      "path": "specs/701_upgrade_literature_retrieve_script/reports/01_upgrade-lit-retrieve.md",
+      "type": "report",
+      "summary": "Research report covering TOKEN_BUDGET mismatch analysis, chapters[] vs entries[] schema difference, recursive merge architecture, deduplication strategy, and shell implementation specification"
+    }
+  ]
+}

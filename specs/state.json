@@ -1,7 +1,136 @@
 {
   "version": "1.1.0",
-  "next_project_number": 698,
+  "next_project_number": 707,
   "active_projects": [
+    {
+      "project_number": 706,
+      "project_name": "revise_pr_description_format_template",
+      "status": "planning",
+      "task_type": "meta",
+      "topic": "agent-system",
+      "description": "Revise .claude/extensions/cslib/context/project/cslib/standards/pr-description-format.md based on the real-world PR description at /home/benjamin/Projects/cslib/specs/198_submit_propositional_upstream_pr/pr-description.md. Four additions: (1) Add a 'Breaking Changes' section (required when applicable) listing renamed identifiers, removed constraints, changed signatures, and affected downstream files -- modeled on the task 198 PR's enumeration of constructor renames and constraint removals. (2) Add a 'Relationship to Other PRs' section (required when applicable) for documenting concurrent/adjacent PRs with interaction context -- broader than the current 'stacked on' pattern under Context, covering lateral PRs that touch the same files or related concerns (e.g., PR #607 overlaps in propositional connectives, PR #536 modifies the same files independently). (3) Add a 'Contribution Roadmap' section (optional) for multi-PR contribution series -- numbered list of planned follow-up PRs with scope summaries, link to development branch. (4) Revise the 'Changed Files' format to offer a simpler linked format alongside the existing diff-stat format: `[File](link) -- **New/Modified**: description` per file, which is cleaner for PRs with fewer files. Keep the diff-stat + H3 format as the option for larger PRs (10+ files). Also standardize the title format and harmonize AI disclosure section naming. File: .claude/extensions/cslib/context/project/cslib/standards/pr-description-format.md.",
+      "created": "2026-06-15T00:30:00Z",
+      "last_updated": "2026-06-15T00:14:59Z",
+      "next_artifact_number": 1,
+      "artifacts": [],
+      "dependencies": [],
+      "session_id": "sess_1781482499_"
+    },
+    {
+      "project_number": 705,
+      "project_name": "create_build_cache_strategy_guide",
+      "status": "researched",
+      "task_type": "meta",
+      "topic": "agent-system",
+      "description": "Create a build cache strategy context document at .claude/extensions/cslib/context/project/cslib/tools/build-cache-strategy.md documenting: (1) Mathlib cloud cache architecture -- how `lake exe cache get` downloads pre-built .olean files for Mathlib dependencies so only CSLib's own modules need rebuilding, (2) when cache invalidation occurs -- branch divergence from upstream/main, toolchain version changes, Mathlib version bumps, (3) the upstream/main base build strategy -- keeping a built checkout of upstream/main as a cache foundation for feature branches that diverge only slightly, (4) `lake exe cache get` usage patterns -- when to run (after branch creation, after Mathlib version bump), expected time savings, interaction with `lake build`, (5) feature branch workflow -- why creating from upstream/main with diverged fork main invalidates cache, and the two mitigation strategies. Register in cslib index-entries.json with load_when for cslib-implementation-agent and pr task types. Files: .claude/extensions/cslib/context/project/cslib/tools/build-cache-strategy.md, .claude/extensions/cslib/index-entries.json.",
+      "created": "2026-06-15T00:00:00Z",
+      "last_updated": "2026-06-15T00:00:00Z",
+      "next_artifact_number": 1,
+      "artifacts": [],
+      "dependencies": []
+    },
+    {
+      "project_number": 704,
+      "project_name": "update_ci_pipeline_cache_management",
+      "status": "researched",
+      "task_type": "meta",
+      "topic": "agent-system",
+      "description": "Update ci-pipeline.md and lake-commands.md in the cslib extension context to include Mathlib cache management. Add a new Step 0 (Cache Setup) to ci-pipeline.md before Step 1 (lake build): run `lake exe cache get` to download pre-built Mathlib .olean files when working on a feature branch. This step is critical when the feature branch is based on upstream/main and the local fork's main has diverged -- without cache fetching, `lake build` performs a near-full rebuild of Mathlib (30+ minutes). Add `lake exe cache get` to lake-commands.md under a new 'Cache Management Commands' section with usage, expected behavior, and when to use it. Note that cache get only needs to run once per branch setup, not on every build. Files: .claude/extensions/cslib/context/project/cslib/standards/ci-pipeline.md, .claude/extensions/cslib/context/project/cslib/tools/lake-commands.md.",
+      "created": "2026-06-15T00:00:00Z",
+      "last_updated": "2026-06-15T00:00:00Z",
+      "next_artifact_number": 1,
+      "artifacts": [],
+      "dependencies": []
+    },
+    {
+      "project_number": 701,
+      "project_name": "upgrade_literature_retrieve_script",
+      "status": "researched",
+      "task_type": "meta",
+      "topic": "agent-system",
+      "description": "Upgrade literature-retrieve.sh to fix TOKEN_BUDGET mismatch (script uses 4000 but index.json declares 40000), make budget configurable via index.json token_budget field with fallback default of 8000, and add recursive subdirectory index.json merging to handle both entries[] and chapters[] formats (e.g., blackburn_2001/index.json uses chapters[] while main index uses entries[]). Unify all discoverable entries into a single scored selection. Files: .claude/extensions/core/scripts/literature-retrieve.sh, .claude/scripts/literature-retrieve.sh.",
+      "created": "2026-06-14T23:00:00Z",
+      "last_updated": "2026-06-14T23:30:00Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "type": "report",
+          "path": "specs/701_upgrade_literature_retrieve_script/reports/01_upgrade-lit-retrieve.md",
+          "number": 1
+        }
+      ],
+      "dependencies": []
+    },
+    {
+      "project_number": 702,
+      "project_name": "create_literature_command",
+      "status": "not_started",
+      "task_type": "meta",
+      "topic": "agent-system",
+      "description": "Create a /literature command (command + skill + agent) for managing specs/literature/ directories. The command should: (1) Scan for unprocessed PDFs and DJVU files that lack corresponding markdown conversions, (2) Convert them to markdown chunked at ~4000 tokens per file using available CLI tools (pdftotext, pandoc, djvutxt), (3) Generate/update index.json entries for new conversions with keywords, summary, token_count, (4) Validate existing index.json entries against the filesystem (detect missing files, stale paths, token count drift), (5) Report status showing processed vs unprocessed files and index health. Research June 2026 best practices for PDF-to-markdown conversion quality. Files: .claude/commands/literature.md, .claude/skills/skill-literature/SKILL.md, .claude/agents/literature-agent.md.",
+      "created": "2026-06-14T23:00:00Z",
+      "last_updated": "2026-06-14T23:00:00Z",
+      "next_artifact_number": 1,
+      "artifacts": [],
+      "dependencies": [
+        701
+      ]
+    },
+    {
+      "project_number": 703,
+      "project_name": "create_literature_organization_guide",
+      "status": "not_started",
+      "task_type": "meta",
+      "topic": "agent-system",
+      "description": "Create a context guide at .claude/context/guides/literature-organization.md documenting specs/literature/ conventions: directory structure (flat files vs author_year/ subdirectories), index.json schema (entries[] format with id, bib_key, title, authors, year, section, path, page_range, token_count, keywords, summary), subdirectory index formats (chapters[] for books), naming conventions (Author_Year_Title.md for flat, secNN_slug.md for chapters), chunk sizing policy (~4000 tokens max per file), how --lit injection works (keyword scoring, greedy budget selection), and how to manually add new papers. Register in .claude/context/index.json with load_when for research agents and --lit operations. Files: .claude/context/guides/literature-organization.md, .claude/context/index.json.",
+      "created": "2026-06-14T23:00:00Z",
+      "last_updated": "2026-06-14T23:00:00Z",
+      "next_artifact_number": 1,
+      "artifacts": [],
+      "dependencies": []
+    },
+    {
+      "project_number": 698,
+      "project_name": "revise_skill_pr_description_only",
+      "status": "researched",
+      "task_type": "meta",
+      "topic": "agent-system",
+      "description": "Revise skill-pr-implementation to focus exclusively on analyzing changes and producing pr-description.md as its final output. Remove all feature branch creation logic (git checkout upstream/main -b feat/{slug}) and CI verification logic (7-step pipeline) from the skill. The revised skill should: (1) research what commits/files to include or exclude in the PR based on the task description, (2) analyze the diff to compose a pr-description.md following the canonical format from pr-description-format.md, (3) write pr-description.md to specs/{NNN}_{SLUG}/, (4) transition the task to [PR READY]. Update the delegation context in Stage 3 to remove pr_branch_strategy and ci_verification_mode fields. Update the MUST NOT section to clarify that branch creation and CI are handled by /pr command, not this skill. Also update the cslib-implementation-agent PR-specific delegation context to match the new scope. Files: .claude/extensions/cslib/skills/skill-pr-implementation/SKILL.md, .claude/extensions/cslib/agents/cslib-implementation-agent.md (PR delegation sections).",
+      "created": "2026-06-14T22:00:00Z",
+      "last_updated": "2026-06-14T22:00:00Z",
+      "next_artifact_number": 1,
+      "artifacts": [],
+      "dependencies": []
+    },
+    {
+      "project_number": 699,
+      "project_name": "revise_pr_command_branch_ci_submit",
+      "status": "researched",
+      "task_type": "meta",
+      "topic": "agent-system",
+      "description": "Revise the /pr command to be the single entry point for feature branch creation, CI verification, and PR submission. When invoked as /pr N: (1) read pr-description.md from the task directory as the PR body (required -- error if missing), (2) create the feature branch from upstream/main (STEP 5), (3) stage relevant changes (STEP 6), (4) run `lake exe cache get` to fetch Mathlib's pre-built .olean cache so only CSLib modules need rebuilding (critical when the feature branch diverges from main -- without this, branch creation from upstream/main triggers a near-full rebuild), (5) run 7-step CI pipeline (STEP 7), (6) if all tests pass, present pr-description.md content and ask user for approval to submit, (7) submit the PR via gh pr create with the pr-description.md content, (8) transition task to [COMPLETED]. Remove the fallback interactive description composition flow (Steps 8-9 for non-task modes) when pr-description.md exists -- the description is pre-built by skill-pr-implementation. Preserve path-mode and description-mode as fallback for non-task PR submissions. File: .claude/extensions/cslib/commands/pr.md.",
+      "created": "2026-06-14T22:00:00Z",
+      "last_updated": "2026-06-14T22:00:00Z",
+      "next_artifact_number": 1,
+      "artifacts": [],
+      "dependencies": []
+    },
+    {
+      "project_number": 700,
+      "project_name": "update_pr_workflow_docs",
+      "status": "not_started",
+      "task_type": "meta",
+      "topic": "agent-system",
+      "description": "Update documentation to reflect the revised PR workflow separation: skill-pr-implementation produces pr-description.md only (no branch, no CI), /pr N creates branch + runs CI + submits. Update: (1) cslib extension EXTENSION.md skill table description for skill-pr-implementation, (2) pr-prohibition.md rule to reference the new workflow (skill prepares description, /pr handles submission), (3) any context files referencing the old combined workflow. Ensure the cslib manifest.json routing entries for pr task type are still correct after the skill revision. Sync extension core copies of any changed rules.",
+      "created": "2026-06-14T22:00:00Z",
+      "last_updated": "2026-06-14T22:00:00Z",
+      "next_artifact_number": 1,
+      "artifacts": [],
+      "dependencies": [
+        698,
+        699
+      ]
+    },
     {
       "project_number": 697,
       "project_name": "fix_literature_retrieve_keyword_matching",
@@ -38,7 +167,7 @@
       "status": "completed",
       "task_type": "meta",
       "topic": "agent-system",
-      "description": "Apply PR deny rules to settings.json and fix the block-pr-submission.sh hook. Three changes: (1) Add Bash(gh pr create*) and Bash(gh pr merge*) to permissions.deny in .claude/settings.json — these force a harness-level permission prompt that cannot be bypassed by model behavior. Do NOT add git push to deny (user wants push allowed). (2) Update .claude/hooks/block-pr-submission.sh to remove the git push block (lines 25-28) — user explicitly wants agents to be able to push branches. Keep gh pr create and glab mr create blocks. (3) Register block-pr-submission.sh in the PreToolUse hooks array in .claude/settings.json with matcher Bash — Task 684 created the script but never wired it into settings.json. Also sync the hook script to .claude/extensions/core/hooks/block-pr-submission.sh if that path exists. Background: Tasks 684-685 were marked completed but their settings.json changes were never applied. The /orchestrate command then submitted a PR to upstream leanprover/cslib without user approval because Bash(git:*) in the allow list auto-approved all git/gh commands.",
+      "description": "Apply PR deny rules to settings.json and fix the block-pr-submission.sh hook. Three changes: (1) Add Bash(gh pr create*) and Bash(gh pr merge*) to permissions.deny in .claude/settings.json \u2014 these force a harness-level permission prompt that cannot be bypassed by model behavior. Do NOT add git push to deny (user wants push allowed). (2) Update .claude/hooks/block-pr-submission.sh to remove the git push block (lines 25-28) \u2014 user explicitly wants agents to be able to push branches. Keep gh pr create and glab mr create blocks. (3) Register block-pr-submission.sh in the PreToolUse hooks array in .claude/settings.json with matcher Bash \u2014 Task 684 created the script but never wired it into settings.json. Also sync the hook script to .claude/extensions/core/hooks/block-pr-submission.sh if that path exists. Background: Tasks 684-685 were marked completed but their settings.json changes were never applied. The /orchestrate command then submitted a PR to upstream leanprover/cslib without user approval because Bash(git:*) in the allow list auto-approved all git/gh commands.",
       "created": "2026-06-14T20:00:00Z",
       "last_updated": "2026-06-14T20:20:24Z",
       "next_artifact_number": 2,
@@ -334,7 +463,7 @@
       "topic": "agent-system",
       "effort": "1 hour",
       "dependencies": [],
-      "description": "Add an AskUserQuestion confirmation step to .claude/commands/merge.md between STEP 3 (validate branch) and STEP 4 (push). Present the branch name, target branch, draft status, and a summary of commits for user review before proceeding with push and PR creation. Match the approval pattern used by the cslib /pr command (lines 792-803). Also add a prohibition note in the command header documentation stating that agents must never invoke /merge autonomously — it is a user-only command. Update the extension core copy at .claude/extensions/core/commands/merge.md to match.",
+      "description": "Add an AskUserQuestion confirmation step to .claude/commands/merge.md between STEP 3 (validate branch) and STEP 4 (push). Present the branch name, target branch, draft status, and a summary of commits for user review before proceeding with push and PR creation. Match the approval pattern used by the cslib /pr command (lines 792-803). Also add a prohibition note in the command header documentation stating that agents must never invoke /merge autonomously \u2014 it is a user-only command. Update the extension core copy at .claude/extensions/core/commands/merge.md to match.",
       "completion_summary": "Added user-only prohibition and AskUserQuestion approval gate (STEP 4) to /merge command with Yes/Draft/Cancel options. Synced extension core copy.",
       "created": "2026-06-12T23:00:00Z",
       "last_updated": "2026-06-13T00:25:32Z",
@@ -364,7 +493,7 @@
       "topic": "agent-system",
       "effort": "30 minutes",
       "dependencies": [],
-      "description": "Replace the blanket Bash(git:*) permission in .claude/settings.json with granular git operation entries that exclude git push. New entries: Bash(git status*), Bash(git diff*), Bash(git add*), Bash(git commit*), Bash(git log*), Bash(git branch*), Bash(git checkout*), Bash(git stash*), Bash(git fetch*), Bash(git rebase*), Bash(git merge*), Bash(git remote*), Bash(git rev-parse*), Bash(git show*), Bash(git blame*), Bash(git tag*), Bash(git cherry-pick*), Bash(git clean*), Bash(git reset*). This ensures any git push triggers a permission prompt requiring user approval. Do NOT modify the cslib project settings.json — the user will reload the agent system there separately.",
+      "description": "Replace the blanket Bash(git:*) permission in .claude/settings.json with granular git operation entries that exclude git push. New entries: Bash(git status*), Bash(git diff*), Bash(git add*), Bash(git commit*), Bash(git log*), Bash(git branch*), Bash(git checkout*), Bash(git stash*), Bash(git fetch*), Bash(git rebase*), Bash(git merge*), Bash(git remote*), Bash(git rev-parse*), Bash(git show*), Bash(git blame*), Bash(git tag*), Bash(git cherry-pick*), Bash(git clean*), Bash(git reset*). This ensures any git push triggers a permission prompt requiring user approval. Do NOT modify the cslib project settings.json \u2014 the user will reload the agent system there separately.",
       "completion_summary": "Added Bash(git push:*) and Bash(git push) to deny list in settings.json. Deny rules take precedence over Bash(git:*) allow.",
       "created": "2026-06-12T23:00:00Z",
       "last_updated": "2026-06-13T00:25:32Z",
@@ -593,7 +722,7 @@
       "dependencies": [
         679
       ],
-      "description": "Modify claude-stop-notify.sh to call tts-notify.sh when no workflow-active marker exists (= agent halted, user must act). When workflow-active marker IS present (mid-orchestrate pause), skip TTS so tab stays dim with no announcement. Add cooldown dedup to prevent rapid stop/start from spamming TTS. The current claude-stop-notify.sh (line 59) explicitly skips TTS with comment \"no TTS for non-lifecycle stops\" — this is the root cause of TTS never firing on /implement, /todo, /orchestrate completion. Files: .claude/hooks/claude-stop-notify.sh, .claude/hooks/tts-notify.sh (verify cooldown mechanism). Also harmonize with the global ~/.config/.claude/hooks/tts-notify.sh which does fire TTS on Stop but lacks the workflow-active marker pattern.",
+      "description": "Modify claude-stop-notify.sh to call tts-notify.sh when no workflow-active marker exists (= agent halted, user must act). When workflow-active marker IS present (mid-orchestrate pause), skip TTS so tab stays dim with no announcement. Add cooldown dedup to prevent rapid stop/start from spamming TTS. The current claude-stop-notify.sh (line 59) explicitly skips TTS with comment \"no TTS for non-lifecycle stops\" \u2014 this is the root cause of TTS never firing on /implement, /todo, /orchestrate completion. Files: .claude/hooks/claude-stop-notify.sh, .claude/hooks/tts-notify.sh (verify cooldown mechanism). Also harmonize with the global ~/.config/.claude/hooks/tts-notify.sh which does fire TTS on Stop but lacks the workflow-active marker pattern.",
       "created": "2026-06-12T00:00:00Z",
       "last_updated": "2026-06-12T20:33:43Z",
       "next_artifact_number": 2,
@@ -631,7 +760,7 @@
           ]
         },
         {
-          "content": "Shared cooldown timestamp file /tmp/claude-tts-last-notify is used by BOTH the project .claude/hooks/tts-notify.sh (after task 680 fix) and the global ~/.config/.claude/hooks/tts-notify.sh. Using the same path for both scripts enables cross-project dedup — a lifecycle TTS announcement from one script prevents a Stop hook TTS from the other script within the 10-second cooldown window. This is the correct dedup mechanism for the double-announcement risk when task 681 clears the workflow-active marker before final Stop.",
+          "content": "Shared cooldown timestamp file /tmp/claude-tts-last-notify is used by BOTH the project .claude/hooks/tts-notify.sh (after task 680 fix) and the global ~/.config/.claude/hooks/tts-notify.sh. Using the same path for both scripts enables cross-project dedup \u2014 a lifecycle TTS announcement from one script prevents a Stop hook TTS from the other script within the 10-second cooldown window. This is the correct dedup mechanism for the double-announcement risk when task 681 clears the workflow-active marker before final Stop.",
           "category": "PATTERN",
           "source_artifact": "specs/680_fix_stop_hook_tts/reports/01_stop-hook-tts-research.md",
           "confidence": 0.9,
@@ -657,7 +786,7 @@
       "dependencies": [
         679
       ],
-      "description": "Fix orchestrator-postflight.sh Stage 8b to pass --quiet only for mid-orchestrate transitions (research->plan, plan->implement) and call lifecycle-notify.sh WITHOUT --quiet on final completion so TTS fires. Currently line 313 always passes --quiet with comment \"this script is called mid-orchestrate where the orchestrator itself fires the final TTS on true completion\" but no such final TTS code exists. The fix requires: (1) orchestrator-postflight.sh must know whether this is a mid-orchestrate call or final completion — add an argument or env var from the caller, (2) for final completion (implement postflight in non-orchestrate mode, or orchestrate final phase), call lifecycle-notify.sh without --quiet, (3) clear workflow-active marker before final Stop so claude-stop-notify.sh fires needs_input tab color + TTS, (4) verify dim-to-bright tab color transitions work correctly during orchestrate cycles (dim for in-progress, bright for completed, needs_input for awaiting user). Files: .claude/scripts/orchestrator-postflight.sh, .claude/scripts/lifecycle-notify.sh, .claude/hooks/claude-stop-notify.sh (workflow-active marker cleanup).",
+      "description": "Fix orchestrator-postflight.sh Stage 8b to pass --quiet only for mid-orchestrate transitions (research->plan, plan->implement) and call lifecycle-notify.sh WITHOUT --quiet on final completion so TTS fires. Currently line 313 always passes --quiet with comment \"this script is called mid-orchestrate where the orchestrator itself fires the final TTS on true completion\" but no such final TTS code exists. The fix requires: (1) orchestrator-postflight.sh must know whether this is a mid-orchestrate call or final completion \u2014 add an argument or env var from the caller, (2) for final completion (implement postflight in non-orchestrate mode, or orchestrate final phase), call lifecycle-notify.sh without --quiet, (3) clear workflow-active marker before final Stop so claude-stop-notify.sh fires needs_input tab color + TTS, (4) verify dim-to-bright tab color transitions work correctly during orchestrate cycles (dim for in-progress, bright for completed, needs_input for awaiting user). Files: .claude/scripts/orchestrator-postflight.sh, .claude/scripts/lifecycle-notify.sh, .claude/hooks/claude-stop-notify.sh (workflow-active marker cleanup).",
       "created": "2026-06-12T00:00:00Z",
       "last_updated": "2026-06-12T20:35:41Z",
       "next_artifact_number": 2,
@@ -681,7 +810,7 @@
       "session_id": "sess_1749783612_a7b3c2_681",
       "memory_candidates": [
         {
-          "content": "orchestrator-postflight.sh is not called by any skill SKILL.md — all skills implement postflight inline and call lifecycle-notify.sh directly in their Stage 8a without --quiet. The script header incorrectly claims skills call it. The script is infrastructure for future use only.",
+          "content": "orchestrator-postflight.sh is not called by any skill SKILL.md \u2014 all skills implement postflight inline and call lifecycle-notify.sh directly in their Stage 8a without --quiet. The script header incorrectly claims skills call it. The script is infrastructure for future use only.",
           "category": "INSIGHT",
           "source_artifact": "specs/681_fix_orchestrator_final_tts/reports/01_orchestrator-tts-research.md",
           "confidence": 0.95,
@@ -905,7 +1034,7 @@
         672,
         673
       ],
-      "description": "Upgrade the existing /pr command (cslib extension) to integrate with the task lifecycle. When invoked as `/pr N`, load the [PR READY] task, read pr-description.md from task artifacts, run the full CI pipeline with interactive fix, present/edit the description based on the standard format, handle stacked PR base branch detection, submit via `gh pr create`, and transition task to [COMPLETED]. Key changes: (1) task-mode reads pr-description.md instead of generating from scratch; (2) supports stacked PRs by detecting base_branch from task metadata; (3) updates task status on successful submission; (4) removes redundant CI checklist from description body (real CI runs in the pipeline step, per leanprover/cslib PR #635 convention). Source: .claude/extensions/cslib/commands/pr.md (885 lines) — refine its task-mode path while preserving path-mode and description-mode. Also fix the hardcoded state.json path bug in STEP 2 (currently points at /home/benjamin/.config/nvim/specs/state.json instead of the target project specs/).",
+      "description": "Upgrade the existing /pr command (cslib extension) to integrate with the task lifecycle. When invoked as `/pr N`, load the [PR READY] task, read pr-description.md from task artifacts, run the full CI pipeline with interactive fix, present/edit the description based on the standard format, handle stacked PR base branch detection, submit via `gh pr create`, and transition task to [COMPLETED]. Key changes: (1) task-mode reads pr-description.md instead of generating from scratch; (2) supports stacked PRs by detecting base_branch from task metadata; (3) updates task status on successful submission; (4) removes redundant CI checklist from description body (real CI runs in the pipeline step, per leanprover/cslib PR #635 convention). Source: .claude/extensions/cslib/commands/pr.md (885 lines) \u2014 refine its task-mode path while preserving path-mode and description-mode. Also fix the hardcoded state.json path bug in STEP 2 (currently points at /home/benjamin/.config/nvim/specs/state.json instead of the target project specs/).",
       "created": "2026-06-12T23:00:00Z",
       "last_updated": "2026-06-12T18:07:46Z",
       "next_artifact_number": 1,
@@ -1104,7 +1233,7 @@
       "dependencies": [
         663
       ],
-      "description": "Create rules/cslib.md (path pattern: **/*.lean for CSLib project) and context files under context/project/cslib/ covering: domain/ (CONTRIBUTING standards, notation conventions, project organization), patterns/ (proof structure, module organization, reuse-first philosophy), standards/ (CI pipeline, PR conventions, conventional commits, mathlib style), tools/ (lake commands, linters, checkInitImports, mk_all, lint-style, lake shake). CSLib-specific encoding: alpha equivalence notation, LTS transitions, reduction arrows from NOTATION.md. Working groups model and AI usage policy from CONTRIBUTING.md. Additionally, incorporate citation conventions from /home/benjamin/Projects/cslib/.claude/context/standards/citation-conventions.md as a new context file at context/project/cslib/standards/citation-conventions.md — this covers BibKey format (CamelCase, e.g. Blackburn2001), the references.bib workflow, canonical citation display format in module docstrings, and legacy pattern conversion rules.",
+      "description": "Create rules/cslib.md (path pattern: **/*.lean for CSLib project) and context files under context/project/cslib/ covering: domain/ (CONTRIBUTING standards, notation conventions, project organization), patterns/ (proof structure, module organization, reuse-first philosophy), standards/ (CI pipeline, PR conventions, conventional commits, mathlib style), tools/ (lake commands, linters, checkInitImports, mk_all, lint-style, lake shake). CSLib-specific encoding: alpha equivalence notation, LTS transitions, reduction arrows from NOTATION.md. Working groups model and AI usage policy from CONTRIBUTING.md. Additionally, incorporate citation conventions from /home/benjamin/Projects/cslib/.claude/context/standards/citation-conventions.md as a new context file at context/project/cslib/standards/citation-conventions.md \u2014 this covers BibKey format (CamelCase, e.g. Blackburn2001), the references.bib workflow, canonical citation display format in module docstrings, and legacy pattern conversion rules.",
       "artifacts": [
         {
           "path": "specs/666_create_cslib_context_rules/reports/01_cslib-context-rules-research.md",
@@ -1238,7 +1367,7 @@
       "dependencies": [
         661
       ],
-      "description": "Wire lifecycle-notify.sh into the postflight pipeline for both standalone and orchestrate flows. Update orchestrator-postflight.sh to pass --quiet for mid-orchestrate phase completions (dim color change only, no TTS). Wire standalone command postflight (skill-base.sh) to call lifecycle-notify.sh on completion (with TTS). Ensure workflow-active marker cleanup so Stop hook fires needs_input at the right time. The dim/bright color distinction in wezterm.lua already exists — dim bg+fg for in-progress states (researching/planning/implementing), bright bg+fg for completed states (researched/planned/completed). Mid-orchestrate transitions should use the in-progress color of the NEXT phase (e.g., research done -> set planning dim color). Final completion or standalone completion should use the bright completed color + TTS announcement. Test: /research N standalone (bright researched + TTS), /orchestrate N multi-phase (dim color transitions, bright + TTS only at final stop).",
+      "description": "Wire lifecycle-notify.sh into the postflight pipeline for both standalone and orchestrate flows. Update orchestrator-postflight.sh to pass --quiet for mid-orchestrate phase completions (dim color change only, no TTS). Wire standalone command postflight (skill-base.sh) to call lifecycle-notify.sh on completion (with TTS). Ensure workflow-active marker cleanup so Stop hook fires needs_input at the right time. The dim/bright color distinction in wezterm.lua already exists \u2014 dim bg+fg for in-progress states (researching/planning/implementing), bright bg+fg for completed states (researched/planned/completed). Mid-orchestrate transitions should use the in-progress color of the NEXT phase (e.g., research done -> set planning dim color). Final completion or standalone completion should use the bright completed color + TTS announcement. Test: /research N standalone (bright researched + TTS), /orchestrate N multi-phase (dim color transitions, bright + TTS only at final stop).",
       "artifacts": [
         {
           "path": "specs/662_wire_postflight_lifecycle_notifications/reports/01_wire-lifecycle-notify.md",
@@ -1265,7 +1394,7 @@
       "created": "2026-06-11T17:30:00Z",
       "last_updated": "2026-06-11T17:55:37Z",
       "dependencies": [],
-      "description": "Three fixes: (1) Add orchestrate to wezterm-task-number.sh Tier 1a regex alternation so /orchestrate N sets TASK_NUMBER correctly. (2) Add orchestrate to wezterm-preflight-status.sh Tier 1 matchers with appropriate initial status mapping (orchestrate starts with researching since it begins with research phase). (3) Create the missing .claude/scripts/lifecycle-notify.sh bridge script that orchestrator-postflight.sh already references at line 306. The script should accept a status argument (researched/planned/completed/etc.) and an optional --quiet flag. Normal mode: call wezterm-notify.sh to update tab color AND tts-notify.sh --lifecycle for TTS announcement. Quiet mode (--quiet): call wezterm-notify.sh only (no TTS) — used for mid-orchestrate phase transitions where the user does not need to be alerted.",
+      "description": "Three fixes: (1) Add orchestrate to wezterm-task-number.sh Tier 1a regex alternation so /orchestrate N sets TASK_NUMBER correctly. (2) Add orchestrate to wezterm-preflight-status.sh Tier 1 matchers with appropriate initial status mapping (orchestrate starts with researching since it begins with research phase). (3) Create the missing .claude/scripts/lifecycle-notify.sh bridge script that orchestrator-postflight.sh already references at line 306. The script should accept a status argument (researched/planned/completed/etc.) and an optional --quiet flag. Normal mode: call wezterm-notify.sh to update tab color AND tts-notify.sh --lifecycle for TTS announcement. Quiet mode (--quiet): call wezterm-notify.sh only (no TTS) \u2014 used for mid-orchestrate phase transitions where the user does not need to be alerted.",
       "artifacts": [
         {
           "path": "specs/661_fix_hook_regexes_lifecycle_notify/reports/01_hook-regex-lifecycle.md",
@@ -1292,7 +1421,7 @@
       "created": "2026-06-11T09:30:00Z",
       "last_updated": "2026-06-11T16:35:28Z",
       "dependencies": [],
-      "description": "skill-orchestrate dispatches agents without calling update-task-status.sh preflight first. The individual skills (skill-researcher Stage 2, skill-planner Stage 2, skill-implementer Stage 2) all call preflight before spawning their agent, which sets task status to the in-progress variant (researching/planning/implementing) and — for implement — updates the plan file top-level Status to [IMPLEMENTING] via update-plan-status.sh. Without these preflight calls, orchestrated tasks stay at their prior status throughout execution and plan files never show [IMPLEMENTING]. Fix: (1) Add preflight calls in skill-orchestrate Stage 4 state handlers before each dispatch — research dispatch should call preflight:research, plan dispatch should call preflight:plan, implement dispatch should call preflight:implement. (2) Do the same in multi-task mode Stage MT-4 before each parallel dispatch batch. (3) Verify that update-plan-status.sh correctly transitions plan Status and that phase markers ([NOT STARTED] -> [IN PROGRESS] -> [COMPLETED]) are updated by the implementation agent during execution. The phase markers are the agents responsibility (general-implementation-agent Stage 4A/4D), but confirm the orchestrator dispatch prompt provides sufficient context for the agent to locate and edit the plan file.",
+      "description": "skill-orchestrate dispatches agents without calling update-task-status.sh preflight first. The individual skills (skill-researcher Stage 2, skill-planner Stage 2, skill-implementer Stage 2) all call preflight before spawning their agent, which sets task status to the in-progress variant (researching/planning/implementing) and \u2014 for implement \u2014 updates the plan file top-level Status to [IMPLEMENTING] via update-plan-status.sh. Without these preflight calls, orchestrated tasks stay at their prior status throughout execution and plan files never show [IMPLEMENTING]. Fix: (1) Add preflight calls in skill-orchestrate Stage 4 state handlers before each dispatch \u2014 research dispatch should call preflight:research, plan dispatch should call preflight:plan, implement dispatch should call preflight:implement. (2) Do the same in multi-task mode Stage MT-4 before each parallel dispatch batch. (3) Verify that update-plan-status.sh correctly transitions plan Status and that phase markers ([NOT STARTED] -> [IN PROGRESS] -> [COMPLETED]) are updated by the implementation agent during execution. The phase markers are the agents responsibility (general-implementation-agent Stage 4A/4D), but confirm the orchestrator dispatch prompt provides sufficient context for the agent to locate and edit the plan file.",
       "artifacts": [
         {
           "path": "specs/660_orchestrate_preflight_status_updates/reports/01_preflight-analysis.md",
@@ -1961,7 +2090,7 @@
       "dependencies": [
         649
       ],
-      "description": "Update all task creation commands and agents to follow the state.json-first pattern: write to state.json, then call generate-todo.sh for regeneration. Currently 8 HIGH-priority writers create entries directly in TODO.md, which generate-todo.sh will silently overwrite. Files to update: (1) commands/task.md — Create, Recover, Followup, Expand, Sync, Abandon modes: replace all TODO.md Edit/sed operations with state.json updates + generate-todo.sh call. (2) commands/review.md — task creation and goal line: add active_goal field to state.json schema, replace TODO.md Edit with state.json update + generate-todo.sh. (3) skill-spawn/SKILL.md — child task creation, parent status/deps updates: replace 3 Edit operations with state.json writes + generate-todo.sh. (4) skill-fix-it/SKILL.md — fix-it task creation: replace TODO.md prepend with state.json write + generate-todo.sh. (5) skill-project-overview/SKILL.md — task creation + link-artifact-todo call: replace with state.json write + generate-todo.sh. (6) agents/meta-builder-agent.md — batch task creation: replace batch Edit insertion with state.json writes + generate-todo.sh. Also update archive-task.sh (Python entry removal) and vault-operation.sh (sed renumber/comment) to use generate-todo.sh instead of direct TODO.md manipulation.",
+      "description": "Update all task creation commands and agents to follow the state.json-first pattern: write to state.json, then call generate-todo.sh for regeneration. Currently 8 HIGH-priority writers create entries directly in TODO.md, which generate-todo.sh will silently overwrite. Files to update: (1) commands/task.md \u2014 Create, Recover, Followup, Expand, Sync, Abandon modes: replace all TODO.md Edit/sed operations with state.json updates + generate-todo.sh call. (2) commands/review.md \u2014 task creation and goal line: add active_goal field to state.json schema, replace TODO.md Edit with state.json update + generate-todo.sh. (3) skill-spawn/SKILL.md \u2014 child task creation, parent status/deps updates: replace 3 Edit operations with state.json writes + generate-todo.sh. (4) skill-fix-it/SKILL.md \u2014 fix-it task creation: replace TODO.md prepend with state.json write + generate-todo.sh. (5) skill-project-overview/SKILL.md \u2014 task creation + link-artifact-todo call: replace with state.json write + generate-todo.sh. (6) agents/meta-builder-agent.md \u2014 batch task creation: replace batch Edit insertion with state.json writes + generate-todo.sh. Also update archive-task.sh (Python entry removal) and vault-operation.sh (sed renumber/comment) to use generate-todo.sh instead of direct TODO.md manipulation.",
       "artifacts": [
         {
           "path": "specs/653_update_task_creation_commands_state_first/reports/01_pipeline-audit.md",
@@ -2061,7 +2190,7 @@
       "dependencies": [
         654
       ],
-      "description": "Add topic assignment to 6 task creation points that currently have missing or incomplete topic handling, using the shared topic-assignment-pattern.md and manage-topics.sh:\n\n1. **skill-fix-it/SKILL.md** (PARTIAL): Keep existing auto-inference heuristic as a suggestion, but add user confirmation via the shared pattern suggest mode. User can accept, override, or skip.\n2. **commands/review.md** (PARTIAL): Same as fix-it — auto-inference as suggestion + confirmation picker. Also add active_topics array update when new topics are created.\n3. **skills/skill-project-overview/SKILL.md** (MISSING): Add topic picker call using shared pattern interactive mode.\n4. **skills/skill-spawn/SKILL.md** (inherit, no fallback): Keep parent inheritance as primary, add fallback to shared pattern interactive mode when parent has no topic.\n5. **commands/task.md --expand** (inherit, no fallback): Same as spawn — inherit parent topic, fallback picker when parent is topicless.\n6. **commands/task.md --review** (inherit, no fallback): Same as spawn — inherit parent topic, fallback picker when parent is topicless.\n\nAlso update extension copies (.claude/extensions/core/) to match all changes.",
+      "description": "Add topic assignment to 6 task creation points that currently have missing or incomplete topic handling, using the shared topic-assignment-pattern.md and manage-topics.sh:\n\n1. **skill-fix-it/SKILL.md** (PARTIAL): Keep existing auto-inference heuristic as a suggestion, but add user confirmation via the shared pattern suggest mode. User can accept, override, or skip.\n2. **commands/review.md** (PARTIAL): Same as fix-it \u2014 auto-inference as suggestion + confirmation picker. Also add active_topics array update when new topics are created.\n3. **skills/skill-project-overview/SKILL.md** (MISSING): Add topic picker call using shared pattern interactive mode.\n4. **skills/skill-spawn/SKILL.md** (inherit, no fallback): Keep parent inheritance as primary, add fallback to shared pattern interactive mode when parent has no topic.\n5. **commands/task.md --expand** (inherit, no fallback): Same as spawn \u2014 inherit parent topic, fallback picker when parent is topicless.\n6. **commands/task.md --review** (inherit, no fallback): Same as spawn \u2014 inherit parent topic, fallback picker when parent is topicless.\n\nAlso update extension copies (.claude/extensions/core/) to match all changes.",
       "artifacts": [
         {
           "path": "specs/656_add_topic_assignment_gaps/reports/01_add-topic-gaps.md",
@@ -2146,7 +2275,7 @@
       "project_name": "fix_artifact_counter_system",
       "status": "completed",
       "task_type": "meta",
-      "description": "Fix 4 bugs in the artifact counter system (next_artifact_number): (1) Revision does not increment counter — causes collisions when multiple plan revisions share the same number, (2) No collision detection when computed artifact number matches existing files, (3) Counter drift for legacy tasks that predate the unified numbering, (4) plan_version vs artifact sequence number confusion in filenames. Root cause observed during BimodalLogic task 273 (21 plan versions). Fix requires ~80 lines across 5-7 skill files.",
+      "description": "Fix 4 bugs in the artifact counter system (next_artifact_number): (1) Revision does not increment counter \u2014 causes collisions when multiple plan revisions share the same number, (2) No collision detection when computed artifact number matches existing files, (3) Counter drift for legacy tasks that predate the unified numbering, (4) plan_version vs artifact sequence number confusion in filenames. Root cause observed during BimodalLogic task 273 (21 plan versions). Fix requires ~80 lines across 5-7 skill files.",
       "priority": "high",
       "topic": "agent-system",
       "dependencies": [],

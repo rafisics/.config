@@ -1,23 +1,34 @@
 ---
-next_project_number: 698
+next_project_number: 707
 ---
 
 # TODO
 
 ## Task Order
 
-*Updated 2026-06-14. Generated from state.json dependency graph.*
+*Updated 2026-06-15. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,652 | -- | agent-system, Terminal UI, Email Integration |
+| 1 | 78,87,652,698,699,701,703,704,705,706 | -- | agent-system, Terminal UI, Email Integration |
+| 2 | 700,702 | 698,699,701 | agent-system |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Agent System
 
 652 [NOT STARTED] — After ~1 week of the new pipeline running, review logs to verify 
+698 [RESEARCHED] — Revise skill-pr-implementation to focus exclusively on analyzing 
+  └─ 700 [NOT STARTED] — Update documentation to reflect the revised PR workflow separatio
+699 [RESEARCHED] — Revise the /pr command to be the single entry point for feature b
+  └─ 700 [NOT STARTED] — Update documentation to reflect the revised PR workflow separatio (see above)
+701 [RESEARCHED] — Upgrade literature-retrieve.sh to fix TOKEN_BUDGET mismatch (scri
+  └─ 702 [NOT STARTED] — Create a /literature command (command + skill + agent) for managi
+703 [NOT STARTED] — Create a context guide at .claude/context/guides/literature-organ
+704 [RESEARCHED] — Update ci-pipeline.md and lake-commands.md in the cslib extension
+705 [RESEARCHED] — Create a build cache strategy context document at .claude/extensi
+706 [PLANNING] — Revise .claude/extensions/cslib/context/project/cslib/standards/p
 
 ### Terminal UI
 
@@ -28,6 +39,97 @@ next_project_number: 698
 78 [PLANNED] — Fix Gmail SMTP authentication failure when sending emails via Him
 
 ## Tasks
+
+### 706. Revise pr description format template
+- **Status**: [PLANNING]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: Revise .claude/extensions/cslib/context/project/cslib/standards/pr-description-format.md based on the real-world PR description at /home/benjamin/Projects/cslib/specs/198_submit_propositional_upstream_pr/pr-description.md. Four additions: (1) Add a 'Breaking Changes' section (required when applicable) listing renamed identifiers, removed constraints, changed signatures, and affected downstream files -- modeled on the task 198 PR's enumeration of constructor renames and constraint removals. (2) Add a 'Relationship to Other PRs' section (required when applicable) for documenting concurrent/adjacent PRs with interaction context -- broader than the current 'stacked on' pattern under Context, covering lateral PRs that touch the same files or related concerns (e.g., PR #607 overlaps in propositional connectives, PR #536 modifies the same files independently). (3) Add a 'Contribution Roadmap' section (optional) for multi-PR contribution series -- numbered list of planned follow-up PRs with scope summaries, link to development branch. (4) Revise the 'Changed Files' format to offer a simpler linked format alongside the existing diff-stat format: `[File](link) -- **New/Modified**: description` per file, which is cleaner for PRs with fewer files. Keep the diff-stat + H3 format as the option for larger PRs (10+ files). Also standardize the title format and harmonize AI disclosure section naming. File: .claude/extensions/cslib/context/project/cslib/standards/pr-description-format.md.
+
+---
+
+### 705. Create build cache strategy guide
+- **Status**: [RESEARCHED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: Create a build cache strategy context document at .claude/extensions/cslib/context/project/cslib/tools/build-cache-strategy.md documenting: (1) Mathlib cloud cache architecture -- how `lake exe cache get` downloads pre-built .olean files for Mathlib dependencies so only CSLib's own modules need rebuilding, (2) when cache invalidation occurs -- branch divergence from upstream/main, toolchain version changes, Mathlib version bumps, (3) the upstream/main base build strategy -- keeping a built checkout of upstream/main as a cache foundation for feature branches that diverge only slightly, (4) `lake exe cache get` usage patterns -- when to run (after branch creation, after Mathlib version bump), expected time savings, interaction with `lake build`, (5) feature branch workflow -- why creating from upstream/main with diverged fork main invalidates cache, and the two mitigation strategies. Register in cslib index-entries.json with load_when for cslib-implementation-agent and pr task types. Files: .claude/extensions/cslib/context/project/cslib/tools/build-cache-strategy.md, .claude/extensions/cslib/index-entries.json.
+
+---
+
+### 704. Update ci pipeline cache management
+- **Status**: [RESEARCHED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: Update ci-pipeline.md and lake-commands.md in the cslib extension context to include Mathlib cache management. Add a new Step 0 (Cache Setup) to ci-pipeline.md before Step 1 (lake build): run `lake exe cache get` to download pre-built Mathlib .olean files when working on a feature branch. This step is critical when the feature branch is based on upstream/main and the local fork's main has diverged -- without cache fetching, `lake build` performs a near-full rebuild of Mathlib (30+ minutes). Add `lake exe cache get` to lake-commands.md under a new 'Cache Management Commands' section with usage, expected behavior, and when to use it. Note that cache get only needs to run once per branch setup, not on every build. Files: .claude/extensions/cslib/context/project/cslib/standards/ci-pipeline.md, .claude/extensions/cslib/context/project/cslib/tools/lake-commands.md.
+
+---
+
+### 703. Create literature organization guide
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: Create a context guide at .claude/context/guides/literature-organization.md documenting specs/literature/ conventions: directory structure (flat files vs author_year/ subdirectories), index.json schema (entries[] format with id, bib_key, title, authors, year, section, path, page_range, token_count, keywords, summary), subdirectory index formats (chapters[] for books), naming conventions (Author_Year_Title.md for flat, secNN_slug.md for chapters), chunk sizing policy (~4000 tokens max per file), how --lit injection works (keyword scoring, greedy budget selection), and how to manually add new papers. Register in .claude/context/index.json with load_when for research agents and --lit operations. Files: .claude/context/guides/literature-organization.md, .claude/context/index.json.
+
+---
+
+### 702. Create literature command
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: Task 701
+
+**Description**: Create a /literature command (command + skill + agent) for managing specs/literature/ directories. The command should: (1) Scan for unprocessed PDFs and DJVU files that lack corresponding markdown conversions, (2) Convert them to markdown chunked at ~4000 tokens per file using available CLI tools (pdftotext, pandoc, djvutxt), (3) Generate/update index.json entries for new conversions with keywords, summary, token_count, (4) Validate existing index.json entries against the filesystem (detect missing files, stale paths, token count drift), (5) Report status showing processed vs unprocessed files and index health. Research June 2026 best practices for PDF-to-markdown conversion quality. Files: .claude/commands/literature.md, .claude/skills/skill-literature/SKILL.md, .claude/agents/literature-agent.md.
+
+---
+
+### 701. Upgrade literature retrieve script
+- **Status**: [RESEARCHED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+- **Research**: [701_upgrade_literature_retrieve_script/reports/01_upgrade-lit-retrieve.md]
+
+**Description**: Upgrade literature-retrieve.sh to fix TOKEN_BUDGET mismatch (script uses 4000 but index.json declares 40000), make budget configurable via index.json token_budget field with fallback default of 8000, and add recursive subdirectory index.json merging to handle both entries[] and chapters[] formats (e.g., blackburn_2001/index.json uses chapters[] while main index uses entries[]). Unify all discoverable entries into a single scored selection. Files: .claude/extensions/core/scripts/literature-retrieve.sh, .claude/scripts/literature-retrieve.sh.
+
+---
+
+### 700. Update pr workflow docs
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: Task 698, Task 699
+
+**Description**: Update documentation to reflect the revised PR workflow separation: skill-pr-implementation produces pr-description.md only (no branch, no CI), /pr N creates branch + runs CI + submits. Update: (1) cslib extension EXTENSION.md skill table description for skill-pr-implementation, (2) pr-prohibition.md rule to reference the new workflow (skill prepares description, /pr handles submission), (3) any context files referencing the old combined workflow. Ensure the cslib manifest.json routing entries for pr task type are still correct after the skill revision. Sync extension core copies of any changed rules.
+
+---
+
+### 699. Revise pr command branch ci submit
+- **Status**: [RESEARCHED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: Revise the /pr command to be the single entry point for feature branch creation, CI verification, and PR submission. When invoked as /pr N: (1) read pr-description.md from the task directory as the PR body (required -- error if missing), (2) create the feature branch from upstream/main (STEP 5), (3) stage relevant changes (STEP 6), (4) run `lake exe cache get` to fetch Mathlib's pre-built .olean cache so only CSLib modules need rebuilding (critical when the feature branch diverges from main -- without this, branch creation from upstream/main triggers a near-full rebuild), (5) run 7-step CI pipeline (STEP 7), (6) if all tests pass, present pr-description.md content and ask user for approval to submit, (7) submit the PR via gh pr create with the pr-description.md content, (8) transition task to [COMPLETED]. Remove the fallback interactive description composition flow (Steps 8-9 for non-task modes) when pr-description.md exists -- the description is pre-built by skill-pr-implementation. Preserve path-mode and description-mode as fallback for non-task PR submissions. File: .claude/extensions/cslib/commands/pr.md.
+
+---
+
+### 698. Revise skill pr description only
+- **Status**: [RESEARCHED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: Revise skill-pr-implementation to focus exclusively on analyzing changes and producing pr-description.md as its final output. Remove all feature branch creation logic (git checkout upstream/main -b feat/{slug}) and CI verification logic (7-step pipeline) from the skill. The revised skill should: (1) research what commits/files to include or exclude in the PR based on the task description, (2) analyze the diff to compose a pr-description.md following the canonical format from pr-description-format.md, (3) write pr-description.md to specs/{NNN}_{SLUG}/, (4) transition the task to [PR READY]. Update the delegation context in Stage 3 to remove pr_branch_strategy and ci_verification_mode fields. Update the MUST NOT section to clarify that branch creation and CI are handled by /pr command, not this skill. Also update the cslib-implementation-agent PR-specific delegation context to match the new scope. Files: .claude/extensions/cslib/skills/skill-pr-implementation/SKILL.md, .claude/extensions/cslib/agents/cslib-implementation-agent.md (PR delegation sections).
+
+---
 
 ### 697. Fix literature retrieve keyword matching
 - **Status**: [COMPLETED]
