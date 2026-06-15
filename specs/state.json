@@ -74,7 +74,7 @@
     {
       "project_number": 702,
       "project_name": "create_literature_command",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "meta",
       "topic": "agent-system",
       "description": "Create a /literature command (command + skill + agent) for managing specs/literature/ directories. The command should: (1) Scan for unprocessed PDFs and DJVU files that lack corresponding markdown conversions, (2) Convert them to markdown chunked at ~4000 tokens per file using available CLI tools (pdftotext, pandoc, djvutxt), (3) Generate/update index.json entries for new conversions with keywords, summary, token_count, (4) Validate existing index.json entries against the filesystem (detect missing files, stale paths, token count drift), (5) Report status showing processed vs unprocessed files and index health. Research June 2026 best practices for PDF-to-markdown conversion quality. Files: .claude/commands/literature.md, .claude/skills/skill-literature/SKILL.md, .claude/agents/literature-agent.md.",
@@ -84,7 +84,8 @@
       "artifacts": [],
       "dependencies": [
         701
-      ]
+      ],
+      "completion_summary": "Created /literature command with 5 sub-modes (status, scan, convert, validate, index) for managing specs/literature/ directories with PDF/DJVU conversion and index.json maintenance"
     },
     {
       "project_number": 703,
