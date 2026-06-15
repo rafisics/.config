@@ -1,7 +1,7 @@
 ---
-description: Create and submit a CSLib PR from task, path, or description with full CI verification
+description: Create and submit a CSLib PR, or create a PR review task (--review)
 allowed-tools: Bash, Read, Edit, Write, AskUserQuestion
-argument-hint: "<task_number | path | description> [--draft] [--dry-run] [--branch BRANCH]"
+argument-hint: "<task_number | path | description> [--draft] [--dry-run] [--branch BRANCH] | --review <urls/descriptions...>"
 model: opus
 ---
 
@@ -30,6 +30,7 @@ via `gh pr create`.
 
 | Flag | Description |
 |------|-------------|
+| `--review` | Create a PR review task instead of submitting a PR (early-exit mode) |
 | `--draft` | Create PR as draft (not ready for review) |
 | `--dry-run` | Preview all steps without executing git/gh commands |
 | `--branch BRANCH` | Override the auto-generated branch name |
@@ -37,6 +38,303 @@ via `gh pr create`.
 ## Execution
 
 **EXECUTE NOW**: Follow all steps in sequence. Do not stop between steps unless instructed.
+
+---
+
+### STEP 0: Check for --review Flag
+
+**EXECUTE NOW**: Check whether `$ARGUMENTS` begins with `--review`. If it does, run the full
+review-task creation workflow (STEP 0.1 through STEP 0.2) and **STOP** — do not proceed to STEP 1.
+If it does not, skip STEP 0 entirely and **IMMEDIATELY CONTINUE** to STEP 1.
+
+---
+
+#### STEP 0.1: Parse Source Arguments
+
+**Input validation**: Extract the argument string after `--review`. If no arguments follow
+`--review` (or `$ARGUMENTS` is exactly `"--review"`), display usage help and **STOP**:
+
+```
+Usage: /pr --review <sources...>
+
+Sources can be any combination of:
+  - GitHub PR URL:  https://github.com/owner/repo/pull/42
+  - Zulip thread URL: https://org.zulipchat.com/#narrow/stream/NNN-name/topic/encoded.20topic
+  - Free-text description: "Fix the modal logic soundness proof"
+
+Example:
+  /pr --review https://github.com/leanprover/cslib/pull/42 "Please review the completeness proof"
+```
+
+**Parse each source token** from the arguments after `--review`:
+
+First, split the raw argument string into tokens. Quoted strings should be treated as single
+tokens (the shell handles this automatically if arguments are properly passed; otherwise split
+on whitespace, treating quoted groups as single units).
+
+Then classify each token:
+
+```bash
+# Initialize empty sources JSON array
+sources_json='[]'
+description_accumulator=""
+
+# For each token in the remaining arguments after --review:
+#   TOKEN = current argument token
+
+# Classification logic (check in order):
+
+# 1. GitHub PR URL
+if echo "$TOKEN" | grep -q 'github\.com' && echo "$TOKEN" | grep -q '/pull/'; then
+  # Extract: owner, repo, pr_number
+  # URL format: https://github.com/{owner}/{repo}/pull/{pr_number}[/files|#discussion...]
+  owner=$(echo "$TOKEN" | sed 's|.*github\.com/||; s|/.*||')
+  repo=$(echo "$TOKEN" | sed 's|.*github\.com/[^/]*/||; s|/.*||')
+  pr_number=$(echo "$TOKEN" | sed 's|.*/pull/||; s|[/#].*||; s|[^0-9].*||')
+  url_clean="https://github.com/${owner}/${repo}/pull/${pr_number}"
+
+  source_entry=$(jq -n \
+    --arg type "github_pr" \
+    --arg url "$url_clean" \
+    --arg owner "$owner" \
+    --arg repo "$repo" \
+    --argjson pr_number "$pr_number" \
+    '{type: $type, url: $url, parsed: {owner: $owner, repo: $repo, pr_number: $pr_number}}')
+  sources_json=$(echo "$sources_json" | jq ". + [$source_entry]")
+
+# 2. Zulip thread URL
+elif echo "$TOKEN" | grep -q 'zulipchat\.com'; then
+  # Extract: org, stream_id, stream_name, topic
+  # URL format: https://{org}.zulipchat.com/#narrow/stream/{stream_id}-{stream_name}/topic/{encoded_topic}
+  org=$(echo "$TOKEN" | sed 's|https://||; s|\.zulipchat\.com.*||')
+  stream_segment=$(echo "$TOKEN" | sed 's|.*/#narrow/stream/||; s|/topic/.*||; s|/.*||')
+  stream_id=$(echo "$stream_segment" | sed 's|-.*||')
+  stream_name=$(echo "$stream_segment" | sed 's|^[0-9]*-||')
+  # Decode URL-encoded topic: .20 -> space, .2E -> period, etc.
+  topic_encoded=$(echo "$TOKEN" | sed 's|.*\/topic\/||; s|[?#].*||')
+  topic=$(echo "$topic_encoded" | sed 's|\.20| |g; s|\.2E|.|g; s|\.2F|/|g; s|\.28|(|g; s|\.29|)|g; s|\.27|'"'"'|g')
+  # Handle missing topic segment gracefully
+  if echo "$TOKEN" | grep -qv '/topic/'; then
+    topic=""
+  fi
+
+  source_entry=$(jq -n \
+    --arg type "zulip_thread" \
+    --arg url "$TOKEN" \
+    --arg org "$org" \
+    --arg stream_id "$stream_id" \
+    --arg stream_name "$stream_name" \
+    --arg topic "$topic" \
+    '{type: $type, url: $url, parsed: {org: $org, stream_id: $stream_id, stream_name: $stream_name, topic: $topic}}')
+  sources_json=$(echo "$sources_json" | jq ". + [$source_entry]")
+
+# 3. Free-text description
+else
+  # Accumulate description tokens
+  if [ -n "$description_accumulator" ]; then
+    description_accumulator="$description_accumulator $TOKEN"
+  else
+    description_accumulator="$TOKEN"
+  fi
+fi
+
+# After processing all tokens, flush accumulated description as a single source entry
+if [ -n "$description_accumulator" ]; then
+  source_entry=$(jq -n \
+    --arg type "description" \
+    --arg text "$description_accumulator" \
+    '{type: $type, url: null, parsed: {text: $text}}')
+  sources_json=$(echo "$sources_json" | jq ". + [$source_entry]")
+fi
+```
+
+**Display parsed sources for verification**:
+
+```
+Parsed Sources (--review mode)
+================================
+Source 1: github_pr
+  URL: https://github.com/owner/repo/pull/42
+  Owner: owner | Repo: repo | PR#: 42
+
+Source 2: zulip_thread
+  URL: https://org.zulipchat.com/#narrow/stream/...
+  Org: org | Stream: 270676-lean4 | Topic: my topic
+
+Source 3: description
+  Text: Fix the modal logic soundness proof
+
+Total: 3 source(s) parsed.
+```
+
+If `sources_json` is empty after processing (no valid sources classified), display:
+```
+Error: No valid sources found after --review.
+Run /pr --review with no arguments to see usage.
+```
+Then **STOP**.
+
+**On success**: **IMMEDIATELY CONTINUE** to STEP 0.2.
+
+---
+
+#### STEP 0.2: Create Review Task
+
+**EXECUTE NOW**: Write a new task to state.json with `task_type: "pr"` and a `sources` array.
+
+**Read current state**:
+
+```bash
+STATE_FILE="/home/benjamin/.config/nvim/specs/state.json"
+
+# Verify state.json is readable
+if ! jq empty "$STATE_FILE" 2>/dev/null; then
+  echo "Error: Cannot read state.json at $STATE_FILE"
+  echo "Ensure you are in the Neovim configuration directory."
+  # STOP
+fi
+
+next_num=$(jq '.next_project_number' "$STATE_FILE")
+```
+
+**Generate task slug** from the first source in `sources_json`:
+
+```bash
+first_type=$(echo "$sources_json" | jq -r '.[0].type')
+
+case "$first_type" in
+  github_pr)
+    first_owner=$(echo "$sources_json" | jq -r '.[0].parsed.owner')
+    first_repo=$(echo "$sources_json" | jq -r '.[0].parsed.repo')
+    first_num=$(echo "$sources_json" | jq -r '.[0].parsed.pr_number')
+    task_slug="review_pr_${first_owner}_${first_repo}_${first_num}"
+    ;;
+  zulip_thread)
+    raw_topic=$(echo "$sources_json" | jq -r '.[0].parsed.topic')
+    # Slugify: lowercase, spaces to underscores, remove non-alphanumeric-underscore
+    topic_slug=$(echo "$raw_topic" | tr '[:upper:]' '[:lower:]' | tr ' ' '_' | \
+      sed 's/[^a-z0-9_]//g' | cut -c1-40)
+    task_slug="review_${topic_slug:-zulip}"
+    ;;
+  description)
+    raw_text=$(echo "$sources_json" | jq -r '.[0].parsed.text')
+    # Slugify: first 5 words, lowercase, spaces to underscores
+    desc_slug=$(echo "$raw_text" | tr '[:upper:]' '[:lower:]' | tr ' ' '_' | \
+      sed 's/[^a-z0-9_]//g' | cut -c1-40)
+    task_slug="review_${desc_slug:-pr}"
+    ;;
+  *)
+    task_slug="review_pr"
+    ;;
+esac
+```
+
+**Generate human-readable task description** from all sources:
+
+```bash
+# Build description by listing each source
+task_desc="PR review: "
+source_count=$(echo "$sources_json" | jq 'length')
+i=0
+while [ "$i" -lt "$source_count" ]; do
+  src_type=$(echo "$sources_json" | jq -r ".[$i].type")
+  case "$src_type" in
+    github_pr)
+      src_url=$(echo "$sources_json" | jq -r ".[$i].url")
+      task_desc="${task_desc}GitHub PR ${src_url}"
+      ;;
+    zulip_thread)
+      src_topic=$(echo "$sources_json" | jq -r ".[$i].parsed.topic")
+      task_desc="${task_desc}Zulip thread '${src_topic}'"
+      ;;
+    description)
+      src_text=$(echo "$sources_json" | jq -r ".[$i].parsed.text")
+      task_desc="${task_desc}${src_text}"
+      ;;
+  esac
+  i=$((i + 1))
+  if [ "$i" -lt "$source_count" ]; then
+    task_desc="${task_desc}; "
+  fi
+done
+```
+
+**Write state.json mutation**:
+
+```bash
+now=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+
+# Perform atomic jq mutation: increment next_project_number, prepend new task
+updated_state=$(jq \
+  --argjson next_num "$next_num" \
+  --arg slug "$task_slug" \
+  --arg desc "$task_desc" \
+  --argjson sources "$sources_json" \
+  --arg now "$now" \
+  '
+  .next_project_number = ($next_num + 1) |
+  .active_projects = [{
+    project_number: $next_num,
+    project_name: $slug,
+    status: "not_started",
+    task_type: "pr",
+    description: $desc,
+    sources: $sources,
+    created: $now,
+    last_updated: $now,
+    next_artifact_number: 1,
+    artifacts: []
+  }] + .active_projects
+  ' "$STATE_FILE")
+
+# Verify the mutation produced valid JSON
+if ! echo "$updated_state" | jq empty 2>/dev/null; then
+  echo "Error: state.json mutation produced invalid JSON. State not written."
+  # STOP -- do not write corrupted state
+fi
+
+# Write the updated state atomically
+echo "$updated_state" > "$STATE_FILE"
+```
+
+**Assign topic and regenerate TODO.md**:
+
+```bash
+# Assign topic "pr-review" to the new task
+bash /home/benjamin/.config/nvim/.claude/scripts/manage-topics.sh set "$next_num" "pr-review" 2>/dev/null || true
+
+# Regenerate TODO.md from updated state.json
+bash /home/benjamin/.config/nvim/.claude/scripts/generate-todo.sh
+```
+
+**Git commit the new task**:
+
+```bash
+cd /home/benjamin/.config/nvim
+git add specs/state.json specs/TODO.md
+git commit -m "task ${next_num}: create ${task_slug}"
+```
+
+**Display confirmation**:
+
+```
+PR Review Task Created
+======================
+Task number:  {next_num}
+Task name:    {task_slug}
+Status:       [NOT STARTED]
+Task type:    pr
+Sources:      {source_count} source(s)
+Artifacts:    specs/{NNN}_{task_slug}/
+
+Sources parsed:
+{list each source type and key fields}
+
+Next: Run /research {next_num} to begin reviewing sources,
+      or /implement {next_num} to proceed directly to implementation.
+```
+
+**STOP** — do not proceed to STEP 1. The --review workflow is complete.
 
 ---
 
