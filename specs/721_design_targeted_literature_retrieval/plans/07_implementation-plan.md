@@ -109,7 +109,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: SQLite Schema and literature-convert.sh [NOT STARTED]
+### Phase 2: SQLite Schema and literature-convert.sh [COMPLETED]
 
 **Goal**: Define the SQLite schema as a SQL file and implement the conversion script that transforms PDFs/DJVUs to structured markdown.
 
