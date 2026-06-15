@@ -15,7 +15,8 @@
       "literature.md"
     ],
     "skills": [
-      "skill-literature"
+      "skill-literature",
+      "skill-cite"
     ],
     "scripts": [
       "scripts/zotero-search.sh"
