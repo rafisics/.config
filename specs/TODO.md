@@ -11,7 +11,7 @@ next_project_number: 727
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,652,716,721,727,728 | -- | agent-system, Literature, Terminal UI, ... |
+| 1 | 78,87,652,716,727,728 | -- | agent-system, Literature, Terminal UI, ... |
 | 2 | 717 | 716 | Literature |
 | 3 | 718 | 717 | Literature |
 | 4 | 719 | 718 | Literature |
@@ -38,7 +38,6 @@ next_project_number: 727
     └─ 718 [NOT STARTED] — Create cite.md command file at .claude/extensions/literature/comm
       └─ 719 [NOT STARTED] — Update literature extension manifest and documentation for /cite 
         └─ 720 [NOT STARTED] — Integration testing and verification of /cite command end-to-end.
-721 [PLANNED] — Research and design a targeted literature retrieval system to rep
 
 ### Uncategorized
 
@@ -119,11 +118,12 @@ next_project_number: 727
 ---
 
 ### 721. Design targeted literature retrieval
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: Literature
 - **Dependencies**: None
 - **Plan**: [721_design_targeted_literature_retrieval/plans/07_implementation-plan.md]
+- **Summary**: [721_design_targeted_literature_retrieval/summaries/07_execution-summary.md]
 
 **Description**: Research and design a targeted literature retrieval system to replace the current shallow keyword-overlap scoring in literature-retrieve.sh. The current --lit flag does keyword-based targeting (not blind bulk dump) but scoring is crude: bag-of-words overlap on keywords[] and summary fields, no content search, no semantic weighting. With 183 entries (many at 5000+ tokens) and an 8000 token budget, selection quality matters enormously. Benchmark current approach against: (1) Enhanced jq scoring with TF-IDF-like weighting, content preview fields in index, multi-field weighted scoring. (2) Agent-callable search tool where agents query the index and selectively read files instead of preflight bulk injection. (3) SQLite FTS5 as ephemeral query cache (task 710 deferred this at 183 entries, threshold ~500-1000). Test against real queries from existing tasks (e.g., task 201 IPL completeness). Key design question: should --lit remain preflight injection or become an agent-invocable search tool? Produce concrete recommendation with implementation plan.
 

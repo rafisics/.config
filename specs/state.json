@@ -2679,19 +2679,63 @@
     {
       "project_number": 721,
       "project_name": "design_targeted_literature_retrieval",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "meta",
       "description": "Research and design a targeted literature retrieval system to replace the current shallow keyword-overlap scoring in literature-retrieve.sh. The current --lit flag does keyword-based targeting (not blind bulk dump) but scoring is crude: bag-of-words overlap on keywords[] and summary fields, no content search, no semantic weighting. With 183 entries (many at 5000+ tokens) and an 8000 token budget, selection quality matters enormously. Benchmark current approach against: (1) Enhanced jq scoring with TF-IDF-like weighting, content preview fields in index, multi-field weighted scoring. (2) Agent-callable search tool where agents query the index and selectively read files instead of preflight bulk injection. (3) SQLite FTS5 as ephemeral query cache (task 710 deferred this at 183 entries, threshold ~500-1000). Test against real queries from existing tasks (e.g., task 201 IPL completeness). Key design question: should --lit remain preflight injection or become an agent-invocable search tool? Produce concrete recommendation with implementation plan.",
       "dependencies": [],
       "next_artifact_number": 8,
       "topic": "Literature",
-      "last_updated": "2026-06-15T21:28:31Z",
+      "last_updated": "2026-06-15T21:47:54Z",
       "session_id": "sess_1781558885_35893b",
       "artifacts": [
         {
           "path": "specs/721_design_targeted_literature_retrieval/plans/07_implementation-plan.md",
           "type": "plan",
           "summary": "7-phase implementation plan: audits, schema, convert, chunk, build-index, search, ingest, --lit integration"
+        },
+        {
+          "path": "specs/721_design_targeted_literature_retrieval/summaries/07_execution-summary.md",
+          "type": "summary",
+          "summary": "Implemented 7-phase targeted literature retrieval pipeline: audit script, SQLite FTS5 schema, PDF converter, hierarchical chunker, index builder, 6-subcommand search tool, ingestion orchestrator, and --lit flag integration with backward-compatible fallback."
+        }
+      ],
+      "completion_summary": "Implemented complete targeted literature retrieval pipeline: 7 new/modified scripts enabling PDF ingestion, FTS5 indexing, agent-callable search with 6 subcommands, and --lit flag integration that switches from bulk content injection to on-demand search tool availability.",
+      "memory_candidates": [
+        {
+          "content": "SQLite FTS5 with external content table requires two-table architecture: a regular table for metadata (chunks_data) + FTS5 virtual table with content='chunks_data' for search. After bulk inserts: INSERT INTO fts_table(fts_table) VALUES('rebuild'). BM25 weights specified per-column at query time: bm25(chunks_fts, 10, 5, 3, 1) for title/keywords/summary/content.",
+          "category": "PATTERN",
+          "confidence": 0.9,
+          "suggested_keywords": [
+            "sqlite",
+            "fts5",
+            "bm25",
+            "external-content",
+            "full-text-search"
+          ]
+        },
+        {
+          "content": "PyMuPDF (fitz) can extract embedded TOC from PDFs: doc.get_toc() returns [(level, title, page_num), ...]. Many academic PDFs have embedded TOC; use this to produce markdown with proper # heading markers. pdftotext -layout preserves column layout better than pdftotext alone.",
+          "category": "TECHNIQUE",
+          "confidence": 0.85,
+          "suggested_keywords": [
+            "pymupdf",
+            "pdf",
+            "toc",
+            "heading-detection",
+            "pdftotext"
+          ]
+        },
+        {
+          "content": "FTS5 query sanitization for agent-provided queries: strip AND/OR/NOT at word boundaries, strip apostrophes, strip unanchored wildcards, balance double quotes and parentheses. Porter+unicode61 tokenizer handles apostrophes during indexing. Return structured JSON error on empty post-sanitization query.",
+          "category": "PATTERN",
+          "confidence": 0.9,
+          "suggested_keywords": [
+            "fts5",
+            "query-sanitization",
+            "sqlite",
+            "apostrophe",
+            "agent-search"
+          ]
         }
       ]
     },

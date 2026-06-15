@@ -1,7 +1,7 @@
 # Implementation Plan: Task #721 — Targeted Literature Retrieval System
 
 - **Task**: 721 - Design targeted literature retrieval
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 14 hours
 - **Dependencies**: None (sqlite3 is system-installed; marker/pandoc available)
 - **Research Inputs**: reports/07_final-design.md, reports/06_team-research.md, reports/06_teammate-a-findings.md, reports/06_teammate-b-findings.md
