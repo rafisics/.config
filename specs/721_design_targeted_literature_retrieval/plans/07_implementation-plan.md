@@ -180,7 +180,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: literature-build-index.sh [NOT STARTED]
+### Phase 4: literature-build-index.sh [COMPLETED]
 
 **Goal**: Build the SQLite FTS5 database from chunk files and their manifests, resolving cross-references to chunk IDs and inserting structural relations.
 

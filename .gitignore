@@ -6,3 +6,8 @@
 .syncprotect
 specs/literature/**/*.pdf
 specs/literature/**/*.djvu
+# Literature SQLite databases (ephemeral - rebuilt from chunk files)
+.literature.db
+.literature.db.tmp
+specs/literature/.literature.db
+specs/literature/.literature.db.tmp
