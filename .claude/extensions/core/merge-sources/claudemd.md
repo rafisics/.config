@@ -104,6 +104,11 @@ All commands use checkpoint-based execution: GATE IN (preflight) -> DELEGATE (sk
 | `/orchestrate` | `/orchestrate N [--lit]` | Drive task autonomously through full lifecycle (no confirmation gates) |
 | `/spawn` | `/spawn N [blocker description]` | Spawn new tasks to unblock a blocked task |
 | `/merge` | `/merge` | Create pull/merge request for current branch (user-only) |
+| `/literature` | `/literature` | Show specs/literature/ status and index health |
+| `/literature` | `/literature --scan` | Scan for unprocessed PDFs/DJVUs |
+| `/literature` | `/literature --convert [FILE]` | Convert PDF/DJVU to markdown with chunking |
+| `/literature` | `/literature --validate` | Validate index.json against filesystem |
+| `/literature` | `/literature --index FILE` | Add/update index entry for existing markdown file |
 
 **Multi-task syntax**: `/research`, `/plan`, and `/implement` accept multiple task numbers using commas and ranges (e.g., `/research 7, 22-24, 59`). Each task is processed by a separate agent in parallel. Flags like `--team` and `--force` apply to all tasks. See `.claude/context/patterns/multi-task-operations.md` for the full specification.
 
@@ -195,6 +200,7 @@ Standard actions: `create`, `complete research`, `create implementation plan`, `
 | skill-git-workflow | (direct execution) | - | Create scoped git commits for task operations |
 | skill-fix-it | (direct execution) | - | Scan for FIX:/TODO:/NOTE: tags and create tasks |
 | skill-project-overview | (direct execution) | - | Interactive repo scan and project-overview.md task creation |
+| skill-literature | (direct execution) | - | Manage specs/literature/ — scan, convert PDFs/DJVUs, maintain index.json |
 | /review | (direct execution) | - | Codebase analysis; code-reviewer-agent available for future skill integration |
 
 ### Agents
