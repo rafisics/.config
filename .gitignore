@@ -4,3 +4,5 @@
 /.opencode/tmp/
 **/.postflight-pending
 .syncprotect
+specs/literature/**/*.pdf
+specs/literature/**/*.djvu

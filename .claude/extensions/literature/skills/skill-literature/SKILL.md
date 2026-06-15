@@ -279,10 +279,12 @@ For each indexed entry, check:
 
 1. File exists at `specs/literature/{entry.path}`
 2. Token count drift (recount vs stored, flag if >20% different)
+3. Required schema fields present: `id`, `path`, `token_count`, `keywords`, `summary`, `doc_type`, `source_format`
 
 ```bash
 stale_entries=()
 drift_entries=()
+schema_warnings=()
 
 while IFS= read -r entry_path; do
   full_path="$lit_dir/$entry_path"
@@ -302,6 +304,20 @@ while IFS= read -r entry_path; do
       if [ "$drift_pct" -gt 20 ]; then
         drift_entries+=("$entry_path (stored: $stored_tokens, actual: $current_tokens, drift: ${drift_pct}%)")
       fi
+    fi
+
+    # Check for required schema fields (new in schema v2)
+    missing_fields=$(jq -r --arg p "$entry_path" '
+      .entries[] | select(.path == $p) |
+      [
+        (if .doc_type == null or .doc_type == "" then "doc_type" else empty end),
+        (if .source_format == null or .source_format == "" then "source_format" else empty end),
+        (if .authors == null then "authors" else empty end),
+        (if .title == null or .title == "" then "title" else empty end)
+      ] | join(", ")
+    ' "$index_file" 2>/dev/null || echo "")
+    if [ -n "$missing_fields" ]; then
+      schema_warnings+=("$entry_path (missing fields: $missing_fields)")
     fi
   fi
 done <<< "$entries"
@@ -336,6 +352,11 @@ done < <(find "$lit_dir" -maxdepth 1 -name "*.md" 2>/dev/null | sort)
 {for each drift entry:}
 - {entry_path}: stored {N}, actual {M} ({pct}% drift)
 
+### Schema Warnings ({count}) — entries missing required v2 fields
+{for each schema_warning entry:}
+- {entry_path}: {missing_fields}
+  Run: /literature --index {file_path} to update entry with missing fields
+
 ### Unindexed Files ({count}) — markdown files not in index.json
 {for each unindexed file:}
 - {file_path}
@@ -344,7 +365,7 @@ done < <(find "$lit_dir" -maxdepth 1 -name "*.md" 2>/dev/null | sort)
 {if all clean:}
 ### Validation Passed
 
-All {N} index entries are valid. No stale paths, no drift, no unindexed files.
+All {N} index entries are valid. No stale paths, no drift, no schema warnings, no unindexed files.
 ```
 
 ---
@@ -408,46 +429,159 @@ else
 fi
 ```
 
-#### 3b: Determine Chunking
+#### 3b: Extract Full Text and Determine Chunking
+
+First, extract the complete text from the source file (page-range extraction happens at 3d if
+needed for page-range chunks; for content-aware chunking, extract all text first):
 
 ```bash
-pages_per_chunk=10
-if [ "$page_count" -le "$pages_per_chunk" ]; then
-  # Single file
-  chunks=(("1-$page_count"))
-  output_files=("${basename_no_ext}.md")
+if [ "$ext" = "pdf" ]; then
+  full_text=$(pdftotext -layout "$src" - 2>/dev/null)
+elif [ "$ext" = "djvu" ]; then
+  full_text=$(djvutxt "$src" 2>/dev/null)
+fi
+
+# Count total lines
+total_lines=$(echo "$full_text" | wc -l)
+LINE_THRESHOLD=4000
+MERGE_MIN=500
+```
+
+**Content-aware chunking algorithm**:
+
+```bash
+# Step 1: Detect logical section boundaries using heading patterns
+# Supported heading patterns (in priority order):
+#   - "Chapter N" / "CHAPTER N"  -> chapter boundary
+#   - "N  Title" (number + spaces + capitalized text) -> numbered section
+#   - "Part I/V/X..." / "Part 1/2..." -> part boundary
+#   - "## Heading" / "### Heading" (markdown headings) -> section heading
+
+section_starts=()  # line numbers where sections begin
+section_names=()   # human-readable name for each section
+
+while IFS= read -r line_num_and_content; do
+  line_num="${line_num_and_content%%:*}"
+  content="${line_num_and_content#*:}"
+  if echo "$content" | grep -qE '^(Chapter|CHAPTER)[[:space:]]+[0-9IVXivx]+'; then
+    section_starts+=("$line_num")
+    section_names+=("$(echo "$content" | sed 's/^[[:space:]]*//' | cut -c1-60)")
+  elif echo "$content" | grep -qE '^[0-9]+[[:space:]]{2,}[A-Z]'; then
+    section_starts+=("$line_num")
+    section_names+=("$(echo "$content" | sed 's/^[[:space:]]*//' | cut -c1-60)")
+  elif echo "$content" | grep -qE '^Part[[:space:]]+([IVXivx]+|[0-9]+)'; then
+    section_starts+=("$line_num")
+    section_names+=("$(echo "$content" | sed 's/^[[:space:]]*//' | cut -c1-60)")
+  elif echo "$content" | grep -qE '^#{1,3}[[:space:]]+\S'; then
+    section_starts+=("$line_num")
+    section_names+=("$(echo "$content" | sed 's/^#{1,3}[[:space:]]*//' | cut -c1-60)")
+  fi
+done < <(echo "$full_text" | grep -n "")
+
+# Step 2: If headings found, merge small adjacent sections
+if [ "${#section_starts[@]}" -gt 0 ]; then
+  # Build merged chunks: combine adjacent sections until total lines >= LINE_THRESHOLD
+  merged_chunks=()   # array of "start_line:end_line:name" strings
+  chunk_start="${section_starts[0]}"
+  chunk_name="${section_names[0]}"
+  chunk_lines=0
+  
+  for i in "${!section_starts[@]}"; do
+    if [ "$i" -eq 0 ]; then continue; fi
+    prev_start="${section_starts[$((i-1))]}"
+    curr_start="${section_starts[$i]}"
+    section_size=$(( curr_start - prev_start ))
+    
+    if [ "$(( chunk_lines + section_size ))" -lt "$MERGE_MIN" ] || \
+       [ "$(( chunk_lines + section_size ))" -lt "$LINE_THRESHOLD" ]; then
+      # Merge into current chunk
+      chunk_lines=$(( chunk_lines + section_size ))
+    else
+      # Flush current chunk
+      chunk_end=$(( curr_start - 1 ))
+      merged_chunks+=("${chunk_start}:${chunk_end}:${chunk_name}")
+      chunk_start="$curr_start"
+      chunk_name="${section_names[$i]}"
+      chunk_lines=0
+    fi
+  done
+  # Flush last chunk
+  merged_chunks+=("${chunk_start}:${total_lines}:${chunk_name}")
+
+  # Build chunks and output_files arrays from merged_chunks
+  chunks=()
+  output_files=()
+  chunk_dir="$lit_dir/${basename_no_ext}"
+  mkdir -p "$chunk_dir"
+  
+  for i in "${!merged_chunks[@]}"; do
+    entry="${merged_chunks[$i]}"
+    start_line="${entry%%:*}"
+    rest="${entry#*:}"
+    end_line="${rest%%:*}"
+    name="${rest#*:}"
+    slug=$(echo "$name" | tr '[:upper:]' '[:lower:]' | tr -cs 'a-z0-9' '-' | sed 's/^-//;s/-$//' | cut -c1-40)
+    nn=$(printf "%02d" $(( i + 1 )))
+    chunks+=("lines:${start_line}-${end_line}")
+    output_files+=("${basename_no_ext}/section${nn}_${slug}.md")
+  done
+
+# Step 3: Fallback — no headings detected, use mechanical 4000-line splits
 else
-  # Multi-chunk
   chunks=()
   output_files=()
   start=1
-  while [ "$start" -le "$page_count" ]; do
-    end=$(( start + pages_per_chunk - 1 ))
-    if [ "$end" -gt "$page_count" ]; then end=$page_count; fi
-    chunks+=("${start}-${end}")
-    output_files+=("${basename_no_ext}_p${start}-${end}.md")
-    start=$(( end + 1 ))
-  done
+  part_num=1
+  chunk_dir="$lit_dir/${basename_no_ext}"
+  
+  if [ "$total_lines" -le "$LINE_THRESHOLD" ]; then
+    # Single file — no chunking needed
+    chunks+=("lines:1-${total_lines}")
+    output_files+=("${basename_no_ext}.md")
+  else
+    mkdir -p "$chunk_dir"
+    while [ "$start" -le "$total_lines" ]; do
+      end=$(( start + LINE_THRESHOLD - 1 ))
+      if [ "$end" -gt "$total_lines" ]; then end=$total_lines; fi
+      nn=$(printf "%02d" "$part_num")
+      chunks+=("lines:${start}-${end}")
+      output_files+=("${basename_no_ext}/${basename_no_ext}_part${nn}.md")
+      start=$(( end + 1 ))
+      part_num=$(( part_num + 1 ))
+    done
+  fi
 fi
 ```
 
 #### 3c: Confirm Chunk Boundaries with User
 
-If multi-chunk, present proposed boundaries via AskUserQuestion:
+If multi-chunk (more than one output file), present proposed boundaries via AskUserQuestion:
+
+Build a description showing detected sections or line ranges:
+```bash
+# Build display string from chunks and output_files arrays
+chunk_preview=""
+for i in "${!chunks[@]}"; do
+  range="${chunks[$i]#lines:}"  # strip "lines:" prefix for display
+  name=$(basename "${output_files[$i]}" .md)
+  chunk_preview="${chunk_preview}\n  ${name}: lines ${range}"
+done
+approx_tokens=$(( total_lines * 15 / 10 ))  # rough estimate: 1.5 tokens/line
+```
 
 ```json
 {
-  "question": "Convert '{basename}' ({page_count} pages) into {N} chunks?",
+  "question": "Convert '{basename}' ({total_lines} lines) into {N} chunks?",
   "header": "Chunk Boundaries for {basename}",
   "multiSelect": false,
   "options": [
     {
       "label": "Accept proposed chunks ({N} files)",
-      "description": "Pages: {chunk1}, {chunk2}, ... -> {file1}, {file2}, ..."
+      "description": "Detected sections:\n{chunk_preview}"
     },
     {
       "label": "Use single file (no chunking)",
-      "description": "Convert all {page_count} pages to one {basename}.md (~{approx_tokens} tokens)"
+      "description": "Convert all {total_lines} lines to one {basename}.md (~{approx_tokens} tokens)"
     },
     {
       "label": "Skip this file",
@@ -457,46 +591,43 @@ If multi-chunk, present proposed boundaries via AskUserQuestion:
 }
 ```
 
-If user selects "Use single file": set `chunks=("1-$page_count")`, `output_files=("${basename_no_ext}.md")`
+If user selects "Use single file": set `chunks=("lines:1-${total_lines}")`, `output_files=("${basename_no_ext}.md")`
 If user selects "Skip this file": continue to next file
 
-#### 3d: Run Conversion
+#### 3d: Write Chunk Files
 
-For each chunk:
+For each chunk, extract the relevant lines from `full_text` and write to the output file:
 
 ```bash
 for i in "${!chunks[@]}"; do
-  chunk_range="${chunks[$i]}"
-  start_page="${chunk_range%-*}"
-  end_page="${chunk_range#*-}"
+  chunk_range="${chunks[$i]#lines:}"  # strip "lines:" prefix
+  start_line="${chunk_range%-*}"
+  end_line="${chunk_range#*-}"
   output_md="$lit_dir/${output_files[$i]}"
 
-  if [ "$ext" = "pdf" ]; then
-    # Extract text from page range
-    raw_text=$(pdftotext -f "$start_page" -l "$end_page" -layout "$src" - 2>/dev/null)
-  elif [ "$ext" = "djvu" ]; then
-    # djvutxt does not support page ranges directly; extract all text
-    # For DJVU multi-chunk, extract full text and split by approximate position
-    raw_text=$(djvutxt "$src" 2>/dev/null)
-    # Note: DJVU chunking is approximate (character split, not page split)
-  fi
+  # Ensure parent directory exists (for chunked documents in subdirectory)
+  mkdir -p "$(dirname "$output_md")"
+
+  # Extract line range from full_text
+  raw_text=$(echo "$full_text" | sed -n "${start_line},${end_line}p")
 
   # Check if text was extracted
   if [ -z "$(echo "$raw_text" | tr -d '[:space:]')" ]; then
-    echo "Warning: No text extracted from $src (pages $start_page-$end_page). File may be scanned/image-only and requires OCR."
+    echo "Warning: No text in $src lines ${start_line}-${end_line}. File may be scanned/image-only and requires OCR."
     continue
   fi
 
-  # Wrap in minimal markdown with title header
-  title=$(basename "$src" | sed 's/\.[^.]*$//' | tr '_-' '  ' | sed 's/\b\(.\)/\u\1/g')
+  # Build title for this chunk
+  doc_title=$(basename "$src" | sed 's/\.[^.]*$//' | tr '_-' '  ' | sed 's/\b\(.\)/\u\1/g')
+  section_name=$(basename "$output_md" .md | sed 's/^[^_]*_//' | tr '-_' '  ')
   chunk_header=""
   if [ "${#chunks[@]}" -gt 1 ]; then
-    chunk_header=" (Pages $start_page-$end_page)"
+    chunk_header=" — ${section_name} (lines ${start_line}-${end_line})"
   fi
 
-  markdown_content="# $title$chunk_header
+  markdown_content="# ${doc_title}${chunk_header}
 
-$raw_text"
+${raw_text}"
 
   # Write to file
   echo "$markdown_content" > "$output_md"
@@ -505,7 +636,7 @@ done
 
 #### 3e: Compute Token Count and Auto-Generate Metadata
 
-After writing, for each output file:
+After writing each chunk file:
 
 ```bash
 output_md="$lit_dir/${output_files[$i]}"
@@ -540,12 +671,30 @@ else
 fi
 ```
 
-#### 3f: Confirm Keywords and Summary with User
+#### 3f: Confirm Metadata with User
+
+First prompt for bibliographic fields:
 
 ```json
 {
-  "question": "Review metadata for '{output_filename}':",
-  "header": "Metadata Confirmation",
+  "question": "Enter bibliographic metadata for '{output_filename}' (or press Enter to skip each):",
+  "header": "Document Metadata"
+}
+```
+
+Prompt for each field in sequence using AskUserQuestion:
+- `{"question": "Authors (comma-separated, e.g. 'Alice Smith, Bob Jones'):"}` -> parse into string array
+- `{"question": "Title (full document title):"}` -> string
+- `{"question": "Year (publication year, e.g. 2024):"}` -> integer or null
+- `{"question": "Document type (paper/book/chapter/section) [default: paper]:"}`  -> one of `paper|book|chapter|section`
+- `{"question": "Source format (pdf/djvu/manual) [auto-detected: {detected_format}]:"}`  -> one of `pdf|djvu|manual` (default to detected extension)
+
+Then confirm keywords and summary:
+
+```json
+{
+  "question": "Review auto-generated keywords and summary for '{output_filename}':",
+  "header": "Keywords and Summary",
   "multiSelect": false,
   "options": [
     {
@@ -583,7 +732,30 @@ If user selects "Edit summary", prompt:
 
 ```bash
 # Generate entry ID from filename (lowercase, underscores)
-entry_id=$(basename "$output_md" .md | tr '[:upper:]' '[:lower:]' | tr ' -' '_')
+# For chunked sections, include subdirectory prefix to ensure uniqueness
+if [[ "${output_files[$i]}" == *"/"* ]]; then
+  entry_id=$(echo "${output_files[$i]}" | sed 's/\.md$//' | tr '[:upper:]' '[:lower:]' | tr '/ -' '_')
+else
+  entry_id=$(basename "$output_md" .md | tr '[:upper:]' '[:lower:]' | tr ' -' '_')
+fi
+
+# Determine source format from file extension
+source_format="${ext}"  # "pdf" or "djvu"
+
+# Determine doc_type, parent_doc, and page_range for chunked vs single-file entries
+if [ "${#chunks[@]}" -gt 1 ] && [[ "${output_files[$i]}" == *"/"* ]]; then
+  # Chunked section entry
+  final_doc_type="section"
+  parent_id=$(echo "$basename_no_ext" | tr '[:upper:]' '[:lower:]' | tr ' -' '_')
+  parent_doc="$parent_id"
+  chunk_range_display="${chunks[$i]#lines:}"
+  page_range="lines:${chunk_range_display}"
+else
+  # Top-level (single file or user chose no-chunk) — use values from user prompt
+  # final_doc_type already set from user prompt (default "paper")
+  parent_doc=""
+  page_range=""
+fi
 
 # Create or update index.json
 if [ ! -f "$index_file" ]; then
@@ -595,21 +767,60 @@ if jq -e --arg id "$entry_id" '.entries[] | select(.id == $id)' "$index_file" >/
   # Update existing entry
   tmp=$(mktemp)
   jq --arg id "$entry_id" \
-     --arg path "$(basename "$output_md")" \
+     --arg path "${output_files[$i]}" \
      --argjson tc "$token_count" \
      --argjson kw "$final_keywords" \
      --arg sum "$final_summary" \
-     '.entries = [.entries[] | if .id == $id then . + {"path": $path, "token_count": $tc, "keywords": $kw, "summary": $sum} else . end]' \
+     --argjson authors "$final_authors" \
+     --arg title "$final_title" \
+     --argjson year "$final_year" \
+     --arg doc_type "$final_doc_type" \
+     --arg source_format "$source_format" \
+     --arg parent_doc "$parent_doc" \
+     --arg page_range "$page_range" \
+     '.entries = [.entries[] | if .id == $id then . + {
+       "path": $path,
+       "token_count": $tc,
+       "keywords": $kw,
+       "summary": $sum,
+       "authors": $authors,
+       "title": $title,
+       "year": (if $year == "null" then null else ($year | tonumber) end),
+       "doc_type": $doc_type,
+       "source_format": $source_format,
+       "parent_doc": (if $parent_doc == "" then null else $parent_doc end),
+       "page_range": (if $page_range == "" then null else $page_range end)
+     } else . end]' \
      "$index_file" > "$tmp" && mv "$tmp" "$index_file"
 else
   # Append new entry
   tmp=$(mktemp)
   jq --arg id "$entry_id" \
-     --arg path "$(basename "$output_md")" \
+     --arg path "${output_files[$i]}" \
      --argjson tc "$token_count" \
      --argjson kw "$final_keywords" \
      --arg sum "$final_summary" \
-     '.entries += [{"id": $id, "path": $path, "token_count": $tc, "keywords": $kw, "summary": $sum}]' \
+     --argjson authors "$final_authors" \
+     --arg title "$final_title" \
+     --argjson year "$final_year" \
+     --arg doc_type "$final_doc_type" \
+     --arg source_format "$source_format" \
+     --arg parent_doc "$parent_doc" \
+     --arg page_range "$page_range" \
+     '.entries += [{
+       "id": $id,
+       "path": $path,
+       "token_count": $tc,
+       "keywords": $kw,
+       "summary": $sum,
+       "authors": $authors,
+       "title": $title,
+       "year": (if $year == "null" then null else ($year | tonumber) end),
+       "doc_type": $doc_type,
+       "source_format": $source_format,
+       "parent_doc": (if $parent_doc == "" then null else $parent_doc end),
+       "page_range": (if $page_range == "" then null else $page_range end)
+     }]' \
      "$index_file" > "$tmp" && mv "$tmp" "$index_file"
 fi
 ```
@@ -621,10 +832,10 @@ fi
 
 **Files Converted**: {N}
 
-| Output File | Pages | Tokens | Status |
+| Output File | Lines | Tokens | Status |
 |-------------|-------|--------|--------|
-| {file1.md}  | 1-10  | 3,500  | Written |
-| {file2.md}  | 11-20 | 3,200  | Written |
+| {file1.md}  | 1-4000      | 3,500  | Written |
+| {file2.md}  | 4001-8000   | 3,200  | Written |
 ...
 
 **Index Updated**: specs/literature/index.json ({entry_count} entries)
@@ -672,12 +883,25 @@ token_count=$(( char_count / 4 + 20 ))
 
 Same word-frequency keyword extraction and summary extraction as Convert Step 3e.
 
-### Index Step 4: Prompt User for Metadata
+### Index Step 4: Prompt User for Bibliographic Metadata
+
+Auto-detect `source_format` from the file extension in the filename (if present), or default to `"manual"`.
+
+Prompt for bibliographic fields in sequence using AskUserQuestion:
+- `{"question": "Authors (comma-separated, e.g. 'Alice Smith, Bob Jones') [or Enter to skip]:"}` -> parse into string array
+- `{"question": "Title (full document title) [or Enter to skip]:"}` -> string
+- `{"question": "Year (publication year) [or Enter to skip]:"}` -> integer or null
+- `{"question": "Document type (paper/book/chapter/section) [default: paper]:"}` -> one of `paper|book|chapter|section`
+- `{"question": "Source format (pdf/djvu/manual) [auto-detected: {detected_format}]:"}` -> one of `pdf|djvu|manual`
+- `{"question": "Parent document ID (for chunks/sections) [or Enter if top-level]:"}` -> string or null
+- `{"question": "Page range in source document (e.g. '15-47') [or Enter if not applicable]:"}` -> string or null
+
+Then confirm keywords and summary:
 
 ```json
 {
-  "question": "Confirm metadata for '{rel_path}' ({token_count} tokens):",
-  "header": "Index Entry Metadata",
+  "question": "Confirm keywords and summary for '{rel_path}' ({token_count} tokens):",
+  "header": "Keywords and Summary",
   "multiSelect": false,
   "options": [
     {
@@ -729,7 +953,26 @@ if jq -e --arg id "$entry_id" '.entries[] | select(.id == $id)' "$index_file" >/
      --argjson tc "$token_count" \
      --argjson kw "$final_keywords" \
      --arg sum "$final_summary" \
-     '.entries = [.entries[] | if .id == $id then . + {"path": $path, "token_count": $tc, "keywords": $kw, "summary": $sum} else . end]' \
+     --argjson authors "$final_authors" \
+     --arg title "$final_title" \
+     --argjson year "$final_year" \
+     --arg doc_type "$final_doc_type" \
+     --arg source_format "$final_source_format" \
+     --arg parent_doc "$final_parent_doc" \
+     --arg page_range "$final_page_range" \
+     '.entries = [.entries[] | if .id == $id then . + {
+       "path": $path,
+       "token_count": $tc,
+       "keywords": $kw,
+       "summary": $sum,
+       "authors": $authors,
+       "title": $title,
+       "year": (if $year == "null" then null else ($year | tonumber) end),
+       "doc_type": $doc_type,
+       "source_format": $source_format,
+       "parent_doc": (if $parent_doc == "" then null else $parent_doc end),
+       "page_range": (if $page_range == "" then null else $page_range end)
+     } else . end]' \
      "$index_file" > "$tmp" && mv "$tmp" "$index_file"
   echo "Updated existing entry '$entry_id' in $index_file"
 else
@@ -740,7 +983,27 @@ else
      --argjson tc "$token_count" \
      --argjson kw "$final_keywords" \
      --arg sum "$final_summary" \
-     '.entries += [{"id": $id, "path": $path, "token_count": $tc, "keywords": $kw, "summary": $sum}]' \
+     --argjson authors "$final_authors" \
+     --arg title "$final_title" \
+     --argjson year "$final_year" \
+     --arg doc_type "$final_doc_type" \
+     --arg source_format "$final_source_format" \
+     --arg parent_doc "$final_parent_doc" \
+     --arg page_range "$final_page_range" \
+     '.entries += [{
+       "id": $id,
+       "path": $path,
+       "token_count": $tc,
+       "keywords": $kw,
+       "summary": $sum,
+       "authors": $authors,
+       "title": $title,
+       "year": (if $year == "null" then null else ($year | tonumber) end),
+       "doc_type": $doc_type,
+       "source_format": $source_format,
+       "parent_doc": (if $parent_doc == "" then null else $parent_doc end),
+       "page_range": (if $page_range == "" then null else $page_range end)
+     }]' \
      "$index_file" > "$tmp" && mv "$tmp" "$index_file"
   echo "Added new entry '$entry_id' to $index_file"
 fi
@@ -777,6 +1040,7 @@ See `rules/error-handling.md` for general patterns. Skill-specific behaviors:
 ## Standards Reference
 
 - Token counting: `chars / 4 + 20` (matches memory-harvest.sh pattern)
-- Chunking: 10 pages per chunk (~4000 tokens at 350 words/page, 1.3 tokens/word)
-- Index schema: root uses `entries[]`, subdirectory uses `chapters[]`
+- Chunking: content-aware logical splitting at 4,000-line threshold — divide at chapter/section headings; merge small adjacent sections; fall back to mechanical 4,000-line splits when no headings detected
+- Source file convention: PDF/DJVU source files are co-located with their converted markdown in the same `specs/literature/` directory or subdirectory. Source files are gitignored via `specs/literature/**/*.pdf` and `specs/literature/**/*.djvu` patterns. Users must add source files manually after checkout.
+- Index schema: root `specs/literature/index.json` uses `entries[]` with enriched metadata fields (authors, title, year, doc_type, source_format, parent_doc, page_range)
 - Drift threshold: >20% change in token count triggers validation warning

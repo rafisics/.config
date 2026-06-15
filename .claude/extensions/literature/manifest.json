@@ -1,0 +1,29 @@
+{
+  "name": "literature",
+  "version": "1.0.0",
+  "description": "Manage specs/literature/ — scan, convert PDFs/DJVUs, maintain index.json",
+  "dependencies": [
+    "core",
+    "filetypes"
+  ],
+  "routing_exempt": true,
+  "provides": {
+    "agents": [
+      "literature-agent.md"
+    ],
+    "commands": [
+      "literature.md"
+    ],
+    "skills": [
+      "skill-literature"
+    ]
+  },
+  "merge_targets": {
+    "claudemd": {
+      "source": "EXTENSION.md",
+      "target": ".claude/CLAUDE.md",
+      "section_id": "extension_literature"
+    }
+  },
+  "hooks": {}
+}

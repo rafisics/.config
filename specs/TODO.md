@@ -1,5 +1,5 @@
 ---
-next_project_number: 710
+next_project_number: 716
 ---
 
 # TODO
@@ -11,15 +11,25 @@ next_project_number: 710
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,652,707,709 | -- | agent-system, Terminal UI, Email Integration |
+| 1 | 78,87,652,710 | -- | agent-system, Terminal UI, Email Integration |
+| 2 | 711,712 | 710 | agent-system |
+| 3 | 713 | 710,712 | agent-system |
+| 4 | 714 | 711,713 | agent-system |
+| 5 | 715 | 714 | agent-system |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Agent System
 
 652 [NOT STARTED] — After ~1 week of the new pipeline running, review logs to verify 
-707 [NOT STARTED] — Three convention changes to the literature extension: (1) PDF/DJV
-709 [NOT STARTED] — Add pr_ready state handling and pr_description artifact support t
+710 [NOT STARTED] — Research architecture for centralizing literature management acro
+  └─ 711 [NOT STARTED] — Create a Zotero BibTeX search script at .claude/extensions/litera
+    └─ 714 [NOT STARTED] — Enhance the /literature command and skill-literature to support Z
+      └─ 715 [NOT STARTED] — Update literature extension documentation to reflect the centrali
+  └─ 712 [NOT STARTED] — Migrate existing literature content from per-repo specs/literatur
+    └─ 713 [NOT STARTED] — Update .claude/extensions/core/scripts/literature-retrieve.sh (an
+      └─ 714 [NOT STARTED] — Enhance the /literature command and skill-literature to support Z (see above)
+  └─ 713 [NOT STARTED] — Update .claude/extensions/core/scripts/literature-retrieve.sh (an (see above)
 
 ### Terminal UI
 
@@ -30,6 +40,66 @@ next_project_number: 710
 78 [PLANNED] — Fix Gmail SMTP authentication failure when sending emails via Him
 
 ## Tasks
+
+### 715. Update literature extension docs
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: Task 714
+
+**Description**: Update literature extension documentation to reflect the centralized architecture and Zotero integration. Files: (1) .claude/extensions/literature/manifest.json -- add zotero-search.sh to provides.scripts, update description. (2) .claude/extensions/literature/EXTENSION.md -- document centralized Literature/ repo, LITERATURE_DIR env var, Zotero search workflow. (3) .claude/extensions/literature/README.md -- update with new capabilities. (4) .claude/context/guides/literature-organization.md -- rewrite for centralized repo conventions. (5) CLAUDE.md merge source -- update Literature Mode section to reference centralized repo and Zotero integration, update /literature command usage table. (6) Regenerate CLAUDE.md. Also update any references in other extensions (lean, formal) that mention specs/literature/.
+
+---
+
+### 714. Enhance literature command zotero
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: Task 711, Task 713
+
+**Description**: Enhance the /literature command and skill-literature to support Zotero search and cross-repo operation targeting the centralized Literature/ repo. New capabilities: (1) New search mode: /literature "query" or /literature --search "query" -- searches both Zotero.bib (via zotero-search.sh) and existing Literature/ index for matching entries. (2) Interactive source selection via AskUserQuestion -- present ranked results showing title, author, year, availability (PDF exists / already converted / not available). (3) Import pipeline: for selected Zotero entries with PDFs, copy PDF to Literature/ repo, run convert flow, generate index entry, commit to Literature/ repo. (4) Cross-repo operation: all /literature modes (status, scan, convert, validate, index, search) operate on LITERATURE_DIR instead of per-repo specs/literature/. (5) Task-number mode: /literature --task N reads the task description and uses it as the search query. Update .claude/extensions/literature/commands/literature.md, .claude/extensions/literature/skills/skill-literature/SKILL.md, and .claude/agents/literature-agent.md.
+
+---
+
+### 713. Update literature retrieve centralized
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: Task 710, Task 712
+
+**Description**: Update .claude/extensions/core/scripts/literature-retrieve.sh (and live copy at .claude/scripts/literature-retrieve.sh) to read from the centralized Literature/ repo instead of per-repo specs/literature/. Changes: (1) Replace PROJECT_ROOT/specs/literature path resolution with LITERATURE_DIR environment variable (default: ~/Projects/Literature/). (2) Preserve keyword-based scoring and greedy selection within TOKEN_BUDGET. (3) Handle the case where LITERATURE_DIR does not exist (silent exit, same as current specs/literature/ missing behavior). (4) Update fallback path to check centralized repo. (5) Keep backward compatibility: if LITERATURE_DIR is not set and specs/literature/ exists locally, prefer local (or configurable priority). (6) Sync both script copies. Also update literature-organization.md guide to reference centralized path.
+
+---
+
+### 712. Migrate literature centralized repo
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: Task 710
+
+**Description**: Migrate existing literature content from per-repo specs/literature/ directories to the centralized ~/Projects/Literature/ repository. Sources: (1) /home/benjamin/Projects/BimodalLogic/specs/literature/ -- 23 subdirectories + 3 standalone PDFs with markdown. (2) /home/benjamin/Projects/cslib/specs/literature/ -- 12 entries (mix of subdirectories and standalone files). Steps: (1) Identify overlapping entries (both repos have blackburn_2001, burgess_1982, etc.). (2) Merge content, preferring the more complete version for duplicates. (3) Create unified index.json with enhanced schema (author, year, bib_key, title, section, path, page_range, token_count, keywords, summary, document_type, source_format). (4) Organize into author_year/ subdirectories with consistent naming. (5) Set up .gitignore for PDF/DJVU source files. (6) Commit initial content to the Literature/ repo. Do NOT delete per-repo specs/literature/ (user handles cleanup).
+
+---
+
+### 711. Create zotero search script
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: Task 710
+
+**Description**: Create a Zotero BibTeX search script at .claude/extensions/literature/scripts/zotero-search.sh (or .claude/scripts/zotero-search.sh). The script parses ~/texmf/bibtex/bib/Zotero.bib (configurable via ZOTERO_BIB env var), searches entries by keyword/author/title query, checks PDF file existence from the file field, and returns structured JSON results suitable for interactive selection via AskUserQuestion. Features: (1) BibTeX entry parsing (handle @article, @book, @incollection, @inproceedings, etc.). (2) Multi-field search across title, author, abstract, keywords fields. (3) PDF availability check -- parse file field paths, verify files exist on disk. (4) Ranked results by relevance score. (5) JSON output format with bib_key, title, authors, year, type, pdf_paths (existing only), abstract snippet. Script should handle the Zotero.bib format with LaTeX escaping in fields. Register in literature extension manifest.
+
+---
+
+### 710. Research centralized literature zotero
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: Research architecture for centralizing literature management across repos with Zotero.bib integration. Analyze: (1) Zotero.bib format at ~/texmf/bibtex/bib/Zotero.bib -- BibTeX parsing, file field for PDF paths, entry structure. (2) Current per-repo specs/literature/ in BimodalLogic (23 entries) and cslib (12 entries) -- overlap analysis, index.json schema differences. (3) Centralized ~/Projects/Literature/ repo structure design -- directory layout, unified index.json with enhanced metadata (author, year, bib_key, document type, source format). (4) Cross-repo path resolution via LITERATURE_DIR environment variable with ~/Projects/Literature/ default. (5) How /literature command and --lit flag should discover and operate on the centralized repo from any project. (6) PDF storage strategy -- copy from Zotero storage to Literature/ or symlink. Deliverable: architecture report covering all 6 areas with concrete design decisions.
+
+---
 
 ### 709. Add pr ready orchestrate support
 - **Status**: [COMPLETED]
@@ -52,7 +122,7 @@ next_project_number: 710
 ---
 
 ### 707. Refactor literature extension: co-location, logical chunking, enhanced metadata
-- **Status**: [PLANNING]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None

@@ -21,12 +21,18 @@ Two organization patterns are supported:
 ```
 specs/literature/
 ├── index.json
-├── Smith_2023_PropositionalLogic.md
-└── Brastmckie_2024_BimodalLogic.md
+├── Smith_2023_PropositionalLogic.pdf    # gitignored source (co-located)
+├── Smith_2023_PropositionalLogic.md     # converted markdown
+├── Brastmckie_2024_BimodalLogic.pdf    # gitignored source (co-located)
+└── Brastmckie_2024_BimodalLogic.md     # converted markdown
 ```
 
 Use flat files for papers or documents that fit within the ~3000-token chunk target in a single
 file. Each `.md` or `.txt` file corresponds to one entry in `index.json`.
+
+**Source file convention**: PDF/DJVU source files are co-located with their converted markdown
+in the same directory. They are gitignored via `specs/literature/**/*.pdf` and
+`specs/literature/**/*.djvu`. Users must re-add source files manually after checkout.
 
 ### Subdirectory layout (books or long documents)
 
@@ -34,7 +40,7 @@ file. Each `.md` or `.txt` file corresponds to one entry in `index.json`.
 specs/literature/
 ├── index.json
 └── Brastmckie_2024_BimodalLogic/
-    ├── index.json          (optional, organizational only)
+    ├── Brastmckie_2024_BimodalLogic.pdf  # gitignored source (co-located)
     ├── sec01_introduction.md
     ├── sec02_syntax.md
     └── sec03_semantics.md
@@ -44,10 +50,8 @@ Long documents are chunked into section files inside a named subdirectory. The g
 `specs/literature/index.json` contains one entry per section, with `path` pointing to the
 section file (e.g., `Brastmckie_2024_BimodalLogic/sec02_syntax.md`).
 
-> **Note**: A per-book `index.json` inside a subdirectory is an organizational convention for
-> human reference only. The `literature-retrieve.sh` script reads only the top-level
-> `specs/literature/index.json`. Any `chapters[]` array in a per-book `index.json` is not
-> parsed by the script.
+> **Note**: There is no per-book `index.json` inside subdirectories. The `literature-retrieve.sh`
+> script reads only the top-level `specs/literature/index.json`.
 
 ## Naming Conventions
 
@@ -94,60 +98,60 @@ the system falls back to a blind lexicographic scan.
 
 ### Entry fields
 
-#### Script-required fields (used by literature-retrieve.sh)
+All fields are written by `/literature --convert` and `/literature --index`. The first four
+fields are read by `literature-retrieve.sh`; the remaining fields are used by tooling and for
+human reference.
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `id` | string | Yes | Unique identifier for this entry (logged internally) |
-| `path` | string | Yes | File path relative to `specs/literature/` |
-| `token_count` | integer | Yes | Estimated token count; used for greedy budget enforcement |
-| `keywords` | string[] | Yes | Keywords for relevance scoring against the task description |
-| `title` | string | Recommended | Display name shown in the injected context heading |
-| `summary` | string | Recommended | Short summary; earns a +1 bonus if any task keyword matches |
-
-#### Metadata convention fields (not read by script; useful for humans and tooling)
-
-| Field | Type | Purpose |
-|-------|------|---------|
-| `bib_key` | string | BibTeX cite key (e.g., `Smith2023`) |
-| `authors` | string[] | Author list |
-| `year` | integer | Publication year |
-| `section` | string | Section identifier for chapter entries (e.g., `ch02`) |
-| `page_range` | string | Source page range in the original document (e.g., `"15-47"`) |
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string | Unique identifier (e.g., `smith2023_proplogic`); used by retrieve script for logging |
+| `path` | string | File path relative to `specs/literature/`; used by retrieve script for file loading |
+| `token_count` | integer | Estimated token count; used by retrieve script for greedy budget enforcement |
+| `keywords` | string[] | Keywords for relevance scoring against the task description |
+| `summary` | string | One-sentence description; earns a +1 bonus if any task keyword matches |
+| `authors` | string[] | Author list (e.g., `["Alice Smith", "Bob Jones"]`) |
+| `title` | string | Full document or section title; shown in injected context heading |
+| `year` | integer\|null | Publication year (null if unknown) |
+| `doc_type` | string | One of: `paper`, `book`, `chapter`, `section` |
+| `source_format` | string | One of: `pdf`, `djvu`, `manual` |
+| `parent_doc` | string\|null | ID of parent entry for chunks/sections; null for top-level entries |
+| `page_range` | string\|null | Page range in source document (e.g., `"15-47"`); null if not applicable |
 
 ### Complete entry example (flat paper)
 
 ```json
 {
-  "id": "smith2023-proplogic",
-  "bib_key": "Smith2023",
-  "title": "Propositional Logic: A Modern Introduction",
-  "authors": ["Alice Smith"],
-  "year": 2023,
-  "section": null,
+  "id": "smith2023_proplogic",
   "path": "Smith_2023_PropositionalLogic.md",
-  "page_range": null,
   "token_count": 1850,
   "keywords": ["propositional", "logic", "syntax", "semantics", "proof"],
-  "summary": "Introduces propositional logic with natural deduction and truth tables."
+  "summary": "Introduces propositional logic with natural deduction and truth tables.",
+  "authors": ["Alice Smith"],
+  "title": "Propositional Logic: A Modern Introduction",
+  "year": 2023,
+  "doc_type": "paper",
+  "source_format": "pdf",
+  "parent_doc": null,
+  "page_range": null
 }
 ```
 
-### Complete entry example (chapter file)
+### Complete entry example (section of a chunked book)
 
 ```json
 {
-  "id": "brastmckie2024-bimodal-ch2",
-  "bib_key": "Brastmckie2024",
-  "title": "BimodalLogic - Chapter 2: Syntax",
-  "authors": ["Benjamin Brastmckie"],
-  "year": 2024,
-  "section": "ch02",
+  "id": "brastmckie2024_bimodal_sec02",
   "path": "Brastmckie_2024_BimodalLogic/sec02_syntax.md",
-  "page_range": "15-47",
   "token_count": 2100,
   "keywords": ["bimodal", "syntax", "formula", "operator", "modal"],
-  "summary": "Defines the formal syntax of bimodal logic with operator precedence rules."
+  "summary": "Defines the formal syntax of bimodal logic with operator precedence rules.",
+  "authors": ["Benjamin Brastmckie"],
+  "title": "BimodalLogic - Section 2: Syntax",
+  "year": 2024,
+  "doc_type": "section",
+  "source_format": "pdf",
+  "parent_doc": "brastmckie2024_bimodal",
+  "page_range": "15-47"
 }
 ```
 
@@ -234,23 +238,41 @@ create `index.json` to enable keyword scoring.
 
 ## Adding New Papers
 
-### Step 1: Prepare the source material
+The easiest way to add a paper is `/literature --convert` (for PDFs/DJVUs) or
+`/literature --index FILE` (for existing markdown files). Both commands prompt interactively for
+all required metadata.
 
-Convert the paper to plain text or Markdown. If the paper is longer than ~3000 tokens (~2300
-words), split it into section files inside a subdirectory.
+For manual index entry creation:
+
+### Step 1: Place the source file (co-located convention)
+
+Copy or symlink the PDF/DJVU source file into the same `specs/literature/` directory or
+subdirectory where the converted markdown will live. The source file will be gitignored.
 
 **Flat paper** (short):
 ```
-specs/literature/Author_Year_Title.md
+specs/literature/Author_Year_Title.pdf    # gitignored source
+specs/literature/Author_Year_Title.md     # converted markdown
 ```
 
 **Long document** (chunked):
 ```
+specs/literature/Author_Year_Title/Author_Year_Title.pdf  # gitignored source
 specs/literature/Author_Year_Title/sec01_slug.md
 specs/literature/Author_Year_Title/sec02_slug.md
 ```
 
-### Step 2: Estimate token counts
+### Step 2: Convert and chunk the document
+
+For PDFs/DJVUs, use `/literature --convert` to run the content-aware chunking algorithm, which:
+1. Converts the source to text
+2. Detects chapter/section headings (logical split at 4,000-line threshold)
+3. Creates section files with structure-aware names (`sectionNN_slug.md`)
+4. Falls back to mechanical 4,000-line splits with `_partNN.md` naming if no headings found
+
+For manual conversion, target ~3000 tokens (~2300 words) per section file.
+
+### Step 3: Estimate token counts
 
 For each file, run:
 
@@ -260,7 +282,7 @@ echo $(( ($(wc -w < specs/literature/Author_Year_Title.md) * 13 + 5) / 10 ))
 
 Record the output as the `token_count` value for that file's index entry.
 
-### Step 3: Choose keywords
+### Step 4: Choose keywords
 
 Select 5-10 keywords that capture the core concepts of the paper or section. Keywords should
 match the vocabulary an agent would naturally use when describing a task that needs this paper.
@@ -270,7 +292,7 @@ names, formal system names, and key technical terms.
 
 Avoid generic terms (`paper`, `introduction`, `section`) that appear in most documents.
 
-### Step 4: Write the index entry
+### Step 5: Write the index entry
 
 If `specs/literature/index.json` does not exist, create it with an empty `entries` array first:
 
@@ -284,11 +306,13 @@ Add one entry per file (or per section for chunked documents) to the `entries` a
 template from the schema section above. Ensure:
 - `id` is unique across all entries
 - `path` is relative to `specs/literature/` (not an absolute path)
-- `token_count` matches the estimate from Step 2
+- `token_count` matches the estimate from Step 3
 - `keywords` reflects the task vocabulary where this paper is relevant
 - `summary` is a single sentence capturing the file's content
+- `authors`, `title`, `year`, `doc_type`, `source_format` are filled in
+- `parent_doc` and `page_range` are set for chunked section entries; null for top-level entries
 
-### Step 5: Validate the index
+### Step 6: Validate the index
 
 ```bash
 jq . specs/literature/index.json
@@ -296,7 +320,7 @@ jq . specs/literature/index.json
 
 A clean exit with formatted output confirms the file is valid JSON.
 
-### Step 6: Test the injection
+### Step 7: Test the injection
 
 Run a command with `--lit` and a relevant task description to verify the paper appears:
 
