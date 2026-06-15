@@ -44,7 +44,7 @@ next_project_number: 727
 ## Tasks
 
 ### 726. Update pr review routing docs
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 722, Task 723, Task 724, Task 725
@@ -97,7 +97,7 @@ next_project_number: 727
 ---
 
 ### 721. Design targeted literature retrieval
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Task Type**: meta
 - **Topic**: Literature
 - **Dependencies**: None
