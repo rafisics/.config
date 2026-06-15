@@ -25,10 +25,10 @@ next_project_number: 707
   └─ 700 [NOT STARTED] — Update documentation to reflect the revised PR workflow separatio (see above)
 701 [RESEARCHED] — Upgrade literature-retrieve.sh to fix TOKEN_BUDGET mismatch (scri
   └─ 702 [NOT STARTED] — Create a /literature command (command + skill + agent) for managi
-703 [NOT STARTED] — Create a context guide at .claude/context/guides/literature-organ
+703 [RESEARCHED] — Create a context guide at .claude/context/guides/literature-organ
 704 [RESEARCHED] — Update ci-pipeline.md and lake-commands.md in the cslib extension
 705 [RESEARCHED] — Create a build cache strategy context document at .claude/extensi
-706 [PLANNING] — Revise .claude/extensions/cslib/context/project/cslib/standards/p
+706 [PLANNED] — Revise .claude/extensions/cslib/context/project/cslib/standards/p
 
 ### Terminal UI
 
@@ -41,10 +41,11 @@ next_project_number: 707
 ## Tasks
 
 ### 706. Revise pr description format template
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
+- **Plan**: [706_revise_pr_description_format_template/plans/01_implementation-plan.md]
 
 **Description**: Revise .claude/extensions/cslib/context/project/cslib/standards/pr-description-format.md based on the real-world PR description at /home/benjamin/Projects/cslib/specs/198_submit_propositional_upstream_pr/pr-description.md. Four additions: (1) Add a 'Breaking Changes' section (required when applicable) listing renamed identifiers, removed constraints, changed signatures, and affected downstream files -- modeled on the task 198 PR's enumeration of constructor renames and constraint removals. (2) Add a 'Relationship to Other PRs' section (required when applicable) for documenting concurrent/adjacent PRs with interaction context -- broader than the current 'stacked on' pattern under Context, covering lateral PRs that touch the same files or related concerns (e.g., PR #607 overlaps in propositional connectives, PR #536 modifies the same files independently). (3) Add a 'Contribution Roadmap' section (optional) for multi-PR contribution series -- numbered list of planned follow-up PRs with scope summaries, link to development branch. (4) Revise the 'Changed Files' format to offer a simpler linked format alongside the existing diff-stat format: `[File](link) -- **New/Modified**: description` per file, which is cleaner for PRs with fewer files. Keep the diff-stat + H3 format as the option for larger PRs (10+ files). Also standardize the title format and harmonize AI disclosure section naming. File: .claude/extensions/cslib/context/project/cslib/standards/pr-description-format.md.
 
@@ -71,7 +72,7 @@ next_project_number: 707
 ---
 
 ### 703. Create literature organization guide
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
