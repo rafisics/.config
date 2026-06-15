@@ -32,10 +32,12 @@ function M.setup()
       },
       paste = {
         ["+"] = function()
-          return { vim.fn.split(vim.fn.getreg(""), "\n"), vim.fn.getregtype("") }
+          local output = vim.fn.systemlist("wl-paste --no-newline")
+          return { output, "v" }
         end,
         ["*"] = function()
-          return { vim.fn.split(vim.fn.getreg(""), "\n"), vim.fn.getregtype("") }
+          local output = vim.fn.systemlist("wl-paste --no-newline --primary")
+          return { output, "v" }
         end,
       },
     }

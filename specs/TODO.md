@@ -119,7 +119,7 @@ next_project_number: 727
 ---
 
 ### 721. Design targeted literature retrieval
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: meta
 - **Topic**: Literature
 - **Dependencies**: None
