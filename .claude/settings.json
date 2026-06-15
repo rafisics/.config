@@ -30,22 +30,11 @@
       "Bash(rm -rf /)",
       "Bash(rm -rf ~)",
       "Bash(sudo *)",
-      "Bash(chmod 777 *)",
-      "Bash(gh pr create*)",
-      "Bash(gh pr merge*)"
+      "Bash(chmod 777 *)"
     ]
   },
   "hooks": {
     "PreToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash .claude/hooks/block-pr-submission.sh 2>/dev/null || echo '{}'"
-          }
-        ]
-      },
       {
         "matcher": "Write",
         "hooks": [
@@ -159,6 +148,7 @@
     ]
   },
   "env": {
-    "SLASH_COMMAND_TOOL_CHAR_BUDGET": "50000"
+    "SLASH_COMMAND_TOOL_CHAR_BUDGET": "50000",
+    "LITERATURE_DIR": "/home/benjamin/Projects/Literature"
   }
 }

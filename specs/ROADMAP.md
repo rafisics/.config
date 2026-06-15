@@ -17,6 +17,7 @@
 
 ## Phase 2: Medium-Term Improvements
 
+- [x] **Literature centralization**: Centralized `~/Projects/Literature/` repository shared across all projects via `LITERATURE_DIR` env var, with Zotero/Better BibTeX CSL-JSON integration, v2 index schema (`zotero_key`, `zotero_path`, `project_tags`), two-tier fallback preserving per-project `specs/literature/` directories, and migration of 183 BimodalLogic entries. *(Completed: 2026-06-14, task 710)*
 - [ ] **Extension hot-reload**: Allow `<leader>ac` to reload an already-loaded extension without restarting Neovim
 - [ ] **Context discovery caching**: Cache the output of the adaptive context query in `~/.claude/cache/` to speed up agent spawn time
 

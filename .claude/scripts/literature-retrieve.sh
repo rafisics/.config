@@ -9,6 +9,10 @@
 # Exit 0 with content on stdout when files found
 # Exit 1 (empty stdout) when directory missing, no matches, or all exceed budget
 #
+# Environment:
+#   LITERATURE_DIR  - Override the literature directory (two-tier fallback: if LITERATURE_DIR
+#                     is set but does not exist, falls back to per-project specs/literature/)
+#
 # Constants:
 #   TOKEN_BUDGET=8000 (or index.json token_budget)  - Maximum total tokens to include
 #   MAX_FILES=10                                     - Maximum number of files
@@ -28,7 +32,19 @@ task_type="${2:-}"
 # --- Paths ---
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-LIT_DIR="$PROJECT_ROOT/specs/literature"
+DEFAULT_LIT_DIR="$PROJECT_ROOT/specs/literature"
+
+# Two-tier fallback: use LITERATURE_DIR if set and exists, otherwise fall back to per-project
+if [ -n "${LITERATURE_DIR:-}" ]; then
+  if [ -d "$LITERATURE_DIR" ]; then
+    LIT_DIR="$LITERATURE_DIR"
+  else
+    # LITERATURE_DIR set but does not exist — fall back to per-project
+    LIT_DIR="$DEFAULT_LIT_DIR"
+  fi
+else
+  LIT_DIR="$DEFAULT_LIT_DIR"
+fi
 INDEX_FILE="$LIT_DIR/index.json"
 
 # Exit if directory missing
@@ -83,19 +99,32 @@ if [ -f "$INDEX_FILE" ] && [ -n "$description" ]; then
         }) | map(select(.path != ($subdir + "/")))
       ' "$sub_index" 2>/dev/null)
       if [ -n "$normalized" ] && [ "$normalized" != "null" ] && [ "$normalized" != "[]" ]; then
-        sub_entries=$(jq -n --argjson a "$sub_entries" --argjson b "$normalized" '$a + $b')
+        _a_tmp=$(mktemp)
+        _b_tmp=$(mktemp)
+        echo "$sub_entries" > "$_a_tmp"
+        echo "$normalized" > "$_b_tmp"
+        sub_entries=$(jq -n --slurpfile a "$_a_tmp" --slurpfile b "$_b_tmp" '$a[0] + $b[0]')
+        rm -f "$_a_tmp" "$_b_tmp"
       fi
     done < <(find "$LIT_DIR" -maxdepth 2 -name "index.json" ! -path "$INDEX_FILE" | sort)
 
     # Merge root entries and subdirectory entries; root entries take precedence by path
     # Build a unified deduplicated pool
+    # Use temp files to avoid "Argument list too long" when entries JSON is large
+    _root_tmp=$(mktemp)
+    _sub_tmp=$(mktemp)
+    echo "$root_entries" > "$_root_tmp"
+    echo "$sub_entries" > "$_sub_tmp"
     all_entries=$(jq -n \
-      --argjson root "$root_entries" \
-      --argjson sub "$sub_entries" '
+      --slurpfile root "$_root_tmp" \
+      --slurpfile sub "$_sub_tmp" '
+      ($root[0]) as $root |
+      ($sub[0]) as $sub |
       ($root | map({(.path): .}) | add // {}) as $root_by_path |
       ($sub | map(select(.path != null and .path != "")) | map(select($root_by_path[.path] == null))) as $sub_unique |
       $root + $sub_unique
     ')
+    rm -f "$_root_tmp" "$_sub_tmp"
 
     scored_entries=$(echo "$all_entries" | jq --argjson kw "$keywords_json" '
       map(

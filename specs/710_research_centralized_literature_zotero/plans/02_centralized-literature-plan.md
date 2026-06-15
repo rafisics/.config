@@ -78,7 +78,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: LITERATURE_DIR Environment Variable in Scripts [NOT STARTED]
+### Phase 1: LITERATURE_DIR Environment Variable in Scripts [COMPLETED]
 
 **Goal**: Add `LITERATURE_DIR` override to `literature-retrieve.sh` and `skill-literature/SKILL.md` with two-tier fallback logic.
 
@@ -104,7 +104,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Central Repository Structure and Schema [NOT STARTED]
+### Phase 2: Central Repository Structure and Schema [COMPLETED]
 
 **Goal**: Create `~/Projects/Literature/` directory layout with v2 `index.json` schema and supporting files.
 
@@ -134,7 +134,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Schema Migration Script and Content Migration [NOT STARTED]
+### Phase 3: Schema Migration Script and Content Migration [COMPLETED]
 
 **Goal**: Migrate BimodalLogic's 113 literature entries into the centralized repo with v1-to-v2 schema backfill.
 
@@ -173,7 +173,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Environment Variable Configuration [NOT STARTED]
+### Phase 4: Environment Variable Configuration [COMPLETED]
 
 **Goal**: Set `LITERATURE_DIR` in both Claude Code settings and Home Manager so all contexts see it.
 
@@ -199,7 +199,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Script Deployment and End-to-End Verification [NOT STARTED]
+### Phase 5: Script Deployment and End-to-End Verification [COMPLETED]
 
 **Goal**: Deploy updated `literature-retrieve.sh` to BimodalLogic and verify `--lit` injection works from the centralized repo.
 
@@ -229,7 +229,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 6: Documentation and ROADMAP Update [NOT STARTED]
+### Phase 6: Documentation and ROADMAP Update [COMPLETED]
 
 **Goal**: Update documentation to reflect centralized architecture and add ROADMAP entry.
 
