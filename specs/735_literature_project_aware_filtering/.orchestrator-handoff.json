@@ -1,16 +1,16 @@
 {
-  "status": "researched",
-  "summary": "project_tags already populated for all 195 BimodalLogic entries; cslib has zero entries; Tier 1 needs --project flag in literature-search.sh filtering by doc_id IN (set from index.json); Tier 2 needs jq filter in literature-retrieve.sh before scoring; project detected via git root basename",
+  "status": "planned",
+  "summary": "Created 3-phase plan: Phase 1 adds project detection and Tier 2 filtering to literature-retrieve.sh, Phase 2 adds --project flag to literature-search.sh for Tier 1 FTS5 filtering, Phase 3 runs integration tests and edge case verification.",
   "blockers": [],
   "continuation_context": null,
-  "next_action_hint": "plan",
+  "next_action_hint": "implement",
   "phases_completed": 0,
-  "phases_total": 0,
+  "phases_total": 3,
   "artifacts": [
     {
-      "path": "specs/735_literature_project_aware_filtering/reports/01_project-aware-filtering.md",
-      "type": "report",
-      "summary": "Research report on project-aware literature filtering: index.json schema, literature-retrieve.sh/literature-search.sh architecture, BimodalLogic and cslib source structures, and recommended implementation approach"
+      "path": "specs/735_literature_project_aware_filtering/plans/01_project-aware-filtering.md",
+      "type": "plan",
+      "summary": "Implementation plan for project-aware literature filtering"
     }
   ]
 }
