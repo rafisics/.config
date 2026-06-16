@@ -21,7 +21,7 @@ next_project_number: 736
 
 ### Literature
 
-735 [NOT STARTED] — Add project-aware literature filtering: scan BimodalLogic and csl
+735 [PLANNING] — Add project-aware literature filtering: scan BimodalLogic and csl
 
 ### Terminal UI
 
@@ -34,7 +34,7 @@ next_project_number: 736
 ## Tasks
 
 ### 735. Add project-aware literature filtering with project_tags population and retrieval filtering
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNING]
 - **Task Type**: general
 - **Topic**: literature
 - **Dependencies**: None
@@ -48,7 +48,9 @@ next_project_number: 736
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
-- **Research**: [734_optimize_cslib_build_cache_strategy/reports/01_build-cache-research.md]
+- **Research**:
+  - [734_optimize_cslib_build_cache_strategy/reports/01_build-cache-research.md]
+  - [734_optimize_cslib_build_cache_strategy/reports/02_detailed-change-spec.md]
 
 **Description**: Optimize CSLib build cache strategy: add lake exe cache get to cslib-implementation-agent CI pipeline, skill preflight cache warming, fix rules CI order, and defer redundant lake test for pr-type tasks — to eliminate 30-45 min Mathlib rebuilds during implementation
 
