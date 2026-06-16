@@ -1,5 +1,5 @@
 ---
-next_project_number: 728
+next_project_number: 734
 ---
 
 # TODO
@@ -11,9 +11,23 @@ next_project_number: 728
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87 | -- | Terminal UI, Email Integration |
+| 1 | 78,87,728 | -- | literature, Terminal UI, Email Integration |
+| 2 | 729,731 | 728 | literature |
+| 3 | 730 | 729 | literature |
+| 4 | 732 | 730,731 | literature |
+| 5 | 733 | 732 | literature |
 
 **Grouped by Topic** (indented = depends on parent):
+
+### Literature
+
+728 [NOT STARTED] — Re-acquire PDFs/DJVUs from Zotero using zotero_key fields in ~/Pr
+  └─ 729 [NOT STARTED] — Audit every subdirectory in ~/Projects/Literature/ for chunking q
+    └─ 730 [NOT STARTED] — Using the audit manifest from task 729 and source PDFs from task 
+      └─ 732 [NOT STARTED] — Upgrade all remaining v1 index entries in ~/Projects/Literature/i
+        └─ 733 [NOT STARTED] — Move LITERATURE_DIR setting to ~/.dotfiles/config/claude/settings
+  └─ 731 [NOT STARTED] — Migrate cslib's 70 unique entries from ~/Projects/cslib/specs/lit
+    └─ 732 [NOT STARTED] — Upgrade all remaining v1 index entries in ~/Projects/Literature/i (see above)
 
 ### Terminal UI
 
@@ -24,6 +38,66 @@ next_project_number: 728
 78 [PLANNED] — Fix Gmail SMTP authentication failure when sending emails via Him
 
 ## Tasks
+
+### 733. Wire LITERATURE_DIR globally, build FTS5 database, validate unified collection
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: literature
+- **Dependencies**: Task 732
+
+**Description**: Move LITERATURE_DIR setting to ~/.dotfiles/config/claude/settings.json (Home Manager-managed global settings) so all projects pick it up. Remove the per-project setting from nvim's .claude/settings.json. Build the FTS5 database (.literature.db) using literature-build-index.sh to activate Tier 1 on-demand search (currently dead code — always falls back to Tier 2 keyword injection). Run literature-audit.sh to validate index integrity across the unified collection. Verify --lit flag works end-to-end from all three project roots (nvim, BimodalLogic, cslib).
+
+---
+
+### 732. Unify index schema to v2 and clean up deprecated per-project collections
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: literature
+- **Dependencies**: Task 730, Task 731
+
+**Description**: Upgrade all remaining v1 index entries in ~/Projects/Literature/index.json to v2 schema (add doc_type, source_format, zotero_key, project_tags where missing). Deduplicate BimodalLogic's flat+chunked structure (keep only semantic chunks, remove redundant flat files). Add DEPRECATED.md to cslib's specs/literature/ pointing to the centralized repo. Ensure all per-directory index.json files in subdirectories are consistent with root index.json. Validate no orphaned or missing entries.
+
+---
+
+### 731. Migrate cslib's 70 unique literature entries into central Literature/ repo
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: literature
+- **Dependencies**: Task 728
+
+**Description**: Migrate cslib's 70 unique entries from ~/Projects/cslib/specs/literature/ into ~/Projects/Literature/ with v2 schema fields (doc_type, source_format, zotero_key, project_tags: ["cslib"]). Resolve the 6 overlapping entries (burgess_1982_i/ii, burgess_1984, gabbay_1994_ch10, reynolds_1992, blackburn_2001_ch00) by keeping the fuller versions and tagging both projects. Convert cslib's remaining chagrov_1997.djvu to markdown. Ensure migrated content follows semantic chunking standards from task 730.
+
+---
+
+### 730. Re-chunk literature files at semantic boundaries (chapter/section breaks)
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: literature
+- **Dependencies**: Task 728, Task 729
+
+**Description**: Using the audit manifest from task 729 and source PDFs from task 728, re-chunk all arbitrarily split files at semantic boundaries (chapter headings, section headings, theorem boundaries). Chunk oversized flat files — especially the 365K-token Blackburn book. Remove redundant flat files where a properly chunked subdirectory exists. Use actual document structure from sources, not literature-chunk.sh's token-target approach. Update index.json entries for every re-chunked document with correct paths, token counts, and section metadata.
+
+---
+
+### 729. Audit Literature/ content quality: identify arbitrary vs semantic chunking
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: literature
+- **Dependencies**: Task 728
+
+**Description**: Audit every subdirectory in ~/Projects/Literature/ for chunking quality. For each document, classify as: (a) semantically chunked by chapter/section (good — keep), (b) arbitrarily chunked by page number or byte count (needs re-chunking), (c) oversized flat file needing chunking (e.g., Blackburn_deRijke_Venema_2002 at 365K tokens). Also audit cslib's specs/literature/ subdirectories (blackburn_2001, chagrov_1997, church_1956, etc.) for the same. Produce a manifest of documents with their chunking status, recommended action (keep/re-chunk/chunk-new), and natural section structure from source PDFs.
+
+---
+
+### 728. Recover PDF/DJVU sources into Literature/pdfs/ from Zotero and project repos
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: literature
+- **Dependencies**: None
+
+**Description**: Re-acquire PDFs/DJVUs from Zotero using zotero_key fields in ~/Projects/Literature/index.json (182/183 entries have keys). Copy BimodalLogic's 32 surviving PDFs from ~/Projects/BimodalLogic/specs/literature/ into Literature/pdfs/. Copy cslib's chagrov_1997.djvu. Verify all indexed documents have corresponding source files in pdfs/. Store in pdfs/ directory (keep gitignored but present locally). This is prerequisite for all re-chunking work.
+
+---
 
 ### 727. Implement extension keyword_overrides lookup in /task command step 4
 - **Effort**: 1-3 hours
