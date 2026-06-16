@@ -1,7 +1,7 @@
 # Implementation Plan: Task #730
 
 - **Task**: 730 - Re-chunk Literature Files at Semantic Boundaries
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 10 hours
 - **Dependencies**: Task 728 (source recovery), Task 729 (chunking audit)
 - **Research Inputs**: specs/730_literature_semantic_rechunking/reports/01_semantic-rechunking-research.md

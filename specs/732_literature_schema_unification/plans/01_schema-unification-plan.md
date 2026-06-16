@@ -1,7 +1,7 @@
 # Implementation Plan: Task #732
 
 - **Task**: 732 - Unify Index Schema to v2 and Clean Up Deprecated Collections
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2 hours
 - **Dependencies**: Tasks 728, 729, 730, 731 (completed)
 - **Research Inputs**: specs/732_literature_schema_unification/reports/01_schema-unification-research.md

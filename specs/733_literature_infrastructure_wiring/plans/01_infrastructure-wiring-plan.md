@@ -1,7 +1,7 @@
 # Implementation Plan: Task #733
 
 - **Task**: 733 - Wire LITERATURE_DIR globally, build FTS5 database, validate unified collection
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3 hours
 - **Dependencies**: Task 732 (schema unification)
 - **Research Inputs**: specs/733_literature_infrastructure_wiring/reports/01_infrastructure-wiring-research.md
