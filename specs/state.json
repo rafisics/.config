@@ -6,12 +6,12 @@
       "project_number": 735,
       "project_name": "literature_project_aware_filtering",
       "title": "Add project-aware literature filtering with project_tags population and retrieval filtering",
-      "status": "planning",
+      "status": "implementing",
       "task_type": "general",
       "topic": "literature",
       "description": "Add project-aware literature filtering: scan BimodalLogic and cslib source files to populate project_tags in ~/Projects/Literature/index.json, then add project-aware filtering to literature-retrieve.sh (auto-detect project from $PWD, prefer entries with matching project_tags). Tier 1 FTS5 queries should filter by project; Tier 2 keyword injection should prefer project-tagged entries. Entries with no project_tags remain available as fallback.",
       "created": "2026-06-16T19:59:54Z",
-      "last_updated": "2026-06-16T20:10:33Z",
+      "last_updated": "2026-06-16T20:16:17Z",
       "dependencies": [],
       "artifacts": [],
       "session_id": "sess_1781640194_13c186"
@@ -19,12 +19,12 @@
     {
       "project_number": 734,
       "project_name": "optimize_cslib_build_cache_strategy",
-      "status": "researched",
+      "status": "planned",
       "task_type": "meta",
       "description": "Optimize CSLib build cache strategy: add lake exe cache get to cslib-implementation-agent CI pipeline, skill preflight cache warming, fix rules CI order, and defer redundant lake test for pr-type tasks — to eliminate 30-45 min Mathlib rebuilds during implementation",
       "topic": "agent-system",
       "created": "2026-06-16T19:54:21Z",
-      "last_updated": "2026-06-16T20:10:25Z",
+      "last_updated": "2026-06-16T20:16:28Z",
       "next_artifact_number": 3,
       "artifacts": [
         {
@@ -36,9 +36,14 @@
           "path": "specs/734_optimize_cslib_build_cache_strategy/reports/02_detailed-change-spec.md",
           "type": "report",
           "summary": "Detailed change specification with exact old_string/new_string pairs for 5 edits across 4 files"
+        },
+        {
+          "path": "specs/734_optimize_cslib_build_cache_strategy/plans/03_cache-optimization-plan.md",
+          "type": "plan",
+          "summary": "Implementation plan with 2 phases for 5 cache-warming edits across 4 cslib extension files"
         }
       ],
-      "session_id": "sess_1750092000_a7b3c1",
+      "session_id": "sess_1750093000_b8c4d2",
       "memory_candidates": [
         {
           "content": "skill-cslib-implementation-hard/SKILL.md has a maintenance note: changes to skill-cslib-implementation postflight should be mirrored here. When adding preflight stages to skill-cslib-implementation, always add a parallel stage to skill-cslib-implementation-hard to keep them in sync.",

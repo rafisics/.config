@@ -1,7 +1,7 @@
 # Implementation Plan: Task #735
 
 - **Task**: 735 - Add project-aware literature filtering with project_tags population and retrieval filtering
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/735_literature_project_aware_filtering/reports/01_project-aware-filtering.md

@@ -17,11 +17,11 @@ next_project_number: 736
 
 ### Agent System
 
-734 [RESEARCHED] — Optimize CSLib build cache strategy: add lake exe cache get to cs
+734 [PLANNED] — Optimize CSLib build cache strategy: add lake exe cache get to cs
 
 ### Literature
 
-735 [PLANNING] — Add project-aware literature filtering: scan BimodalLogic and csl
+735 [IMPLEMENTING] — Add project-aware literature filtering: scan BimodalLogic and csl
 
 ### Terminal UI
 
@@ -34,7 +34,7 @@ next_project_number: 736
 ## Tasks
 
 ### 735. Add project-aware literature filtering with project_tags population and retrieval filtering
-- **Status**: [PLANNING]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: general
 - **Topic**: literature
 - **Dependencies**: None
@@ -44,13 +44,14 @@ next_project_number: 736
 ---
 
 ### 734. Optimize cslib build cache strategy
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
 - **Research**:
   - [734_optimize_cslib_build_cache_strategy/reports/01_build-cache-research.md]
   - [734_optimize_cslib_build_cache_strategy/reports/02_detailed-change-spec.md]
+- **Plan**: [734_optimize_cslib_build_cache_strategy/plans/03_cache-optimization-plan.md]
 
 **Description**: Optimize CSLib build cache strategy: add lake exe cache get to cslib-implementation-agent CI pipeline, skill preflight cache warming, fix rules CI order, and defer redundant lake test for pr-type tasks — to eliminate 30-45 min Mathlib rebuilds during implementation
 
