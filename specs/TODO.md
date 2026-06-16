@@ -11,14 +11,13 @@ next_project_number: 728
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,652,727 | -- | agent-system, Terminal UI, Email Integration |
+| 1 | 78,87,652 | -- | agent-system, Terminal UI, Email Integration |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Agent System
 
 652 [NOT STARTED] — After ~1 week of the new pipeline running, review logs to verify 
-727 [NOT STARTED] — Fix the /task command (task.md) step 4 (task type detection) to i
 
 ### Terminal UI
 
@@ -32,10 +31,12 @@ next_project_number: 728
 
 ### 727. Implement extension keyword_overrides lookup in /task command step 4
 - **Effort**: 1-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
+- **Research**: [727_implement_extension_keyword_overrides_in_task_command/reports/01_keyword-overrides-research.md]
+- **Plan**: [727_implement_extension_keyword_overrides_in_task_command/plans/01_keyword-overrides-plan.md]
 
 **Description**: Fix the /task command (task.md) step 4 (task type detection) to implement the documented precedence order: meta keywords > extension keyword_overrides > default_task_type > keyword table > general. Currently step 4 only has a hardcoded keyword table and never queries extension manifests for keyword_overrides or checks state.json default_task_type. The fix should: (1) After meta keyword check, scan loaded extension manifests (.claude/extensions/*/manifest.json) for keyword_overrides entries, (2) Match task description keywords against each extension keyword_overrides, (3) If matched, use that extension task type, (4) If no extension match, check state.json default_task_type as fallback before the hardcoded keyword table, (5) Fall through to hardcoded table and then general as final default. This ensures tasks like PR-related descriptions get type pr when an extension defines pr keyword overrides.
 

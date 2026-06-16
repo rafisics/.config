@@ -6,15 +6,28 @@
       "project_number": 727,
       "project_name": "implement_extension_keyword_overrides_in_task_command",
       "title": "Implement extension keyword_overrides lookup in /task command step 4",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "meta",
       "topic": "agent-system",
       "effort": "1-3 hours",
       "created": "2026-06-16T02:33:23Z",
-      "last_updated": "2026-06-16T02:33:23Z",
+      "last_updated": "2026-06-16T03:44:27Z",
       "description": "Fix the /task command (task.md) step 4 (task type detection) to implement the documented precedence order: meta keywords > extension keyword_overrides > default_task_type > keyword table > general. Currently step 4 only has a hardcoded keyword table and never queries extension manifests for keyword_overrides or checks state.json default_task_type. The fix should: (1) After meta keyword check, scan loaded extension manifests (.claude/extensions/*/manifest.json) for keyword_overrides entries, (2) Match task description keywords against each extension keyword_overrides, (3) If matched, use that extension task type, (4) If no extension match, check state.json default_task_type as fallback before the hardcoded keyword table, (5) Fall through to hardcoded table and then general as final default. This ensures tasks like PR-related descriptions get type pr when an extension defines pr keyword overrides.",
       "dependencies": [],
-      "artifacts": []
+      "artifacts": [
+        {
+          "path": "specs/727_implement_extension_keyword_overrides_in_task_command/reports/01_keyword-overrides-research.md",
+          "type": "report",
+          "summary": "Research on keyword_overrides implementation in task.md step 4"
+        },
+        {
+          "path": "specs/727_implement_extension_keyword_overrides_in_task_command/plans/01_keyword-overrides-plan.md",
+          "type": "plan",
+          "summary": "Implementation plan for fixing multi-word keyword matching in task.md step 4b"
+        }
+      ],
+      "session_id": "sess_1781578546_f45d06",
+      "completion_summary": "Implemented full keyword_overrides precedence chain in /task command step 4: meta keywords > extension keyword_overrides > default_task_type > hardcoded table > general"
     },
     {
       "project_number": 652,
