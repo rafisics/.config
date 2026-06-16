@@ -33,19 +33,21 @@
       "project_number": 652,
       "project_name": "post_validation_cleanup",
       "title": "Post-validation cleanup: remove obsolete scripts after logging review",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "meta",
       "topic": "agent-system",
       "effort": "1 hour",
       "created": "2026-06-09T12:00:00Z",
-      "last_updated": "2026-06-09T12:00:00Z",
+      "last_updated": "2026-06-16T04:43:31Z",
       "dependencies": [
         649,
         651,
         653
       ],
       "description": "After ~1 week of the new pipeline running, review logs to verify the new generate-todo.sh pipeline is working reliably. Check that: (1) no deprecation-logged old code paths are being hit, (2) TODO.md regeneration succeeds consistently, (3) no state.json/TODO.md sync drift. Then remove: link-artifact-todo.sh (fully replaced by state.json + regeneration), old TODO.md awk/sed manipulation code from update-task-status.sh, dead functions from skill-base.sh, any transitional compatibility shims. Clean up deprecation logging. Mark as deferred until validation period passes.",
-      "artifacts": []
+      "artifacts": [],
+      "session_id": "sess_1781581888_460efb",
+      "completion_summary": "Removed 10 obsolete scripts (link-artifact-todo.sh, 4 postflight-*.sh + their extension mirrors), cleaned old awk/sed code from update-task-status.sh, added generate-todo.sh call, updated reconcile-task-status.sh and all documentation references"
     },
     {
       "project_number": 87,

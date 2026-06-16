@@ -11,13 +11,9 @@ next_project_number: 728
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,652 | -- | agent-system, Terminal UI, Email Integration |
+| 1 | 78,87 | -- | Terminal UI, Email Integration |
 
 **Grouped by Topic** (indented = depends on parent):
-
-### Agent System
-
-652 [NOT STARTED] — After ~1 week of the new pipeline running, review logs to verify 
 
 ### Terminal UI
 
@@ -44,7 +40,7 @@ next_project_number: 728
 
 ### 652. Post-validation cleanup: remove obsolete scripts after logging review
 - **Effort**: 1 hour
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 649, Task 651, Task 653
