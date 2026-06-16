@@ -1,5 +1,5 @@
 ---
-next_project_number: 735
+next_project_number: 736
 ---
 
 # TODO
@@ -11,13 +11,17 @@ next_project_number: 735
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,734 | -- | agent-system, Terminal UI, Email Integration |
+| 1 | 78,87,734,735 | -- | agent-system, literature, Terminal UI, ... |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Agent System
 
 734 [RESEARCHED] — Optimize CSLib build cache strategy: add lake exe cache get to cs
+
+### Literature
+
+735 [NOT STARTED] — Add project-aware literature filtering: scan BimodalLogic and csl
 
 ### Terminal UI
 
@@ -28,6 +32,16 @@ next_project_number: 735
 78 [PLANNED] — Fix Gmail SMTP authentication failure when sending emails via Him
 
 ## Tasks
+
+### 735. Add project-aware literature filtering with project_tags population and retrieval filtering
+- **Status**: [NOT STARTED]
+- **Task Type**: general
+- **Topic**: literature
+- **Dependencies**: None
+
+**Description**: Add project-aware literature filtering: scan BimodalLogic and cslib source files to populate project_tags in ~/Projects/Literature/index.json, then add project-aware filtering to literature-retrieve.sh (auto-detect project from $PWD, prefer entries with matching project_tags). Tier 1 FTS5 queries should filter by project; Tier 2 keyword injection should prefer project-tagged entries. Entries with no project_tags remain available as fallback.
+
+---
 
 ### 734. Optimize cslib build cache strategy
 - **Status**: [RESEARCHED]

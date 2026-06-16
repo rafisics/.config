@@ -1,7 +1,20 @@
 {
   "version": "1.1.0",
-  "next_project_number": 735,
+  "next_project_number": 736,
   "active_projects": [
+    {
+      "project_number": 735,
+      "project_name": "literature_project_aware_filtering",
+      "title": "Add project-aware literature filtering with project_tags population and retrieval filtering",
+      "status": "not_started",
+      "task_type": "general",
+      "topic": "literature",
+      "description": "Add project-aware literature filtering: scan BimodalLogic and cslib source files to populate project_tags in ~/Projects/Literature/index.json, then add project-aware filtering to literature-retrieve.sh (auto-detect project from $PWD, prefer entries with matching project_tags). Tier 1 FTS5 queries should filter by project; Tier 2 keyword injection should prefer project-tagged entries. Entries with no project_tags remain available as fallback.",
+      "created": "2026-06-16T19:59:54Z",
+      "last_updated": "2026-06-16T19:59:54Z",
+      "dependencies": [],
+      "artifacts": []
+    },
     {
       "project_number": 734,
       "project_name": "optimize_cslib_build_cache_strategy",
