@@ -148,7 +148,6 @@
     ]
   },
   "env": {
-    "SLASH_COMMAND_TOOL_CHAR_BUDGET": "50000",
-    "LITERATURE_DIR": "/home/benjamin/Projects/Literature"
+    "SLASH_COMMAND_TOOL_CHAR_BUDGET": "50000"
   }
 }
