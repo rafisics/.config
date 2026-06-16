@@ -28,7 +28,8 @@
     ],
     "commands": ["pr.md"],
     "rules": [
-      "cslib.md"
+      "cslib.md",
+      "cslib-lint-fix.md"
     ],
     "context": [
       "project/cslib"
@@ -66,7 +67,7 @@
   },
   "keyword_overrides": {
     "cslib": {
-      "keywords": ["lean", "lean4", "mathlib", "theorem", "proof"],
+      "keywords": ["lean", "lean4", "mathlib", "theorem", "proof", "lint-fix"],
       "aliases": ["lean4"]
     },
     "pr": {

@@ -179,6 +179,18 @@
       "domain": "project",
       "subdomain": "cslib",
       "summary": "7 lint prevention rules (docBlame, defLemma, defsWithUnderscore, simpNF, unusedSectionVars, topNamespace, dupNamespace) for agent enforcement"
+    },
+    {
+      "path": "project/cslib/patterns/lint-fix-wave-assignment.md",
+      "description": "File-overlap wave assignment guidance for multi-task lint-fix orchestration: conflict matrix, 30% threshold, worktree isolation",
+      "tags": ["cslib", "lint", "orchestration", "wave", "parallel", "conflicts"],
+      "load_when": {
+        "languages": ["cslib"],
+        "agents": ["planner-agent", "planner-hard-agent"]
+      },
+      "domain": "project",
+      "subdomain": "cslib",
+      "summary": "Wave assignment checklist and conflict matrix format for planning parallel lint-fix tasks without file conflicts"
     }
   ]
 }

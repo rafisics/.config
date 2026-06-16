@@ -84,18 +84,22 @@ they share file-level write access.
 4. **Worktree isolation for conflicting tasks**: Use `isolation: "worktree"` for tasks
    identified in the conflict matrix, then merge worktrees sequentially.
 
-### F4: Stale Handoff Files
+### F4: Stale Metadata Files
 
-**Tasks affected**: 208, 209, 211 — handoff files showed "planned" after implementation
+**Tasks affected**: 208, 211 — `.return-meta.json` showed "in_progress" after implementation
 
-When an agent hits context limits, it never writes the updated handoff. The orchestrator
-then reads stale "planned" status and can't determine what was actually accomplished.
+When an agent hits context limits, it never writes the updated `.return-meta.json`. The
+orchestrator then reads stale "in_progress" status and can't determine what was actually
+accomplished. (The `.orchestrator-handoff.json` files were more reliable because they were
+written incrementally.)
 
 **Recommended fixes**:
-1. **Write-first handoff pattern**: The agent should write a "partial" handoff file at the
+1. **Write-first metadata pattern**: The agent should write `.return-meta.json` at the
    START of implementation with `phases_completed: 0`, then update it incrementally after
-   each phase. This way context exhaustion always leaves an accurate handoff.
-2. **Lint-count-based status detection**: If the handoff is stale, the orchestrator should
+   each phase. This way context exhaustion always leaves accurate metadata.
+   (Note: `.orchestrator-handoff.json` already follows this pattern successfully — the
+   gap is in `.return-meta.json` which the skill reads for postflight.)
+2. **Lint-count-based status detection**: If the metadata is stale, the orchestrator should
    fall back to running `lake lint | grep -c "LINTER"` to detect actual progress by
    comparing the current error count to the task's original count.
 
@@ -141,9 +145,11 @@ Add a pre-dispatch step in multi-task orchestration that:
 2. Builds an overlap graph between tasks
 3. Tasks with >30% file overlap are placed in sequential waves
 
-### 4. Agent Enhancement: Write-First Handoff
+### 4. Agent Enhancement: Write-First Metadata
 
-Update cslib-implementation-agent to write a partial handoff at the start of implementation:
+Update cslib-implementation-agent to write `.return-meta.json` incrementally (not just at
+initialization). The current Stage 0 early metadata pattern creates the file but never
+updates it mid-implementation. Add incremental updates after each phase:
 ```json
 {
   "status": "implementing",
@@ -169,16 +175,15 @@ When planning multiple lint-fix tasks, emit a conflict matrix:
 
 ## Summary Statistics
 
-| Task | Target | Attempts | Final Status | Agent Token Cost |
-|------|--------|----------|-------------|-----------------|
-| 208 | 327→543 docstrings | 3 dispatches | Completed | ~282k |
-| 209 | 298 namespace errors | 3 dispatches | Partial (~60%) | ~250k |
-| 210 | 105 naming renames | 1 dispatch | Completed | ~60k |
-| 211 | 55 def→lemma | 2 dispatches | Completed | ~265k |
-| 212 | 25 simp removals | 1 dispatch | Completed | ~102k |
-| 213 | 28 unused args | 1 dispatch | Completed | ~129k |
+| Task | Target | Final Status | Notes |
+|------|--------|-------------|-------|
+| 208 | 543 docstrings (docBlame) | Completed (7/7 phases) | `.return-meta.json` stale ("in_progress"), handoff shows success |
+| 209 | 298 namespace errors (topNamespace + dupNamespace) | Completed (3/3 phases) | Used `@[nolint dupNamespace]` annotations; task state stuck at "implementing" |
+| 210 | 105 naming renames (defsWithUnderscore) | Completed (5/5 phases) | Bulk `sed -i` approach, single dispatch |
+| 211 | 55 def→lemma (defLemma) | Completed (5/5 phases) | `.return-meta.json` stale ("in_progress"), handoff shows success |
+| 212 | 25 simp removals (simpNF) | Completed | Removed `@[simp]` from abbrev-derived lemmas |
+| 213 | 28 unused args (unusedSectionVars) | Completed | Used `omit` pattern and `haveI` with Classical.dec |
 
-Tasks 210, 212, 213 completed in a single dispatch. Tasks 208, 209, 211 required multiple
-dispatches due to context exhaustion, analysis paralysis, or file conflicts. The total agent
-token cost was ~1.1M tokens across all dispatches — roughly 3x the theoretical minimum if
-all tasks had completed in one pass.
+All six tasks eventually completed. Tasks 208, 209, 211 had complications (context exhaustion,
+metadata staleness, or analysis paralysis on initial attempts). Tasks 210, 212, 213 completed
+cleanly. Exact dispatch counts and token costs are not available from preserved artifacts.

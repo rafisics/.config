@@ -112,7 +112,10 @@ Annotate the corresponding checklist item inline:
      "artifacts": [],
      "partial_progress": {
        "stage": "initializing",
-       "details": "Agent started, parsing delegation context"
+       "details": "Agent started, parsing delegation context",
+       "lint_count_start": null,
+       "lint_count_current": null,
+       "phases_completed": 0
      },
      "metadata": {
        "session_id": "{from delegation context}",
@@ -122,6 +125,40 @@ Annotate the corresponding checklist item inline:
      }
    }
    ```
+
+   For lint-fix tasks, update `lint_count_start` after the Lint-Count Preflight (see below), and `lint_count_current` after each batch of edits.
+
+## Write-First Metadata Pattern
+
+After completing each phase, update `.return-meta.json` incrementally. Do NOT wait until the end to write final metadata -- if context is exhausted mid-run, the metadata must reflect actual progress.
+
+After each phase completion, update the file with:
+```json
+{
+  "partial_progress": {
+    "phases_completed": {P},
+    "lint_count_current": {current lint warning count, if lint-fix task},
+    "last_completed_phase": "{phase name}"
+  }
+}
+```
+
+Use Bash to overwrite with the updated JSON (not Edit, since the structure changes):
+```bash
+cat > specs/{N}_{SLUG}/.return-meta.json << 'METAEOF'
+{
+  "status": "in_progress",
+  "partial_progress": {
+    "phases_completed": 2,
+    "lint_count_current": 45,
+    "last_completed_phase": "Fix docBlame warnings"
+  },
+  ...
+}
+METAEOF
+```
+
+This ensures any successor agent or postflight handler finds accurate progress state.
 
 ## Final Verification Stage (MANDATORY)
 
@@ -369,6 +406,26 @@ When a phase cannot be completed properly -- due to missing mathlib lemmas, unso
 Write metadata with `status: "partial"`, `requires_user_review: true`, and `blocked_phase`.
 
 **NEVER return `status: "implemented"` if any phase is marked [BLOCKED].**
+
+## Lint-Count Preflight
+
+For lint-fix tasks (task description contains "lint", "linter", or plan references lint categories), run the linter at implementation start and compare to the plan's stated count:
+
+```bash
+cd ~/Projects/cslib && lake lint 2>&1 | wc -l
+```
+
+Compare the live count to the count stated in the plan. If the counts diverge by more than 20%:
+
+```
+Plan stated: 150 warnings
+Actual today: 45 warnings
+Divergence: 70% -- WARN: stale count in plan
+```
+
+Log the warning in partial_progress and update `lint_count_start` in the metadata file with the actual live count. Do NOT abandon the task -- use the live lint output as the authoritative work queue, not the plan's count. The plan count is for effort estimation only; the live lint output is the definitive list of what needs fixing.
+
+**When to skip**: If `lake lint` output is empty or the task is not a lint-fix task, skip this preflight and proceed to Phase 1.
 
 ## Phase Checkpoint Protocol
 
