@@ -6,15 +6,16 @@
       "project_number": 735,
       "project_name": "literature_project_aware_filtering",
       "title": "Add project-aware literature filtering with project_tags population and retrieval filtering",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "general",
       "topic": "literature",
       "description": "Add project-aware literature filtering: scan BimodalLogic and cslib source files to populate project_tags in ~/Projects/Literature/index.json, then add project-aware filtering to literature-retrieve.sh (auto-detect project from $PWD, prefer entries with matching project_tags). Tier 1 FTS5 queries should filter by project; Tier 2 keyword injection should prefer project-tagged entries. Entries with no project_tags remain available as fallback.",
       "created": "2026-06-16T19:59:54Z",
-      "last_updated": "2026-06-16T20:16:17Z",
+      "last_updated": "2026-06-16T20:21:33Z",
       "dependencies": [],
       "artifacts": [],
-      "session_id": "sess_1781640194_13c186"
+      "session_id": "sess_1781640194_13c186",
+      "completion_summary": "Added project-aware filtering to literature-retrieve.sh (Tier 2 keyword) and literature-search.sh (Tier 1 FTS5) with detect_project(), --project flag, doc_id IN filtering from index.json project_tags, and fallback-on-zero-results logic. Entries with no project_tags remain available as universal fallback."
     },
     {
       "project_number": 734,

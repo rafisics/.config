@@ -11,17 +11,13 @@ next_project_number: 736
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,734,735 | -- | agent-system, literature, Terminal UI, ... |
+| 1 | 78,87,734 | -- | agent-system, Terminal UI, Email Integration |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Agent System
 
 734 [PLANNED] — Optimize CSLib build cache strategy: add lake exe cache get to cs
-
-### Literature
-
-735 [IMPLEMENTING] — Add project-aware literature filtering: scan BimodalLogic and csl
 
 ### Terminal UI
 
@@ -34,7 +30,7 @@ next_project_number: 736
 ## Tasks
 
 ### 735. Add project-aware literature filtering with project_tags population and retrieval filtering
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: general
 - **Topic**: literature
 - **Dependencies**: None
