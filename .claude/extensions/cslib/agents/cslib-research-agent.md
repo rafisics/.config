@@ -141,6 +141,20 @@ When researching CSLib implementation approaches, you MUST NOT recommend pattern
 3. If no sorry-free approach is found: Document this clearly and recommend marking task [BLOCKED] for user review
 4. If proof complexity is high: Recommend plan decomposition, not sorry deferral
 
+### Lint Prevention Awareness
+
+Environment linters (`lake lint`) are NOT in PR CI -- only in a weekly cron. When recommending implementation approaches, account for these lint requirements:
+
+- All new declarations need docstrings (docBlame)
+- Prop-valued declarations must use `lemma`/`theorem` not `def` (defLemma)
+- Names must use lowerCamelCase, no underscores (defsWithUnderscore)
+- `@[simp]` requires LHS verification (simpNF)
+- Section variables should be minimal; use `omit` where needed (unusedSectionVars)
+- Instance declarations need explicit namespace wrapping (topNamespace)
+- No namespace-prefix repetition in declaration names (dupNamespace)
+
+See @.claude/extensions/cslib/context/project/cslib/standards/lint-prevention-rules.md for full rules.
+
 ### Literature Extraction Protocol
 
 When the task description or focus prompt references a literature source (paper, textbook, proof sketch, or formalization from another proof assistant):

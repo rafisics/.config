@@ -174,6 +174,12 @@ Proceed directly to writing the summary file and `.return-meta.json`; do NOT exe
    ```
    Runs Batteries/Mathlib environment linters.
 
+   **Post-lint check**: If `lake lint` reports warnings in files you modified, grep for the 7 prevention categories:
+   ```bash
+   lake lint 2>&1 | grep -E "docBlame|defLemma|defsWithUnderscore|simpNF|unusedSectionVars|topNamespace|dupNamespace"
+   ```
+   Fix any matches before proceeding. These categories are NOT in PR CI and accumulate silently.
+
 4. **Text linters**:
    ```bash
    lake exe lint-style
@@ -277,6 +283,19 @@ If any check fails:
 ### Init Import
 - Every new `.lean` file MUST import `Cslib.Init` (directly or transitively)
 - `Cslib.Init` sets up default linting options and tactics
+
+## Lint Prevention (Mandatory)
+
+Environment linters (`lake lint`) are NOT in PR CI -- they only run in a weekly cron. You MUST prevent lint errors proactively. Load and follow @.claude/extensions/cslib/context/project/cslib/standards/lint-prevention-rules.md for every declaration you write.
+
+Key rules:
+- Every `def`, `theorem`, `lemma`, `instance`, `structure`, `inductive` MUST have a `/-- ... -/` docstring
+- Prop-valued declarations MUST use `lemma` or `theorem`, not `def`
+- Declaration names MUST use lowerCamelCase (no underscores)
+- Verify `@[simp]` lemmas do not have redundant LHS
+- Use `omit` for unused section variables
+- Wrap `instance` declarations in explicit namespaces
+- Do not repeat namespace prefix in declaration names
 
 ## Pull Request Standards
 
@@ -401,6 +420,7 @@ When approaching context limit:
 14. **Ensure all files import Cslib.Init** (directly or transitively)
 15. **Include AI disclosure in PR descriptions**
 16. **Include `## Plan Deviations` section** in implementation summary
+17. **Follow all 7 lint prevention rules** from lint-prevention-rules.md for every new declaration
 
 **MUST NOT**:
 1. Return JSON to the console
@@ -419,3 +439,6 @@ When approaching context limit:
 14. **Skip `lake exe checkInitImports`** -- commonly missed, causes CI failure
 15. **Use locally-scoped notation where a typeclass exists** -- check first
 16. **Omit AI disclosure from PR descriptions** -- mandatory per Mathlib AI policy
+17. **Write declarations without docstrings** -- mandatory per docBlame linter
+18. **Use `def` for Prop-valued declarations** -- use `lemma` or `theorem` per defLemma linter
+19. **Use underscores in declaration names** -- use lowerCamelCase per defsWithUnderscore linter

@@ -167,6 +167,18 @@
       "domain": "project",
       "subdomain": "cslib",
       "summary": "CSLib build cache strategy: Mathlib cloud cache, lake exe cache get, feature branch workflow"
+    },
+    {
+      "path": "project/cslib/standards/lint-prevention-rules.md",
+      "description": "CSLib lint prevention rules: 7 rules for environment linters not caught by PR CI",
+      "tags": ["cslib", "lint", "prevention", "environment-linters"],
+      "load_when": {
+        "languages": ["cslib"],
+        "agents": ["cslib-implementation-agent", "cslib-implementation-hard-agent"]
+      },
+      "domain": "project",
+      "subdomain": "cslib",
+      "summary": "7 lint prevention rules (docBlame, defLemma, defsWithUnderscore, simpNF, unusedSectionVars, topNamespace, dupNamespace) for agent enforcement"
     }
   ]
 }
