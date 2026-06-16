@@ -1,0 +1,629 @@
+{
+  "version": "1.0",
+  "generated": "2026-06-16",
+  "task": 729,
+  "description": "Chunking quality audit for ~/Projects/Literature/ subdirectories and flat files",
+  "summary": {
+    "literature_subdirs_total": 23,
+    "literature_subdirs_good": 20,
+    "literature_subdirs_rename": 3,
+    "literature_flat_files_total": 30,
+    "literature_flat_files_duplicate": 25,
+    "literature_flat_files_unique": 5,
+    "literature_flat_files_oversized": 1,
+    "cslib_literature_exists": false,
+    "cslib_literature_note": "cslib has no specs/literature/ directory; cslib scanning skipped"
+  },
+  "subdirectories": [
+    {
+      "id": "blackburn_2001",
+      "location": "~/Projects/Literature/blackburn_2001/",
+      "files_count": 33,
+      "max_chunk_bytes": 67776,
+      "max_chunk_tokens": 16944,
+      "naming_pattern": "semantic",
+      "status": "good",
+      "action": "keep",
+      "notes": "Well-chunked 33-section book with semantic ch/appab prefixes"
+    },
+    {
+      "id": "burgess_1982",
+      "location": "~/Projects/Literature/burgess_1982/",
+      "files_count": 2,
+      "max_chunk_bytes": 15802,
+      "max_chunk_tokens": 3950,
+      "naming_pattern": "semantic",
+      "status": "good",
+      "action": "keep",
+      "notes": "2-chunk paper with semantic section names"
+    },
+    {
+      "id": "burgess_1982b",
+      "location": "~/Projects/Literature/burgess_1982b/",
+      "files_count": 2,
+      "max_chunk_bytes": 17659,
+      "max_chunk_tokens": 4414,
+      "naming_pattern": "semantic",
+      "status": "good",
+      "action": "keep",
+      "notes": "2-chunk paper with semantic section names"
+    },
+    {
+      "id": "burgess_1984",
+      "location": "~/Projects/Literature/burgess_1984/",
+      "files_count": 7,
+      "max_chunk_bytes": 18300,
+      "max_chunk_tokens": 4575,
+      "naming_pattern": "page-based",
+      "status": "rename",
+      "action": "rename",
+      "current_files": [
+        "sec01_page-1.md",
+        "sec02_page-8.md",
+        "sec03_page-16.md",
+        "sec04_page-23.md",
+        "sec05_page-30.md",
+        "sec06_page-37.md",
+        "sec07_page-45.md"
+      ],
+      "proposed_files": [
+        "sec01_basic-modal-logic-ultraproducts.md",
+        "sec02_basic-modal-logic-bibliography.md",
+        "sec03_basic-tense-logic-motivation.md",
+        "sec04_basic-tense-logic-killing-lemma.md",
+        "sec05_basic-tense-logic-continuity.md",
+        "sec06_basic-tense-logic-decidability.md",
+        "sec07_basic-tense-logic-time-periods.md"
+      ],
+      "notes": "Page-based names from scanned PDF; semantic topics identifiable from headings"
+    },
+    {
+      "id": "caleiro_2013",
+      "location": "~/Projects/Literature/caleiro_2013/",
+      "files_count": 7,
+      "max_chunk_bytes": 18990,
+      "max_chunk_tokens": 4747,
+      "naming_pattern": "semantic",
+      "status": "good",
+      "action": "keep",
+      "notes": "7-chunk paper with section-based semantic names"
+    },
+    {
+      "id": "derijke_1995",
+      "location": "~/Projects/Literature/derijke_1995/",
+      "files_count": 3,
+      "max_chunk_bytes": 19014,
+      "max_chunk_tokens": 4753,
+      "naming_pattern": "semantic",
+      "status": "good",
+      "action": "keep",
+      "notes": "3-chunk paper with semantic section names"
+    },
+    {
+      "id": "doets_1987",
+      "location": "~/Projects/Literature/doets_1987/",
+      "files_count": 3,
+      "max_chunk_bytes": 18738,
+      "max_chunk_tokens": 4684,
+      "naming_pattern": "semantic",
+      "status": "good",
+      "action": "keep",
+      "notes": "3-chunk thesis with semantic section names (doets-1987-completeness, lemma, logic)"
+    },
+    {
+      "id": "doets_1989",
+      "location": "~/Projects/Literature/doets_1989/",
+      "files_count": 3,
+      "max_chunk_bytes": 17819,
+      "max_chunk_tokens": 4454,
+      "naming_pattern": "part-based",
+      "status": "rename",
+      "action": "rename",
+      "current_files": [
+        "sec01_part-1.md",
+        "sec02_part-2.md",
+        "sec03_part-3.md"
+      ],
+      "proposed_files": [
+        "sec01_monadic-pi11-axiomatizations-introduction.md",
+        "sec02_monadic-pi11-scattered-orderings-proof.md",
+        "sec03_monadic-pi11-well-founded-trees.md"
+      ],
+      "notes": "Part-based names; content covers axiomatizations using Ehrenfeucht-Fraisse games"
+    },
+    {
+      "id": "gabbay_1993",
+      "location": "~/Projects/Literature/gabbay_1993/",
+      "files_count": 5,
+      "max_chunk_bytes": 30313,
+      "max_chunk_tokens": 7578,
+      "naming_pattern": "semantic",
+      "status": "good",
+      "action": "keep",
+      "notes": "5-chunk paper with semantic section names"
+    },
+    {
+      "id": "gabbay_1994",
+      "location": "~/Projects/Literature/gabbay_1994/",
+      "files_count": 11,
+      "max_chunk_bytes": 33623,
+      "max_chunk_tokens": 8405,
+      "naming_pattern": "semantic",
+      "status": "good",
+      "action": "keep",
+      "notes": "11-chunk book chapters with semantic ch/section names"
+    },
+    {
+      "id": "goldblatt_2003",
+      "location": "~/Projects/Literature/goldblatt_2003/",
+      "files_count": 5,
+      "max_chunk_bytes": 20833,
+      "max_chunk_tokens": 5208,
+      "naming_pattern": "semantic",
+      "status": "good",
+      "action": "keep",
+      "notes": "5-chunk paper with semantic section names"
+    },
+    {
+      "id": "obendrauf_2024",
+      "location": "~/Projects/Literature/obendrauf_2024/",
+      "files_count": 4,
+      "max_chunk_bytes": 17444,
+      "max_chunk_tokens": 4361,
+      "naming_pattern": "semantic",
+      "status": "good",
+      "action": "keep",
+      "notes": "4-chunk paper with semantic section names"
+    },
+    {
+      "id": "reynolds_1992",
+      "location": "~/Projects/Literature/reynolds_1992/",
+      "files_count": 5,
+      "max_chunk_bytes": 16186,
+      "max_chunk_tokens": 4046,
+      "naming_pattern": "semantic",
+      "status": "good",
+      "action": "keep",
+      "notes": "5-chunk paper with semantic section names"
+    },
+    {
+      "id": "reynolds_1994",
+      "location": "~/Projects/Literature/reynolds_1994/",
+      "files_count": 3,
+      "max_chunk_bytes": 16942,
+      "max_chunk_tokens": 4235,
+      "naming_pattern": "part-based",
+      "status": "rename",
+      "action": "rename",
+      "current_files": [
+        "sec01_part-1.md",
+        "sec02_part-2.md",
+        "sec03_part-3.md"
+      ],
+      "proposed_files": [
+        "sec01_axiomatization-US-integer-time-introduction.md",
+        "sec02_axiomatization-US-prior-structures-completeness.md",
+        "sec03_axiomatization-US-contemporaneity.md"
+      ],
+      "notes": "Part-based names; content is Hilbert-style axiomatization of U and S over integers"
+    },
+    {
+      "id": "reynolds_2001",
+      "location": "~/Projects/Literature/reynolds_2001/",
+      "files_count": 10,
+      "max_chunk_bytes": 16788,
+      "max_chunk_tokens": 4197,
+      "naming_pattern": "semantic",
+      "status": "good",
+      "action": "keep",
+      "notes": "10-chunk paper with semantic section names"
+    },
+    {
+      "id": "thomason_1984",
+      "location": "~/Projects/Literature/thomason_1984/",
+      "files_count": 6,
+      "max_chunk_bytes": 25957,
+      "max_chunk_tokens": 6489,
+      "naming_pattern": "semantic",
+      "status": "good",
+      "action": "keep",
+      "notes": "6-chunk paper with semantic section names"
+    },
+    {
+      "id": "venema_1991",
+      "location": "~/Projects/Literature/venema_1991/",
+      "files_count": 9,
+      "max_chunk_bytes": 20279,
+      "max_chunk_tokens": 5069,
+      "naming_pattern": "semantic",
+      "status": "good",
+      "action": "keep",
+      "notes": "9-chunk chapter/appendix with appab/ch prefixes"
+    },
+    {
+      "id": "venema_1993",
+      "location": "~/Projects/Literature/venema_1993/",
+      "files_count": 9,
+      "max_chunk_bytes": 18128,
+      "max_chunk_tokens": 4532,
+      "naming_pattern": "semantic",
+      "status": "good",
+      "action": "keep",
+      "notes": "9-chunk paper with semantic section names"
+    },
+    {
+      "id": "venema_1993_since",
+      "location": "~/Projects/Literature/venema_1993_since/",
+      "files_count": 2,
+      "max_chunk_bytes": 18217,
+      "max_chunk_tokens": 4554,
+      "naming_pattern": "semantic",
+      "status": "good",
+      "action": "keep",
+      "notes": "2-chunk paper with semantic section names"
+    },
+    {
+      "id": "venema_1997",
+      "location": "~/Projects/Literature/venema_1997/",
+      "files_count": 3,
+      "max_chunk_bytes": 18217,
+      "max_chunk_tokens": 4554,
+      "naming_pattern": "semantic",
+      "status": "good",
+      "action": "keep",
+      "notes": "3-chunk paper with semantic section names"
+    },
+    {
+      "id": "venema_2001",
+      "location": "~/Projects/Literature/venema_2001/",
+      "files_count": 4,
+      "max_chunk_bytes": 16182,
+      "max_chunk_tokens": 4045,
+      "naming_pattern": "semantic",
+      "status": "good",
+      "action": "keep",
+      "notes": "4-chunk paper with semantic section names"
+    },
+    {
+      "id": "verbrugge_2004",
+      "location": "~/Projects/Literature/verbrugge_2004/",
+      "files_count": 4,
+      "max_chunk_bytes": 16072,
+      "max_chunk_tokens": 4018,
+      "naming_pattern": "semantic",
+      "status": "good",
+      "action": "keep",
+      "notes": "4-chunk paper with semantic section names"
+    },
+    {
+      "id": "xu_1988",
+      "location": "~/Projects/Literature/xu_1988/",
+      "files_count": 5,
+      "max_chunk_bytes": 18638,
+      "max_chunk_tokens": 4659,
+      "naming_pattern": "semantic",
+      "status": "good",
+      "action": "keep",
+      "notes": "5-chunk paper with semantic section names"
+    }
+  ],
+  "flat_files": [
+    {
+      "filename": "Blackburn_deRijke_Venema_2002_Modal_Logic.md",
+      "location": "~/Projects/Literature/",
+      "bytes": 1461302,
+      "approx_tokens": 365325,
+      "status": "unchunked",
+      "action": "chunk-new",
+      "duplicate_of": null,
+      "notes": "365K-token flat file with no subdirectory. Critical: needs dedicated chunking task. Source: blackburn_2001 subdir covers different edition (2001 textbook)."
+    },
+    {
+      "filename": "Burgess_1982_Axioms_for_tense_logic_Since_and_Until.md",
+      "location": "~/Projects/Literature/",
+      "bytes": 24125,
+      "approx_tokens": 6031,
+      "status": "duplicate",
+      "action": "review-for-removal",
+      "duplicate_of": "burgess_1982/"
+    },
+    {
+      "filename": "Burgess_1982b_Axioms_for_tense_logic_II_Time_periods.md",
+      "location": "~/Projects/Literature/",
+      "bytes": 27433,
+      "approx_tokens": 6858,
+      "status": "duplicate",
+      "action": "review-for-removal",
+      "duplicate_of": "burgess_1982b/"
+    },
+    {
+      "filename": "Burgess_1984_Basic_Tense_Logic.md",
+      "location": "~/Projects/Literature/",
+      "bytes": 99914,
+      "approx_tokens": 24978,
+      "status": "duplicate",
+      "action": "review-for-removal",
+      "duplicate_of": "burgess_1984/"
+    },
+    {
+      "filename": "Caleiro_Vigano_Volpe_2013_Mosaic_Method_Tense_Modal.md",
+      "location": "~/Projects/Literature/",
+      "bytes": 90848,
+      "approx_tokens": 22712,
+      "status": "duplicate",
+      "action": "review-for-removal",
+      "duplicate_of": "caleiro_2013/"
+    },
+    {
+      "filename": "Doets_1987_Completeness_and_Definability_thesis.md",
+      "location": "~/Projects/Literature/",
+      "bytes": 43165,
+      "approx_tokens": 10791,
+      "status": "duplicate",
+      "action": "review-for-removal",
+      "duplicate_of": "doets_1987/"
+    },
+    {
+      "filename": "Doets_1989_Monadic_Pi11_Theories.md",
+      "location": "~/Projects/Literature/",
+      "bytes": 48053,
+      "approx_tokens": 12013,
+      "status": "duplicate",
+      "action": "review-for-removal",
+      "duplicate_of": "doets_1989/"
+    },
+    {
+      "filename": "Gabbay_Hodkinson_Reynolds_1993_Temporal_expressive_completeness_gaps.md",
+      "location": "~/Projects/Literature/",
+      "bytes": 75812,
+      "approx_tokens": 18953,
+      "status": "duplicate",
+      "action": "review-for-removal",
+      "duplicate_of": "gabbay_1993/"
+    },
+    {
+      "filename": "Gabbay_Hodkinson_Reynolds_1994_Temporal_Logic_Foundations_Vol1_ch10.md",
+      "location": "~/Projects/Literature/",
+      "bytes": 43414,
+      "approx_tokens": 10853,
+      "status": "duplicate",
+      "action": "review-for-removal",
+      "duplicate_of": "gabbay_1994/"
+    },
+    {
+      "filename": "Gabbay_Hodkinson_Reynolds_1994_Temporal_Logic_Foundations_Vol1_ch12.md",
+      "location": "~/Projects/Literature/",
+      "bytes": 74114,
+      "approx_tokens": 18528,
+      "status": "duplicate",
+      "action": "review-for-removal",
+      "duplicate_of": "gabbay_1994/"
+    },
+    {
+      "filename": "Gabbay_Hodkinson_Reynolds_1994_Temporal_Logic_Foundations_Vol1_ch9.md",
+      "location": "~/Projects/Literature/",
+      "bytes": 37080,
+      "approx_tokens": 9270,
+      "status": "duplicate",
+      "action": "review-for-removal",
+      "duplicate_of": "gabbay_1994/"
+    },
+    {
+      "filename": "Goldblatt_Hodkinson_Venema_2003_BAOs_Modal_Logic.md",
+      "location": "~/Projects/Literature/",
+      "bytes": 76634,
+      "approx_tokens": 19158,
+      "status": "duplicate",
+      "action": "review-for-removal",
+      "duplicate_of": "goldblatt_2003/"
+    },
+    {
+      "filename": "Hodkinson_Reynolds_2006_Temporal_Logic_Handbook_Ch11.md",
+      "location": "~/Projects/Literature/",
+      "bytes": 9640,
+      "approx_tokens": 2410,
+      "status": "unchunked",
+      "action": "keep",
+      "duplicate_of": null,
+      "notes": "Small 2.4K-token file; no subdirectory. Acceptable as-is."
+    },
+    {
+      "filename": "Libkin_2004_Elements_Finite_Model_Theory_ch3_ch7.md",
+      "location": "~/Projects/Literature/",
+      "bytes": 16479,
+      "approx_tokens": 4119,
+      "status": "unchunked",
+      "action": "keep",
+      "duplicate_of": null,
+      "notes": "4K-token file; no subdirectory. Acceptable as-is."
+    },
+    {
+      "filename": "Obendrauf_2024_Lean_Formalization_Coalition_Logic.md",
+      "location": "~/Projects/Literature/",
+      "bytes": 64719,
+      "approx_tokens": 16179,
+      "status": "duplicate",
+      "action": "review-for-removal",
+      "duplicate_of": "obendrauf_2024/"
+    },
+    {
+      "filename": "Rabinovich_2014_Proof_of_Kamps_Theorem.md",
+      "location": "~/Projects/Literature/",
+      "bytes": 13742,
+      "approx_tokens": 3435,
+      "status": "unchunked",
+      "action": "keep",
+      "duplicate_of": null,
+      "notes": "3.4K-token file; no subdirectory. Acceptable as-is."
+    },
+    {
+      "filename": "Reynolds_1992_Axiomatization_Until_Since_without_IRR.md",
+      "location": "~/Projects/Literature/",
+      "bytes": 67433,
+      "approx_tokens": 16858,
+      "status": "duplicate",
+      "action": "review-for-removal",
+      "duplicate_of": "reynolds_1992/"
+    },
+    {
+      "filename": "Reynolds_1994_Axiomatising_U_and_S_over_integer_time.md",
+      "location": "~/Projects/Literature/",
+      "bytes": 42661,
+      "approx_tokens": 10665,
+      "status": "duplicate",
+      "action": "review-for-removal",
+      "duplicate_of": "reynolds_1994/"
+    },
+    {
+      "filename": "Reynolds_2001_Axiomatization_Full_CTL_star.md",
+      "location": "~/Projects/Literature/",
+      "bytes": 129515,
+      "approx_tokens": 32378,
+      "status": "duplicate",
+      "action": "review-for-removal",
+      "duplicate_of": "reynolds_2001/"
+    },
+    {
+      "filename": "Thomas_1997_EF_Games_Composition_Monadic.md",
+      "location": "~/Projects/Literature/",
+      "bytes": 5740,
+      "approx_tokens": 1435,
+      "status": "unchunked",
+      "action": "keep",
+      "duplicate_of": null,
+      "notes": "1.4K-token file; no subdirectory. Acceptable as-is."
+    },
+    {
+      "filename": "Thomason_1984_Combinations_of_Tense_and_Modality.md",
+      "location": "~/Projects/Literature/",
+      "bytes": 75794,
+      "approx_tokens": 18948,
+      "status": "duplicate",
+      "action": "review-for-removal",
+      "duplicate_of": "thomason_1984/"
+    },
+    {
+      "filename": "Venema_1991_Many_Dimensional_Modal_Logics_app_A_B.md",
+      "location": "~/Projects/Literature/",
+      "bytes": 47494,
+      "approx_tokens": 11873,
+      "status": "duplicate",
+      "action": "review-for-removal",
+      "duplicate_of": "venema_1991/"
+    },
+    {
+      "filename": "Venema_1991_Many_Dimensional_Modal_Logics_ch2.md",
+      "location": "~/Projects/Literature/",
+      "bytes": 102089,
+      "approx_tokens": 25522,
+      "status": "duplicate",
+      "action": "review-for-removal",
+      "duplicate_of": "venema_1991/"
+    },
+    {
+      "filename": "Venema_1993_Derivation_Rules_Anti_Axioms.md",
+      "location": "~/Projects/Literature/",
+      "bytes": 112107,
+      "approx_tokens": 28026,
+      "status": "duplicate",
+      "action": "review-for-removal",
+      "duplicate_of": "venema_1993/"
+    },
+    {
+      "filename": "Venema_1993_Since_and_Until.md",
+      "location": "~/Projects/Literature/",
+      "bytes": 19002,
+      "approx_tokens": 4750,
+      "status": "duplicate",
+      "action": "review-for-removal",
+      "duplicate_of": "venema_1993_since/"
+    },
+    {
+      "filename": "Venema_1997_Atom_Structures_Sahlqvist.md",
+      "location": "~/Projects/Literature/",
+      "bytes": 43119,
+      "approx_tokens": 10779,
+      "status": "duplicate",
+      "action": "review-for-removal",
+      "duplicate_of": "venema_1997/"
+    },
+    {
+      "filename": "Venema_2001_Temporal_Logic_Survey.md",
+      "location": "~/Projects/Literature/",
+      "bytes": 63406,
+      "approx_tokens": 15851,
+      "status": "duplicate",
+      "action": "review-for-removal",
+      "duplicate_of": "venema_2001/"
+    },
+    {
+      "filename": "Verbrugge_2004_Completeness_by_construction.md",
+      "location": "~/Projects/Literature/",
+      "bytes": 43063,
+      "approx_tokens": 10765,
+      "status": "duplicate",
+      "action": "review-for-removal",
+      "duplicate_of": "verbrugge_2004/"
+    },
+    {
+      "filename": "Xu_1988_On_some_US_tense_logics.md",
+      "location": "~/Projects/Literature/",
+      "bytes": 48103,
+      "approx_tokens": 12025,
+      "status": "duplicate",
+      "action": "review-for-removal",
+      "duplicate_of": "xu_1988/"
+    },
+    {
+      "filename": "deRijke_Venema_1995_Sahlqvist_BAOs.md",
+      "location": "~/Projects/Literature/",
+      "bytes": 45436,
+      "approx_tokens": 11359,
+      "status": "duplicate",
+      "action": "review-for-removal",
+      "duplicate_of": "derijke_1995/"
+    }
+  ],
+  "cslib_literature": {
+    "exists": false,
+    "checked_path": "~/Projects/cslib/specs/literature/",
+    "note": "cslib/specs/ directory exists but contains only task management artifacts (not literature/). No cslib literature scanning performed."
+  },
+  "index_json_references": {
+    "total_entries": 183,
+    "entries_with_old_chunk_paths": 13,
+    "affected_entries": [
+      "burgess_1984/sec01_page-1.md",
+      "burgess_1984/sec02_page-8.md",
+      "burgess_1984/sec03_page-16.md",
+      "burgess_1984/sec04_page-23.md",
+      "burgess_1984/sec05_page-30.md",
+      "burgess_1984/sec06_page-37.md",
+      "burgess_1984/sec07_page-45.md",
+      "doets_1989/sec01_part-1.md",
+      "doets_1989/sec02_part-2.md",
+      "doets_1989/sec03_part-3.md",
+      "reynolds_1994/sec01_part-1.md",
+      "reynolds_1994/sec02_part-2.md",
+      "reynolds_1994/sec03_part-3.md"
+    ],
+    "note": "These 13 index.json entries point to old page/part-based filenames. Must be updated when Phase 2 renames are complete."
+  },
+  "follow_up_tasks": [
+    {
+      "priority": 1,
+      "action": "chunk-new",
+      "target": "Blackburn_deRijke_Venema_2002_Modal_Logic.md",
+      "tokens": 365325,
+      "effort": "high",
+      "reason": "365K-token flat file; requires PDF source for quality chunking. Separate task 730 recommended."
+    },
+    {
+      "priority": 2,
+      "action": "review-for-removal",
+      "target": "25 duplicate flat files",
+      "effort": "low",
+      "reason": "User decision required on whether to keep flat files alongside subdirectory chunks."
+    }
+  ]
+}
