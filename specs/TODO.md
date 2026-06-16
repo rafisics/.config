@@ -1,5 +1,5 @@
 ---
-next_project_number: 734
+next_project_number: 735
 ---
 
 # TODO
@@ -11,9 +11,13 @@ next_project_number: 734
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87 | -- | Terminal UI, Email Integration |
+| 1 | 78,87,734 | -- | agent-system, Terminal UI, Email Integration |
 
 **Grouped by Topic** (indented = depends on parent):
+
+### Agent System
+
+734 [NOT STARTED] — Optimize CSLib build cache strategy: add lake exe cache get to cs
 
 ### Terminal UI
 
@@ -24,6 +28,16 @@ next_project_number: 734
 78 [PLANNED] — Fix Gmail SMTP authentication failure when sending emails via Him
 
 ## Tasks
+
+### 734. Optimize cslib build cache strategy
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: Optimize CSLib build cache strategy: add lake exe cache get to cslib-implementation-agent CI pipeline, skill preflight cache warming, fix rules CI order, and defer redundant lake test for pr-type tasks — to eliminate 30-45 min Mathlib rebuilds during implementation
+
+---
 
 ### 733. Wire LITERATURE_DIR globally, build FTS5 database, validate unified collection
 - **Status**: [COMPLETED]

@@ -1,7 +1,17 @@
 {
   "version": "1.1.0",
-  "next_project_number": 734,
+  "next_project_number": 735,
   "active_projects": [
+    {
+      "project_number": 734,
+      "project_name": "optimize_cslib_build_cache_strategy",
+      "status": "not_started",
+      "task_type": "meta",
+      "description": "Optimize CSLib build cache strategy: add lake exe cache get to cslib-implementation-agent CI pipeline, skill preflight cache warming, fix rules CI order, and defer redundant lake test for pr-type tasks — to eliminate 30-45 min Mathlib rebuilds during implementation",
+      "topic": "agent-system",
+      "created": "2026-06-16T19:54:21Z",
+      "last_updated": "2026-06-16T19:54:21Z"
+    },
     {
       "project_number": 728,
       "project_name": "literature_source_recovery",
