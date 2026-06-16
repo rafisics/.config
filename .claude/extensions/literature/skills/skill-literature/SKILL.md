@@ -56,6 +56,12 @@ else
   lit_dir="specs/literature"
 fi
 index_file="$lit_dir/index.json"
+# Determine sources/ prefix for centralized repo
+if [ -n "${LITERATURE_DIR:-}" ] && [ "$lit_dir" = "$LITERATURE_DIR" ]; then
+  sources_prefix="sources/"
+else
+  sources_prefix=""
+fi
 ```
 
 ### Step 3: Check Tool Availability
@@ -591,7 +597,7 @@ if [ "${#section_starts[@]}" -gt 0 ]; then
   # Build chunks and output_files arrays from merged_chunks
   chunks=()
   output_files=()
-  chunk_dir="$lit_dir/${basename_no_ext}"
+  chunk_dir="$lit_dir/${sources_prefix}${basename_no_ext}"
   mkdir -p "$chunk_dir"
   
   for i in "${!merged_chunks[@]}"; do
@@ -603,7 +609,7 @@ if [ "${#section_starts[@]}" -gt 0 ]; then
     slug=$(echo "$name" | tr '[:upper:]' '[:lower:]' | tr -cs 'a-z0-9' '-' | sed 's/^-//;s/-$//' | cut -c1-40)
     nn=$(printf "%02d" $(( i + 1 )))
     chunks+=("lines:${start_line}-${end_line}")
-    output_files+=("${basename_no_ext}/section${nn}_${slug}.md")
+    output_files+=("${sources_prefix}${basename_no_ext}/section${nn}_${slug}.md")
   done
 
 # Step 3: Fallback — no headings detected, use mechanical 4000-line splits
@@ -612,12 +618,12 @@ else
   output_files=()
   start=1
   part_num=1
-  chunk_dir="$lit_dir/${basename_no_ext}"
+  chunk_dir="$lit_dir/${sources_prefix}${basename_no_ext}"
   
   if [ "$total_lines" -le "$LINE_THRESHOLD" ]; then
     # Single file — no chunking needed
     chunks+=("lines:1-${total_lines}")
-    output_files+=("${basename_no_ext}.md")
+    output_files+=("${sources_prefix}${basename_no_ext}.md")
   else
     mkdir -p "$chunk_dir"
     while [ "$start" -le "$total_lines" ]; do
@@ -625,7 +631,7 @@ else
       if [ "$end" -gt "$total_lines" ]; then end=$total_lines; fi
       nn=$(printf "%02d" "$part_num")
       chunks+=("lines:${start}-${end}")
-      output_files+=("${basename_no_ext}/${basename_no_ext}_part${nn}.md")
+      output_files+=("${sources_prefix}${basename_no_ext}/${basename_no_ext}_part${nn}.md")
       start=$(( end + 1 ))
       part_num=$(( part_num + 1 ))
     done

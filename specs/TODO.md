@@ -1,5 +1,5 @@
 ---
-next_project_number: 736
+next_project_number: 739
 ---
 
 # TODO
@@ -24,6 +24,36 @@ next_project_number: 736
 78 [PLANNED] — Fix Gmail SMTP authentication failure when sending emails via Him
 
 ## Tasks
+
+### 738. Refactor BimodalLogic specs/literature/ to sources/ structure and remove blackburn_2001
+- **Status**: [COMPLETED]
+- **Task Type**: general
+- **Topic**: literature
+- **Dependencies**: None
+
+**Description**: Refactor ~/Projects/BimodalLogic/specs/literature/ to match the centralized Literature/ repository structure: (1) Create sources/ subdirectory, (2) Move all 23 content subdirectories into sources/, (3) Move 30 loose markdown files into individual sources/{id}/ directories, (4) Move 3 loose PDFs (Hodkinson_Reynolds_2006, Libkin_2004, Rabinovich_2014) alongside their content in sources/, (5) Remove blackburn_2001/ directory entirely (matching Literature/ removal), (6) Update index.json paths with sources/ prefix and remove blackburn_2001 entries, (7) Update README.md references.
+
+---
+
+### 737. Refactor cslib specs/literature/ to sources/ structure and remove blackburn_2001
+- **Status**: [COMPLETED]
+- **Task Type**: general
+- **Topic**: literature
+- **Dependencies**: None
+
+**Description**: Refactor ~/Projects/cslib/specs/literature/ to match the centralized Literature/ repository structure: (1) Create sources/ subdirectory, (2) Move all 7 content subdirectories (church_1956, chagrov_1997, gentzen_1935, hughes_1996, mendelson_2016, zakharyaschev_2001) into sources/, (3) Move 11 loose markdown files into individual sources/{id}/ directories, (4) Move chagrov_1997.djvu alongside its content in sources/, (5) Remove blackburn_2001/ directory entirely (matching Literature/ removal), (6) Update index.json paths with sources/ prefix and remove blackburn_2001 entries, (7) Update README.md references.
+
+---
+
+### 736. Update literature extension for sources/ directory convention
+- **Status**: [COMPLETED]
+- **Task Type**: meta
+- **Topic**: literature
+- **Dependencies**: None
+
+**Description**: Update the literature extension to use the sources/ subdirectory convention matching the refactored ~/Projects/Literature/ repository. Changes needed: (1) skill-literature SKILL.md convert mode should place new conversions under sources/ instead of flat in lit_dir, (2) EXTENSION.md should document the sources/ convention, (3) literature-retrieve.sh fallback path should look in sources/ subdirectory for markdown files. The index-based path (Tier 1/2) already works because paths come from index.json. The migrate-from-repo.sh in Literature/ was already updated.
+
+---
 
 ### 735. Add project-aware literature filtering with project_tags population and retrieval filtering
 - **Status**: [COMPLETED]

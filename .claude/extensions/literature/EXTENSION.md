@@ -28,6 +28,13 @@ subdirectory as their converted markdown. Source files are gitignored via
 `specs/literature/**/*.pdf` and `specs/literature/**/*.djvu` (or the equivalent in the central
 repo's `.gitignore`).
 
+**sources/ Subdirectory Convention**: The centralized Literature/ repository (when `LITERATURE_DIR`
+is set) places all content directories under a `sources/` subdirectory. Index.json paths are
+prefixed with `sources/` accordingly (e.g., `sources/venema_2001/Venema_2001_Survey.md`).
+Per-project `specs/literature/` directories use the flat layout without the `sources/` prefix.
+The literature extension handles both layouts transparently — index-based retrieval reads paths
+from `index.json`; convert mode uses the `sources/` prefix only when `LITERATURE_DIR` is active.
+
 **Content-aware chunking**: Documents are split at logical section boundaries (chapters,
 numbered sections, markdown headings) with a 4,000-line threshold. Adjacent small sections are
 merged. Falls back to mechanical 4,000-line splits when no headings are detected. Output uses

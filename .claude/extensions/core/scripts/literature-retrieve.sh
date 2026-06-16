@@ -166,10 +166,16 @@ if [ -f "$INDEX_FILE" ] && [ -n "$description" ]; then
 fi
 
 # --- FALLBACK PATH (no index.json, no keywords, or no matches) ---
+# Prefer sources/ subdirectory if it exists (centralized repo convention)
+if [ -d "$LIT_DIR/sources" ]; then
+  scan_dir="$LIT_DIR/sources"
+else
+  scan_dir="$LIT_DIR"
+fi
 files=()
 while IFS= read -r f; do
   files+=("$f")
-done < <(find "$LIT_DIR" -type f \( -name "*.md" -o -name "*.txt" \) ! -name "index.json" | sort)
+done < <(find "$scan_dir" -type f \( -name "*.md" -o -name "*.txt" \) ! -name "index.json" | sort)
 
 if [ ${#files[@]} -eq 0 ]; then
   exit 1

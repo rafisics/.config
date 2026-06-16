@@ -1,7 +1,52 @@
 {
   "version": "1.1.0",
-  "next_project_number": 736,
+  "next_project_number": 739,
   "active_projects": [
+    {
+      "project_number": 736,
+      "project_name": "literature_extension_sources_convention",
+      "title": "Update literature extension for sources/ directory convention",
+      "status": "completed",
+      "task_type": "meta",
+      "topic": "literature",
+      "description": "Update the literature extension to use the sources/ subdirectory convention matching the refactored ~/Projects/Literature/ repository. Changes needed: (1) skill-literature SKILL.md convert mode should place new conversions under sources/ instead of flat in lit_dir, (2) EXTENSION.md should document the sources/ convention, (3) literature-retrieve.sh fallback path should look in sources/ subdirectory for markdown files. The index-based path (Tier 1/2) already works because paths come from index.json. The migrate-from-repo.sh in Literature/ was already updated.",
+      "created": "2026-06-16T20:30:00Z",
+      "last_updated": "2026-06-16T22:02:04Z",
+      "dependencies": [],
+      "artifacts": [],
+      "session_id": "sess_1781645207_5d2e80_736",
+      "completion_summary": "Updated literature extension: added sources_prefix variable to SKILL.md convert mode (6 path sites), added sources/ scan-dir preference to literature-retrieve.sh fallback, documented sources/ convention in EXTENSION.md"
+    },
+    {
+      "project_number": 737,
+      "project_name": "refactor_cslib_literature_sources",
+      "title": "Refactor cslib specs/literature/ to sources/ structure and remove blackburn_2001",
+      "status": "completed",
+      "task_type": "general",
+      "topic": "literature",
+      "description": "Refactor ~/Projects/cslib/specs/literature/ to match the centralized Literature/ repository structure: (1) Create sources/ subdirectory, (2) Move all 7 content subdirectories (church_1956, chagrov_1997, gentzen_1935, hughes_1996, mendelson_2016, zakharyaschev_2001) into sources/, (3) Move 11 loose markdown files into individual sources/{id}/ directories, (4) Move chagrov_1997.djvu alongside its content in sources/, (5) Remove blackburn_2001/ directory entirely (matching Literature/ removal), (6) Update index.json paths with sources/ prefix and remove blackburn_2001 entries, (7) Update README.md references.",
+      "created": "2026-06-16T20:30:00Z",
+      "last_updated": "2026-06-16T22:02:05Z",
+      "dependencies": [],
+      "artifacts": [],
+      "session_id": "sess_1781645207_5d2e80_737",
+      "completion_summary": "Refactored cslib specs/literature/: moved 11 loose MDs into individual sources/{id}/ dirs, moved 6 subdirs into sources/, removed blackburn_2001 (20 entries), updated 43 remaining index paths with sources/ prefix"
+    },
+    {
+      "project_number": 738,
+      "project_name": "refactor_bimodal_literature_sources",
+      "title": "Refactor BimodalLogic specs/literature/ to sources/ structure and remove blackburn_2001",
+      "status": "completed",
+      "task_type": "general",
+      "topic": "literature",
+      "description": "Refactor ~/Projects/BimodalLogic/specs/literature/ to match the centralized Literature/ repository structure: (1) Create sources/ subdirectory, (2) Move all 23 content subdirectories into sources/, (3) Move 30 loose markdown files into individual sources/{id}/ directories, (4) Move 3 loose PDFs (Hodkinson_Reynolds_2006, Libkin_2004, Rabinovich_2014) alongside their content in sources/, (5) Remove blackburn_2001/ directory entirely (matching Literature/ removal), (6) Update index.json paths with sources/ prefix and remove blackburn_2001 entries, (7) Update README.md references.",
+      "created": "2026-06-16T20:30:00Z",
+      "last_updated": "2026-06-16T22:02:06Z",
+      "dependencies": [],
+      "artifacts": [],
+      "session_id": "sess_1781645207_5d2e80_738",
+      "completion_summary": "Refactored BimodalLogic specs/literature/: moved 22 subdirs into sources/, created 5 new dirs, moved 30 loose MDs and 3 PDFs, removed blackburn_2001, updated 30 index paths with sources/ prefix, updated .gitignore"
+    },
     {
       "project_number": 735,
       "project_name": "literature_project_aware_filtering",
