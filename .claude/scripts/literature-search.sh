@@ -28,6 +28,29 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LITERATURE_DIR="${LITERATURE_DIR:-$HOME/Projects/Literature}"
 LITERATURE_LIMIT="${LITERATURE_LIMIT:-20}"
+PROJECT_FILTER=""
+
+# --- Build allowed doc_id set from index.json for a project ---
+# Returns newline-separated doc_ids, or empty string if no index or no matches
+get_project_doc_ids() {
+  local project="$1"
+  local index_file="$LITERATURE_DIR/index.json"
+
+  if [ ! -f "$index_file" ]; then
+    echo ""
+    return
+  fi
+
+  jq -r --arg proj "$project" '
+    .entries[]? |
+    select(
+      (.project_tags == null) or
+      (.project_tags | length == 0) or
+      (.project_tags | map(ascii_downcase) | index($proj | ascii_downcase)) != null
+    ) |
+    .id // empty
+  ' "$index_file" 2>/dev/null
+}
 
 # --- Error output ---
 error_json() {
@@ -108,6 +131,7 @@ PYEOF
 do_search() {
   local query="$1"
   local limit="${2:-$LITERATURE_LIMIT}"
+  local project_filter="${3:-}"
 
   export _SEARCH_QUERY="$query"
   local sanitized
@@ -123,7 +147,14 @@ do_search() {
   local local_db="${db_paths%%:*}"
   local global_db="${db_paths##*:}"
 
-  python3 << PYEOF
+  # Build allowed doc_id list when project filter is set
+  local allowed_doc_ids=""
+  if [ -n "$project_filter" ]; then
+    allowed_doc_ids=$(get_project_doc_ids "$project_filter")
+  fi
+
+  local results
+  results=$(python3 << PYEOF
 import sqlite3
 import json
 import os
@@ -133,8 +164,12 @@ local_db = "$local_db"
 global_db = "$global_db"
 query = "$sanitized"
 limit = $limit
+allowed_doc_ids_raw = """$allowed_doc_ids"""
 
-def search_db(db_path, query, limit):
+# Parse allowed doc_ids (newline-separated, may be empty)
+allowed_doc_ids = [d.strip() for d in allowed_doc_ids_raw.strip().splitlines() if d.strip()]
+
+def search_db(db_path, query, limit, allowed_doc_ids=None):
     """Search a single database, return list of result dicts"""
     if not os.path.isfile(db_path):
         return []
@@ -143,21 +178,39 @@ def search_db(db_path, query, limit):
         conn = sqlite3.connect(db_path)
         conn.row_factory = sqlite3.Row
 
-        sql = """
-            SELECT d.chunk_id, d.doc_id, d.section_path, d.title, d.summary,
-                   d.token_count, d.cross_refs, d.source_path,
-                   d.prev_chunk_id, d.next_chunk_id,
-                   bm25(chunks_fts, 10, 5, 3, 1) AS rank,
-                   substr(d.content, 1, 200) AS snippet
-            FROM chunks_fts
-            JOIN chunks_data d ON d.id = chunks_fts.rowid
-            WHERE chunks_fts MATCH ?
-            ORDER BY rank
-            LIMIT ?
-        """
+        if allowed_doc_ids:
+            placeholders = ','.join('?' * len(allowed_doc_ids))
+            sql = f"""
+                SELECT d.chunk_id, d.doc_id, d.section_path, d.title, d.summary,
+                       d.token_count, d.cross_refs, d.source_path,
+                       d.prev_chunk_id, d.next_chunk_id,
+                       bm25(chunks_fts, 10, 5, 3, 1) AS rank,
+                       substr(d.content, 1, 200) AS snippet
+                FROM chunks_fts
+                JOIN chunks_data d ON d.id = chunks_fts.rowid
+                WHERE chunks_fts MATCH ?
+                AND d.doc_id IN ({placeholders})
+                ORDER BY rank
+                LIMIT ?
+            """
+            params = [query] + allowed_doc_ids + [limit]
+        else:
+            sql = """
+                SELECT d.chunk_id, d.doc_id, d.section_path, d.title, d.summary,
+                       d.token_count, d.cross_refs, d.source_path,
+                       d.prev_chunk_id, d.next_chunk_id,
+                       bm25(chunks_fts, 10, 5, 3, 1) AS rank,
+                       substr(d.content, 1, 200) AS snippet
+                FROM chunks_fts
+                JOIN chunks_data d ON d.id = chunks_fts.rowid
+                WHERE chunks_fts MATCH ?
+                ORDER BY rank
+                LIMIT ?
+            """
+            params = [query, limit]
 
         try:
-            cursor = conn.execute(sql, (query, limit))
+            cursor = conn.execute(sql, params)
             rows = cursor.fetchall()
         except sqlite3.OperationalError as e:
             print(f"[search] Query error: {e}", file=sys.stderr)
@@ -193,8 +246,8 @@ def search_db(db_path, query, limit):
         return []
 
 # Search local then global
-local_results = search_db(local_db, query, limit)
-global_results = search_db(global_db, query, limit)
+local_results = search_db(local_db, query, limit, allowed_doc_ids if allowed_doc_ids else None)
+global_results = search_db(global_db, query, limit, allowed_doc_ids if allowed_doc_ids else None)
 
 # Merge: local takes precedence on duplicate doc_id
 local_doc_ids = {r['doc_id'] for r in local_results}
@@ -211,6 +264,91 @@ for r in merged:
 
 print(json.dumps(merged, indent=2, ensure_ascii=False))
 PYEOF
+)
+
+  # Fallback: if project filter yielded zero results, re-run without filter
+  if [ -n "$project_filter" ] && [ -n "$allowed_doc_ids" ]; then
+    local result_count
+    result_count=$(echo "$results" | python3 -c "import json,sys; data=json.load(sys.stdin); print(len(data))" 2>/dev/null || echo "0")
+    if [ "$result_count" = "0" ]; then
+      results=$(python3 << PYEOF
+import sqlite3
+import json
+import os
+import sys
+
+local_db = "$local_db"
+global_db = "$global_db"
+query = "$sanitized"
+limit = $limit
+
+def search_db(db_path, query, limit):
+    if not os.path.isfile(db_path):
+        return []
+    try:
+        conn = sqlite3.connect(db_path)
+        conn.row_factory = sqlite3.Row
+        sql = """
+            SELECT d.chunk_id, d.doc_id, d.section_path, d.title, d.summary,
+                   d.token_count, d.cross_refs, d.source_path,
+                   d.prev_chunk_id, d.next_chunk_id,
+                   bm25(chunks_fts, 10, 5, 3, 1) AS rank,
+                   substr(d.content, 1, 200) AS snippet
+            FROM chunks_fts
+            JOIN chunks_data d ON d.id = chunks_fts.rowid
+            WHERE chunks_fts MATCH ?
+            ORDER BY rank
+            LIMIT ?
+        """
+        try:
+            cursor = conn.execute(sql, (query, limit))
+            rows = cursor.fetchall()
+        except sqlite3.OperationalError as e:
+            print(f"[search] Query error: {e}", file=sys.stderr)
+            conn.close()
+            return []
+        results = []
+        for row in rows:
+            cross_refs = row['cross_refs'] or '[]'
+            try:
+                cross_refs = json.loads(cross_refs)
+            except (json.JSONDecodeError, TypeError):
+                cross_refs = []
+            results.append({
+                'chunk_id': row['chunk_id'],
+                'doc_id': row['doc_id'],
+                'section_path': row['section_path'],
+                'title': row['title'],
+                'summary': row['summary'],
+                'token_count': row['token_count'],
+                'cross_refs': cross_refs,
+                'rank': row['rank'],
+                'snippet': (row['snippet'] or '').strip()[:200],
+                '_source_path': row['source_path'],
+                '_db_path': db_path,
+            })
+        conn.close()
+        return results
+    except Exception as e:
+        print(f"[search] Database error ({db_path}): {e}", file=sys.stderr)
+        return []
+
+local_results = search_db(local_db, query, limit)
+global_results = search_db(global_db, query, limit)
+local_doc_ids = {r['doc_id'] for r in local_results}
+merged = local_results + [r for r in global_results if r['doc_id'] not in local_doc_ids]
+merged.sort(key=lambda r: r['rank'])
+merged = merged[:limit]
+for r in merged:
+    r.pop('_source_path', None)
+    r.pop('_db_path', None)
+print(json.dumps(merged, indent=2, ensure_ascii=False))
+PYEOF
+)
+    fi
+  fi
+
+  echo "$results"
 }
 
 # --- Read chunk ---
@@ -484,48 +622,67 @@ PYEOF
 
 # --- Main dispatch ---
 if [ $# -eq 0 ]; then
-  error_json "No arguments provided. Usage: literature-search.sh \"query\" | --read <id> | --toc [doc_id] | --refs <id> | --next <id> | --prev <id> | --doc <doc_id>" 1
+  error_json "No arguments provided. Usage: literature-search.sh [--project <name>] \"query\" | --read <id> | --toc [doc_id] | --refs <id> | --next <id> | --prev <id> | --doc <doc_id>" 1
 fi
 
-case "$1" in
+# Pre-scan for --project flag (may appear before any subcommand)
+args=("$@")
+remaining_args=()
+for ((i = 0; i < ${#args[@]}; i++)); do
+  if [ "${args[$i]}" = "--project" ]; then
+    if [ -z "${args[$((i+1))]:-}" ]; then
+      error_json "Missing project name for --project" 1
+    fi
+    PROJECT_FILTER="${args[$((i+1))]}"
+    i=$((i+1))
+  else
+    remaining_args+=("${args[$i]}")
+  fi
+done
+
+if [ ${#remaining_args[@]} -eq 0 ]; then
+  error_json "No command provided after --project. Usage: literature-search.sh [--project <name>] \"query\" | --read <id> | --toc [doc_id] | ..." 1
+fi
+
+case "${remaining_args[0]}" in
   --read)
-    if [ -z "${2:-}" ]; then
+    if [ -z "${remaining_args[1]:-}" ]; then
       error_json "Missing chunk_id for --read" 1
     fi
-    do_read "$2"
+    do_read "${remaining_args[1]}"
     ;;
   --toc)
-    do_toc "${2:-}"
+    do_toc "${remaining_args[1]:-}"
     ;;
   --refs)
-    if [ -z "${2:-}" ]; then
+    if [ -z "${remaining_args[1]:-}" ]; then
       error_json "Missing chunk_id for --refs" 1
     fi
-    do_refs "$2"
+    do_refs "${remaining_args[1]}"
     ;;
   --next)
-    if [ -z "${2:-}" ]; then
+    if [ -z "${remaining_args[1]:-}" ]; then
       error_json "Missing chunk_id for --next" 1
     fi
-    do_navigate "next" "$2"
+    do_navigate "next" "${remaining_args[1]}"
     ;;
   --prev)
-    if [ -z "${2:-}" ]; then
+    if [ -z "${remaining_args[1]:-}" ]; then
       error_json "Missing chunk_id for --prev" 1
     fi
-    do_navigate "prev" "$2"
+    do_navigate "prev" "${remaining_args[1]}"
     ;;
   --doc)
-    if [ -z "${2:-}" ]; then
+    if [ -z "${remaining_args[1]:-}" ]; then
       error_json "Missing doc_id for --doc" 1
     fi
-    do_toc "$2"
+    do_toc "${remaining_args[1]}"
     ;;
   -*)
-    error_json "Unknown flag: $1. Use --read, --toc, --refs, --next, --prev, --doc, or a search query string." 1
+    error_json "Unknown flag: ${remaining_args[0]}. Use --project, --read, --toc, --refs, --next, --prev, --doc, or a search query string." 1
     ;;
   *)
     # Default: full-text search
-    do_search "$1" "${2:-$LITERATURE_LIMIT}"
+    do_search "${remaining_args[0]}" "${remaining_args[1]:-$LITERATURE_LIMIT}" "$PROJECT_FILTER"
     ;;
 esac

@@ -30,6 +30,17 @@
 
 set -euo pipefail
 
+# --- Project detection ---
+detect_project() {
+  local git_root
+  git_root=$(git rev-parse --show-toplevel 2>/dev/null) || true
+  if [ -n "$git_root" ]; then
+    basename "$git_root"
+  else
+    basename "$PWD"
+  fi
+}
+
 # --- Check for FTS5 database (Tier 1 behavior) ---
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 GIT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
@@ -37,6 +48,7 @@ GLOBAL_LIT_DIR="${LITERATURE_DIR:-$HOME/Projects/Literature}"
 LOCAL_DB="$GIT_ROOT/specs/literature/.literature.db"
 GLOBAL_DB="$GLOBAL_LIT_DIR/.literature.db"
 SEARCH_SCRIPT="$SCRIPT_DIR/literature-search.sh"
+CURRENT_PROJECT="$(detect_project)"
 
 if { [ -f "$LOCAL_DB" ] || [ -f "$GLOBAL_DB" ]; } && [ -x "$SEARCH_SCRIPT" ]; then
   # Tier 1: Emit search tool context block
@@ -80,7 +92,11 @@ if { [ -f "$LOCAL_DB" ] || [ -f "$GLOBAL_DB" ]; } && [ -x "$SEARCH_SCRIPT" ]; th
   printf '5. Sequential navigation: Use --next/--prev for surrounding context.\n'
   printf '6. Budget tracking: Track token_count of chunks read; stop when satisfied.\n\n'
   printf 'STOPPING RULE: If you do not find relevant literature within 3 searches,\n'
-  printf 'proceed without it rather than searching exhaustively.\n'
+  printf 'proceed without it rather than searching exhaustively.\n\n'
+  printf 'PROJECT CONTEXT: Current project detected as "%s".\n' "$CURRENT_PROJECT"
+  printf 'Use --project %s flag to filter results to project-tagged literature:\n' "$CURRENT_PROJECT"
+  printf '  literature-search.sh --project %s "query string"\n' "$CURRENT_PROJECT"
+  printf 'Entries with no project_tags are always included as fallback.\n'
   printf '</literature-tool>\n'
   exit 0
 fi
@@ -192,6 +208,22 @@ if [ -f "$INDEX_FILE" ] && [ -n "$description" ]; then
       $root + $sub_unique
     ')
     rm -f "$_root_tmp" "$_sub_tmp"
+
+    # Project-aware filtering: prefer entries tagged with the current project
+    # Entries with null/empty project_tags are always included as fallback candidates
+    if [ -n "$CURRENT_PROJECT" ]; then
+      project_filtered=$(echo "$all_entries" | jq --arg proj "$CURRENT_PROJECT" '
+        map(select(
+          (.project_tags == null) or
+          (.project_tags | length == 0) or
+          (.project_tags | map(ascii_downcase) | index($proj | ascii_downcase)) != null
+        ))
+      ' 2>/dev/null)
+      if [ -n "$project_filtered" ] && [ "$project_filtered" != "[]" ] && [ "$project_filtered" != "null" ]; then
+        all_entries="$project_filtered"
+      fi
+      # If filter returned empty, all_entries remains unchanged (full fallback)
+    fi
 
     scored_entries=$(echo "$all_entries" | jq --argjson kw "$keywords_json" '
       map(

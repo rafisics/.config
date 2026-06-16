@@ -60,7 +60,7 @@ This task advances the literature centralization infrastructure from Phase 2. No
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Add project detection and Tier 2 filtering to literature-retrieve.sh [NOT STARTED]
+### Phase 1: Add project detection and Tier 2 filtering to literature-retrieve.sh [COMPLETED]
 
 **Goal**: Add project auto-detection from git root and filter Tier 2 keyword-scored entries by `project_tags` before budget selection. Also inject project context into the Tier 1 tool block.
 
@@ -85,7 +85,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Add --project flag to literature-search.sh (Tier 1 FTS5) [NOT STARTED]
+### Phase 2: Add --project flag to literature-search.sh (Tier 1 FTS5) [COMPLETED]
 
 **Goal**: Accept a `--project <name>` flag that filters FTS5 search results to `doc_id` values tagged with the given project in `index.json`. Implement fallback on zero results.
 
@@ -111,7 +111,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Integration testing and edge case verification [NOT STARTED]
+### Phase 3: Integration testing and edge case verification [COMPLETED]
 
 **Goal**: Verify both tiers work end-to-end with project filtering, test fallback behavior, and validate edge cases.
 
