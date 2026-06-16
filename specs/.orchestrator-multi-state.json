@@ -1,0 +1,17 @@
+{
+  "session_id": "sess_1781560221_abe690",
+  "task_numbers": [716, 717, 718, 719, 720],
+  "waves": [[716], [717], [718], [719], [720]],
+  "dependency_graph": {"716": [], "717": [716], "718": [717], "719": [718], "720": [719]},
+  "cycle_count": 0,
+  "max_cycles": 25,
+  "completed_tasks": [],
+  "failed_tasks": [],
+  "current_statuses": {
+    "716": "not_started",
+    "717": "not_started",
+    "718": "not_started",
+    "719": "not_started",
+    "720": "not_started"
+  }
+}
