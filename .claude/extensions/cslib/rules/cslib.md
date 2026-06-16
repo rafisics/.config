@@ -77,6 +77,7 @@ Examples:
 
 Run in this order before submitting a PR:
 
+0. `lake exe cache get` -- fetch Mathlib .olean cache (once per branch; prevents 30-45 min rebuild)
 1. `lake build` -- syntax linters (runs during build)
 2. `lake exe checkInitImports` -- all files import `Cslib.Init`
 3. `lake lint` -- environment linters (or use `#lint` command in editor)

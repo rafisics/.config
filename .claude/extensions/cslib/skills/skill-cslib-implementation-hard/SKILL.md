@@ -84,6 +84,19 @@ bash .claude/scripts/update-task-status.sh preflight "$task_number" implement "$
 
 ---
 
+### Stage 2b: Preflight Cache Warming
+
+Ensure Mathlib cache is warm before delegating to the agent:
+
+```bash
+cd /home/benjamin/Projects/cslib && lake exe cache get 2>&1 || echo "Warning: cache fetch failed (non-fatal)"
+```
+
+This is non-blocking. Cache fetch failure does not prevent delegation. On a cache hit, this
+completes in ~1-2 minutes and prevents 30-45 minute Mathlib rebuilds during CI verification.
+
+---
+
 ### Stage 3: Create Postflight Marker
 
 ```bash

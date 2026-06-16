@@ -193,6 +193,15 @@ Proceed directly to writing the summary file and `.return-meta.json`; do NOT exe
 
 ### CSLib CI Pipeline (Ordered -- Run All Steps)
 
+0. **Mathlib cache fetch** (one-time, always first):
+   ```bash
+   cd /home/benjamin/Projects/cslib && lake exe cache get
+   ```
+   Downloads pre-built Mathlib `.olean` files. On cache hit (~1-2 min), subsequent
+   builds only compile CSLib modules (~2-5 min). On cache miss, this is a no-op
+   and `lake build` falls back to full compilation. Skip only if cache is already
+   confirmed warm for this branch.
+
 1. **Scoped build**:
    ```bash
    lake build Module.Name
@@ -467,7 +476,7 @@ When approaching context limit:
 4. Always use `lean_goal` before and after each tactic application
 5. Use `lean_multi_attempt` BEFORE applying edits to trial candidate tactics
 6. Use `lean_verify` for axiom/sorry checks at the per-step level
-7. **Run the full CSLib CI pipeline** (all 7 steps) before returning implemented status -- EXCEPT in PR description mode (`task_type=pr`), where CI is deferred to the `/pr` command
+7. **Run the full CSLib CI pipeline** (all 8 steps, including Step 0 cache fetch) before returning implemented status -- EXCEPT in PR description mode (`task_type=pr`), where CI is deferred to the `/pr` command
 8. Always verify proofs are actually complete ("no goals")
 9. **ALWAYS update plan file phase markers with Edit tool**
 10. Always create summary file before returning implemented status

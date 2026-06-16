@@ -11,13 +11,9 @@ next_project_number: 736
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,734 | -- | agent-system, Terminal UI, Email Integration |
+| 1 | 78,87 | -- | Terminal UI, Email Integration |
 
 **Grouped by Topic** (indented = depends on parent):
-
-### Agent System
-
-734 [PLANNED] — Optimize CSLib build cache strategy: add lake exe cache get to cs
 
 ### Terminal UI
 
@@ -40,7 +36,7 @@ next_project_number: 736
 ---
 
 ### 734. Optimize cslib build cache strategy
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
@@ -48,6 +44,7 @@ next_project_number: 736
   - [734_optimize_cslib_build_cache_strategy/reports/01_build-cache-research.md]
   - [734_optimize_cslib_build_cache_strategy/reports/02_detailed-change-spec.md]
 - **Plan**: [734_optimize_cslib_build_cache_strategy/plans/03_cache-optimization-plan.md]
+- **Summary**: [734_optimize_cslib_build_cache_strategy/summaries/03_cache-optimization-summary.md]
 
 **Description**: Optimize CSLib build cache strategy: add lake exe cache get to cslib-implementation-agent CI pipeline, skill preflight cache warming, fix rules CI order, and defer redundant lake test for pr-type tasks — to eliminate 30-45 min Mathlib rebuilds during implementation
 
