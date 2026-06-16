@@ -1,16 +1,16 @@
 {
-  "status": "planned",
-  "summary": "Created 3-phase plan: Phase 1 adds project detection and Tier 2 filtering to literature-retrieve.sh, Phase 2 adds --project flag to literature-search.sh for Tier 1 FTS5 filtering, Phase 3 runs integration tests and edge case verification.",
+  "status": "implemented",
+  "summary": "Added project-aware filtering to literature-retrieve.sh (Tier 2 keyword) and literature-search.sh (Tier 1 FTS5) with detect_project(), --project flag, doc_id IN filtering, and fallback-on-zero-results logic.",
   "blockers": [],
   "continuation_context": null,
-  "next_action_hint": "implement",
-  "phases_completed": 0,
+  "next_action_hint": "complete",
+  "phases_completed": 3,
   "phases_total": 3,
   "artifacts": [
     {
-      "path": "specs/735_literature_project_aware_filtering/plans/01_project-aware-filtering.md",
-      "type": "plan",
-      "summary": "Implementation plan for project-aware literature filtering"
+      "path": "specs/735_literature_project_aware_filtering/summaries/01_project-aware-filtering-summary.md",
+      "type": "summary",
+      "summary": "Implementation summary for project-aware literature filtering"
     }
   ]
 }
