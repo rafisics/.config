@@ -7,16 +7,17 @@
 #
 # DESCRIPTION:
 #   Detects citation patterns in text and outputs a JSON array of extracted
-#   claims. Supports seven pattern families:
+#   claims. Supports nine pattern families:
 #
 #     1. author_year       — Smith 2020, Smith and Jones 2020, Smith et al. 2020
-#     2. parenthetical     — (Smith, 2020), (Smith & Jones, 2020), (Smith et al., 2020)
-#     3. phrase_attribution— "according to X", "as shown by X", "X demonstrated"
-#     4. theorem_attr      — "Theorem 3.2 (Author)", "by Lemma 2.1"
-#     5. direct_quote      — "quote" (Author, Year), "quote" — Author
-#     6. numeric_bracket   — [42] (excludes markdown link syntax [text](url))
-#     7. alpha_num_bracket — [Smith20], [ABC2023]
-#     8. latex_cite        — \cite{key}, \cite[page]{key}
+#     2. author_paren_year — Smith (2020), Blackburn (2002), Jones et al. (2019)
+#     3. parenthetical     — (Smith, 2020), (Smith & Jones, 2020), (Smith et al., 2020)
+#     4. phrase_attribution— "according to X", "as shown by X", "X demonstrated"
+#     5. theorem_attr      — "Theorem 3.2 (Author)", "by Lemma 2.1", "By Lemma 2.1"
+#     6. direct_quote      — "quote" (Author, Year), "quote" — Author
+#     7. numeric_bracket   — [42] (excludes markdown link syntax [text](url))
+#     8. alpha_num_bracket — [Smith20], [ABC2023]
+#     9. latex_cite        — \cite{key}, \cite[page]{key}
 #
 #   Confidence is hard-coded per pattern family (0.5–0.9).
 #   Results are deduplicated by (line_number, source_text).
@@ -50,16 +51,17 @@ USAGE:
 
 DESCRIPTION:
   Detects citation patterns in text and outputs a JSON array of extracted
-  claims. Supports seven pattern families:
+  claims. Supports nine pattern families:
 
     1. author_year       — Smith 2020, Smith and Jones 2020, Smith et al. 2020
-    2. parenthetical     — (Smith, 2020), (Smith & Jones, 2020)
-    3. phrase_attribution— "according to X", "as shown by X"
-    4. theorem_attr      — Theorem 3.2 (Author), by Lemma 2.1
-    5. direct_quote      — "quote" (Author, Year)
-    6. numeric_bracket   — [42] (excludes markdown links)
-    7. alpha_num_bracket — [Smith20], [ABC2023]
-    8. latex_cite        — \cite{key}, \cite[page]{key}
+    2. author_paren_year — Smith (2020), Blackburn (2002), Jones et al. (2019)
+    3. parenthetical     — (Smith, 2020), (Smith & Jones, 2020)
+    4. phrase_attribution— "according to X", "as shown by X"
+    5. theorem_attr      — Theorem 3.2 (Author), by Lemma 2.1, By Lemma 2.1
+    6. direct_quote      — "quote" (Author, Year)
+    7. numeric_bracket   — [42] (excludes markdown links)
+    8. alpha_num_bracket — [Smith20], [ABC2023]
+    9. latex_cite        — \cite{key}, \cite[page]{key}
 
 OPTIONS:
   --format=MODE         Output format: json (default) or pretty
@@ -157,6 +159,9 @@ declare -a PATTERNS=(
   # author_year: Smith 2020, Smith and Jones 2020, Smith et al. 2020
   "author_year|0.9|P|[A-Z][a-z]+(( and | & )[A-Z][a-z]+|,? et al\.?)?,? (19|20)[0-9]{2}[a-z]?"
 
+  # author_paren_year: Smith (2020), Blackburn (2002), Jones et al. (2019)
+  "author_paren_year|0.9|P|[A-Z][a-z]+(( and | & )[A-Z][a-z]+|,? et al\.?)? \((19|20)[0-9]{2}[a-z]?\)"
+
   # parenthetical: (Smith, 2020), (Smith & Jones, 2020), (Smith et al., 2020)
   "parenthetical|0.9|P|\([A-Z][a-z]+(,? (and|&) [A-Z][a-z]+|,? et al\.?)?,? (19|20)[0-9]{2}[a-z]?(, p\.? ?[0-9]+)?\)"
 
@@ -166,8 +171,8 @@ declare -a PATTERNS=(
   # theorem/lemma with bracketed attribution: Theorem 3.2 (Author) or Lemma 2.1
   "theorem_attr_bracket|0.9|P|(Theorem|Lemma|Proposition|Corollary|Definition|Remark|Conjecture) [0-9]+(\.[0-9]+)* \([A-Z][a-z]"
 
-  # theorem/lemma eponymous: by Lemma 2.1, by Theorem 3
-  "theorem_attr_ref|0.7|P|(by|from|using|applying|via) (the )?(Theorem|Lemma|Proposition|Corollary|Remark) [0-9]+(\.[0-9]+)*"
+  # theorem/lemma eponymous: by Lemma 2.1, By Theorem 3 (case-insensitive for sentence-initial)
+  "theorem_attr_ref|0.7|Pi|(by|from|using|applying|via) (the )?(Theorem|Lemma|Proposition|Corollary|Remark) [0-9]+(\.[0-9]+)*"
 
   # direct quote with year citation: "quote" (Author, Year)
   "direct_quote_bracket|0.85|P|\"[^\"]{5,150}\" \([A-Z][a-z]+(,? (and|&) [A-Z][a-z]+|,? et al\.?)?,? (19|20)[0-9]{2}\)"

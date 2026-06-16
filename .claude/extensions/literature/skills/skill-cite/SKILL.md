@@ -168,7 +168,11 @@ Exit gracefully without prompts.
 For each unique citation claim, extract query terms and search `specs/literature/index.json`:
 
 ```bash
-lit_index="$project_root/specs/literature/index.json"
+if [ -n "${LITERATURE_DIR:-}" ] && [ -d "$LITERATURE_DIR" ]; then
+  lit_index="$LITERATURE_DIR/index.json"
+else
+  lit_index="$project_root/specs/literature/index.json"
+fi
 index_available=false
 if [ -f "$lit_index" ]; then
   index_available=true
