@@ -11,7 +11,7 @@ next_project_number: 727
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,652,727,728 | -- | agent-system, Terminal UI, Email Integration |
+| 1 | 78,87,652 | -- | agent-system, Terminal UI, Email Integration |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -27,15 +27,10 @@ next_project_number: 727
 
 78 [PLANNED] — Fix Gmail SMTP authentication failure when sending emails via Him
 
-### Uncategorized
-
-727 [RESEARCHED] — Apply lessons from CSLib tasks 208-213 multi-task orchestration t
-728 [RESEARCHED] — Add lint prevention rules to cslib extension agents. 7 rules cove
-
 ## Tasks
 
 ### 728. Cslib lint prevention rules
-- **Status**: [RESEARCHED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Dependencies**: None
 
@@ -44,11 +39,11 @@ next_project_number: 727
 ---
 
 ### 727. Cslib orchestration lessons
-- **Status**: [RESEARCHED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Dependencies**: None
 
-**Description**: Apply lessons from CSLib tasks 208-213 multi-task orchestration to improve cslib extension agents, rules, and skills. Addresses: context exhaustion on large mechanical tasks, analysis paralysis, concurrent file conflicts, stale handoff files, and inaccurate error counts. Proposes lint-fix task type, anti-analysis rules, file-overlap wave assignment, write-first handoff pattern, and conflict matrix in planner.
+**Description**: Apply lessons from CSLib project tasks 208-213 (lint fix orchestration in ~/Projects/cslib/) to improve the nvim-repo cslib extension agents, rules, and skills. Addresses: context exhaustion on large mechanical tasks, analysis paralysis, stale metadata files, and inaccurate error counts. Proposes lint-fix task type, anti-analysis rules, file-overlap wave assignment, write-first metadata pattern, and conflict matrix in planner.
 
 ---
 

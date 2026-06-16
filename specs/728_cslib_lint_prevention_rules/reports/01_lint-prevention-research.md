@@ -19,8 +19,13 @@ agent-level enforcement since the CI gap is upstream.
 - `lint-style-action` (text-level style linters)
 
 **What PR CI does NOT run**:
-- `lake lint` (environment linters — the 6 categories below)
+- `lake lint` (environment linters — the 7 categories below)
 - `lake shake` (dependency analysis — commented out)
+
+**What the weekly cron runs** (`weekly-lints.yml`, Monday 05:00 UTC):
+- Enables `weak.linter.weeklyLintSet = true` in lakefile.toml, then runs `lake build`
+- This catches additional build-time linter warnings, posts results to Zulip
+- Does NOT block PRs (informational only)
 
 ## The 7 Prevention Rules
 

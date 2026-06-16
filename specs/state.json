@@ -2757,16 +2757,22 @@
     {
       "project_number": 727,
       "project_name": "cslib_orchestration_lessons",
-      "status": "researched",
+      "status": "completed",
       "task_type": "meta",
-      "description": "Apply lessons from CSLib tasks 208-213 multi-task orchestration to improve cslib extension agents, rules, and skills. Addresses: context exhaustion on large mechanical tasks, analysis paralysis, concurrent file conflicts, stale handoff files, and inaccurate error counts. Proposes lint-fix task type, anti-analysis rules, file-overlap wave assignment, write-first handoff pattern, and conflict matrix in planner."
+      "description": "Apply lessons from CSLib project tasks 208-213 (lint fix orchestration in ~/Projects/cslib/) to improve the nvim-repo cslib extension agents, rules, and skills. Addresses: context exhaustion on large mechanical tasks, analysis paralysis, stale metadata files, and inaccurate error counts. Proposes lint-fix task type, anti-analysis rules, file-overlap wave assignment, write-first metadata pattern, and conflict matrix in planner.",
+      "last_updated": "2026-06-16T01:23:43Z",
+      "session_id": "sess_1781569603_28a6dc_727",
+      "completion_summary": "Created lint-fix rules file with anti-analysis contract, write-first metadata pattern, lint-count preflight, and file-overlap wave assignment context for cslib extension. Registered in manifest.json and index-entries.json."
     },
     {
       "project_number": 728,
       "project_name": "cslib_lint_prevention_rules",
-      "status": "researched",
+      "status": "completed",
       "task_type": "meta",
-      "description": "Add lint prevention rules to cslib extension agents. 7 rules covering docBlame, defLemma, defsWithUnderscore, simpNF, unusedSectionVars, topNamespace, and dupNamespace. These environment linters are not in PR CI (only weekly cron) so agent-level enforcement is needed. Creates rules file, updates agent instructions, and adds targeted lint verification step."
+      "description": "Add lint prevention rules to cslib extension agents. 7 rules covering docBlame, defLemma, defsWithUnderscore, simpNF, unusedSectionVars, topNamespace, and dupNamespace. These environment linters are not in PR CI (only weekly cron) so agent-level enforcement is needed. Creates rules file, updates agent instructions, and adds targeted lint verification step.",
+      "last_updated": "2026-06-16T00:56:57Z",
+      "session_id": "sess_1781569603_28a6dc_728",
+      "completion_summary": "Created lint-prevention-rules.md with 7 rules for environment linters not in PR CI, added mandatory Lint Prevention section to cslib-implementation-agent.md with MUST DO/MUST NOT items and post-lint grep check, and added Lint Prevention Awareness to cslib-research-agent.md."
     }
   ],
   "completed_projects": [],
