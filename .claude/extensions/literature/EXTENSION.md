@@ -61,3 +61,47 @@ Better CSL JSON > "Keep updated" > save to `~/Projects/Literature/zotero-library
 | `/literature` | `/literature --index FILE` | Add/update index entry for existing markdown file |
 | `/literature` | `/literature --search "QUERY"` | Search Zotero library and Literature/ index by keyword |
 | `/literature` | `/literature --task N` | Extract task N description as Zotero search query |
+
+### /cite Command
+
+Verify citation claims in task artifacts against the Literature/ index and Zotero library. Extracts citations from task reports, plans, and summaries; scores each against available sources; and creates research tasks for claims that cannot be verified.
+
+| Command | Usage | Description |
+|---------|-------|-------------|
+| `/cite` | `/cite N` | Verify all citations in task N artifacts |
+| `/cite` | `/cite N --gaps` | Also flag citations found in Zotero but lacking a PDF |
+
+**Workflow**:
+1. **Extract** — `cite-extract.sh` scans artifact files (.md) under `specs/{NNN}_{SLUG}/` and identifies citation patterns: author-year `(Smith, 2020)`, parenthetical `(Author et al.)`, theorem attributions, direct quotes, numeric bracket `[1]`, LaTeX `\cite{key}`, and others.
+2. **Search** — Each extracted citation is matched against `specs/literature/index.json` (keyword overlap scoring) and the Zotero library via `zotero-search.sh` (if configured).
+3. **Score** — Citations are classified by confidence:
+   - **confirmed**: Zotero top-result score ≥ 3 OR index keyword overlap ≥ 2
+   - **partial**: Zotero score 1–2 OR index overlap == 1 (weak match, may need review)
+   - **unconfirmed**: No match in either source
+   - **gap** (with `--gaps`): Source found in Zotero but no PDF available locally
+4. **Select** — Results are displayed grouped by status. Unconfirmed, gap, and partial citations are presented via interactive `AskUserQuestion` multiSelect for user selection.
+5. **Create tasks** — A research/verification task is created in `state.json` for each selected citation, with description, source location, pattern type, and suggested search queries.
+
+**Output format** (Step 9 display):
+```
+## Citation Verification Results
+
+Task: #{N} — {task_slug}
+Artifacts Scanned: {count} files
+Citations Found: {total} total
+  - Confirmed: N
+  - Partial: N
+  - Unconfirmed: N
+  - Gap: N
+
+### Confirmed — No action needed
+| Claim | Source | File | Match |
+
+### Partial Matches — May need verification
+| Claim | Source | File | Best Match |
+
+### Unconfirmed — No source found
+| Claim | Source | File | Pattern |
+```
+
+**Dependencies**: `cite-extract.sh` (pattern extraction), `zotero-search.sh` (Zotero search, optional), `specs/literature/index.json` (Literature/ index, optional). Both external sources degrade gracefully — if Zotero is unavailable, index-only matching is used; if the index is missing, Zotero-only matching is used.

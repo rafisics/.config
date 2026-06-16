@@ -12,14 +12,16 @@
       "literature-agent.md"
     ],
     "commands": [
-      "literature.md"
+      "literature.md",
+      "cite.md"
     ],
     "skills": [
       "skill-literature",
       "skill-cite"
     ],
     "scripts": [
-      "scripts/zotero-search.sh"
+      "scripts/zotero-search.sh",
+      "scripts/cite-extract.sh"
     ]
   },
   "merge_targets": {
