@@ -17,7 +17,7 @@ next_project_number: 735
 
 ### Agent System
 
-734 [NOT STARTED] — Optimize CSLib build cache strategy: add lake exe cache get to cs
+734 [RESEARCHED] — Optimize CSLib build cache strategy: add lake exe cache get to cs
 
 ### Terminal UI
 
@@ -30,10 +30,11 @@ next_project_number: 735
 ## Tasks
 
 ### 734. Optimize cslib build cache strategy
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
+- **Research**: [734_optimize_cslib_build_cache_strategy/reports/01_build-cache-research.md]
 
 **Description**: Optimize CSLib build cache strategy: add lake exe cache get to cslib-implementation-agent CI pipeline, skill preflight cache warming, fix rules CI order, and defer redundant lake test for pr-type tasks — to eliminate 30-45 min Mathlib rebuilds during implementation
 
