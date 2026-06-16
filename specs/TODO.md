@@ -11,7 +11,7 @@ next_project_number: 727
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,652,720,727,728 | -- | agent-system, Literature, Terminal UI, ... |
+| 1 | 78,87,652,727,728 | -- | agent-system, Terminal UI, Email Integration |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -26,10 +26,6 @@ next_project_number: 727
 ### Email Integration
 
 78 [PLANNED] — Fix Gmail SMTP authentication failure when sending emails via Him
-
-### Literature
-
-720 [NOT STARTED] — Integration testing and verification of /cite command end-to-end.
 
 ### Uncategorized
 
@@ -122,7 +118,7 @@ next_project_number: 727
 ---
 
 ### 720. Integration test cite command
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: Literature
 - **Dependencies**: Task 719
