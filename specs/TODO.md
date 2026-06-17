@@ -1,5 +1,5 @@
 ---
-next_project_number: 741
+next_project_number: 743
 ---
 
 # TODO
@@ -11,9 +11,15 @@ next_project_number: 741
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87 | -- | Terminal UI, Email Integration |
+| 1 | 78,87,741 | -- | agent-system, Terminal UI, Email Integration |
+| 2 | 742 | 741 | agent-system |
 
 **Grouped by Topic** (indented = depends on parent):
+
+### Agent System
+
+741 [NOT STARTED] — Update generate-todo.sh to output artifact references as proper m
+  └─ 742 [NOT STARTED] — Extend update_plan_file() in update-task-status.sh to call update
 
 ### Terminal UI
 
@@ -25,14 +31,37 @@ next_project_number: 741
 
 ## Tasks
 
+### 742. Auto-update plan phase status on implement preflight
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: Task 741
+
+**Description**: Extend update_plan_file() in update-task-status.sh to call update-phase-status.sh for the first NOT STARTED phase when operation is preflight implement. This integrates the existing but unused update-phase-status.sh script into the automated preflight pipeline, ensuring Phase 1 is marked [IN PROGRESS] when implementation begins.
+
+---
+
+### 741. Convert TODO.md artifact references to markdown links
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+- **Research**: [741_todo_artifact_markdown_links/reports/01_markdown-links-research.md](specs/741_todo_artifact_markdown_links/reports/01_markdown-links-research.md)
+- **Plan**: [741_todo_artifact_markdown_links/plans/01_markdown-links-plan.md](specs/741_todo_artifact_markdown_links/plans/01_markdown-links-plan.md)
+- **Summary**: [741_todo_artifact_markdown_links/summaries/01_markdown-links-summary.md](specs/741_todo_artifact_markdown_links/summaries/01_markdown-links-summary.md)
+
+**Description**: Update generate-todo.sh to output artifact references as proper markdown links [path](specs/path) instead of bracket-only [path] format. Change lines 284 and 289 to include the specs/ prefixed path as link target. Update artifact-linking-todo.md pattern doc to document the new link format.
+
+---
+
 ### 740. Add /zulip command and skill-zulip to core extension
 - **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
-- **Research**: [740_zulip_core_extension/reports/01_zulip-core-extension.md]
-- **Plan**: [740_zulip_core_extension/plans/01_zulip-core-extension.md]
-- **Summary**: [740_zulip_core_extension/summaries/01_zulip-core-extension-summary.md]
+- **Research**: [740_zulip_core_extension/reports/01_zulip-core-extension.md](specs/740_zulip_core_extension/reports/01_zulip-core-extension.md)
+- **Plan**: [740_zulip_core_extension/plans/01_zulip-core-extension.md](specs/740_zulip_core_extension/plans/01_zulip-core-extension.md)
+- **Summary**: [740_zulip_core_extension/summaries/01_zulip-core-extension-summary.md](specs/740_zulip_core_extension/summaries/01_zulip-core-extension-summary.md)
 
 **Description**: Add the /zulip command (zulip.md) and skill-zulip to the core extension so they are available in all projects that depend on core. Currently these artifacts exist in the top-level .claude/ directory but are not declared in any extension manifest, so they do not get installed when the extension loader runs in child projects like cslib. Changes: (1) Copy .claude/commands/zulip.md to .claude/extensions/core/commands/zulip.md, (2) Copy .claude/skills/skill-zulip/ to .claude/extensions/core/skills/skill-zulip/, (3) Add zulip.md to provides.commands in core/manifest.json, (4) Add skill-zulip to provides.skills in core/manifest.json.
 
@@ -94,10 +123,10 @@ next_project_number: 741
 - **Topic**: agent-system
 - **Dependencies**: None
 - **Research**:
-  - [734_optimize_cslib_build_cache_strategy/reports/01_build-cache-research.md]
-  - [734_optimize_cslib_build_cache_strategy/reports/02_detailed-change-spec.md]
-- **Plan**: [734_optimize_cslib_build_cache_strategy/plans/03_cache-optimization-plan.md]
-- **Summary**: [734_optimize_cslib_build_cache_strategy/summaries/03_cache-optimization-summary.md]
+  - [734_optimize_cslib_build_cache_strategy/reports/01_build-cache-research.md](specs/734_optimize_cslib_build_cache_strategy/reports/01_build-cache-research.md)
+  - [734_optimize_cslib_build_cache_strategy/reports/02_detailed-change-spec.md](specs/734_optimize_cslib_build_cache_strategy/reports/02_detailed-change-spec.md)
+- **Plan**: [734_optimize_cslib_build_cache_strategy/plans/03_cache-optimization-plan.md](specs/734_optimize_cslib_build_cache_strategy/plans/03_cache-optimization-plan.md)
+- **Summary**: [734_optimize_cslib_build_cache_strategy/summaries/03_cache-optimization-summary.md](specs/734_optimize_cslib_build_cache_strategy/summaries/03_cache-optimization-summary.md)
 
 **Description**: Optimize CSLib build cache strategy: add lake exe cache get to cslib-implementation-agent CI pipeline, skill preflight cache warming, fix rules CI order, and defer redundant lake test for pr-type tasks — to eliminate 30-45 min Mathlib rebuilds during implementation
 
@@ -108,9 +137,9 @@ next_project_number: 741
 - **Task Type**: general
 - **Topic**: literature
 - **Dependencies**: Task 732
-- **Research**: [733_literature_infrastructure_wiring/reports/01_infrastructure-wiring-research.md]
-- **Plan**: [733_literature_infrastructure_wiring/plans/01_infrastructure-wiring-plan.md]
-- **Summary**: [733_literature_infrastructure_wiring/summaries/01_infrastructure-wiring-summary.md]
+- **Research**: [733_literature_infrastructure_wiring/reports/01_infrastructure-wiring-research.md](specs/733_literature_infrastructure_wiring/reports/01_infrastructure-wiring-research.md)
+- **Plan**: [733_literature_infrastructure_wiring/plans/01_infrastructure-wiring-plan.md](specs/733_literature_infrastructure_wiring/plans/01_infrastructure-wiring-plan.md)
+- **Summary**: [733_literature_infrastructure_wiring/summaries/01_infrastructure-wiring-summary.md](specs/733_literature_infrastructure_wiring/summaries/01_infrastructure-wiring-summary.md)
 
 **Description**: Move LITERATURE_DIR setting to ~/.dotfiles/config/claude/settings.json (Home Manager-managed global settings) so all projects pick it up. Remove the per-project setting from nvim's .claude/settings.json. Build the FTS5 database (.literature.db) using literature-build-index.sh to activate Tier 1 on-demand search (currently dead code — always falls back to Tier 2 keyword injection). Run literature-audit.sh to validate index integrity across the unified collection. Verify --lit flag works end-to-end from all three project roots (nvim, BimodalLogic, cslib).
 
@@ -121,9 +150,9 @@ next_project_number: 741
 - **Task Type**: general
 - **Topic**: literature
 - **Dependencies**: Task 730, Task 731
-- **Research**: [732_literature_schema_unification/reports/01_schema-unification-research.md]
-- **Plan**: [732_literature_schema_unification/plans/01_schema-unification-plan.md]
-- **Summary**: [732_literature_schema_unification/summaries/01_schema-unification-summary.md]
+- **Research**: [732_literature_schema_unification/reports/01_schema-unification-research.md](specs/732_literature_schema_unification/reports/01_schema-unification-research.md)
+- **Plan**: [732_literature_schema_unification/plans/01_schema-unification-plan.md](specs/732_literature_schema_unification/plans/01_schema-unification-plan.md)
+- **Summary**: [732_literature_schema_unification/summaries/01_schema-unification-summary.md](specs/732_literature_schema_unification/summaries/01_schema-unification-summary.md)
 
 **Description**: Upgrade all remaining v1 index entries in ~/Projects/Literature/index.json to v2 schema (add doc_type, source_format, zotero_key, project_tags where missing). Deduplicate BimodalLogic's flat+chunked structure (keep only semantic chunks, remove redundant flat files). Add DEPRECATED.md to cslib's specs/literature/ pointing to the centralized repo. Ensure all per-directory index.json files in subdirectories are consistent with root index.json. Validate no orphaned or missing entries.
 
@@ -134,9 +163,9 @@ next_project_number: 741
 - **Task Type**: general
 - **Topic**: literature
 - **Dependencies**: Task 728
-- **Research**: [731_literature_cslib_migration/reports/01_cslib-migration-research.md]
-- **Plan**: [731_literature_cslib_migration/plans/01_cslib-migration-plan.md]
-- **Summary**: [731_literature_cslib_migration/summaries/01_cslib-migration-summary.md]
+- **Research**: [731_literature_cslib_migration/reports/01_cslib-migration-research.md](specs/731_literature_cslib_migration/reports/01_cslib-migration-research.md)
+- **Plan**: [731_literature_cslib_migration/plans/01_cslib-migration-plan.md](specs/731_literature_cslib_migration/plans/01_cslib-migration-plan.md)
+- **Summary**: [731_literature_cslib_migration/summaries/01_cslib-migration-summary.md](specs/731_literature_cslib_migration/summaries/01_cslib-migration-summary.md)
 
 **Description**: Migrate cslib's 70 unique entries from ~/Projects/cslib/specs/literature/ into ~/Projects/Literature/ with v2 schema fields (doc_type, source_format, zotero_key, project_tags: ["cslib"]). Resolve the 6 overlapping entries (burgess_1982_i/ii, burgess_1984, gabbay_1994_ch10, reynolds_1992, blackburn_2001_ch00) by keeping the fuller versions and tagging both projects. Convert cslib's remaining chagrov_1997.djvu to markdown. Ensure migrated content follows semantic chunking standards from task 730.
 
@@ -147,9 +176,9 @@ next_project_number: 741
 - **Task Type**: general
 - **Topic**: literature
 - **Dependencies**: Task 728, Task 729
-- **Research**: [730_literature_semantic_rechunking/reports/01_semantic-rechunking-research.md]
-- **Plan**: [730_literature_semantic_rechunking/plans/01_semantic-rechunking-plan.md]
-- **Summary**: [730_literature_semantic_rechunking/summaries/01_semantic-rechunking-summary.md]
+- **Research**: [730_literature_semantic_rechunking/reports/01_semantic-rechunking-research.md](specs/730_literature_semantic_rechunking/reports/01_semantic-rechunking-research.md)
+- **Plan**: [730_literature_semantic_rechunking/plans/01_semantic-rechunking-plan.md](specs/730_literature_semantic_rechunking/plans/01_semantic-rechunking-plan.md)
+- **Summary**: [730_literature_semantic_rechunking/summaries/01_semantic-rechunking-summary.md](specs/730_literature_semantic_rechunking/summaries/01_semantic-rechunking-summary.md)
 
 **Description**: Using the audit manifest from task 729 and source PDFs from task 728, re-chunk all arbitrarily split files at semantic boundaries (chapter headings, section headings, theorem boundaries). Chunk oversized flat files — especially the 365K-token Blackburn book. Remove redundant flat files where a properly chunked subdirectory exists. Use actual document structure from sources, not literature-chunk.sh's token-target approach. Update index.json entries for every re-chunked document with correct paths, token counts, and section metadata.
 
@@ -160,9 +189,9 @@ next_project_number: 741
 - **Task Type**: general
 - **Topic**: literature
 - **Dependencies**: Task 728
-- **Research**: [729_literature_chunking_audit/reports/01_chunking-audit-research.md]
-- **Plan**: [729_literature_chunking_audit/plans/01_chunking-audit-plan.md]
-- **Summary**: [729_literature_chunking_audit/summaries/01_chunking-audit-summary.md]
+- **Research**: [729_literature_chunking_audit/reports/01_chunking-audit-research.md](specs/729_literature_chunking_audit/reports/01_chunking-audit-research.md)
+- **Plan**: [729_literature_chunking_audit/plans/01_chunking-audit-plan.md](specs/729_literature_chunking_audit/plans/01_chunking-audit-plan.md)
+- **Summary**: [729_literature_chunking_audit/summaries/01_chunking-audit-summary.md](specs/729_literature_chunking_audit/summaries/01_chunking-audit-summary.md)
 
 **Description**: Audit every subdirectory in ~/Projects/Literature/ for chunking quality. For each document, classify as: (a) semantically chunked by chapter/section (good — keep), (b) arbitrarily chunked by page number or byte count (needs re-chunking), (c) oversized flat file needing chunking (e.g., Blackburn_deRijke_Venema_2002 at 365K tokens). Also audit cslib's specs/literature/ subdirectories (blackburn_2001, chagrov_1997, church_1956, etc.) for the same. Produce a manifest of documents with their chunking status, recommended action (keep/re-chunk/chunk-new), and natural section structure from source PDFs.
 
@@ -173,9 +202,9 @@ next_project_number: 741
 - **Task Type**: general
 - **Topic**: literature
 - **Dependencies**: None
-- **Research**: [728_literature_source_recovery/reports/01_source-recovery-research.md]
-- **Plan**: [728_literature_source_recovery/plans/01_source-recovery-plan.md]
-- **Summary**: [728_literature_source_recovery/summaries/01_source-recovery-summary.md]
+- **Research**: [728_literature_source_recovery/reports/01_source-recovery-research.md](specs/728_literature_source_recovery/reports/01_source-recovery-research.md)
+- **Plan**: [728_literature_source_recovery/plans/01_source-recovery-plan.md](specs/728_literature_source_recovery/plans/01_source-recovery-plan.md)
+- **Summary**: [728_literature_source_recovery/summaries/01_source-recovery-summary.md](specs/728_literature_source_recovery/summaries/01_source-recovery-summary.md)
 
 **Description**: Re-acquire PDFs/DJVUs from Zotero using zotero_key fields in ~/Projects/Literature/index.json (182/183 entries have keys). Copy BimodalLogic's 32 surviving PDFs from ~/Projects/BimodalLogic/specs/literature/ into Literature/pdfs/. Copy cslib's chagrov_1997.djvu. Verify all indexed documents have corresponding source files in pdfs/. Store in pdfs/ directory (keep gitignored but present locally). This is prerequisite for all re-chunking work.
 
@@ -187,8 +216,8 @@ next_project_number: 741
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
-- **Research**: [727_implement_extension_keyword_overrides_in_task_command/reports/01_keyword-overrides-research.md]
-- **Plan**: [727_implement_extension_keyword_overrides_in_task_command/plans/01_keyword-overrides-plan.md]
+- **Research**: [727_implement_extension_keyword_overrides_in_task_command/reports/01_keyword-overrides-research.md](specs/727_implement_extension_keyword_overrides_in_task_command/reports/01_keyword-overrides-research.md)
+- **Plan**: [727_implement_extension_keyword_overrides_in_task_command/plans/01_keyword-overrides-plan.md](specs/727_implement_extension_keyword_overrides_in_task_command/plans/01_keyword-overrides-plan.md)
 
 **Description**: Fix the /task command (task.md) step 4 (task type detection) to implement the documented precedence order: meta keywords > extension keyword_overrides > default_task_type > keyword table > general. Currently step 4 only has a hardcoded keyword table and never queries extension manifests for keyword_overrides or checks state.json default_task_type. The fix should: (1) After meta keyword check, scan loaded extension manifests (.claude/extensions/*/manifest.json) for keyword_overrides entries, (2) Match task description keywords against each extension keyword_overrides, (3) If matched, use that extension task type, (4) If no extension match, check state.json default_task_type as fallback before the hardcoded keyword table, (5) Fall through to hardcoded table and then general as final default. This ensures tasks like PR-related descriptions get type pr when an extension defines pr keyword overrides.
 
@@ -211,7 +240,7 @@ next_project_number: 741
 - **Task Type**: neovim
 - **Topic**: Terminal UI
 - **Dependencies**: None
-- **Research**: [087_investigate_wezterm_terminal_directory_change/reports/research-001.md]
+- **Research**: [087_investigate_wezterm_terminal_directory_change/reports/research-001.md](specs/087_investigate_wezterm_terminal_directory_change/reports/research-001.md)
 
 **Description**: Investigate why the terminal working directory changes to a project root when opening neovim sessions in wezterm from the home directory (~). Determine whether this behavior is caused by neovim or wezterm (configured in ~/.dotfiles/config/). Identify if any functionality depends on this behavior before modifying it. Goal is to avoid changing the terminal directory unless necessary.
 
@@ -223,7 +252,7 @@ next_project_number: 741
 - **Task Type**: neovim
 - **Topic**: Email Integration
 - **Dependencies**: None
-- **Research**: [078_fix_himalaya_smtp_authentication_failure/reports/research-001.md]
-- **Plan**: [078_fix_himalaya_smtp_authentication_failure/plans/implementation-001.md]
+- **Research**: [078_fix_himalaya_smtp_authentication_failure/reports/research-001.md](specs/078_fix_himalaya_smtp_authentication_failure/reports/research-001.md)
+- **Plan**: [078_fix_himalaya_smtp_authentication_failure/plans/implementation-001.md](specs/078_fix_himalaya_smtp_authentication_failure/plans/implementation-001.md)
 
 **Description**: Fix Gmail SMTP authentication failure when sending emails via Himalaya (<leader>me). Error: Authentication failed: Code: 535, Enhanced code: 5.7.8, Message: Username and Password not accepted. The error occurs with TLS connection attempts and persists through multiple retry attempts. Identify and fix the root cause of the SMTP credential configuration.

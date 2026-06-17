@@ -109,10 +109,10 @@ Use in plan files:
 ## Artifact Linking in TODO.md
 
 Use count-aware format from `.claude/context/reference/state-management-schema.md`:
-- Single artifact (1): Use inline format `- **Type**: [path]`
+- Single artifact (1): Use inline format `- **Type**: [path](specs/path)`
 - Multiple artifacts (2+): Use multi-line list format with 2-space indentation
 
-**PROHIBITION**: Never use markdown link format `[name](path)` in TODO.md artifact links. Always use bracket-only format `[path]`. Call `bash .claude/scripts/generate-todo.sh` after updating `state.json` to regenerate TODO.md with correct artifact link format (replaces the deprecated `link-artifact-todo.sh`).
+Artifact links use **markdown link format** `[path](specs/path)` for clickability in GitHub and markdown renderers. Call `bash .claude/scripts/generate-todo.sh` after updating `state.json` to regenerate TODO.md with correct artifact link format (replaces the deprecated `link-artifact-todo.sh`).
 
 ## Template Reference
 

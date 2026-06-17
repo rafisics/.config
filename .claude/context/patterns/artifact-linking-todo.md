@@ -4,7 +4,9 @@
 
 Canonical four-case logic for linking artifacts in TODO.md task entries. Skills reference this pattern instead of carrying inline instructions.
 
-**Current Approach (task 649+)**: Update `state.json` artifact array directly, then call `bash .claude/scripts/generate-todo.sh` to regenerate TODO.md from state.json. This replaces the four-case awk/sed surgery.
+**New Approach (task 649+)**: Update `state.json` artifact array directly, then call `bash .claude/scripts/generate-todo.sh` to regenerate TODO.md from state.json. This replaces the four-case awk/sed surgery.
+
+**Legacy Automation**: This logic was previously implemented by `.claude/scripts/link-artifact-todo.sh` (removed in task 652). Core skills now use `generate-todo.sh` exclusively.
 
 ## Parameterization Map
 
@@ -24,7 +26,7 @@ todo_link_path="${artifact_path#specs/}"
 
 ## Link Format
 
-All new artifact links use **bracket-only** format: `[{todo_link_path}]` (not markdown `[text](url)`).
+All new artifact links use **markdown link** format: `[{todo_link_path}](specs/{todo_link_path})` (clickable on GitHub and in markdown renderers).
 
 ## Four-Case Edit Logic
 
@@ -50,14 +52,14 @@ The task entry has no `- {field_name}:` line.
 
 ```
 old_string: - {next_field}:
-new_string: - {field_name}: [{todo_link_path}]
+new_string: - {field_name}: [{todo_link_path}](specs/{todo_link_path})
 - {next_field}:
 ```
 
 **Example** (research artifact):
 ```
 old_string: - **Plan**:
-new_string: - **Research**: [398_extract_artifact/reports/01_initial-research.md]
+new_string: - **Research**: [398_extract_artifact/reports/01_initial-research.md](specs/398_extract_artifact/reports/01_initial-research.md)
 - **Plan**:
 ```
 
@@ -68,18 +70,18 @@ The task entry has `- {field_name}: [something]` -- a link on the same line.
 **Action**: Convert to multi-line format with both the existing and new links:
 
 ```
-old_string: - {field_name}: [existing_path]
+old_string: - {field_name}: [existing_path](specs/existing_path)
 new_string: - {field_name}:
-  - [existing_path]
-  - [{todo_link_path}]
+  - [existing_path](specs/existing_path)
+  - [{todo_link_path}](specs/{todo_link_path})
 ```
 
 **Example** (plan artifact, existing inline link):
 ```
-old_string: - **Plan**: [398_extract_artifact/plans/01_impl-plan.md]
+old_string: - **Plan**: [398_extract_artifact/plans/01_impl-plan.md](specs/398_extract_artifact/plans/01_impl-plan.md)
 new_string: - **Plan**:
-  - [398_extract_artifact/plans/01_impl-plan.md]
-  - [398_extract_artifact/plans/02_revised-plan.md]
+  - [398_extract_artifact/plans/01_impl-plan.md](specs/398_extract_artifact/plans/01_impl-plan.md)
+  - [398_extract_artifact/plans/02_revised-plan.md](specs/398_extract_artifact/plans/02_revised-plan.md)
 ```
 
 ### Case 3: Existing Multi-Line
@@ -89,19 +91,19 @@ The task entry has `- {field_name}:` followed by indented bullet items (2+ links
 **Action**: Append the new link as a bullet before the `- {next_field}:` line. If there is a blank line before the next field, insert before the blank line to preserve spacing.
 
 ```
-old_string:   - [last_path]
+old_string:   - [last_path](specs/last_path)
 - {next_field}:
-new_string:   - [last_path]
-  - [{todo_link_path}]
+new_string:   - [last_path](specs/last_path)
+  - [{todo_link_path}](specs/{todo_link_path})
 - {next_field}:
 ```
 
 **Example** (summary artifact, existing multi-line):
 ```
-old_string:   - [398_extract_artifact/summaries/01_exec-summary.md]
+old_string:   - [398_extract_artifact/summaries/01_exec-summary.md](specs/398_extract_artifact/summaries/01_exec-summary.md)
 - **Description**:
-new_string:   - [398_extract_artifact/summaries/01_exec-summary.md]
-  - [398_extract_artifact/summaries/02_revised-summary.md]
+new_string:   - [398_extract_artifact/summaries/01_exec-summary.md](specs/398_extract_artifact/summaries/01_exec-summary.md)
+  - [398_extract_artifact/summaries/02_revised-summary.md](specs/398_extract_artifact/summaries/02_revised-summary.md)
 - **Description**:
 ```
 

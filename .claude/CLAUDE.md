@@ -120,6 +120,8 @@ All commands use checkpoint-based execution: GATE IN (preflight) -> DELEGATE (sk
 | `/literature` | `/literature --index FILE` | Add/update index entry for existing markdown file |
 | `/literature` | `/literature --search "QUERY"` | Search Zotero library and Literature/ index by keyword |
 | `/literature` | `/literature --task N` | Extract task N description as search query |
+| `/cite` | `/cite N` | Verify citation claims in task N artifacts against Literature/ and Zotero |
+| `/cite` | `/cite N --gaps` | Also flag citations found but lacking a local PDF |
 
 **Multi-task syntax**: `/research`, `/plan`, and `/implement` accept multiple task numbers using commas and ranges (e.g., `/research 7, 22-24, 59`). Each task is processed by a separate agent in parallel. Flags like `--team` and `--force` apply to all tasks. See `.claude/context/patterns/multi-task-operations.md` for the full specification.
 

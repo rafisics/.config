@@ -146,7 +146,8 @@ After extraction, each command retains only:
 **File locations**:
 ```
 .claude/scripts/
-└── skill-base.sh                # NEW: shared skill lifecycle stages
+├── skill-base.sh                # NEW: shared skill lifecycle stages
+└── postflight-workflow.sh       # NEW: shared postflight helper
 ```
 
 ### Architecture Decision
@@ -198,7 +199,7 @@ The skill body after refactoring:
 # → append to state.json entry (append semantics)
 
 # skill_link_artifacts "$task_number" "$artifact_path"
-# → jq state.json update + generate-todo.sh regeneration
+# → jq state.json update + generate-todo.sh
 
 # skill_cleanup "$padded_num" "$project_name"
 # → rm -f .postflight-pending .postflight-loop-guard .return-meta.json
@@ -506,6 +507,7 @@ The `orchestrator_mode` flag MUST be preserved across continuation chains:
   └─ extracts: parse-command-args.sh          │
                command-gate-in.sh             │
                command-gate-out.sh            │
+               postflight-workflow.sh         │
                               │               │
                               ▼               │
 598 (progressive disclosure) ◄───────────────┘
@@ -543,6 +545,7 @@ Files to be created across Tasks 593-599:
 ├── parse-command-args.sh         (task 593)
 ├── command-gate-in.sh            (task 593)
 ├── command-gate-out.sh           (task 593)
+├── postflight-workflow.sh        (task 593)
 ├── skill-base.sh                 (task 594)
 └── dispatch-agent.sh             (task 596)
 

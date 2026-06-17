@@ -1,0 +1,45 @@
+{
+  "session_id": "sess_1781729302_ae67df",
+  "task_numbers": [
+    741,
+    742
+  ],
+  "waves": [
+    [
+      741
+    ],
+    [
+      742
+    ]
+  ],
+  "dependency_graph": {
+    "741": [],
+    "742": [
+      741
+    ]
+  },
+  "task_types": {
+    "741": "meta",
+    "742": "meta"
+  },
+  "task_dirs": {
+    "741": "specs/741_todo_artifact_markdown_links",
+    "742": "specs/742_implement_phase_auto_status"
+  },
+  "research_agents": {
+    "741": "general-research-agent",
+    "742": "general-research-agent"
+  },
+  "implement_agents": {
+    "741": "general-implementation-agent",
+    "742": "general-implementation-agent"
+  },
+  "current_statuses": {
+    "741": "not_started",
+    "742": "not_started"
+  },
+  "cycle_count": 0,
+  "max_cycles": 10,
+  "failed_tasks": [],
+  "completed_tasks": []
+}

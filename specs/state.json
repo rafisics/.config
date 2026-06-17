@@ -1,7 +1,50 @@
 {
   "version": "1.1.0",
-  "next_project_number": 741,
+  "next_project_number": 743,
   "active_projects": [
+    {
+      "project_number": 742,
+      "project_name": "implement_phase_auto_status",
+      "title": "Auto-update plan phase status on implement preflight",
+      "status": "not_started",
+      "task_type": "meta",
+      "topic": "agent-system",
+      "description": "Extend update_plan_file() in update-task-status.sh to call update-phase-status.sh for the first NOT STARTED phase when operation is preflight implement. This integrates the existing but unused update-phase-status.sh script into the automated preflight pipeline, ensuring Phase 1 is marked [IN PROGRESS] when implementation begins.",
+      "created": "2026-06-17T00:00:00Z",
+      "dependencies": [
+        741
+      ],
+      "artifacts": []
+    },
+    {
+      "project_number": 741,
+      "project_name": "todo_artifact_markdown_links",
+      "title": "Convert TODO.md artifact references to markdown links",
+      "status": "not_started",
+      "task_type": "meta",
+      "topic": "agent-system",
+      "description": "Update generate-todo.sh to output artifact references as proper markdown links [path](specs/path) instead of bracket-only [path] format. Change lines 284 and 289 to include the specs/ prefixed path as link target. Update artifact-linking-todo.md pattern doc to document the new link format.",
+      "created": "2026-06-17T00:00:00Z",
+      "dependencies": [],
+      "artifacts": [
+        {
+          "path": "specs/741_todo_artifact_markdown_links/reports/01_markdown-links-research.md",
+          "type": "report",
+          "summary": "Research findings: exact lines to change in generate-todo.sh and artifact-linking-todo.md"
+        },
+        {
+          "path": "specs/741_todo_artifact_markdown_links/plans/01_markdown-links-plan.md",
+          "type": "plan",
+          "summary": "Implementation plan for markdown link conversion"
+        },
+        {
+          "path": "specs/741_todo_artifact_markdown_links/summaries/01_markdown-links-summary.md",
+          "type": "summary",
+          "summary": "Execution summary"
+        }
+      ],
+      "completion_summary": "Converted TODO.md artifact references from bracket-only [path] to markdown links [path](specs/path). Updated generate-todo.sh printf lines and 3 documentation files."
+    },
     {
       "project_number": 740,
       "project_name": "zulip_core_extension",

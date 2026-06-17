@@ -239,18 +239,19 @@ jq --arg path "$artifact_path" \
 # Expected output should show status "researched" and artifact added
 ```
 
-## Status Update Scripts
+## Postflight Scripts
 
 Reusable shell scripts are available in `.claude/scripts/` that encapsulate correct jq patterns:
 
 | Script | Purpose |
 |--------|---------|
-| `update-task-status.sh <op> TASK_NUM <target> SESSION_ID` | Update state.json and regenerate TODO.md |
-| `reconcile-task-status.sh TASK_NUM SESSION_ID` | Self-heal stuck tasks by replaying postflight |
+| `postflight-research.sh TASK_NUM ARTIFACT_PATH [SUMMARY]` | Update state.json after research completion |
+| `postflight-plan.sh TASK_NUM ARTIFACT_PATH [SUMMARY]` | Update state.json after plan creation |
+| `postflight-implement.sh TASK_NUM ARTIFACT_PATH [SUMMARY]` | Update state.json after implementation |
 
 Example usage:
 ```bash
-.claude/scripts/update-task-status.sh postflight 607 implement sess_xyz
+.claude/scripts/postflight-plan.sh 607 "specs/607_task/plans/02_implementation-plan.md" "9-phase implementation plan"
 ```
 
 ## References
@@ -258,4 +259,4 @@ Example usage:
 - Claude Code Issue #1132: Bash tool escaping bug
 - `.claude/context/patterns/inline-status-update.md` - Status update patterns
 - `.claude/rules/state-management.md` - State management rules
-- `.claude/scripts/update-task-status.sh` - Centralized status update script
+- `.claude/scripts/postflight-*.sh` - Reusable postflight scripts
