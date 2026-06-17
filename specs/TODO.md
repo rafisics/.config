@@ -1,12 +1,12 @@
 ---
-next_project_number: 739
+next_project_number: 741
 ---
 
 # TODO
 
 ## Task Order
 
-*Updated 2026-06-16. Generated from state.json dependency graph.*
+*Updated 2026-06-17. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
@@ -24,6 +24,29 @@ next_project_number: 739
 78 [PLANNED] — Fix Gmail SMTP authentication failure when sending emails via Him
 
 ## Tasks
+
+### 740. Add /zulip command and skill-zulip to core extension
+- **Status**: [COMPLETED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+- **Research**: [740_zulip_core_extension/reports/01_zulip-core-extension.md]
+- **Plan**: [740_zulip_core_extension/plans/01_zulip-core-extension.md]
+- **Summary**: [740_zulip_core_extension/summaries/01_zulip-core-extension-summary.md]
+
+**Description**: Add the /zulip command (zulip.md) and skill-zulip to the core extension so they are available in all projects that depend on core. Currently these artifacts exist in the top-level .claude/ directory but are not declared in any extension manifest, so they do not get installed when the extension loader runs in child projects like cslib. Changes: (1) Copy .claude/commands/zulip.md to .claude/extensions/core/commands/zulip.md, (2) Copy .claude/skills/skill-zulip/ to .claude/extensions/core/skills/skill-zulip/, (3) Add zulip.md to provides.commands in core/manifest.json, (4) Add skill-zulip to provides.skills in core/manifest.json.
+
+---
+
+### 739. Create /zulip skill to fetch Zulip threads and dump to file
+- **Status**: [COMPLETED]
+- **Task Type**: meta
+- **Topic**: skills
+- **Dependencies**: None
+
+**Description**: Create a /zulip skill that fetches a Zulip chat thread via the API and pipes the raw JSON (formatted with jq) to a target file. Usage: /zulip <zulip-url> [output-path]. The skill should: (1) Parse the Zulip URL to extract channel, topic, and optional message anchor, (2) Use credentials from ~/.zuliprc to authenticate against the Zulip API, (3) Fetch all messages in the thread via curl + jq, (4) Write the formatted output (sender, date, content fields) directly to the output path, (5) If no output path is given, ask the user where to pipe the output via AskUserQuestion. Keep it simple — raw dump, no markdown conversion.
+
+---
 
 ### 738. Refactor BimodalLogic specs/literature/ to sources/ structure and remove blackburn_2001
 - **Status**: [COMPLETED]

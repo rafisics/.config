@@ -1,7 +1,52 @@
 {
   "version": "1.1.0",
-  "next_project_number": 739,
+  "next_project_number": 741,
   "active_projects": [
+    {
+      "project_number": 740,
+      "project_name": "zulip_core_extension",
+      "title": "Add /zulip command and skill-zulip to core extension",
+      "status": "completed",
+      "task_type": "meta",
+      "topic": "agent-system",
+      "description": "Add the /zulip command (zulip.md) and skill-zulip to the core extension so they are available in all projects that depend on core. Currently these artifacts exist in the top-level .claude/ directory but are not declared in any extension manifest, so they do not get installed when the extension loader runs in child projects like cslib. Changes: (1) Copy .claude/commands/zulip.md to .claude/extensions/core/commands/zulip.md, (2) Copy .claude/skills/skill-zulip/ to .claude/extensions/core/skills/skill-zulip/, (3) Add zulip.md to provides.commands in core/manifest.json, (4) Add skill-zulip to provides.skills in core/manifest.json.",
+      "created": "2026-06-17T00:00:00Z",
+      "last_updated": "2026-06-17T20:03:50Z",
+      "dependencies": [],
+      "artifacts": [
+        {
+          "type": "report",
+          "path": "specs/740_zulip_core_extension/reports/01_zulip-core-extension.md",
+          "summary": "Research: source files, manifest changes, no script dependencies"
+        },
+        {
+          "type": "plan",
+          "path": "specs/740_zulip_core_extension/plans/01_zulip-core-extension.md",
+          "summary": "2-phase plan: copy files + update manifest"
+        },
+        {
+          "type": "summary",
+          "path": "specs/740_zulip_core_extension/summaries/01_zulip-core-extension-summary.md",
+          "summary": "Implementation: file copies + manifest update"
+        }
+      ],
+      "session_id": "sess_1781726185_912d08",
+      "completion_summary": "Added zulip.md command and skill-zulip to core extension provides, copied files into extensions/core/ directory, updated manifest.json and EXTENSION.md counts"
+    },
+    {
+      "project_number": 739,
+      "project_name": "zulip_fetch_skill",
+      "title": "Create /zulip skill to fetch Zulip threads and dump to file",
+      "status": "completed",
+      "task_type": "meta",
+      "topic": "skills",
+      "description": "Create a /zulip skill that fetches a Zulip chat thread via the API and pipes the raw JSON (formatted with jq) to a target file. Usage: /zulip <zulip-url> [output-path]. The skill should: (1) Parse the Zulip URL to extract channel, topic, and optional message anchor, (2) Use credentials from ~/.zuliprc to authenticate against the Zulip API, (3) Fetch all messages in the thread via curl + jq, (4) Write the formatted output (sender, date, content fields) directly to the output path, (5) If no output path is given, ask the user where to pipe the output via AskUserQuestion. Keep it simple — raw dump, no markdown conversion.",
+      "created": "2026-06-17T00:00:00Z",
+      "last_updated": "2026-06-17T19:14:48Z",
+      "dependencies": [],
+      "artifacts": [],
+      "session_id": "sess_1781723056_26de25"
+    },
     {
       "project_number": 736,
       "project_name": "literature_extension_sources_convention",

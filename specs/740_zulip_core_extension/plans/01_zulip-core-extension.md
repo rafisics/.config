@@ -1,7 +1,7 @@
 # Implementation Plan: Add /zulip command and skill-zulip to core extension
 
 - **Task**: 740 - Add /zulip command and skill-zulip to core extension
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 0.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/740_zulip_core_extension/reports/01_zulip-core-extension.md
