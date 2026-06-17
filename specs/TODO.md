@@ -11,13 +11,9 @@ next_project_number: 743
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,741 | -- | agent-system, Terminal UI, Email Integration |
+| 1 | 78,87 | -- | Terminal UI, Email Integration |
 
 **Grouped by Topic** (indented = depends on parent):
-
-### Agent System
-
-741 [NOT STARTED] — Update generate-todo.sh to output artifact references as proper m
 
 ### Terminal UI
 
@@ -45,7 +41,7 @@ next_project_number: 743
 ---
 
 ### 741. Convert TODO.md artifact references to markdown links
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None

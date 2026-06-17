@@ -44,7 +44,7 @@
       "project_number": 741,
       "project_name": "todo_artifact_markdown_links",
       "title": "Convert TODO.md artifact references to markdown links",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "meta",
       "topic": "agent-system",
       "description": "Update generate-todo.sh to output artifact references as proper markdown links [path](specs/path) instead of bracket-only [path] format. Change lines 284 and 289 to include the specs/ prefixed path as link target. Update artifact-linking-todo.md pattern doc to document the new link format.",
