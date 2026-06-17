@@ -29051,6 +29051,497 @@
       "last_updated": "2026-06-16T00:56:57Z",
       "session_id": "sess_1781569603_28a6dc_728",
       "completion_summary": "Created lint-prevention-rules.md with 7 rules for environment linters not in PR CI, added mandatory Lint Prevention section to cslib-implementation-agent.md with MUST DO/MUST NOT items and post-lint grep check, and added Lint Prevention Awareness to cslib-research-agent.md."
+    },
+    {
+      "project_number": 742,
+      "project_name": "implement_phase_auto_status",
+      "title": "Auto-update plan phase status on implement preflight",
+      "status": "completed",
+      "task_type": "meta",
+      "topic": "agent-system",
+      "description": "Extend update_plan_file() in update-task-status.sh to call update-phase-status.sh for the first NOT STARTED phase when operation is preflight implement. This integrates the existing but unused update-phase-status.sh script into the automated preflight pipeline, ensuring Phase 1 is marked [IN PROGRESS] when implementation begins.",
+      "created": "2026-06-17T00:00:00Z",
+      "dependencies": [
+        741
+      ],
+      "artifacts": [
+        {
+          "path": "specs/742_implement_phase_auto_status/reports/01_phase-auto-status-research.md",
+          "type": "report",
+          "summary": "Research findings on update-phase-status.sh integration"
+        },
+        {
+          "path": "specs/742_implement_phase_auto_status/summaries/01_phase-auto-status-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for task 742 — phase auto-advance integrated into update_plan_file()"
+        },
+        {
+          "path": "specs/742_implement_phase_auto_status/plans/01_phase-auto-status-plan.md",
+          "type": "plan",
+          "summary": "Implementation plan for phase auto-status integration"
+        },
+        {
+          "path": "specs/742_implement_phase_auto_status/summaries/01_phase-auto-status-summary.md",
+          "type": "summary",
+          "summary": "Execution summary"
+        }
+      ],
+      "last_updated": "2026-06-17T21:06:13Z",
+      "session_id": "sess_1781729302_ae67df_742",
+      "completion_summary": "Integrated update-phase-status.sh into update_plan_file() preflight pipeline. First NOT STARTED phase auto-advances to IN PROGRESS on implement preflight. Non-fatal, dry-run safe, resume-aware.",
+      "archived": "2026-06-17T21:23:47Z"
+    },
+    {
+      "project_number": 741,
+      "project_name": "todo_artifact_markdown_links",
+      "title": "Convert TODO.md artifact references to markdown links",
+      "status": "completed",
+      "task_type": "meta",
+      "topic": "agent-system",
+      "description": "Update generate-todo.sh to output artifact references as proper markdown links [path](specs/path) instead of bracket-only [path] format. Change lines 284 and 289 to include the specs/ prefixed path as link target. Update artifact-linking-todo.md pattern doc to document the new link format.",
+      "created": "2026-06-17T00:00:00Z",
+      "dependencies": [],
+      "artifacts": [
+        {
+          "path": "specs/741_todo_artifact_markdown_links/reports/01_markdown-links-research.md",
+          "type": "report",
+          "summary": "Research findings: exact lines to change in generate-todo.sh and artifact-linking-todo.md"
+        },
+        {
+          "path": "specs/741_todo_artifact_markdown_links/plans/01_markdown-links-plan.md",
+          "type": "plan",
+          "summary": "Implementation plan for markdown link conversion"
+        },
+        {
+          "path": "specs/741_todo_artifact_markdown_links/summaries/01_markdown-links-summary.md",
+          "type": "summary",
+          "summary": "Execution summary"
+        }
+      ],
+      "completion_summary": "Converted TODO.md artifact references from bracket-only [path] to markdown links [path](specs/path). Updated generate-todo.sh printf lines and 3 documentation files.",
+      "archived": "2026-06-17T21:23:47Z"
+    },
+    {
+      "project_number": 740,
+      "project_name": "zulip_core_extension",
+      "title": "Add /zulip command and skill-zulip to core extension",
+      "status": "completed",
+      "task_type": "meta",
+      "topic": "agent-system",
+      "description": "Add the /zulip command (zulip.md) and skill-zulip to the core extension so they are available in all projects that depend on core. Currently these artifacts exist in the top-level .claude/ directory but are not declared in any extension manifest, so they do not get installed when the extension loader runs in child projects like cslib. Changes: (1) Copy .claude/commands/zulip.md to .claude/extensions/core/commands/zulip.md, (2) Copy .claude/skills/skill-zulip/ to .claude/extensions/core/skills/skill-zulip/, (3) Add zulip.md to provides.commands in core/manifest.json, (4) Add skill-zulip to provides.skills in core/manifest.json.",
+      "created": "2026-06-17T00:00:00Z",
+      "last_updated": "2026-06-17T20:03:50Z",
+      "dependencies": [],
+      "artifacts": [
+        {
+          "type": "report",
+          "path": "specs/740_zulip_core_extension/reports/01_zulip-core-extension.md",
+          "summary": "Research: source files, manifest changes, no script dependencies"
+        },
+        {
+          "type": "plan",
+          "path": "specs/740_zulip_core_extension/plans/01_zulip-core-extension.md",
+          "summary": "2-phase plan: copy files + update manifest"
+        },
+        {
+          "type": "summary",
+          "path": "specs/740_zulip_core_extension/summaries/01_zulip-core-extension-summary.md",
+          "summary": "Implementation: file copies + manifest update"
+        }
+      ],
+      "session_id": "sess_1781726185_912d08",
+      "completion_summary": "Added zulip.md command and skill-zulip to core extension provides, copied files into extensions/core/ directory, updated manifest.json and EXTENSION.md counts",
+      "archived": "2026-06-17T21:23:47Z"
+    },
+    {
+      "project_number": 739,
+      "project_name": "zulip_fetch_skill",
+      "title": "Create /zulip skill to fetch Zulip threads and dump to file",
+      "status": "completed",
+      "task_type": "meta",
+      "topic": "skills",
+      "description": "Create a /zulip skill that fetches a Zulip chat thread via the API and pipes the raw JSON (formatted with jq) to a target file. Usage: /zulip <zulip-url> [output-path]. The skill should: (1) Parse the Zulip URL to extract channel, topic, and optional message anchor, (2) Use credentials from ~/.zuliprc to authenticate against the Zulip API, (3) Fetch all messages in the thread via curl + jq, (4) Write the formatted output (sender, date, content fields) directly to the output path, (5) If no output path is given, ask the user where to pipe the output via AskUserQuestion. Keep it simple — raw dump, no markdown conversion.",
+      "created": "2026-06-17T00:00:00Z",
+      "last_updated": "2026-06-17T19:14:48Z",
+      "dependencies": [],
+      "artifacts": [],
+      "session_id": "sess_1781723056_26de25",
+      "archived": "2026-06-17T21:23:47Z"
+    },
+    {
+      "project_number": 736,
+      "project_name": "literature_extension_sources_convention",
+      "title": "Update literature extension for sources/ directory convention",
+      "status": "completed",
+      "task_type": "meta",
+      "topic": "literature",
+      "description": "Update the literature extension to use the sources/ subdirectory convention matching the refactored ~/Projects/Literature/ repository. Changes needed: (1) skill-literature SKILL.md convert mode should place new conversions under sources/ instead of flat in lit_dir, (2) EXTENSION.md should document the sources/ convention, (3) literature-retrieve.sh fallback path should look in sources/ subdirectory for markdown files. The index-based path (Tier 1/2) already works because paths come from index.json. The migrate-from-repo.sh in Literature/ was already updated.",
+      "created": "2026-06-16T20:30:00Z",
+      "last_updated": "2026-06-16T22:02:04Z",
+      "dependencies": [],
+      "artifacts": [],
+      "session_id": "sess_1781645207_5d2e80_736",
+      "completion_summary": "Updated literature extension: added sources_prefix variable to SKILL.md convert mode (6 path sites), added sources/ scan-dir preference to literature-retrieve.sh fallback, documented sources/ convention in EXTENSION.md",
+      "archived": "2026-06-17T21:23:47Z"
+    },
+    {
+      "project_number": 737,
+      "project_name": "refactor_cslib_literature_sources",
+      "title": "Refactor cslib specs/literature/ to sources/ structure and remove blackburn_2001",
+      "status": "completed",
+      "task_type": "general",
+      "topic": "literature",
+      "description": "Refactor ~/Projects/cslib/specs/literature/ to match the centralized Literature/ repository structure: (1) Create sources/ subdirectory, (2) Move all 7 content subdirectories (church_1956, chagrov_1997, gentzen_1935, hughes_1996, mendelson_2016, zakharyaschev_2001) into sources/, (3) Move 11 loose markdown files into individual sources/{id}/ directories, (4) Move chagrov_1997.djvu alongside its content in sources/, (5) Remove blackburn_2001/ directory entirely (matching Literature/ removal), (6) Update index.json paths with sources/ prefix and remove blackburn_2001 entries, (7) Update README.md references.",
+      "created": "2026-06-16T20:30:00Z",
+      "last_updated": "2026-06-16T22:02:05Z",
+      "dependencies": [],
+      "artifacts": [],
+      "session_id": "sess_1781645207_5d2e80_737",
+      "completion_summary": "Refactored cslib specs/literature/: moved 11 loose MDs into individual sources/{id}/ dirs, moved 6 subdirs into sources/, removed blackburn_2001 (20 entries), updated 43 remaining index paths with sources/ prefix",
+      "archived": "2026-06-17T21:23:47Z"
+    },
+    {
+      "project_number": 738,
+      "project_name": "refactor_bimodal_literature_sources",
+      "title": "Refactor BimodalLogic specs/literature/ to sources/ structure and remove blackburn_2001",
+      "status": "completed",
+      "task_type": "general",
+      "topic": "literature",
+      "description": "Refactor ~/Projects/BimodalLogic/specs/literature/ to match the centralized Literature/ repository structure: (1) Create sources/ subdirectory, (2) Move all 23 content subdirectories into sources/, (3) Move 30 loose markdown files into individual sources/{id}/ directories, (4) Move 3 loose PDFs (Hodkinson_Reynolds_2006, Libkin_2004, Rabinovich_2014) alongside their content in sources/, (5) Remove blackburn_2001/ directory entirely (matching Literature/ removal), (6) Update index.json paths with sources/ prefix and remove blackburn_2001 entries, (7) Update README.md references.",
+      "created": "2026-06-16T20:30:00Z",
+      "last_updated": "2026-06-16T22:02:06Z",
+      "dependencies": [],
+      "artifacts": [],
+      "session_id": "sess_1781645207_5d2e80_738",
+      "completion_summary": "Refactored BimodalLogic specs/literature/: moved 22 subdirs into sources/, created 5 new dirs, moved 30 loose MDs and 3 PDFs, removed blackburn_2001, updated 30 index paths with sources/ prefix, updated .gitignore",
+      "archived": "2026-06-17T21:23:47Z"
+    },
+    {
+      "project_number": 735,
+      "project_name": "literature_project_aware_filtering",
+      "title": "Add project-aware literature filtering with project_tags population and retrieval filtering",
+      "status": "completed",
+      "task_type": "general",
+      "topic": "literature",
+      "description": "Add project-aware literature filtering: scan BimodalLogic and cslib source files to populate project_tags in ~/Projects/Literature/index.json, then add project-aware filtering to literature-retrieve.sh (auto-detect project from $PWD, prefer entries with matching project_tags). Tier 1 FTS5 queries should filter by project; Tier 2 keyword injection should prefer project-tagged entries. Entries with no project_tags remain available as fallback.",
+      "created": "2026-06-16T19:59:54Z",
+      "last_updated": "2026-06-16T20:21:33Z",
+      "dependencies": [],
+      "artifacts": [],
+      "session_id": "sess_1781640194_13c186",
+      "completion_summary": "Added project-aware filtering to literature-retrieve.sh (Tier 2 keyword) and literature-search.sh (Tier 1 FTS5) with detect_project(), --project flag, doc_id IN filtering from index.json project_tags, and fallback-on-zero-results logic. Entries with no project_tags remain available as universal fallback.",
+      "archived": "2026-06-17T21:23:47Z"
+    },
+    {
+      "project_number": 734,
+      "project_name": "optimize_cslib_build_cache_strategy",
+      "status": "completed",
+      "task_type": "meta",
+      "description": "Optimize CSLib build cache strategy: add lake exe cache get to cslib-implementation-agent CI pipeline, skill preflight cache warming, fix rules CI order, and defer redundant lake test for pr-type tasks — to eliminate 30-45 min Mathlib rebuilds during implementation",
+      "topic": "agent-system",
+      "created": "2026-06-16T19:54:21Z",
+      "last_updated": "2026-06-16T20:23:18Z",
+      "next_artifact_number": 3,
+      "artifacts": [
+        {
+          "type": "report",
+          "path": "specs/734_optimize_cslib_build_cache_strategy/reports/01_build-cache-research.md",
+          "summary": "Research report: root cause analysis of missing lake exe cache get in agent CI pipeline, 6 proposed changes with priority ranking"
+        },
+        {
+          "path": "specs/734_optimize_cslib_build_cache_strategy/reports/02_detailed-change-spec.md",
+          "type": "report",
+          "summary": "Detailed change specification with exact old_string/new_string pairs for 5 edits across 4 files"
+        },
+        {
+          "path": "specs/734_optimize_cslib_build_cache_strategy/plans/03_cache-optimization-plan.md",
+          "type": "plan",
+          "summary": "Implementation plan with 2 phases for 5 cache-warming edits across 4 cslib extension files"
+        },
+        {
+          "type": "summary",
+          "path": "specs/734_optimize_cslib_build_cache_strategy/summaries/03_cache-optimization-summary.md",
+          "summary": "Implementation summary: 5 edits across 4 cslib extension files for cache warming"
+        }
+      ],
+      "session_id": "sess_1781641322_161bb5",
+      "memory_candidates": [
+        {
+          "content": "skill-cslib-implementation-hard/SKILL.md has a maintenance note: changes to skill-cslib-implementation postflight should be mirrored here. When adding preflight stages to skill-cslib-implementation, always add a parallel stage to skill-cslib-implementation-hard to keep them in sync.",
+          "category": "PATTERN",
+          "source_artifact": "specs/734_optimize_cslib_build_cache_strategy/reports/02_detailed-change-spec.md",
+          "confidence": 0.9,
+          "suggested_keywords": [
+            "cslib",
+            "hard-mode",
+            "skill",
+            "mirror",
+            "maintenance",
+            "preflight"
+          ]
+        }
+      ],
+      "completion_summary": "Added lake exe cache get as Step 0 in cslib-implementation-agent CI pipeline, preflight cache warming (Stage 2b) in both standard and hard-mode implementation skills, updated MUST DO step count to 8, and added Step 0 to rules CI verification order — 5 edits across 4 files to eliminate 30-45 min Mathlib rebuilds",
+      "archived": "2026-06-17T21:23:47Z"
+    },
+    {
+      "project_number": 728,
+      "project_name": "literature_source_recovery",
+      "title": "Recover PDF/DJVU sources into Literature/pdfs/ from Zotero and project repos",
+      "status": "completed",
+      "task_type": "general",
+      "topic": "literature",
+      "description": "Re-acquire PDFs/DJVUs from Zotero using zotero_key fields in ~/Projects/Literature/index.json (182/183 entries have keys). Copy BimodalLogic's 32 surviving PDFs from ~/Projects/BimodalLogic/specs/literature/ into Literature/pdfs/. Copy cslib's chagrov_1997.djvu. Verify all indexed documents have corresponding source files in pdfs/. Store in pdfs/ directory (keep gitignored but present locally). This is prerequisite for all re-chunking work.",
+      "created": "2026-06-16T17:00:49Z",
+      "last_updated": "2026-06-16T18:41:26Z",
+      "dependencies": [],
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/728_literature_source_recovery/reports/01_source-recovery-research.md",
+          "summary": "Analysis of PDF/DJVU sources available from Zotero, BimodalLogic, and cslib for recovery"
+        },
+        {
+          "type": "plan",
+          "path": "specs/728_literature_source_recovery/plans/01_source-recovery-plan.md",
+          "summary": "2-phase plan to copy 32 BimodalLogic PDFs and 1 cslib DJVU into Literature/pdfs/, then verify coverage against index.json"
+        },
+        {
+          "type": "summary",
+          "path": "specs/728_literature_source_recovery/summaries/01_source-recovery-summary.md",
+          "summary": "Source file recovery complete: 32 PDFs covering all 34 unique zotero_keys"
+        }
+      ],
+      "next_artifact_number": 2,
+      "session_id": "sess_1750091400_b72e3f_728",
+      "completion_summary": "Copied 32 PDFs from BimodalLogic into Literature/pdfs/. All 34 unique zotero_keys covered. chagrov_1997.djvu not found (cslib has no literature directory). thomas_1997 remains uncovered (known paywall gap).",
+      "archived": "2026-06-17T21:23:47Z"
+    },
+    {
+      "project_number": 729,
+      "project_name": "literature_chunking_audit",
+      "title": "Audit Literature/ content quality: identify arbitrary vs semantic chunking",
+      "status": "completed",
+      "task_type": "general",
+      "topic": "literature",
+      "description": "Audit every subdirectory in ~/Projects/Literature/ for chunking quality. For each document, classify as: (a) semantically chunked by chapter/section (good — keep), (b) arbitrarily chunked by page number or byte count (needs re-chunking), (c) oversized flat file needing chunking (e.g., Blackburn_deRijke_Venema_2002 at 365K tokens). Also audit cslib's specs/literature/ subdirectories (blackburn_2001, chagrov_1997, church_1956, etc.) for the same. Produce a manifest of documents with their chunking status, recommended action (keep/re-chunk/chunk-new), and natural section structure from source PDFs.",
+      "created": "2026-06-16T17:00:49Z",
+      "last_updated": "2026-06-16T18:49:35Z",
+      "dependencies": [
+        728
+      ],
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/729_literature_chunking_audit/reports/01_chunking-audit-research.md",
+          "summary": "Analysis of chunking quality across Literature/ subdirectories"
+        },
+        {
+          "type": "plan",
+          "path": "specs/729_literature_chunking_audit/plans/01_chunking-audit-plan.md",
+          "summary": "4-phase implementation plan for chunking quality audit with manifest generation"
+        },
+        {
+          "type": "summary",
+          "path": "specs/729_literature_chunking_audit/summaries/01_chunking-audit-summary.md",
+          "summary": "Chunking audit complete: 13 files renamed, manifest generated"
+        }
+      ],
+      "next_artifact_number": 2,
+      "session_id": "sess_1750091400_b72e3f_729",
+      "completion_summary": "Generated chunking manifest for 23 subdirectories and 30 flat files. Renamed 13 arbitrary chunks across 3 directories to semantic names. Updated index.json entries. Identified 25 duplicate flat files and Blackburn 365K-token flat file for dedicated chunking.",
+      "archived": "2026-06-17T21:23:47Z"
+    },
+    {
+      "project_number": 730,
+      "project_name": "literature_semantic_rechunking",
+      "title": "Re-chunk literature files at semantic boundaries (chapter/section breaks)",
+      "status": "completed",
+      "task_type": "general",
+      "topic": "literature",
+      "description": "Using the audit manifest from task 729 and source PDFs from task 728, re-chunk all arbitrarily split files at semantic boundaries (chapter headings, section headings, theorem boundaries). Chunk oversized flat files — especially the 365K-token Blackburn book. Remove redundant flat files where a properly chunked subdirectory exists. Use actual document structure from sources, not literature-chunk.sh's token-target approach. Update index.json entries for every re-chunked document with correct paths, token counts, and section metadata.",
+      "created": "2026-06-16T17:00:49Z",
+      "last_updated": "2026-06-16T19:02:53Z",
+      "dependencies": [
+        728,
+        729
+      ],
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/730_literature_semantic_rechunking/reports/01_semantic-rechunking-research.md",
+          "summary": "Research on semantic re-chunking approaches for literature files"
+        },
+        {
+          "type": "plan",
+          "path": "specs/730_literature_semantic_rechunking/plans/01_semantic-rechunking-plan.md",
+          "summary": "6-phase plan for semantic re-chunking with Python splitter, Blackburn creation, and index updates"
+        },
+        {
+          "type": "summary",
+          "path": "specs/730_literature_semantic_rechunking/summaries/01_semantic-rechunking-summary.md",
+          "summary": "Semantic re-chunking: Blackburn 2002 split into 35 chunks, 13 flat files removed, index updated to 212 entries"
+        }
+      ],
+      "next_artifact_number": 2,
+      "session_id": "sess_1750091400_b72e3f_730",
+      "completion_summary": "Split Blackburn 2002 (365K tokens) into 35 semantic chunks. Removed 13 redundant flat files. Updated index.json from 183 to 212 entries. cslib phases skipped (no literature directory). Renames already done by task 729.",
+      "archived": "2026-06-17T21:23:47Z"
+    },
+    {
+      "project_number": 731,
+      "project_name": "literature_cslib_migration",
+      "title": "Migrate cslib's 70 unique literature entries into central Literature/ repo",
+      "status": "completed",
+      "task_type": "general",
+      "topic": "literature",
+      "description": "Migrate cslib's 70 unique entries from ~/Projects/cslib/specs/literature/ into ~/Projects/Literature/ with v2 schema fields (doc_type, source_format, zotero_key, project_tags: [\"cslib\"]). Resolve the 6 overlapping entries (burgess_1982_i/ii, burgess_1984, gabbay_1994_ch10, reynolds_1992, blackburn_2001_ch00) by keeping the fuller versions and tagging both projects. Convert cslib's remaining chagrov_1997.djvu to markdown. Ensure migrated content follows semantic chunking standards from task 730.",
+      "created": "2026-06-16T17:00:49Z",
+      "last_updated": "2026-06-16T18:43:41Z",
+      "dependencies": [
+        728
+      ],
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/731_literature_cslib_migration/reports/01_cslib-migration-research.md",
+          "summary": "Analysis of cslib literature entries for migration into central Literature/ repo"
+        },
+        {
+          "type": "plan",
+          "path": "specs/731_literature_cslib_migration/plans/01_cslib-migration-plan.md",
+          "summary": "4-phase plan for migrating 70 cslib entries with overlap resolution and project_tags"
+        },
+        {
+          "type": "summary",
+          "path": "specs/731_literature_cslib_migration/summaries/01_cslib-migration-summary.md",
+          "summary": "cslib has no specs/literature/ directory - migration not needed"
+        }
+      ],
+      "next_artifact_number": 2,
+      "session_id": "sess_1750091400_b72e3f_731",
+      "completion_summary": "cslib has no specs/literature/ directory. No literature content exists to migrate. Task complete with finding documented.",
+      "archived": "2026-06-17T21:23:47Z"
+    },
+    {
+      "project_number": 732,
+      "project_name": "literature_schema_unification",
+      "title": "Unify index schema to v2 and clean up deprecated per-project collections",
+      "status": "completed",
+      "task_type": "general",
+      "topic": "literature",
+      "description": "Upgrade all remaining v1 index entries in ~/Projects/Literature/index.json to v2 schema (add doc_type, source_format, zotero_key, project_tags where missing). Deduplicate BimodalLogic's flat+chunked structure (keep only semantic chunks, remove redundant flat files). Add DEPRECATED.md to cslib's specs/literature/ pointing to the centralized repo. Ensure all per-directory index.json files in subdirectories are consistent with root index.json. Validate no orphaned or missing entries.",
+      "created": "2026-06-16T17:00:49Z",
+      "last_updated": "2026-06-16T19:10:04Z",
+      "dependencies": [
+        730,
+        731
+      ],
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/732_literature_schema_unification/reports/01_schema-unification-research.md",
+          "summary": "Research on v2 schema requirements and BimodalLogic dedup strategy"
+        },
+        {
+          "type": "plan",
+          "path": "specs/732_literature_schema_unification/plans/01_schema-unification-plan.md",
+          "summary": "4-phase plan to remove redundant entries, fix token counts, create DEPRECATED.md, and validate"
+        },
+        {
+          "type": "summary",
+          "path": "specs/732_literature_schema_unification/summaries/01_schema-unification-summary.md",
+          "summary": "Schema unification: 6 entries removed, 2 token_counts fixed, 206 entries validated"
+        }
+      ],
+      "next_artifact_number": 2,
+      "session_id": "sess_1750091400_b72e3f_732",
+      "completion_summary": "Removed 6 redundant directory entries. Fixed token_count on blackburn_2001 (247014) and gabbay_1994 (36472). Validated 206 entries: 0 orphans, 0 duplicates, all v2. cslib phases skipped (no literature directory).",
+      "archived": "2026-06-17T21:23:47Z"
+    },
+    {
+      "project_number": 733,
+      "project_name": "literature_infrastructure_wiring",
+      "title": "Wire LITERATURE_DIR globally, build FTS5 database, validate unified collection",
+      "status": "completed",
+      "task_type": "general",
+      "topic": "literature",
+      "description": "Move LITERATURE_DIR setting to ~/.dotfiles/config/claude/settings.json (Home Manager-managed global settings) so all projects pick it up. Remove the per-project setting from nvim's .claude/settings.json. Build the FTS5 database (.literature.db) using literature-build-index.sh to activate Tier 1 on-demand search (currently dead code — always falls back to Tier 2 keyword injection). Run literature-audit.sh to validate index integrity across the unified collection. Verify --lit flag works end-to-end from all three project roots (nvim, BimodalLogic, cslib).",
+      "created": "2026-06-16T17:00:49Z",
+      "last_updated": "2026-06-16T19:22:38Z",
+      "dependencies": [
+        732
+      ],
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/733_literature_infrastructure_wiring/reports/01_infrastructure-wiring-research.md",
+          "summary": "Research on LITERATURE_DIR global wiring and FTS5 database setup"
+        },
+        {
+          "type": "plan",
+          "path": "specs/733_literature_infrastructure_wiring/plans/01_infrastructure-wiring-plan.md",
+          "summary": "4-phase plan for global LITERATURE_DIR wiring, script sync, FTS5 build, and validation"
+        },
+        {
+          "type": "summary",
+          "path": "specs/733_literature_infrastructure_wiring/summaries/01_infrastructure-wiring-summary.md",
+          "summary": "Infrastructure wiring: global LITERATURE_DIR, FTS5 database (180 chunks), validated from all 3 project roots"
+        }
+      ],
+      "next_artifact_number": 2,
+      "session_id": "sess_1750091400_b72e3f_733",
+      "completion_summary": "Wired LITERATURE_DIR globally via Home Manager settings. Synced Tier 1+2 literature-retrieve.sh and literature-search.sh to BimodalLogic and cslib. Built FTS5 database (180 chunks, 1.1MB). Validated Tier 1 search from all 3 project roots. Tier 2 fallback confirmed working.",
+      "archived": "2026-06-17T21:23:47Z"
+    },
+    {
+      "project_number": 727,
+      "project_name": "implement_extension_keyword_overrides_in_task_command",
+      "title": "Implement extension keyword_overrides lookup in /task command step 4",
+      "status": "completed",
+      "task_type": "meta",
+      "topic": "agent-system",
+      "effort": "1-3 hours",
+      "created": "2026-06-16T02:33:23Z",
+      "last_updated": "2026-06-16T03:44:27Z",
+      "description": "Fix the /task command (task.md) step 4 (task type detection) to implement the documented precedence order: meta keywords > extension keyword_overrides > default_task_type > keyword table > general. Currently step 4 only has a hardcoded keyword table and never queries extension manifests for keyword_overrides or checks state.json default_task_type. The fix should: (1) After meta keyword check, scan loaded extension manifests (.claude/extensions/*/manifest.json) for keyword_overrides entries, (2) Match task description keywords against each extension keyword_overrides, (3) If matched, use that extension task type, (4) If no extension match, check state.json default_task_type as fallback before the hardcoded keyword table, (5) Fall through to hardcoded table and then general as final default. This ensures tasks like PR-related descriptions get type pr when an extension defines pr keyword overrides.",
+      "dependencies": [],
+      "artifacts": [
+        {
+          "path": "specs/727_implement_extension_keyword_overrides_in_task_command/reports/01_keyword-overrides-research.md",
+          "type": "report",
+          "summary": "Research on keyword_overrides implementation in task.md step 4"
+        },
+        {
+          "path": "specs/727_implement_extension_keyword_overrides_in_task_command/plans/01_keyword-overrides-plan.md",
+          "type": "plan",
+          "summary": "Implementation plan for fixing multi-word keyword matching in task.md step 4b"
+        }
+      ],
+      "session_id": "sess_1781578546_f45d06",
+      "completion_summary": "Implemented full keyword_overrides precedence chain in /task command step 4: meta keywords > extension keyword_overrides > default_task_type > hardcoded table > general",
+      "archived": "2026-06-17T21:23:47Z"
+    },
+    {
+      "project_number": 652,
+      "project_name": "post_validation_cleanup",
+      "title": "Post-validation cleanup: remove obsolete scripts after logging review",
+      "status": "completed",
+      "task_type": "meta",
+      "topic": "agent-system",
+      "effort": "1 hour",
+      "created": "2026-06-09T12:00:00Z",
+      "last_updated": "2026-06-16T04:43:31Z",
+      "dependencies": [
+        649,
+        651,
+        653
+      ],
+      "description": "After ~1 week of the new pipeline running, review logs to verify the new generate-todo.sh pipeline is working reliably. Check that: (1) no deprecation-logged old code paths are being hit, (2) TODO.md regeneration succeeds consistently, (3) no state.json/TODO.md sync drift. Then remove: link-artifact-todo.sh (fully replaced by state.json + regeneration), old TODO.md awk/sed manipulation code from update-task-status.sh, dead functions from skill-base.sh, any transitional compatibility shims. Clean up deprecation logging. Mark as deferred until validation period passes.",
+      "artifacts": [],
+      "session_id": "sess_1781581888_460efb",
+      "completion_summary": "Removed 10 obsolete scripts (link-artifact-todo.sh, 4 postflight-*.sh + their extension mirrors), cleaned old awk/sed code from update-task-status.sh, added generate-todo.sh call, updated reconcile-task-status.sh and all documentation references",
+      "archived": "2026-06-17T21:23:47Z"
     }
   ],
   "abandoned_projects": []
