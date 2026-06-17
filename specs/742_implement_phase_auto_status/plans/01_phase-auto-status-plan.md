@@ -1,7 +1,7 @@
 # Implementation Plan: Auto-update plan phase status on implement preflight
 
 - **Task**: 742 - Auto-update plan phase status on implement preflight
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 0.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/742_implement_phase_auto_status/reports/01_phase-auto-status-research.md

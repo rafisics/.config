@@ -6,7 +6,7 @@
       "project_number": 742,
       "project_name": "implement_phase_auto_status",
       "title": "Auto-update plan phase status on implement preflight",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "meta",
       "topic": "agent-system",
       "description": "Extend update_plan_file() in update-task-status.sh to call update-phase-status.sh for the first NOT STARTED phase when operation is preflight implement. This integrates the existing but unused update-phase-status.sh script into the automated preflight pipeline, ensuring Phase 1 is marked [IN PROGRESS] when implementation begins.",
@@ -19,10 +19,16 @@
           "path": "specs/742_implement_phase_auto_status/reports/01_phase-auto-status-research.md",
           "type": "report",
           "summary": "Research findings on update-phase-status.sh integration"
+        },
+        {
+          "path": "specs/742_implement_phase_auto_status/summaries/01_phase-auto-status-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for task 742 — phase auto-advance integrated into update_plan_file()"
         }
       ],
-      "last_updated": "2026-06-17T21:03:08Z",
-      "session_id": "sess_1781729302_ae67df_742"
+      "last_updated": "2026-06-17T21:06:13Z",
+      "session_id": "sess_1781729302_ae67df_742",
+      "completion_summary": "Extended update_plan_file() in update-task-status.sh to call update-phase-status.sh for the first NOT STARTED phase during implement preflight. The previously unused script is now integrated into the automated pipeline. Core extension copy synced."
     },
     {
       "project_number": 741,
