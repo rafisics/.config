@@ -226,6 +226,9 @@ update_plan_file() {
 
   if [[ "$DRY_RUN" == "true" ]]; then
     echo "[dry-run] Plan file: status -> [$plan_status] (via update-plan-status.sh)"
+    if [[ "$operation" == "preflight" ]]; then
+      echo "[dry-run] Phase status: first [NOT STARTED] phase -> [IN PROGRESS] (via update-phase-status.sh)"
+    fi
     return 0
   fi
 
@@ -234,6 +237,35 @@ update_plan_file() {
   "$plan_script" "$task_number" "$project_name" "$plan_status" 2>/dev/null || {
     echo "Warning: plan file update failed (non-fatal)" >&2
   }
+
+  # Auto-advance the first NOT STARTED phase to IN PROGRESS on implement preflight
+  if [[ "$operation" == "preflight" ]]; then
+    local phase_script="$SCRIPT_DIR/update-phase-status.sh"
+    if [[ -x "$phase_script" ]]; then
+      # Resolve plan directory (padded with unpadded fallback)
+      local padded_num
+      padded_num=$(printf "%03d" "$task_number")
+      local plan_dir="$PROJECT_ROOT/specs/${padded_num}_${project_name}/plans"
+      if [[ ! -d "$plan_dir" ]]; then
+        plan_dir="$PROJECT_ROOT/specs/${task_number}_${project_name}/plans"
+      fi
+
+      if [[ -d "$plan_dir" ]]; then
+        local plan_file
+        plan_file=$(ls -t "$plan_dir"/*.md 2>/dev/null | head -1 || echo "")
+        if [[ -n "$plan_file" ]]; then
+          local first_phase
+          first_phase=$(grep -m1 "^### Phase [0-9]*:.*\[NOT STARTED\]" "$plan_file" \
+            | sed 's/^### Phase \([0-9]*\):.*/\1/' || echo "")
+          if [[ -n "$first_phase" ]]; then
+            "$phase_script" "$task_number" "$project_name" "$first_phase" "IN_PROGRESS" 2>/dev/null || {
+              echo "Warning: phase status update failed (non-fatal)" >&2
+            }
+          fi
+        fi
+      fi
+    fi
+  fi
 }
 
 # Execute TODO.md regeneration

@@ -19,7 +19,7 @@ next_project_number: 743
 ### Agent System
 
 741 [NOT STARTED] — Update generate-todo.sh to output artifact references as proper m
-  └─ 742 [NOT STARTED] — Extend update_plan_file() in update-task-status.sh to call update
+  └─ 742 [IMPLEMENTING] — Extend update_plan_file() in update-task-status.sh to call update
 
 ### Terminal UI
 
@@ -32,10 +32,11 @@ next_project_number: 743
 ## Tasks
 
 ### 742. Auto-update plan phase status on implement preflight
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 741
+- **Research**: [742_implement_phase_auto_status/reports/01_phase-auto-status-research.md](specs/742_implement_phase_auto_status/reports/01_phase-auto-status-research.md)
 
 **Description**: Extend update_plan_file() in update-task-status.sh to call update-phase-status.sh for the first NOT STARTED phase when operation is preflight implement. This integrates the existing but unused update-phase-status.sh script into the automated preflight pipeline, ensuring Phase 1 is marked [IN PROGRESS] when implementation begins.
 
