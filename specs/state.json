@@ -24,11 +24,21 @@
           "path": "specs/742_implement_phase_auto_status/summaries/01_phase-auto-status-summary.md",
           "type": "summary",
           "summary": "Implementation summary for task 742 — phase auto-advance integrated into update_plan_file()"
+        },
+        {
+          "path": "specs/742_implement_phase_auto_status/plans/01_phase-auto-status-plan.md",
+          "type": "plan",
+          "summary": "Implementation plan for phase auto-status integration"
+        },
+        {
+          "path": "specs/742_implement_phase_auto_status/summaries/01_phase-auto-status-summary.md",
+          "type": "summary",
+          "summary": "Execution summary"
         }
       ],
       "last_updated": "2026-06-17T21:06:13Z",
       "session_id": "sess_1781729302_ae67df_742",
-      "completion_summary": "Extended update_plan_file() in update-task-status.sh to call update-phase-status.sh for the first NOT STARTED phase during implement preflight. The previously unused script is now integrated into the automated pipeline. Core extension copy synced."
+      "completion_summary": "Integrated update-phase-status.sh into update_plan_file() preflight pipeline. First NOT STARTED phase auto-advances to IN PROGRESS on implement preflight. Non-fatal, dry-run safe, resume-aware."
     },
     {
       "project_number": 741,

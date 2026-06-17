@@ -2,8 +2,8 @@
 
 - **Task**: 742 - Auto-update plan phase status on implement preflight
 - **Status**: [COMPLETED]
-- **Started**: 2026-06-17T21:00:00Z
-- **Completed**: 2026-06-17T21:10:00Z
+- **Started**: 2026-06-17T21:04:00Z
+- **Completed**: 2026-06-17T21:06:00Z
 - **Effort**: 15 minutes
 - **Dependencies**: None
 - **Artifacts**: plans/01_phase-auto-status-plan.md
@@ -11,31 +11,44 @@
 
 ## Overview
 
-Extended `update_plan_file()` in `.claude/scripts/update-task-status.sh` to call the existing `update-phase-status.sh` for the first `[NOT STARTED]` phase during implement preflight. The change is purely additive (~30 lines) and integrates the previously unused phase status script into the automated pipeline. The core extension copy was also synced.
+Extended `update_plan_file()` in `.claude/scripts/update-task-status.sh` to call the existing but
+unused `update-phase-status.sh` script during implement preflight. The addition discovers the first
+`[NOT STARTED]` phase in the plan file and marks it `[IN PROGRESS]`, ensuring phase status is
+automatically advanced when implementation begins or resumes. Both the main script and the core
+extension copy are identical (confirmed via diff).
 
 ## What Changed
 
-- `.claude/scripts/update-task-status.sh`: Added phase auto-advance block inside `update_plan_file()` after the existing `update-plan-status.sh` call — discovers the first `[NOT STARTED]` phase via `grep -m1` + `sed` and marks it `[IN PROGRESS]` via `update-phase-status.sh`
-- `.claude/extensions/core/scripts/update-task-status.sh`: Synced to match (identical content)
-- Dry-run mode now emits both plan-level and phase-level status messages before returning
+- `.claude/scripts/update-task-status.sh` — Added ~30 lines inside `update_plan_file()` after the
+  existing `update-plan-status.sh` call. The new block guards on `preflight` operation, checks that
+  `update-phase-status.sh` is executable, resolves the plan directory (padded + unpadded fallback),
+  finds the latest plan file, extracts the first `[NOT STARTED]` phase number via `grep -m1` + `sed`,
+  and calls `update-phase-status.sh` with a non-fatal error guard.
+- Dry-run mode now emits both plan-level and phase-level status messages inside the existing
+  dry-run block (guarded by `$operation == "preflight"`) before returning.
+- `.claude/extensions/core/scripts/update-task-status.sh` — Identical to main script (diff shows
+  no differences; sync was already in place).
 
 ## Decisions
 
-- Used Option B (discover first NOT STARTED phase) rather than hardcoding phase 1, to correctly handle resume scenarios where earlier phases are already completed
-- Removed early `return 0` from the outer dry-run check so the phase dry-run message is also emitted
-- Used `[[ -x "$phase_script" ]]` guard (non-fatal skip if script missing/non-executable) rather than `return 0`, matching the intent of the surrounding non-fatal pattern
-- Synced core extension copy since `update-task-status.sh` is listed in `provides.scripts`
+- Used Option B (discover first NOT STARTED phase via `grep -m1`) rather than hardcoding phase 1,
+  to correctly handle resume scenarios where earlier phases are already completed.
+- Integrated the phase dry-run message into the existing dry-run block (alongside the plan status
+  message) rather than adding a second early-return, keeping the non-dry-run code path clean.
+- Used `[[ -x "$phase_script" ]]` silent guard (skip without warning if not executable) since the
+  phase script is part of the same install and its absence would be unusual.
 
 ## Impacts
 
-- All `/implement N` invocations now automatically mark the first `[NOT STARTED]` phase `[IN PROGRESS]` in the plan file at preflight time
-- Resume scenarios (Phase 1 completed, Phase 2 NOT STARTED) correctly advance Phase 2
-- Tasks with no plan file, no plans directory, or all phases already completed are silently skipped (non-fatal)
-- `update-phase-status.sh` transitions are logged to `.claude/logs/phase-transitions.log`
+- All `/implement N` invocations now automatically mark the first `[NOT STARTED]` phase `[IN PROGRESS]`
+  in the plan file at preflight time.
+- Resume scenarios (Phase 1 completed, Phase 2 NOT STARTED) correctly advance Phase 2.
+- Tasks with no plan file, no plans directory, or all phases already completed are silently skipped.
+- Phase status transitions are logged to `.claude/logs/phase-transitions.log` by `update-phase-status.sh`.
 
 ## Follow-ups
 
-- None required
+- None required.
 
 ## References
 

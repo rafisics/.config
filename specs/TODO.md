@@ -35,7 +35,10 @@ next_project_number: 743
 - **Topic**: agent-system
 - **Dependencies**: Task 741
 - **Research**: [742_implement_phase_auto_status/reports/01_phase-auto-status-research.md](specs/742_implement_phase_auto_status/reports/01_phase-auto-status-research.md)
-- **Summary**: [742_implement_phase_auto_status/summaries/01_phase-auto-status-summary.md](specs/742_implement_phase_auto_status/summaries/01_phase-auto-status-summary.md)
+- **Summary**:
+  - [742_implement_phase_auto_status/summaries/01_phase-auto-status-summary.md](specs/742_implement_phase_auto_status/summaries/01_phase-auto-status-summary.md)
+  - [742_implement_phase_auto_status/summaries/01_phase-auto-status-summary.md](specs/742_implement_phase_auto_status/summaries/01_phase-auto-status-summary.md)
+- **Plan**: [742_implement_phase_auto_status/plans/01_phase-auto-status-plan.md](specs/742_implement_phase_auto_status/plans/01_phase-auto-status-plan.md)
 
 **Description**: Extend update_plan_file() in update-task-status.sh to call update-phase-status.sh for the first NOT STARTED phase when operation is preflight implement. This integrates the existing but unused update-phase-status.sh script into the automated preflight pipeline, ensuring Phase 1 is marked [IN PROGRESS] when implementation begins.
 
