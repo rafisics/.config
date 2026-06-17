@@ -1,0 +1,16 @@
+{
+  "status": "implemented",
+  "summary": "Copied /zulip command and skill-zulip into core extension directory and declared both in manifest.json",
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/740_zulip_core_extension/summaries/01_zulip-core-extension-summary.md",
+      "summary": "Implementation summary covering file copies, manifest updates, and EXTENSION.md count corrections"
+    }
+  ],
+  "blockers": [],
+  "continuation_context": null,
+  "next_action_hint": "complete",
+  "phases_completed": 2,
+  "phases_total": 2
+}

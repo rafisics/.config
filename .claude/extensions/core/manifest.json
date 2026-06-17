@@ -42,6 +42,7 @@
       "tag.md",
       "task.md",
       "todo.md",
+      "zulip.md",
       "project-overview.md"
     ],
     "rules": [
@@ -71,6 +72,7 @@
       "skill-team-plan",
       "skill-team-research",
       "skill-todo",
+      "skill-zulip",
       "skill-project-overview"
     ],
     "scripts": [

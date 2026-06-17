@@ -17,9 +17,9 @@ via the extension loader while maintaining full backward compatibility.
 | Category | Count | Description |
 |----------|-------|-------------|
 | agents | 8 | Research, implementation, planning, meta, review, revision, spawn agents |
-| commands | 14 | `/task`, `/research`, `/plan`, `/implement`, `/todo`, `/meta`, and more |
+| commands | 17 | `/task`, `/research`, `/plan`, `/implement`, `/todo`, `/meta`, and more |
 | rules | 6 | Auto-applied rules for state, git, artifacts, workflows, and error handling |
-| skills | 16 | Skill definitions including team mode, orchestration, and utility skills |
+| skills | 19 | Skill definitions including team mode, orchestration, and utility skills |
 | scripts | 27 | Utility scripts for validation, hooks, memory, and extension management |
 | hooks | 11 | Session logging, memory nudging, WezTerm notifications, validation hooks |
 | context | 15 dirs | Architecture, patterns, guides, schemas, workflows, and reference material |
