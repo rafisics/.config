@@ -1403,7 +1403,7 @@ PR description from pr-description.md ({pr_desc_path}):
 - Edit AI disclosure: read user's next message as the new disclosure; replace `## AI Tools Used`
 - Replace entirely: read user's next message as the full `pr_body`
 
-**On success**: **IMMEDIATELY CONTINUE** to STEP 10.
+**On success**: **IMMEDIATELY CONTINUE** to STEP 9b.
 
 ---
 
@@ -1468,6 +1468,32 @@ Display the draft to the user and ask via AskUserQuestion:
 - Edit AI disclosure: read user's next message as the new disclosure; replace `## AI Tools Used`
 - Replace entirely: read user's next message as the full `pr_body`
 
+**On success**: **IMMEDIATELY CONTINUE** to STEP 9b.
+
+---
+
+### STEP 9b: Copy PR Description to Feature Branch (Task Mode Only)
+
+**EXECUTE NOW**: If `input_mode="task"` and `has_pr_description=true`, write the approved PR
+description to the cslib repo root so the user can review it alongside the code changes before
+pushing.
+
+If `input_mode` is not `"task"`, skip this step and **IMMEDIATELY CONTINUE** to STEP 10.
+
+```bash
+cd /home/benjamin/Projects/cslib
+
+# Write the (possibly user-edited) PR body to the repo root
+cat > pr-description.md << 'PRDESC_EOF'
+${pr_body}
+PRDESC_EOF
+
+echo "PR description written to: $(pwd)/pr-description.md (unstaged)"
+echo "Review this file alongside your code changes before pushing."
+```
+
+**Important**: This file is intentionally NOT staged. STEP 10 will exclude it after `git add -A`.
+
 **On success**: **IMMEDIATELY CONTINUE** to STEP 10.
 
 ---
@@ -1488,6 +1514,9 @@ If there are uncommitted changes:
 ```bash
 # Stage all changes
 git add -A 2>&1
+
+# Exclude pr-description.md from the commit (written by STEP 9b for local review only)
+git reset HEAD pr-description.md 2>/dev/null || true
 
 # Commit with descriptive message
 git commit -m "$pr_title" 2>&1

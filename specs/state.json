@@ -78,7 +78,7 @@
     {
       "project_number": 744,
       "project_name": "include_pr_description_in_feature_branch",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "meta",
       "title": "Include pr-description.md in feature branch during /pr workflow",
       "description": "Modify the /pr command to copy pr-description.md from specs/{NNN}_{SLUG}/ into the cslib repo (e.g., as pr-description.md at repo root) after STEP 9 and before STEP 10. The file should be left unstaged (not git-added) so the user can review the full PR description alongside the code changes before pushing. This gives the user a convenient way to inspect the PR description in the context of the feature branch. Files to modify: .claude/extensions/cslib/commands/pr.md",
@@ -86,10 +86,21 @@
       "dependencies": [
         743
       ],
-      "artifacts": [],
+      "artifacts": [
+        {
+          "path": "specs/744_include_pr_description_in_feature_branch/reports/01_pr-description-copy.md",
+          "type": "report",
+          "summary": "01_pr-description-copy.md"
+        },
+        {
+          "path": "specs/744_include_pr_description_in_feature_branch/plans/01_pr-description-copy-plan.md",
+          "type": "plan",
+          "summary": "01_pr-description-copy-plan.md"
+        }
+      ],
       "created": "2026-06-18T00:00:00Z",
-      "last_updated": "2026-06-18T00:00:00Z",
-      "session_id": "sess_1750291200_meta01"
+      "last_updated": "2026-06-19T00:29:38Z",
+      "session_id": "sess_1750291300_744"
     }
   ],
   "completed_projects": [],

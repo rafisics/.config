@@ -11,13 +11,9 @@ next_project_number: 745
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,744 | -- | agent-system, Terminal UI, Email Integration |
+| 1 | 78,87 | -- | Terminal UI, Email Integration |
 
 **Grouped by Topic** (indented = depends on parent):
-
-### Agent System
-
-744 [NOT STARTED] — Modify the /pr command to copy pr-description.md from specs/{NNN}
 
 ### Terminal UI
 
@@ -30,10 +26,12 @@ next_project_number: 745
 ## Tasks
 
 ### 744. Include pr-description.md in feature branch during /pr workflow
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 743
+- **Research**: [744_include_pr_description_in_feature_branch/reports/01_pr-description-copy.md](specs/744_include_pr_description_in_feature_branch/reports/01_pr-description-copy.md)
+- **Plan**: [744_include_pr_description_in_feature_branch/plans/01_pr-description-copy-plan.md](specs/744_include_pr_description_in_feature_branch/plans/01_pr-description-copy-plan.md)
 
 **Description**: Modify the /pr command to copy pr-description.md from specs/{NNN}_{SLUG}/ into the cslib repo (e.g., as pr-description.md at repo root) after STEP 9 and before STEP 10. The file should be left unstaged (not git-added) so the user can review the full PR description alongside the code changes before pushing. This gives the user a convenient way to inspect the PR description in the context of the feature branch. Files to modify: .claude/extensions/cslib/commands/pr.md
 
