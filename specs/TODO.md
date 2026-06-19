@@ -11,21 +11,19 @@ next_project_number: 754
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,749 | -- | literature, Terminal UI, Email Integration |
-| 2 | 750 | 749 | literature |
-| 3 | 751 | 750 | literature |
-| 4 | 752 | 751 | literature |
-| 5 | 753 | 752 | literature |
+| 1 | 78,87,750 | -- | literature, Terminal UI, Email Integration |
+| 2 | 751 | 750 | literature |
+| 3 | 752 | 751 | literature |
+| 4 | 753 | 752 | literature |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Literature
 
-749 [NOT STARTED] — Create the extension scaffold for the new 'zotero' extension at .
-  └─ 750 [NOT STARTED] — Create shell scripts that wrap the chosen Zotero CLI tool (from t
-    └─ 751 [NOT STARTED] — Implement the /zotero --search and local index management functio
-      └─ 752 [NOT STARTED] — Implement the on-demand PDF-to-markdown conversion pipeline that 
-        └─ 753 [NOT STARTED] — Implement the --zot flag for /research, /plan, and /implement tha
+750 [NOT STARTED] — Create shell scripts that wrap the chosen Zotero CLI tool (from t
+  └─ 751 [NOT STARTED] — Implement the /zotero --search and local index management functio
+    └─ 752 [NOT STARTED] — Implement the on-demand PDF-to-markdown conversion pipeline that 
+      └─ 753 [NOT STARTED] — Implement the --zot flag for /research, /plan, and /implement tha
 
 ### Terminal UI
 
@@ -78,7 +76,7 @@ next_project_number: 754
 ---
 
 ### 749. Create Zotero extension skeleton
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: literature
 - **Dependencies**: Task 748
