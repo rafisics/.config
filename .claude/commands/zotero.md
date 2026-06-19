@@ -1,0 +1,1 @@
+../extensions/zotero/commands/zotero.md

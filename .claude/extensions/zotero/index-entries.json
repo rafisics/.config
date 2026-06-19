@@ -1,0 +1,32 @@
+{
+  "entries": [
+    {
+      "path": "project/zotero/domain/zotero-index.md",
+      "domain": "project",
+      "subdomain": "zotero",
+      "topics": ["zotero", "index", "schema", "per-repo"],
+      "keywords": ["zotero", "index", "schema", "citation", "retrieval"],
+      "summary": "Per-repo zotero-index.json schema, entry fields, and agent workflow for Zotero context injection",
+      "line_count": 80,
+      "load_when": {
+        "agents": ["zotero-agent"],
+        "skills": ["skill-zotero"],
+        "commands": ["/zotero"]
+      }
+    },
+    {
+      "path": "project/zotero/patterns/retrieval-flags.md",
+      "domain": "project",
+      "subdomain": "zotero",
+      "topics": ["zotero", "retrieval", "flags", "context-injection"],
+      "keywords": ["zot", "lit", "retrieval", "flags", "coexistence"],
+      "summary": "When to use --zot vs --lit flags: coexistence strategy, scoring thresholds, and token budget management",
+      "line_count": 60,
+      "load_when": {
+        "agents": ["zotero-agent"],
+        "skills": ["skill-zotero"],
+        "commands": ["/zotero"]
+      }
+    }
+  ]
+}

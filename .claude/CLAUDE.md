@@ -650,3 +650,55 @@ Domain knowledge (load as needed):
 - @.claude/context/project/neovim/domain/neovim-api.md
 - @.claude/context/project/neovim/patterns/plugin-spec.md
 - @.claude/context/project/neovim/tools/lazy-nvim-guide.md
+
+## Zotero Extension
+
+Zotero library integration via the `zot` CLI tool (zotero-cli-cc v0.7.0). Uses a two-tier data
+model: the full Zotero SQLite database as the global source and a per-repo
+`specs/zotero-index.json` as a curated relevance filter for context injection.
+
+Provides the `/zotero` command for library management and the `--zot` flag for context injection
+into `/research`, `/plan`, and `/implement` commands.
+
+### Two-Tier Data Model
+
+| Tier | Location | Purpose |
+|------|----------|---------|
+| **Tier 1 (Global)** | `~/Documents/Zotero/zotero.sqlite` | Full library: all items, metadata, PDFs |
+| **Tier 2 (Per-repo)** | `specs/zotero-index.json` | Relevance filter: which items matter to this project |
+
+### Skill-Agent Mapping
+
+| Skill | Agent | Purpose |
+|-------|-------|---------|
+| skill-zotero | (direct execution) | Manage per-repo Zotero index, chunk PDFs, inject context |
+
+### Commands
+
+| Command | Usage | Description |
+|---------|-------|-------------|
+| `/zotero` | `/zotero` | Show library connectivity, index item count, and token budget |
+| `/zotero` | `/zotero --setup` | Run setup wizard: detect data dir, validate, configure API key |
+| `/zotero` | `/zotero --add KEY` | Add item from Zotero library to per-repo index |
+| `/zotero` | `/zotero --add KEY --chunk` | Add item and immediately chunk its PDF |
+| `/zotero` | `/zotero --remove KEY` | Remove item from per-repo index |
+| `/zotero` | `/zotero --remove KEY --delete-chunks` | Remove item and delete its chunk files |
+| `/zotero` | `/zotero --convert KEY` | Extract PDF, chunk into sections, update index |
+| `/zotero` | `/zotero --attach KEY` | Upload chunks as Zotero child attachments |
+| `/zotero` | `/zotero --search "QUERY"` | Search per-repo index with Zotero library fallback |
+| `/zotero` | `/zotero --sync` | Re-fetch metadata for all index entries from Zotero |
+| `/zotero` | `/zotero --validate` | Validate index entries: PDF paths, chunk directories |
+| `/zotero` | `/zotero --status` | Full library stats and index health report |
+
+### --zot Flag
+
+The `--zot` flag injects relevant Zotero items as `<zotero-context>` into agent prompts.
+Parallel to `--lit` in interface and injection order.
+
+**Usage**: `/research N --zot`, `/plan N --zot`, `/implement N --zot`
+
+**Graceful degradation**: When `zot` is not installed, `ZOT_DATA_DIR` is unset, or
+`specs/zotero-index.json` is missing, `--zot` emits empty context without error.
+
+**Note**: `--zot` flag wiring to `command-route-skill.sh` is implemented in task 753.
+Until then, passing `--zot` has no effect (silently ignored).

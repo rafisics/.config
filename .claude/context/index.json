@@ -3583,6 +3583,37 @@
         "vosk",
         "audio"
       ]
+    },
+    {
+      "path": "project/zotero/domain/zotero-index.md",
+      "domain": "project",
+      "subdomain": "zotero",
+      "topics": [],
+      "keywords": [],
+      "summary": "Per-repo zotero-index.json schema, entry fields, and agent workflow for Zotero context injection",
+      "line_count": 80,
+      "load_when": {
+        "agents": [
+          "zotero-agent"
+        ],
+        "task_types": []
+      }
+    },
+    {
+      "path": "project/zotero/patterns/retrieval-flags.md",
+      "domain": "project",
+      "subdomain": "zotero",
+      "topics": [],
+      "keywords": [],
+      "summary": "When to use --zot vs --lit flags: coexistence strategy, scoring thresholds, and token budget management",
+      "line_count": 60,
+      "load_when": {
+        "agents": [
+          "zotero-agent"
+        ],
+        "task_types": []
+      }
     }
-  ]
+  ],
+  "generated": "2026-06-19T23:35:42Z"
 }
