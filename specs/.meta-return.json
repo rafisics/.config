@@ -1,21 +1,21 @@
 {
   "status": "tasks_created",
-  "summary": "Created 4 tasks for cslib extension: scaffold (#663), agents (#664), skills (#665), context and rules (#666). Tasks 664-666 depend on 663 and can run in parallel after it completes.",
+  "summary": "Created 2 tasks for PR description workflow: #743 standardizes the AI Tools Used section across PR templates and agents, #744 adds pr-description.md inclusion in feature branches during /pr workflow.",
   "artifacts": [
     {
       "type": "task_entry",
       "path": "specs/TODO.md",
-      "summary": "Tasks #663-666 added to TODO.md"
+      "summary": "Tasks #743 and #744 added to TODO.md"
     }
   ],
   "metadata": {
-    "session_id": "sess_1749673200_cslib_meta",
-    "duration_seconds": 60,
+    "session_id": "sess_1750291200_meta01",
+    "duration_seconds": 120,
     "agent_type": "meta-builder-agent",
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "meta", "meta-builder-agent"],
     "mode": "prompt",
-    "tasks_created": 4
+    "tasks_created": 2
   },
-  "next_steps": "Run /research 663 to begin research on the cslib extension scaffold (foundational task). After completing 663, tasks 664-666 can be researched/implemented in parallel."
+  "next_steps": "Run /research 743 to begin research on foundational task"
 }

@@ -179,6 +179,75 @@ if ! update_state_json; then
 fi
 
 # ============================================================
+# PHASE 1.5: Scan and link unlinked artifacts (self-healing)
+# ============================================================
+scan_and_link_artifacts() {
+  if [[ "$operation" != "postflight" ]]; then
+    return 0
+  fi
+
+  local project_name
+  project_name=$(jq -r --arg num "$task_number" \
+    '.active_projects[] | select(.project_number == ($num | tonumber)) | .project_name' \
+    "$STATE_FILE")
+
+  if [[ -z "$project_name" || "$project_name" == "null" ]]; then
+    return 0
+  fi
+
+  local padded_num
+  padded_num=$(printf "%03d" "$task_number")
+  local task_dir="${PROJECT_ROOT}/specs/${padded_num}_${project_name}"
+
+  if [[ ! -d "$task_dir" ]]; then
+    return 0
+  fi
+
+  local dirs=("reports" "plans" "summaries")
+  local types=("report" "plan" "summary")
+
+  for i in "${!dirs[@]}"; do
+    local adir="${task_dir}/${dirs[$i]}"
+    local atype="${types[$i]}"
+
+    [[ ! -d "$adir" ]] && continue
+
+    local latest
+    latest=$(ls -1 "${adir}/"*.md 2>/dev/null | sort -V | tail -1)
+    [[ -z "$latest" ]] && continue
+
+    local rel_path="${latest#${PROJECT_ROOT}/}"
+
+    local linked
+    linked=$(jq -r --argjson num "$task_number" --arg path "$rel_path" \
+      '[.active_projects[] | select(.project_number == ($num | tonumber)) | .artifacts // [] | .[] | select(.path == $path)] | length' \
+      "$STATE_FILE" 2>/dev/null)
+
+    [[ "$linked" -gt 0 ]] && continue
+
+    if [[ "$DRY_RUN" == "true" ]]; then
+      echo "[dry-run] Would link artifact: type=$atype path=$rel_path"
+      continue
+    fi
+
+    jq --arg atype "$atype" \
+      '(.active_projects[] | select(.project_number == '"$task_number"')).artifacts =
+        [(.active_projects[] | select(.project_number == '"$task_number"')).artifacts // [] | .[] | select(.type == $atype | not)]' \
+      "$STATE_FILE" > "$TMP_DIR/state.json.tmp" \
+      && mv "$TMP_DIR/state.json.tmp" "$STATE_FILE"
+
+    local abasename
+    abasename=$(basename "$latest")
+    jq --arg path "$rel_path" --arg type "$atype" --arg summary "${abasename}" \
+      '(.active_projects[] | select(.project_number == '"$task_number"')).artifacts += [{"path": $path, "type": $type, "summary": $summary}]' \
+      "$STATE_FILE" > "$TMP_DIR/state.json.tmp" \
+      && mv "$TMP_DIR/state.json.tmp" "$STATE_FILE"
+  done
+}
+
+scan_and_link_artifacts
+
+# ============================================================
 # PHASE 2: Regenerate TODO.md from state.json
 # ============================================================
 regenerate_todo() {
