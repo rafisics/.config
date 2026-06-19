@@ -18,7 +18,7 @@ next_project_number: 745
 
 ### Agent System
 
-743 [NOT STARTED] — Fix inconsistent ## AI Tools Used section in PR description gener
+743 [PLANNED] — Fix inconsistent ## AI Tools Used section in PR description gener
   └─ 744 [NOT STARTED] — Modify the /pr command to copy pr-description.md from specs/{NNN}
 
 ### Terminal UI
@@ -42,10 +42,12 @@ next_project_number: 745
 ---
 
 ### 743. Standardize AI Tools Used section across PR templates and agents
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
+- **Research**: [743_standardize_ai_tools_used_section/reports/01_ai-tools-standardization.md](specs/743_standardize_ai_tools_used_section/reports/01_ai-tools-standardization.md)
+- **Plan**: [743_standardize_ai_tools_used_section/plans/01_ai-tools-plan.md](specs/743_standardize_ai_tools_used_section/plans/01_ai-tools-plan.md)
 
 **Description**: Fix inconsistent ## AI Tools Used section in PR description generation. Three files need changes: (1) cslib-implementation-agent.md -- replace the vague [describe what it did] placeholder with a reference to the canonical template in pr-description-format.md; (2) pr.md command -- change ## AI Disclosure heading to ## AI Tools Used in the Step 9 path/description template, and align text with the canonical format; (3) pr-description-format.md is already correct (canonical source, no changes needed). Files to modify: .claude/extensions/cslib/agents/cslib-implementation-agent.md, .claude/extensions/cslib/commands/pr.md
 
