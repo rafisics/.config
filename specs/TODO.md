@@ -11,19 +11,17 @@ next_project_number: 754
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,750 | -- | literature, Terminal UI, Email Integration |
-| 2 | 751 | 750 | literature |
-| 3 | 752 | 751 | literature |
-| 4 | 753 | 752 | literature |
+| 1 | 78,87,751 | -- | literature, Terminal UI, Email Integration |
+| 2 | 752 | 751 | literature |
+| 3 | 753 | 752 | literature |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Literature
 
-750 [NOT STARTED] — Create shell scripts that wrap the chosen Zotero CLI tool (from t
-  └─ 751 [NOT STARTED] — Implement the /zotero --search and local index management functio
-    └─ 752 [NOT STARTED] — Implement the on-demand PDF-to-markdown conversion pipeline that 
-      └─ 753 [NOT STARTED] — Implement the --zot flag for /research, /plan, and /implement tha
+751 [NOT STARTED] — Implement the /zotero --search and local index management functio
+  └─ 752 [NOT STARTED] — Implement the on-demand PDF-to-markdown conversion pipeline that 
+    └─ 753 [NOT STARTED] — Implement the --zot flag for /research, /plan, and /implement tha
 
 ### Terminal UI
 
@@ -66,7 +64,7 @@ next_project_number: 754
 ---
 
 ### 750. Implement Zotero CLI wrapper scripts
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: literature
 - **Dependencies**: Task 748, Task 749

@@ -84,7 +84,7 @@
     {
       "project_number": 750,
       "project_name": "implement_zotero_cli_wrapper_scripts",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "meta",
       "title": "Implement Zotero CLI wrapper scripts",
       "description": "Create shell scripts that wrap the chosen Zotero CLI tool (from task 747) to provide a stable interface for the extension. Scripts: (1) zotero-cli-search.sh — search Zotero library by keyword, return JSON results with citation keys, titles, authors, years, PDF paths, attachment info. (2) zotero-cli-read.sh — read a specific item's metadata, notes, and child attachments by citation key. Must support listing child attachments (markdown chunks stored alongside PDFs). (3) zotero-cli-attach.sh — attach a file (converted markdown chunk) as a child attachment to a Zotero item, with ordering metadata in tags (e.g. chunk_01, chunk_02) so chunks can be retrieved in sequence. (4) zotero-cli-note.sh — create/update a note on a Zotero item. (5) zotero-cli-children.sh — list and retrieve child attachments for a parent item, filtering by type (markdown chunks vs other attachments), returning paths and ordering info. All scripts should handle authentication, provide JSON output, support offline SQLite fallback where possible, and include graceful degradation with setup instructions when the CLI tool is not installed. Follow the exit code contract pattern (0=success, 1=not configured, 2=no results).",
@@ -94,7 +94,8 @@
         749
       ],
       "created": "2026-06-19T22:00:00Z",
-      "last_updated": "2026-06-19T22:00:00Z"
+      "last_updated": "2026-06-19T22:00:00Z",
+      "completion_summary": "Implemented 3 CLI wrapper scripts: zotero-setup.sh (4 sub-commands), zotero-read.sh (9 read operations), zotero-write.sh (4 write operations with dry-run/idempotency)"
     },
     {
       "project_number": 751,
