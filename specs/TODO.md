@@ -11,15 +11,13 @@ next_project_number: 745
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,743 | -- | agent-system, Terminal UI, Email Integration |
-| 2 | 744 | 743 | agent-system |
+| 1 | 78,87,744 | -- | agent-system, Terminal UI, Email Integration |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Agent System
 
-743 [PLANNED] — Fix inconsistent ## AI Tools Used section in PR description gener
-  └─ 744 [NOT STARTED] — Modify the /pr command to copy pr-description.md from specs/{NNN}
+744 [NOT STARTED] — Modify the /pr command to copy pr-description.md from specs/{NNN}
 
 ### Terminal UI
 
@@ -42,7 +40,7 @@ next_project_number: 745
 ---
 
 ### 743. Standardize AI Tools Used section across PR templates and agents
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None

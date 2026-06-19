@@ -1,7 +1,7 @@
 # Implementation Plan: Standardize AI Tools Used Section
 
 - **Task**: 743 - Standardize AI Tools Used section across PR templates and agents
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 0.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/743_standardize_ai_tools_used_section/reports/01_ai-tools-standardization.md
@@ -60,7 +60,7 @@ This task advances the "Agent System Quality" priority under Phase 1 of ROADMAP.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Fix cslib-implementation-agent.md [NOT STARTED]
+### Phase 1: Fix cslib-implementation-agent.md [IN PROGRESS]
 
 **Goal**: Replace the vague placeholder code block with a reference to the canonical template in pr-description-format.md.
 

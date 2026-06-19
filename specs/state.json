@@ -53,7 +53,7 @@
     {
       "project_number": 743,
       "project_name": "standardize_ai_tools_used_section",
-      "status": "planned",
+      "status": "completed",
       "task_type": "meta",
       "title": "Standardize AI Tools Used section across PR templates and agents",
       "description": "Fix inconsistent ## AI Tools Used section in PR description generation. Three files need changes: (1) cslib-implementation-agent.md -- replace the vague [describe what it did] placeholder with a reference to the canonical template in pr-description-format.md; (2) pr.md command -- change ## AI Disclosure heading to ## AI Tools Used in the Step 9 path/description template, and align text with the canonical format; (3) pr-description-format.md is already correct (canonical source, no changes needed). Files to modify: .claude/extensions/cslib/agents/cslib-implementation-agent.md, .claude/extensions/cslib/commands/pr.md",
@@ -72,8 +72,8 @@
         }
       ],
       "created": "2026-06-18T00:00:00Z",
-      "last_updated": "2026-06-19T00:25:42Z",
-      "session_id": "sess_1781828547_4fb134"
+      "last_updated": "2026-06-19T00:27:13Z",
+      "session_id": "sess_1750291300_743"
     },
     {
       "project_number": 744,

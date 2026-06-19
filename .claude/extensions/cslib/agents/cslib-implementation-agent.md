@@ -351,12 +351,19 @@ PR titles MUST begin with one of: `feat`, `fix`, `doc`, `style`, `refactor`, `te
 Optional parenthetical for area: `feat(Logics/Modal): add S4 completeness`
 
 ### AI Usage Disclosure (MANDATORY)
-If AI tools are used, the PR description MUST explain which tools and how they were used. This is mandatory per CSLib's adoption of the Mathlib AI policy.
+If AI tools are used, the PR description MUST include an `## AI Tools Used` section. This is mandatory per CSLib's adoption of the Mathlib AI policy.
 
-Include in every PR description:
+Use the canonical template from `pr-description-format.md` (Section 9: AI Tools Used). Do NOT improvise the wording — use the standard text verbatim:
+
 ```
 ## AI Tools Used
-- Claude Code (cslib-implementation-agent): [describe what it did]
+
+This PR was prepared with the assistance of Claude Code (Anthropic). The AI tool was used for:
+- Drafting and extracting files from a development branch to create a clean PR branch
+- Running CI verification commands
+- Drafting this PR description
+
+All Lean code was written by the author (Benjamin Brast-McKie) and verified to compile cleanly on the PR branch.
 ```
 
 ## Error Handling

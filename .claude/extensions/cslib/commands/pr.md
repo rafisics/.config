@@ -1400,7 +1400,7 @@ PR description from pr-description.md ({pr_desc_path}):
 
 - Approve: proceed with `pr_body = pr_body` (already loaded)
 - Edit summary: read user's next message as the new summary; replace the `## Summary` section
-- Edit AI disclosure: read user's next message as the new disclosure; replace `## AI Disclosure`
+- Edit AI disclosure: read user's next message as the new disclosure; replace `## AI Tools Used`
 - Replace entirely: read user's next message as the full `pr_body`
 
 **On success**: **IMMEDIATELY CONTINUE** to STEP 10.
@@ -1438,7 +1438,7 @@ Compose draft PR description using the CSLib canonical format:
 ### {filename.lean} (+N, -M)
 - {bullet points describing key changes in this file}
 
-## AI Disclosure
+## AI Tools Used
 
 This PR was prepared with the assistance of Claude Code (Anthropic). The AI tool was used for:
 - Drafting and extracting files from a development branch to create a clean PR branch
@@ -1465,7 +1465,7 @@ Display the draft to the user and ask via AskUserQuestion:
 
 - Approve: proceed with `pr_body = draft_description`
 - Edit summary: read user's next message as the new summary; replace the `## Summary` section
-- Edit AI disclosure: read user's next message as the new disclosure; replace `## AI Disclosure`
+- Edit AI disclosure: read user's next message as the new disclosure; replace `## AI Tools Used`
 - Replace entirely: read user's next message as the full `pr_body`
 
 **On success**: **IMMEDIATELY CONTINUE** to STEP 10.
