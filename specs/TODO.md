@@ -1,5 +1,5 @@
 ---
-next_project_number: 746
+next_project_number: 747
 ---
 
 # TODO
@@ -24,6 +24,25 @@ next_project_number: 746
 78 [PLANNED] — Fix Gmail SMTP authentication failure when sending emails via Him
 
 ## Tasks
+
+### 746. Enforce plan checkbox tracking during implementation and orchestration
+- **Status**: [COMPLETED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+- **Research**:
+  - [specs/746_enforce_plan_checkbox_tracking/reports/01_plan-checkbox-tracking.md]
+  - [specs/746_enforce_plan_checkbox_tracking/reports/01_plan-checkbox-tracking.md]
+- **Plan**:
+  - [specs/746_enforce_plan_checkbox_tracking/plans/01_plan-checkbox-tracking.md]
+  - [specs/746_enforce_plan_checkbox_tracking/plans/01_plan-checkbox-tracking.md]
+- **Summary**:
+  - [specs/746_enforce_plan_checkbox_tracking/summaries/01_plan-checkbox-tracking-summary.md]
+  - [specs/746_enforce_plan_checkbox_tracking/summaries/01_plan-checkbox-tracking-summary.md]
+
+**Description**: Fix plan checkbox drift during /implement and /orchestrate by adding three enforcement mechanisms: (1) Strengthen the self-review gate in general-implementation-agent.md Stage 4D-ii — make it a hard requirement that any phase marked [COMPLETED] must have all - [ ] items checked off or annotated as deviations before proceeding. (2) Add a postflight plan-checkbox validation step in skill-implementer SKILL.md — after the agent finishes, compare completed work against unchecked plan items and auto-fix mismatches via Edit. (3) Extend the orchestrator handoff schema (.orchestrator-handoff.json) to include a subtasks_completed array (e.g. ["1.1", "1.2", "2.1"]) so the orchestrator has per-subtask visibility when dispatching successors. Files to modify: .claude/agents/general-implementation-agent.md, .claude/skills/skill-implementer/SKILL.md, .claude/skills/skill-orchestrate/SKILL.md, .claude/context/patterns/orchestrator-handoff.md (if exists)
+
+---
 
 ### 745. Defer orchestrate commits until first implementation cycle
 - **Status**: [COMPLETED]

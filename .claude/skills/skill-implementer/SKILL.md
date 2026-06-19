@@ -382,6 +382,33 @@ fi
 
 ---
 
+#### Stage 6b-checkbox: Plan Checkbox Postflight Scan (Non-Blocking)
+
+After validating the summary artifact, scan the plan file for any unchecked checklist items in completed phases that the agent may have missed. This is a **safety net only** — it does not fail the postflight even if unchecked items are found.
+
+**Guard clause**: Only run if `plan_path` is set and the file exists. If not, skip silently.
+
+```bash
+if [ -n "$plan_path" ] && [ -f "$plan_path" ]; then
+    echo "[postflight] Scanning plan for unchecked checklist items..."
+    unchecked_count=$(grep -c '^\s*- \[ \]' "$plan_path" 2>/dev/null || echo "0")
+    if [ "$unchecked_count" -gt 0 ]; then
+        echo "WARNING: Found $unchecked_count unchecked item(s) in plan file (non-blocking)."
+        echo "Auto-annotating unchecked items with postflight marker..."
+        # For each unchecked item, append postflight marker (non-blocking sed in-place)
+        sed -i 's/^\(\s*- \[ \] .*\)$/\1 *(postflight: unchecked -- review needed)*/g' "$plan_path" 2>/dev/null \
+            || echo "WARNING: Could not auto-annotate plan items (sed failed, non-blocking)."
+        echo "[postflight] Plan annotation complete. Review annotated items to confirm correct deviation handling."
+    else
+        echo "[postflight] Plan checkbox scan: all items accounted for."
+    fi
+fi
+```
+
+**Non-blocking contract**: This stage MUST NOT cause the postflight to fail. Any errors in the grep, sed, or file access are caught and logged. The annotation `*(postflight: unchecked -- review needed)*` is a signal for the next agent or human reviewer — it does not alter plan semantics.
+
+---
+
 #### Stage 6b: Commit Phase Progress (Inside Loop)
 
 After each subagent completes (whether implemented, partial, or failed), commit the work:

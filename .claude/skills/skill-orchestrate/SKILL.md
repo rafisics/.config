@@ -354,8 +354,11 @@ else
   next_hint=$(echo "$handoff" | jq -r '.next_action_hint // "none"')
   phases_completed=$(echo "$handoff" | jq -r '.phases_completed // 0')
   phases_total=$(echo "$handoff" | jq -r '.phases_total // 0')
+  subtasks_completed=$(echo "$handoff" | jq -c '.subtasks_completed // []')
   echo "[orchestrate] Dispatch result: $dispatch_status — $dispatch_summary"
   [ "$phases_total" -gt 0 ] && echo "[orchestrate] Phase progress: $phases_completed/$phases_total"
+  subtasks_count=$(echo "$subtasks_completed" | jq 'length')
+  [ "$subtasks_count" -gt 0 ] && echo "[orchestrate] Subtasks completed this cycle: $(echo "$subtasks_completed" | jq -r 'join(", ")')"
 
   # Drift detection: arithmetic gate (cheap check before expensive inspection fork)
   if [ "$phases_total" -gt 0 ] && [ "$dispatch_status" = "partial" ]; then

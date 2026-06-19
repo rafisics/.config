@@ -71,7 +71,16 @@ the successor agent reads markdown prose.
     "handoff_path": "specs/NNN_slug/handoffs/phase-N-handoff-TIMESTAMP.md",
     "phases_completed": 2,
     "phases_total": 4
-  }
+  },
+
+  "phases_completed": 2,
+  "phases_total": 4,
+
+  "subtasks_completed": [
+    "1.1",
+    "1.2",
+    "2.1"
+  ]
 }
 ```
 
@@ -133,6 +142,29 @@ Points to the continuation handoff file written by the agent. The orchestrator r
 **Note**: `continuation_context` and `blockers` can both be present (partial completion with
 identified blockers). The orchestrator handles blockers first via escalation.
 
+### `phases_completed` (optional integer, top-level)
+Number of plan phases completed during this dispatch cycle. Written at the **top level** of
+the handoff object (not only inside `continuation_context`). The orchestrator reads this
+for drift detection and phase progress logging. Default when absent: `0`.
+
+**Important**: This field MUST be written at the top level whenever `status = "partial"` or
+`status = "implemented"`. It enables the orchestrator's drift threshold check without
+reading `continuation_context`.
+
+### `phases_total` (optional integer, top-level)
+Total number of phases in the plan for this task. Written at the **top level** alongside
+`phases_completed`. Default when absent: `0`. The orchestrator uses `phases_completed /
+phases_total` to compute the completion ratio for drift detection.
+
+### `subtasks_completed` (optional array of strings, top-level)
+List of completed subtask IDs in `"{phase}.{step}"` format (e.g., `["1.1", "1.2", "2.1"]`).
+Populated from the agent's running `subtasks_completed` list accumulated during Stage 4B-ii
+of `general-implementation-agent`. Maximum 20 entries — truncate oldest entries if the list
+would exceed the cap. Omit the field (or use `[]`) when no subtasks have been completed.
+
+The orchestrator logs this field for per-subtask dispatch visibility. Future tooling may use
+it to surface which subtasks completed within each dispatch cycle.
+
 ---
 
 ## Token Budget Constraints
@@ -150,6 +182,8 @@ Field-level budgets:
 | `dead_ends` (all entries) | ~50 |
 | `files_modified` (all entries) | ~30 |
 | `continuation_context` | ~20 |
+| `phases_completed` + `phases_total` | ~10 |
+| `subtasks_completed` (up to 20 entries) | ~30 |
 | Schema overhead (field names, JSON structure) | ~50 |
 
 If content would exceed 400 tokens, truncate `decisions_made` and `dead_ends` first (these are
@@ -197,6 +231,34 @@ loop guard.
 Write `continuation_context` only when the skill returns `status = "partial"` AND a continuation
 handoff file was written by the agent. The continuation handoff path comes from the agent's
 `.return-meta.json` `partial_progress.handoff_path` field.
+
+### Writing `phases_completed`, `phases_total`, and `subtasks_completed`
+
+These three fields MUST be written at the **top level** of the handoff object (not only inside
+`continuation_context`) whenever the implementation skill completes:
+
+- **`phases_completed`**: Set to the integer count of phases fully completed during this dispatch.
+  Read from the agent's `.return-meta.json` `phases_completed` field. Write `0` if absent.
+- **`phases_total`**: Set to the integer total phase count from the agent's `.return-meta.json`
+  `phases_total` field. Write `0` if absent.
+- **`subtasks_completed`**: Set to the `completion_data.subtasks_completed` array from the
+  agent's `.return-meta.json`. This array is populated by the agent during Stage 4B-ii
+  (accumulating subtask IDs as each checklist item is checked off). Cap at 20 entries;
+  truncate oldest if over the cap. Omit or use `[]` if not present.
+
+```bash
+# In skill-implementer, after reading the agent's return-meta.json:
+phases_completed=$(echo "$meta" | jq -r '.phases_completed // 0')
+phases_total=$(echo "$meta" | jq -r '.phases_total // 0')
+subtasks_completed=$(echo "$meta" | jq -c '.completion_data.subtasks_completed // []')
+
+# Write to orchestrator handoff at the top level:
+jq --argjson pc "$phases_completed" \
+   --argjson pt "$phases_total" \
+   --argjson sc "$subtasks_completed" \
+   '. + {"phases_completed": $pc, "phases_total": $pt, "subtasks_completed": $sc}' \
+   "$handoff_file" > "$handoff_file.tmp" && mv "$handoff_file.tmp" "$handoff_file"
+```
 
 ### `orchestrator_mode` Flag in Continuation Context
 
@@ -295,7 +357,10 @@ during its state machine loop. It reads ONLY the 400-token handoff object.
     "Command files now source shared scripts via 'source .claude/scripts/NAME.sh'",
     "Existing update-task-status.sh and validate-artifact.sh left unchanged"
   ],
-  "dead_ends": []
+  "dead_ends": [],
+  "phases_completed": 3,
+  "phases_total": 3,
+  "subtasks_completed": ["1.1", "1.2", "2.1", "2.2", "3.1", "3.2", "3.3"]
 }
 ```
 
@@ -325,7 +390,10 @@ during its state machine loop. It reads ONLY the 400-token handoff object.
     "phases_completed": 2,
     "phases_total": 4,
     "orchestrator_mode": true
-  }
+  },
+  "phases_completed": 2,
+  "phases_total": 4,
+  "subtasks_completed": ["1.1", "1.2", "2.1", "2.2"]
 }
 ```
 
