@@ -1,6 +1,6 @@
 {
   "version": "1.1.0",
-  "next_project_number": 743,
+  "next_project_number": 745,
   "active_projects": [
     {
       "project_number": 87,
@@ -49,6 +49,36 @@
       "title": "Fix Himalaya SMTP authentication failure when sending emails",
       "description": "Fix Gmail SMTP authentication failure when sending emails via Himalaya (<leader>me). Error: Authentication failed: Code: 535, Enhanced code: 5.7.8, Message: Username and Password not accepted. The error occurs with TLS connection attempts and persists through multiple retry attempts. Identify and fix the root cause of the SMTP credential configuration.",
       "topic": "Email Integration"
+    },
+    {
+      "project_number": 743,
+      "project_name": "standardize_ai_tools_used_section",
+      "status": "not_started",
+      "task_type": "meta",
+      "title": "Standardize AI Tools Used section across PR templates and agents",
+      "description": "Fix inconsistent ## AI Tools Used section in PR description generation. Three files need changes: (1) cslib-implementation-agent.md -- replace the vague [describe what it did] placeholder with a reference to the canonical template in pr-description-format.md; (2) pr.md command -- change ## AI Disclosure heading to ## AI Tools Used in the Step 9 path/description template, and align text with the canonical format; (3) pr-description-format.md is already correct (canonical source, no changes needed). Files to modify: .claude/extensions/cslib/agents/cslib-implementation-agent.md, .claude/extensions/cslib/commands/pr.md",
+      "topic": "agent-system",
+      "dependencies": [],
+      "artifacts": [],
+      "created": "2026-06-18T00:00:00Z",
+      "last_updated": "2026-06-18T00:00:00Z",
+      "session_id": "sess_1750291200_meta01"
+    },
+    {
+      "project_number": 744,
+      "project_name": "include_pr_description_in_feature_branch",
+      "status": "not_started",
+      "task_type": "meta",
+      "title": "Include pr-description.md in feature branch during /pr workflow",
+      "description": "Modify the /pr command to copy pr-description.md from specs/{NNN}_{SLUG}/ into the cslib repo (e.g., as pr-description.md at repo root) after STEP 9 and before STEP 10. The file should be left unstaged (not git-added) so the user can review the full PR description alongside the code changes before pushing. This gives the user a convenient way to inspect the PR description in the context of the feature branch. Files to modify: .claude/extensions/cslib/commands/pr.md",
+      "topic": "agent-system",
+      "dependencies": [
+        743
+      ],
+      "artifacts": [],
+      "created": "2026-06-18T00:00:00Z",
+      "last_updated": "2026-06-18T00:00:00Z",
+      "session_id": "sess_1750291200_meta01"
     }
   ],
   "completed_projects": [],

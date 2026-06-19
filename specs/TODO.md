@@ -1,19 +1,25 @@
 ---
-next_project_number: 743
+next_project_number: 745
 ---
 
 # TODO
 
 ## Task Order
 
-*Updated 2026-06-17. Generated from state.json dependency graph.*
+*Updated 2026-06-19. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87 | -- | Terminal UI, Email Integration |
+| 1 | 78,87,743 | -- | agent-system, Terminal UI, Email Integration |
+| 2 | 744 | 743 | agent-system |
 
 **Grouped by Topic** (indented = depends on parent):
+
+### Agent System
+
+743 [NOT STARTED] — Fix inconsistent ## AI Tools Used section in PR description gener
+  └─ 744 [NOT STARTED] — Modify the /pr command to copy pr-description.md from specs/{NNN}
 
 ### Terminal UI
 
@@ -24,6 +30,26 @@ next_project_number: 743
 78 [PLANNED] — Fix Gmail SMTP authentication failure when sending emails via Him
 
 ## Tasks
+
+### 744. Include pr-description.md in feature branch during /pr workflow
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: Task 743
+
+**Description**: Modify the /pr command to copy pr-description.md from specs/{NNN}_{SLUG}/ into the cslib repo (e.g., as pr-description.md at repo root) after STEP 9 and before STEP 10. The file should be left unstaged (not git-added) so the user can review the full PR description alongside the code changes before pushing. This gives the user a convenient way to inspect the PR description in the context of the feature branch. Files to modify: .claude/extensions/cslib/commands/pr.md
+
+---
+
+### 743. Standardize AI Tools Used section across PR templates and agents
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: Fix inconsistent ## AI Tools Used section in PR description generation. Three files need changes: (1) cslib-implementation-agent.md -- replace the vague [describe what it did] placeholder with a reference to the canonical template in pr-description-format.md; (2) pr.md command -- change ## AI Disclosure heading to ## AI Tools Used in the Step 9 path/description template, and align text with the canonical format; (3) pr-description-format.md is already correct (canonical source, no changes needed). Files to modify: .claude/extensions/cslib/agents/cslib-implementation-agent.md, .claude/extensions/cslib/commands/pr.md
+
+---
 
 ### 87. Investigate terminal directory change when opening neovim in wezterm
 - **Effort**: TBD
