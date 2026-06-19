@@ -1,7 +1,7 @@
 # Implementation Plan: Task #747
 
 - **Task**: 747 - Evaluate Zotero CLI tools for shell-first integration
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 1.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/747_evaluate_zotero_cli_tools/reports/01_zotero-cli-eval.md

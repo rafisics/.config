@@ -1,5 +1,5 @@
 ---
-next_project_number: 747
+next_project_number: 754
 ---
 
 # TODO
@@ -11,9 +11,23 @@ next_project_number: 747
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87 | -- | Terminal UI, Email Integration |
+| 1 | 78,87,748 | -- | literature, Terminal UI, Email Integration |
+| 2 | 749 | 748 | literature |
+| 3 | 750 | 749 | literature |
+| 4 | 751 | 750 | literature |
+| 5 | 752 | 751 | literature |
+| 6 | 753 | 752 | literature |
 
 **Grouped by Topic** (indented = depends on parent):
+
+### Literature
+
+748 [NOT STARTED] — Design the architecture for a new 'zotero' extension using a two-
+  └─ 749 [NOT STARTED] — Create the extension scaffold for the new 'zotero' extension at .
+    └─ 750 [NOT STARTED] — Create shell scripts that wrap the chosen Zotero CLI tool (from t
+      └─ 751 [NOT STARTED] — Implement the /zotero --search and local index management functio
+        └─ 752 [NOT STARTED] — Implement the on-demand PDF-to-markdown conversion pipeline that 
+          └─ 753 [NOT STARTED] — Implement the --zot flag for /research, /plan, and /implement tha
 
 ### Terminal UI
 
@@ -24,6 +38,83 @@ next_project_number: 747
 78 [PLANNED] — Fix Gmail SMTP authentication failure when sending emails via Him
 
 ## Tasks
+
+### 753. Implement Zotero context injection (--zot flag)
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: literature
+- **Dependencies**: Task 751, Task 752
+
+**Description**: Implement the --zot flag for /research, /plan, and /implement that injects Zotero-sourced literature context into agent prompts via the per-repo local index. (1) Create zotero-retrieve.sh — reads the per-repo specs/zotero-index.json (not the global Zotero library), scores entries against task description using the improved scoring algorithm designed in task 748 (NOT the naive single-keyword-overlap approach from literature-retrieve.sh which routinely injects wrong papers), retrieves markdown chunks from Zotero child attachments for top-scoring entries within token budget, outputs <zotero-context> block. The local index is what makes this repo-aware: only citations linked to this project are considered. (2) Wire --zot flag into command-route-skill.sh alongside existing --lit flag. (3) Ensure composability: --zot and --lit are independent (--lit reads flat specs/literature/ directory, --zot reads from Zotero via local index). --clean suppresses memory but not --zot/--lit. Both can be used together. (4) Token budget enforcement (TOKEN_BUDGET=8000, MAX_FILES=10). For chunked documents, select relevant chunks rather than including all. (5) On-demand conversion trigger: if a linked citation lacks markdown chunks in Zotero, trigger conversion before retrieval.
+
+---
+
+### 752. Implement on-demand PDF-to-markdown conversion via Zotero
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: literature
+- **Dependencies**: Task 750, Task 751
+
+**Description**: Implement the on-demand PDF-to-markdown conversion pipeline that stores chunks in Zotero as child attachments alongside the original PDF. (1) When a linked citation is needed (during --zot retrieval or explicit /zotero --convert KEY), check if markdown chunks already exist as child attachments on the Zotero item. (2) If not, resolve the PDF path from Zotero storage, convert using pdftotext with content-aware chunking (reuse logic from literature-chunk.sh), and store each chunk as a separate child attachment on the same Zotero parent item via zotero-cli-attach.sh, tagged with ordering metadata (chunk_01, chunk_02, etc.). This keeps all literature content in Zotero as the single source of truth. (3) Update the per-repo local index (specs/zotero-index.json) with has_markdown=true, chunk_count, and per-chunk token counts. (4) Support batch conversion: /zotero --convert-all to convert all linked citations lacking markdown. (5) Handle retrieval of chunked documents — reassemble chunks in order from child attachments, respecting token budget by selecting relevant chunks rather than always including all.
+
+---
+
+### 751. Implement Zotero search and local index management
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: literature
+- **Dependencies**: Task 749, Task 750
+
+**Description**: Implement the /zotero --search and local index management functionality. (1) /zotero --search 'QUERY' — search Zotero library via CLI wrapper scripts, present results with availability tags ([HAS MARKDOWN], [PDF ONLY], [NO PDF]), allow multi-select to link citations to local index. (2) /zotero --link KEY — add a Zotero citation key to specs/zotero-index.json, recording metadata (title, authors, year, keywords, has_markdown, token_count). (3) /zotero --unlink KEY — remove from local index. (4) /zotero --status — show local index health, linked citations count, markdown availability. (5) /zotero --task N — extract task description as search query (like literature --task N). The local index (specs/zotero-index.json) maps Zotero citation keys to per-project relevance data.
+
+---
+
+### 750. Implement Zotero CLI wrapper scripts
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: literature
+- **Dependencies**: Task 748, Task 749
+
+**Description**: Create shell scripts that wrap the chosen Zotero CLI tool (from task 747) to provide a stable interface for the extension. Scripts: (1) zotero-cli-search.sh — search Zotero library by keyword, return JSON results with citation keys, titles, authors, years, PDF paths, attachment info. (2) zotero-cli-read.sh — read a specific item's metadata, notes, and child attachments by citation key. Must support listing child attachments (markdown chunks stored alongside PDFs). (3) zotero-cli-attach.sh — attach a file (converted markdown chunk) as a child attachment to a Zotero item, with ordering metadata in tags (e.g. chunk_01, chunk_02) so chunks can be retrieved in sequence. (4) zotero-cli-note.sh — create/update a note on a Zotero item. (5) zotero-cli-children.sh — list and retrieve child attachments for a parent item, filtering by type (markdown chunks vs other attachments), returning paths and ordering info. All scripts should handle authentication, provide JSON output, support offline SQLite fallback where possible, and include graceful degradation with setup instructions when the CLI tool is not installed. Follow the exit code contract pattern (0=success, 1=not configured, 2=no results).
+
+---
+
+### 749. Create Zotero extension skeleton
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: literature
+- **Dependencies**: Task 748
+
+**Description**: Create the extension scaffold for the new 'zotero' extension at .claude/extensions/zotero/. Includes: manifest.json (with routing, dependencies on core/filetypes, provides block for commands/skills/scripts/agents), EXTENSION.md (CLAUDE.md merge source documenting the extension), commands/zotero.md (argument parsing and dispatch), skills/skill-zotero/SKILL.md (direct execution skill with mode handlers), agents/zotero-agent.md (documentation agent). Wire into the extension loader so it can be picked via the extension picker. Follow existing literature extension as template but adapted for the Zotero CLI-backed architecture from task 748 design.
+
+---
+
+### 748. Design Zotero extension architecture
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: literature
+- **Dependencies**: Task 747
+
+**Description**: Design the architecture for a new 'zotero' extension using a two-tier model: Zotero as the global literature source, per-repo local indices as relevance filters. Key design decisions: (1) Per-repo local index schema — specs/zotero-index.json maps Zotero citation keys to project-specific relevance, with fields for cached markdown availability, per-chunk token counts, keywords, and retrieval scoring metadata. The local index is what makes --zot repo-aware: each project tracks only the citations relevant to it. (2) Chunk storage in Zotero — when large PDFs are converted to markdown, the chunks are stored as child attachments in Zotero alongside the original PDF, with ordering metadata in attachment tags/notes. This keeps Zotero as the single source of truth for all literature content. (3) Context injection via --zot flag — parallel to --lit but index-driven: reads the per-repo local index, scores entries against task description, retrieves markdown chunks from Zotero for top-scoring entries within token budget. Contrast with current --lit which injects everything from a flat specs/literature/ directory with no per-repo filtering. (4) Retrieval scoring algorithm — the current --lit uses naive keyword-overlap scoring (literature-retrieve.sh lines 100-122, MIN_SCORE=1) which routinely injects wrong papers (e.g. matching 'logic' across unrelated domains). Design a better scoring approach for --zot: consider multi-field scoring (title, abstract, keywords, user-assigned tags), requiring minimum 2+ keyword matches, weighting domain-specific terms higher than generic ones, or leveraging Zotero tags/collections as relevance signals. (5) Coexistence strategy — --lit remains for flat-file use cases; --zot provides the Zotero-backed, index-filtered approach. They are independent and composable. (6) Command surface — /zotero command with subcommands (status, search, convert, link, unlink). (7) Script architecture — CLI wrapper layer, chunk management, retrieval pipeline. Reference the existing literature extension as architectural template. Depends on task 747 CLI tool evaluation results.
+
+---
+
+### 747. Evaluate Zotero CLI tools for shell-first integration
+- **Status**: [COMPLETED]
+- **Task Type**: general
+- **Topic**: literature
+- **Dependencies**: None
+- **Research**: [specs/747_evaluate_zotero_cli_tools/reports/01_zotero-cli-eval.md]
+- **Plan**:
+  - [specs/747_evaluate_zotero_cli_tools/plans/01_zotero-cli-eval.md]
+  - [specs/747_evaluate_zotero_cli_tools/plans/01_zotero-cli-eval.md]
+- **Summary**:
+  - [specs/747_evaluate_zotero_cli_tools/summaries/01_zotero-cli-eval-summary.md]
+  - [specs/747_evaluate_zotero_cli_tools/summaries/01_zotero-cli-eval-summary.md]
+
+**Description**: Research and evaluate zotero-cli-cc (Agents365-ai) and 54yyyu/zotero-cli for use as the shell-first backend for a new Zotero extension. Key evaluation criteria: (1) Can they read/write attachments and notes on Zotero items? (2) Can converted markdown be stored as Zotero attachments or linked notes? (3) Offline SQLite access vs Web API modes — what operations work offline? (4) PDF access — can they resolve and read PDFs from Zotero storage? (5) JSON output format for agent consumption. (6) Authentication model (API keys, OAuth). (7) Search capabilities (keyword, full-text, tag-based). (8) Installation on NixOS (pip/pipx availability). (9) Child attachment hierarchy — can the CLI create and list child attachments under a parent Zotero item? This is critical for storing markdown chunks alongside PDFs as sibling attachments. Produce a comparison matrix and recommendation for which tool (or combination) to use.
+
+---
 
 ### 746. Enforce plan checkbox tracking during implementation and orchestration
 - **Status**: [COMPLETED]

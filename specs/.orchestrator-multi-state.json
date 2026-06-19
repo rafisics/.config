@@ -1,0 +1,46 @@
+{
+  "session_id": "sess_1781903242_e450f1",
+  "task_numbers": [747, 748, 749, 750, 751, 752, 753],
+  "waves": [[747],[748],[749],[750],[751],[752],[753]],
+  "dependency_graph": {"747":[],"748":[747],"749":[748],"750":[748,749],"751":[749,750],"752":[750,751],"753":[751,752]},
+  "cycle_count": 0,
+  "max_cycles": 25,
+  "failed_tasks": [],
+  "completed_tasks": [],
+  "current_statuses": {
+    "747": "not_started",
+    "748": "not_started",
+    "749": "not_started",
+    "750": "not_started",
+    "751": "not_started",
+    "752": "not_started",
+    "753": "not_started"
+  },
+  "task_types": {
+    "747": "general",
+    "748": "meta",
+    "749": "meta",
+    "750": "meta",
+    "751": "meta",
+    "752": "meta",
+    "753": "meta"
+  },
+  "research_agents": {
+    "747": "general-research-agent",
+    "748": "general-research-agent",
+    "749": "general-research-agent",
+    "750": "general-research-agent",
+    "751": "general-research-agent",
+    "752": "general-research-agent",
+    "753": "general-research-agent"
+  },
+  "implement_agents": {
+    "747": "general-implementation-agent",
+    "748": "general-implementation-agent",
+    "749": "general-implementation-agent",
+    "750": "general-implementation-agent",
+    "751": "general-implementation-agent",
+    "752": "general-implementation-agent",
+    "753": "general-implementation-agent"
+  }
+}
