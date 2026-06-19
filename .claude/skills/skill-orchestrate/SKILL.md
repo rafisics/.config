@@ -410,6 +410,29 @@ else
     skill_link_artifacts "$task_number" "$handoff_artifact_path" "$handoff_artifact_type" \
       "$handoff_artifact_summary" "$field_name" "$next_field"
   fi
+
+  # Per-implementation-cycle commit: bundle all artifacts from this research+plan+implement cycle
+  should_commit=false
+  if [ "$dispatch_status" = "implemented" ]; then
+    should_commit=true
+    commit_msg="task ${task_number}: complete implementation
+
+Session: ${session_id}"
+  elif [ "$dispatch_status" = "partial" ] && [ "$phases_completed" -gt 0 ]; then
+    should_commit=true
+    commit_msg="task ${task_number}: implementation progress (${phases_completed}/${phases_total} phases)
+
+Session: ${session_id}"
+  fi
+
+  if [ "$should_commit" = "true" ]; then
+    if ! git diff --quiet HEAD 2>/dev/null || git status --porcelain 2>/dev/null | grep -q '^'; then
+      git add -A && git commit -m "$commit_msg" \
+        || echo "[orchestrate] WARNING: Git commit failed (non-blocking)"
+    else
+      echo "[orchestrate] No uncommitted changes -- skipping per-cycle commit"
+    fi
+  fi
 fi
 
 # Increment cycle_count

@@ -1,5 +1,5 @@
 ---
-next_project_number: 745
+next_project_number: 746
 ---
 
 # TODO
@@ -24,6 +24,25 @@ next_project_number: 745
 78 [PLANNED] — Fix Gmail SMTP authentication failure when sending emails via Him
 
 ## Tasks
+
+### 745. Defer orchestrate commits until first implementation cycle
+- **Status**: [COMPLETED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+- **Research**:
+  - [specs/745_defer_orchestrate_commits/reports/01_defer-commits.md]
+  - [specs/745_defer_orchestrate_commits/reports/01_defer-commits.md]
+- **Plan**:
+  - [specs/745_defer_orchestrate_commits/plans/01_defer-commits-plan.md]
+  - [specs/745_defer_orchestrate_commits/plans/01_defer-commits-plan.md]
+- **Summary**:
+  - [specs/745_defer_orchestrate_commits/summaries/01_defer-commits-summary.md]
+  - [specs/745_defer_orchestrate_commits/summaries/01_defer-commits-summary.md]
+
+**Description**: Modify /orchestrate commit behavior: (1) In skill-orchestrate SKILL.md Stage 5, add a git commit after each implementation dispatch (status=implemented or partial with phases_completed>0), bundling all uncommitted artifacts from prior research/plan cycles. Skip commits for researched/planned statuses. (2) In orchestrate.md CHECKPOINT 3, make the final commit conditional — only commit if there are uncommitted changes (avoid empty/duplicate commits when per-implementation-cycle commits already captured everything). Files to modify: .claude/skills/skill-orchestrate/SKILL.md, .claude/commands/orchestrate.md
+
+---
 
 ### 744. Include pr-description.md in feature branch during /pr workflow
 - **Status**: [COMPLETED]

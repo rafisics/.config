@@ -247,20 +247,28 @@ skipped_count=${#skipped_tasks[@]}
 
 Full success (all tasks completed):
 ```bash
-git add -A && git commit -m "orchestrate tasks {range_summary}: complete orchestration
+if ! git diff --quiet HEAD 2>/dev/null || git status --porcelain 2>/dev/null | grep -q '^'; then
+  git add -A && git commit -m "orchestrate tasks {range_summary}: complete orchestration
 
 Tasks: {comma-separated succeeded list}
 Session: {batch_session_id}"
+else
+  echo "[orchestrate] No uncommitted changes after batch orchestration -- skipping batch commit"
+fi
 ```
 
 Partial success:
 ```bash
-git add -A && git commit -m "orchestrate tasks {range_summary}: complete orchestration ({succeeded}/{total} succeeded)
+if ! git diff --quiet HEAD 2>/dev/null || git status --porcelain 2>/dev/null | grep -q '^'; then
+  git add -A && git commit -m "orchestrate tasks {range_summary}: complete orchestration ({succeeded}/{total} succeeded)
 
 Tasks completed: {comma-separated succeeded list}
 Tasks failed: {failed_count} (see multi-state log)
 Tasks skipped: {skipped_count}
 Session: {batch_session_id}"
+else
+  echo "[orchestrate] No uncommitted changes after batch orchestration -- skipping batch commit"
+fi
 ```
 
 **Consolidated Output**:
@@ -372,16 +380,24 @@ jq --arg summary "$completion_summary" \
 
 **On completion:**
 ```bash
-git add -A && git commit -m "task {N}: complete orchestration
+if ! git diff --quiet HEAD 2>/dev/null || git status --porcelain 2>/dev/null | grep -q '^'; then
+  git add -A && git commit -m "task {N}: complete orchestration
 
 Session: {SESSION_ID}"
+else
+  echo "[orchestrate] No uncommitted changes after orchestration -- skipping final commit"
+fi
 ```
 
 **On partial:**
 ```bash
-git add -A && git commit -m "task {N}: orchestration paused (cycles {M}/{MAX})
+if ! git diff --quiet HEAD 2>/dev/null || git status --porcelain 2>/dev/null | grep -q '^'; then
+  git add -A && git commit -m "task {N}: orchestration paused (cycles {M}/{MAX})
 
 Session: {SESSION_ID}"
+else
+  echo "[orchestrate] No uncommitted changes after orchestration -- skipping final commit"
+fi
 ```
 
 Commit failure is non-blocking (log and continue).

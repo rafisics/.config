@@ -1,7 +1,53 @@
 {
   "version": "1.1.0",
-  "next_project_number": 745,
+  "next_project_number": 746,
   "active_projects": [
+    {
+      "project_number": 745,
+      "project_name": "defer_orchestrate_commits",
+      "status": "completed",
+      "task_type": "meta",
+      "title": "Defer orchestrate commits until first implementation cycle",
+      "description": "Modify /orchestrate commit behavior: (1) In skill-orchestrate SKILL.md Stage 5, add a git commit after each implementation dispatch (status=implemented or partial with phases_completed>0), bundling all uncommitted artifacts from prior research/plan cycles. Skip commits for researched/planned statuses. (2) In orchestrate.md CHECKPOINT 3, make the final commit conditional — only commit if there are uncommitted changes (avoid empty/duplicate commits when per-implementation-cycle commits already captured everything). Files to modify: .claude/skills/skill-orchestrate/SKILL.md, .claude/commands/orchestrate.md",
+      "topic": "agent-system",
+      "dependencies": [],
+      "artifacts": [
+        {
+          "path": "specs/745_defer_orchestrate_commits/reports/01_defer-commits.md",
+          "type": "report",
+          "summary": "01_defer-commits.md"
+        },
+        {
+          "path": "specs/745_defer_orchestrate_commits/reports/01_defer-commits.md",
+          "type": "report",
+          "summary": "Full commit-flow analysis with exact insertion locations, decision table, edge cases, and recommended approach"
+        },
+        {
+          "path": "specs/745_defer_orchestrate_commits/plans/01_defer-commits-plan.md",
+          "type": "plan",
+          "summary": "01_defer-commits-plan.md"
+        },
+        {
+          "path": "specs/745_defer_orchestrate_commits/plans/01_defer-commits-plan.md",
+          "type": "plan",
+          "summary": "3-phase plan: per-cycle commit in skill-orchestrate Stage 5, conditional CHECKPOINT 3, conditional multi-task batch commit"
+        },
+        {
+          "path": "specs/745_defer_orchestrate_commits/summaries/01_defer-commits-summary.md",
+          "type": "summary",
+          "summary": "01_defer-commits-summary.md"
+        },
+        {
+          "path": "specs/745_defer_orchestrate_commits/summaries/01_defer-commits-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: deferred orchestrate commits to implementation cycles"
+        }
+      ],
+      "created": "2026-06-19T00:00:00Z",
+      "last_updated": "2026-06-19T19:48:06Z",
+      "session_id": "sess_1781898027_924b47",
+      "completion_summary": "Modified /orchestrate commit behavior: per-implementation-cycle commits in skill-orchestrate Stage 5, conditional CHECKPOINT 3 and multi-task batch commits in orchestrate.md"
+    },
     {
       "project_number": 87,
       "project_name": "investigate_wezterm_terminal_directory_change",
