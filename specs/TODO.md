@@ -11,23 +11,21 @@ next_project_number: 754
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,748 | -- | literature, Terminal UI, Email Integration |
-| 2 | 749 | 748 | literature |
-| 3 | 750 | 749 | literature |
-| 4 | 751 | 750 | literature |
-| 5 | 752 | 751 | literature |
-| 6 | 753 | 752 | literature |
+| 1 | 78,87,749 | -- | literature, Terminal UI, Email Integration |
+| 2 | 750 | 749 | literature |
+| 3 | 751 | 750 | literature |
+| 4 | 752 | 751 | literature |
+| 5 | 753 | 752 | literature |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Literature
 
-748 [NOT STARTED] — Design the architecture for a new 'zotero' extension using a two-
-  └─ 749 [NOT STARTED] — Create the extension scaffold for the new 'zotero' extension at .
-    └─ 750 [NOT STARTED] — Create shell scripts that wrap the chosen Zotero CLI tool (from t
-      └─ 751 [NOT STARTED] — Implement the /zotero --search and local index management functio
-        └─ 752 [NOT STARTED] — Implement the on-demand PDF-to-markdown conversion pipeline that 
-          └─ 753 [NOT STARTED] — Implement the --zot flag for /research, /plan, and /implement tha
+749 [NOT STARTED] — Create the extension scaffold for the new 'zotero' extension at .
+  └─ 750 [NOT STARTED] — Create shell scripts that wrap the chosen Zotero CLI tool (from t
+    └─ 751 [NOT STARTED] — Implement the /zotero --search and local index management functio
+      └─ 752 [NOT STARTED] — Implement the on-demand PDF-to-markdown conversion pipeline that 
+        └─ 753 [NOT STARTED] — Implement the --zot flag for /research, /plan, and /implement tha
 
 ### Terminal UI
 
@@ -90,10 +88,11 @@ next_project_number: 754
 ---
 
 ### 748. Design Zotero extension architecture
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: literature
 - **Dependencies**: Task 747
+- **Research**: [specs/748_design_zotero_extension_architecture/reports/01_zotero-extension-arch.md]
 
 **Description**: Design the architecture for a new 'zotero' extension using a two-tier model: Zotero as the global literature source, per-repo local indices as relevance filters. Key design decisions: (1) Per-repo local index schema — specs/zotero-index.json maps Zotero citation keys to project-specific relevance, with fields for cached markdown availability, per-chunk token counts, keywords, and retrieval scoring metadata. The local index is what makes --zot repo-aware: each project tracks only the citations relevant to it. (2) Chunk storage in Zotero — when large PDFs are converted to markdown, the chunks are stored as child attachments in Zotero alongside the original PDF, with ordering metadata in attachment tags/notes. This keeps Zotero as the single source of truth for all literature content. (3) Context injection via --zot flag — parallel to --lit but index-driven: reads the per-repo local index, scores entries against task description, retrieves markdown chunks from Zotero for top-scoring entries within token budget. Contrast with current --lit which injects everything from a flat specs/literature/ directory with no per-repo filtering. (4) Retrieval scoring algorithm — the current --lit uses naive keyword-overlap scoring (literature-retrieve.sh lines 100-122, MIN_SCORE=1) which routinely injects wrong papers (e.g. matching 'logic' across unrelated domains). Design a better scoring approach for --zot: consider multi-field scoring (title, abstract, keywords, user-assigned tags), requiring minimum 2+ keyword matches, weighting domain-specific terms higher than generic ones, or leveraging Zotero tags/collections as relevance signals. (5) Coexistence strategy — --lit remains for flat-file use cases; --zot provides the Zotero-backed, index-filtered approach. They are independent and composable. (6) Command surface — /zotero command with subcommands (status, search, convert, link, unlink). (7) Script architecture — CLI wrapper layer, chunk management, retrieval pipeline. Reference the existing literature extension as architectural template. Depends on task 747 CLI tool evaluation results.
 

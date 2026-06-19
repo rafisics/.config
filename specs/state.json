@@ -46,7 +46,7 @@
     {
       "project_number": 748,
       "project_name": "design_zotero_extension_architecture",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "meta",
       "title": "Design Zotero extension architecture",
       "description": "Design the architecture for a new 'zotero' extension using a two-tier model: Zotero as the global literature source, per-repo local indices as relevance filters. Key design decisions: (1) Per-repo local index schema — specs/zotero-index.json maps Zotero citation keys to project-specific relevance, with fields for cached markdown availability, per-chunk token counts, keywords, and retrieval scoring metadata. The local index is what makes --zot repo-aware: each project tracks only the citations relevant to it. (2) Chunk storage in Zotero — when large PDFs are converted to markdown, the chunks are stored as child attachments in Zotero alongside the original PDF, with ordering metadata in attachment tags/notes. This keeps Zotero as the single source of truth for all literature content. (3) Context injection via --zot flag — parallel to --lit but index-driven: reads the per-repo local index, scores entries against task description, retrieves markdown chunks from Zotero for top-scoring entries within token budget. Contrast with current --lit which injects everything from a flat specs/literature/ directory with no per-repo filtering. (4) Retrieval scoring algorithm — the current --lit uses naive keyword-overlap scoring (literature-retrieve.sh lines 100-122, MIN_SCORE=1) which routinely injects wrong papers (e.g. matching 'logic' across unrelated domains). Design a better scoring approach for --zot: consider multi-field scoring (title, abstract, keywords, user-assigned tags), requiring minimum 2+ keyword matches, weighting domain-specific terms higher than generic ones, or leveraging Zotero tags/collections as relevance signals. (5) Coexistence strategy — --lit remains for flat-file use cases; --zot provides the Zotero-backed, index-filtered approach. They are independent and composable. (6) Command surface — /zotero command with subcommands (status, search, convert, link, unlink). (7) Script architecture — CLI wrapper layer, chunk management, retrieval pipeline. Reference the existing literature extension as architectural template. Depends on task 747 CLI tool evaluation results.",
@@ -55,7 +55,16 @@
         747
       ],
       "created": "2026-06-19T22:00:00Z",
-      "last_updated": "2026-06-19T22:00:00Z"
+      "last_updated": "2026-06-19T23:11:23Z",
+      "session_id": "sess_1781910367_99f70a_748",
+      "artifacts": [
+        {
+          "path": "specs/748_design_zotero_extension_architecture/reports/01_zotero-extension-arch.md",
+          "type": "report",
+          "summary": "01_zotero-extension-arch.md"
+        }
+      ],
+      "completion_summary": "Created 11-section Zotero extension architecture design document specifying manifest, index schema, 9 scripts, retrieval scoring algorithm, /zotero command surface, --zot flag integration, and downstream task map"
     },
     {
       "project_number": 749,
