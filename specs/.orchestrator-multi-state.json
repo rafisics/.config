@@ -28,19 +28,20 @@
       753
     ]
   ],
-  "cycle_count": 3,
+  "cycle_count": 4,
   "max_cycles": 25,
   "failed_tasks": [],
   "completed_tasks": [
     748,
     749,
-    750
+    750,
+    751
   ],
   "current_statuses": {
     "748": "completed",
     "749": "completed",
     "750": "completed",
-    "751": "not_started",
+    "751": "completed",
     "752": "not_started",
     "753": "not_started"
   }

@@ -128,7 +128,8 @@
           "type": "summary",
           "summary": "01_search-index-summary.md"
         }
-      ]
+      ],
+      "completion_summary": "Implemented 3 index management scripts (add/remove/search) with multi-field weighted scoring and wired --task N mode into /zotero command"
     },
     {
       "project_number": 752,
