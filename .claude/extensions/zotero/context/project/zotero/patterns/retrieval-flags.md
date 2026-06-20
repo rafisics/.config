@@ -1,7 +1,5 @@
 # Retrieval Flags: --zot vs --lit Coexistence
 
-<!-- Content populated in task 753 -->
-
 This file documents when to use `--zot` vs `--lit` flags, how they interact, and the
 coexistence strategy for using both simultaneously.
 
@@ -11,9 +9,7 @@ The `--zot` and `--lit` flags are independent context injection mechanisms:
 - `--lit` injects chunks from `specs/literature/` (all files, looser threshold)
 - `--zot` injects chunks from `specs/zotero-index.json` entries (curated, higher threshold)
 
-## Coexistence Table (Placeholder)
-
-<!-- Full coexistence documentation populated in task 753 -->
+## Coexistence Table
 
 | Flags | Memory | Literature | Zotero |
 |-------|--------|------------|--------|

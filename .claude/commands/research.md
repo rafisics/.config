@@ -38,6 +38,7 @@ When multiple tasks are specified, each task is researched independently in para
 | `--opus` | Use Opus model (highest quality, same as agent default) | false |
 | `--clean` | Skip automatic memory and roadmap retrieval | false |
 | `--lit` | Literature mode: pass lit_flag=true to skill for paper/spec-based research | false |
+| `--zot` | Zotero mode: inject relevant Zotero index entries as context via zotero-retrieve.sh | false |
 
 When `--team` is specified, research is delegated to `skill-team-research` which spawns multiple research agents working in parallel on different aspects of the task. Each teammate produces a research report, and the lead synthesizes findings into a final comprehensive report.
 
@@ -311,7 +312,13 @@ Skipped: {count}
 
    If not present: `lit_flag = false`
 
-7. **Extract Focus Prompt**
+7. **Extract Zot Flag**
+   Check remaining args for Zotero context injection:
+   - `--zot` -> `zot_flag = true` (inject relevant Zotero index entries as context)
+
+   If not present: `zot_flag = false`
+
+8. **Extract Focus Prompt**
    Remove all recognized flags from remaining args:
    - Remove `--team`
    - Remove `--team-size N` (flag and its value)
@@ -319,6 +326,7 @@ Skipped: {count}
    - Remove `--haiku`, `--sonnet`, `--opus`
    - Remove `--clean`
    - Remove `--lit`
+   - Remove `--zot`
 
    Remaining text is `focus_prompt`.
 
@@ -397,11 +405,11 @@ else:
 ```
 # For team mode:
 skill: "skill-team-research"
-args: "task_number={N} focus={focus_prompt} team_size={team_size} session_id={session_id} effort_flag={effort_flag} model_flag={model_flag} clean_flag={clean_flag} lit_flag={lit_flag}"
+args: "task_number={N} focus={focus_prompt} team_size={team_size} session_id={session_id} effort_flag={effort_flag} model_flag={model_flag} clean_flag={clean_flag} lit_flag={lit_flag} zot_flag={zot_flag}"
 
 # For single-agent mode:
 skill: "{skill-name from table above}"
-args: "task_number={N} focus={focus_prompt} session_id={session_id} effort_flag={effort_flag} model_flag={model_flag} clean_flag={clean_flag} lit_flag={lit_flag}"
+args: "task_number={N} focus={focus_prompt} session_id={session_id} effort_flag={effort_flag} model_flag={model_flag} clean_flag={clean_flag} lit_flag={lit_flag} zot_flag={zot_flag}"
 ```
 
 If `model_flag` is set, pass the `model` parameter to override the agent's default model:

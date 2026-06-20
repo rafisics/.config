@@ -699,6 +699,3 @@ Parallel to `--lit` in interface and injection order.
 
 **Graceful degradation**: When `zot` is not installed, `ZOT_DATA_DIR` is unset, or
 `specs/zotero-index.json` is missing, `--zot` emits empty context without error.
-
-**Note**: `--zot` flag wiring to `command-route-skill.sh` is implemented in task 753.
-Until then, passing `--zot` has no effect (silently ignored).

@@ -17,7 +17,7 @@ next_project_number: 754
 
 ### Literature
 
-753 [NOT STARTED] — Implement the --zot flag for /research, /plan, and /implement tha
+753 [IMPLEMENTING] — Implement the --zot flag for /research, /plan, and /implement tha
 
 ### Terminal UI
 
@@ -30,7 +30,7 @@ next_project_number: 754
 ## Tasks
 
 ### 753. Implement Zotero context injection (--zot flag)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: meta
 - **Topic**: literature
 - **Dependencies**: Task 751, Task 752
