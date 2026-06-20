@@ -1,17 +1,17 @@
 {
-  "status": "planned",
-  "summary": "Created 3-phase plan: Phase 1 implements zotero-chunk.sh (PDF->markdown->chunks pipeline with index update), Phase 2 implements zotero-attach-chunks.sh (upload chunks to Zotero), Phase 3 verifies syntax and integration.",
+  "status": "implemented",
+  "summary": "Implemented zotero-chunk.sh (PDF->markdown->chunks pipeline with index update) and zotero-attach-chunks.sh (idempotent chunk upload to Zotero) replacing stubs; both scripts are executable and pass syntax checks.",
   "blockers": [],
   "continuation_context": null,
-  "next_action_hint": "implement",
-  "phases_completed": 1,
-  "phases_total": 1,
-  "subtasks_completed": [],
+  "next_action_hint": "none",
+  "phases_completed": 3,
+  "phases_total": 3,
+  "subtasks_completed": ["phase-1", "phase-2", "phase-3"],
   "artifacts": [
     {
-      "path": "specs/752_implement_ondemand_pdf_markdown_conversion/plans/01_pdf-conversion-plan.md",
-      "type": "plan",
-      "summary": "3-phase implementation plan for PDF-to-markdown conversion pipeline scripts"
+      "path": "specs/752_implement_ondemand_pdf_markdown_conversion/summaries/01_pdf-conversion-summary.md",
+      "type": "summary",
+      "summary": "Implementation summary for zotero-chunk.sh and zotero-attach-chunks.sh with decisions and follow-ups"
     }
   ]
 }
