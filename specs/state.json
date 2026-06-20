@@ -168,7 +168,7 @@
     {
       "project_number": 753,
       "project_name": "implement_zotero_context_injection",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "meta",
       "title": "Implement Zotero context injection (--zot flag)",
       "description": "Implement the --zot flag for /research, /plan, and /implement that injects Zotero-sourced literature context into agent prompts via the per-repo local index. (1) Create zotero-retrieve.sh — reads the per-repo specs/zotero-index.json (not the global Zotero library), scores entries against task description using the improved scoring algorithm designed in task 748 (NOT the naive single-keyword-overlap approach from literature-retrieve.sh which routinely injects wrong papers), retrieves markdown chunks from Zotero child attachments for top-scoring entries within token budget, outputs <zotero-context> block. The local index is what makes this repo-aware: only citations linked to this project are considered. (2) Wire --zot flag into command-route-skill.sh alongside existing --lit flag. (3) Ensure composability: --zot and --lit are independent (--lit reads flat specs/literature/ directory, --zot reads from Zotero via local index). --clean suppresses memory but not --zot/--lit. Both can be used together. (4) Token budget enforcement (TOKEN_BUDGET=8000, MAX_FILES=10). For chunked documents, select relevant chunks rather than including all. (5) On-demand conversion trigger: if a linked citation lacks markdown chunks in Zotero, trigger conversion before retrieval.",
@@ -178,8 +178,42 @@
         752
       ],
       "created": "2026-06-19T22:00:00Z",
-      "last_updated": "2026-06-20T00:38:42Z",
-      "session_id": "sess_1781910367_99f70a_753"
+      "last_updated": "2026-06-20T00:46:32Z",
+      "session_id": "sess_1781910367_99f70a_753",
+      "artifacts": [
+        {
+          "path": "specs/753_implement_zotero_context_injection/reports/01_context-injection-research.md",
+          "type": "report",
+          "summary": "01_context-injection-research.md"
+        },
+        {
+          "path": "specs/753_implement_zotero_context_injection/plans/01_context-injection-plan.md",
+          "type": "plan",
+          "summary": "01_context-injection-plan.md"
+        },
+        {
+          "path": "specs/753_implement_zotero_context_injection/summaries/01_context-injection-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for --zot flag: zotero-retrieve.sh script + 7-file wiring across commands and skills"
+        }
+      ],
+      "completion_summary": "Implemented --zot context injection flag: created zotero-retrieve.sh with 6-field weighted scoring, wired flag through 3 command files, 3 skill files, and skill-orchestrate (12 injection points), updated documentation",
+      "memory_candidates": [
+        {
+          "content": "The --zot flag for Zotero context injection is wired in skill SKILL.md files (not command-route-skill.sh). Skills call bash .claude/scripts/zotero-retrieve.sh. The zot_flag flows through delegation context JSON from command files to skills. skill-orchestrate has 12 lit_flag/zot_flag locations (2 parse + 4 single-task dispatch + 6 multi-task dispatch args).",
+          "category": "PATTERN",
+          "source_artifact": "specs/753_implement_zotero_context_injection/summaries/01_context-injection-summary.md",
+          "confidence": 0.95,
+          "suggested_keywords": [
+            "zot_flag",
+            "zotero-retrieve",
+            "context-injection",
+            "skill-orchestrate",
+            "delegation-context",
+            "lit_flag"
+          ]
+        }
+      ]
     },
     {
       "project_number": 746,

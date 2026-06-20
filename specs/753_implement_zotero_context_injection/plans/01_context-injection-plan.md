@@ -1,7 +1,7 @@
 # Implementation Plan: Task #753
 
 - **Task**: 753 - Implement Zotero context injection (--zot flag)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 4 hours
 - **Dependencies**: Task 752 (zotero-chunk.sh), Task 750 (zotero-read.sh), Task 751 (zotero-search-index.sh)
 - **Research Inputs**: specs/753_implement_zotero_context_injection/reports/01_context-injection-research.md

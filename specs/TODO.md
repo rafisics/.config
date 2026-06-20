@@ -11,13 +11,9 @@ next_project_number: 754
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,753 | -- | literature, Terminal UI, Email Integration |
+| 1 | 78,87 | -- | Terminal UI, Email Integration |
 
 **Grouped by Topic** (indented = depends on parent):
-
-### Literature
-
-753 [IMPLEMENTING] — Implement the --zot flag for /research, /plan, and /implement tha
 
 ### Terminal UI
 
@@ -30,10 +26,13 @@ next_project_number: 754
 ## Tasks
 
 ### 753. Implement Zotero context injection (--zot flag)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: literature
 - **Dependencies**: Task 751, Task 752
+- **Research**: [specs/753_implement_zotero_context_injection/reports/01_context-injection-research.md]
+- **Plan**: [specs/753_implement_zotero_context_injection/plans/01_context-injection-plan.md]
+- **Summary**: [specs/753_implement_zotero_context_injection/summaries/01_context-injection-summary.md]
 
 **Description**: Implement the --zot flag for /research, /plan, and /implement that injects Zotero-sourced literature context into agent prompts via the per-repo local index. (1) Create zotero-retrieve.sh — reads the per-repo specs/zotero-index.json (not the global Zotero library), scores entries against task description using the improved scoring algorithm designed in task 748 (NOT the naive single-keyword-overlap approach from literature-retrieve.sh which routinely injects wrong papers), retrieves markdown chunks from Zotero child attachments for top-scoring entries within token budget, outputs <zotero-context> block. The local index is what makes this repo-aware: only citations linked to this project are considered. (2) Wire --zot flag into command-route-skill.sh alongside existing --lit flag. (3) Ensure composability: --zot and --lit are independent (--lit reads flat specs/literature/ directory, --zot reads from Zotero via local index). --clean suppresses memory but not --zot/--lit. Both can be used together. (4) Token budget enforcement (TOKEN_BUDGET=8000, MAX_FILES=10). For chunked documents, select relevant chunks rather than including all. (5) On-demand conversion trigger: if a linked citation lacks markdown chunks in Zotero, trigger conversion before retrieval.
 
