@@ -18,7 +18,7 @@ next_project_number: 754
 
 ### Literature
 
-752 [NOT STARTED] — Implement the on-demand PDF-to-markdown conversion pipeline that 
+752 [IMPLEMENTING] — Implement the on-demand PDF-to-markdown conversion pipeline that 
   └─ 753 [NOT STARTED] — Implement the --zot flag for /research, /plan, and /implement tha
 
 ### Terminal UI
@@ -42,7 +42,7 @@ next_project_number: 754
 ---
 
 ### 752. Implement on-demand PDF-to-markdown conversion via Zotero
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: meta
 - **Topic**: literature
 - **Dependencies**: Task 750, Task 751

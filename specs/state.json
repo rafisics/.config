@@ -134,7 +134,7 @@
     {
       "project_number": 752,
       "project_name": "implement_ondemand_pdf_markdown_conversion",
-      "status": "not_started",
+      "status": "implementing",
       "task_type": "meta",
       "title": "Implement on-demand PDF-to-markdown conversion via Zotero",
       "description": "Implement the on-demand PDF-to-markdown conversion pipeline that stores chunks in Zotero as child attachments alongside the original PDF. (1) When a linked citation is needed (during --zot retrieval or explicit /zotero --convert KEY), check if markdown chunks already exist as child attachments on the Zotero item. (2) If not, resolve the PDF path from Zotero storage, convert using pdftotext with content-aware chunking (reuse logic from literature-chunk.sh), and store each chunk as a separate child attachment on the same Zotero parent item via zotero-cli-attach.sh, tagged with ordering metadata (chunk_01, chunk_02, etc.). This keeps all literature content in Zotero as the single source of truth. (3) Update the per-repo local index (specs/zotero-index.json) with has_markdown=true, chunk_count, and per-chunk token counts. (4) Support batch conversion: /zotero --convert-all to convert all linked citations lacking markdown. (5) Handle retrieval of chunked documents — reassemble chunks in order from child attachments, respecting token budget by selecting relevant chunks rather than always including all.",
@@ -144,7 +144,8 @@
         751
       ],
       "created": "2026-06-19T22:00:00Z",
-      "last_updated": "2026-06-19T22:00:00Z"
+      "last_updated": "2026-06-20T00:18:59Z",
+      "session_id": "sess_1781914722_3503c4_752"
     },
     {
       "project_number": 753,
