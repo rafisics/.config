@@ -2,7 +2,7 @@
 
 - **Task**: 753 - Implement Zotero context injection (--zot flag)
 - **Status**: [COMPLETED]
-- **Effort**: 4 hours
+- **Effort**: ~2 hours (actual)
 - **Dependencies**: Task 752 (zotero-chunk.sh), Task 750 (zotero-read.sh), Task 751 (zotero-search-index.sh)
 - **Research Inputs**: specs/753_implement_zotero_context_injection/reports/01_context-injection-research.md
 - **Artifacts**: plans/01_context-injection-plan.md (this file)
@@ -74,26 +74,26 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Implement zotero-retrieve.sh [IN PROGRESS]
+### Phase 1: Implement zotero-retrieve.sh [COMPLETED]
 
 **Goal**: Create the core retrieval script that scores per-repo index entries against query terms, reads chunk files within a token budget, and emits a `<zotero-context>` block.
 
 **Tasks**:
-- [ ] Replace the stub in `.claude/extensions/zotero/scripts/zotero-retrieve.sh` with full implementation
-- [ ] Implement argument parsing: `<description>` and `<task_type>` positional args
-- [ ] Implement graceful exit: if `specs/zotero-index.json` missing or entries empty, exit 0 with no output
-- [ ] Implement keyword extraction: tokenize description + task_type, filter stop words (same list as `literature-retrieve.sh`), length > 3, sort + deduplicate, take first 10
-- [ ] Implement 6-field weighted scoring via embedded jq: title*4, tags*3, abstract_snippet*2, keywords*2, collections*1, notes_summary*1
-- [ ] Implement threshold filter: score >= 4; sort by score descending
-- [ ] Implement greedy token-budget selection: TOKEN_BUDGET from index `token_budget` field or default 8000, MAX_FILES=10
-- [ ] Implement chunk reading path: when `has_chunks=true` and `chunk_dir` is a non-empty directory, read `*.md` files from `chunk_dir` sequentially within remaining budget
-- [ ] Implement metadata-only fallback: when `has_pdf=true` but no chunks, emit metadata block (title, authors, year, abstract_snippet) + convert suggestion note
-- [ ] Implement metadata-only path for entries with neither PDF nor chunks
-- [ ] Implement `last_retrieved` timestamp update (best-effort, non-blocking)
-- [ ] Emit `<zotero-context>...</zotero-context>` block wrapping all selected content
-- [ ] Ensure exit 0 always (even on empty results); exit 1 only on fatal JSON parse failure
-- [ ] Add term sanitization: strip non-alphanumeric characters from query terms before jq `test()`
-- [ ] Copy completed script to `.claude/scripts/zotero-retrieve.sh`
+- [x] Replace the stub in `.claude/extensions/zotero/scripts/zotero-retrieve.sh` with full implementation *(completed)*
+- [x] Implement argument parsing: `<description>` and `<task_type>` positional args *(completed)*
+- [x] Implement graceful exit: if `specs/zotero-index.json` missing or entries empty, exit 0 with no output *(completed)*
+- [x] Implement keyword extraction: tokenize description + task_type, filter stop words (same list as `literature-retrieve.sh`), length > 3, sort + deduplicate, take first 10 *(completed)*
+- [x] Implement 6-field weighted scoring via embedded jq: title*4, tags*3, abstract_snippet*2, keywords*2, collections*1, notes_summary*1 *(completed)*
+- [x] Implement threshold filter: score >= 4; sort by score descending *(completed)*
+- [x] Implement greedy token-budget selection: TOKEN_BUDGET from index `token_budget` field or default 8000, MAX_FILES=10 *(completed)*
+- [x] Implement chunk reading path: when `has_chunks=true` and `chunk_dir` is a non-empty directory, read `*.md` files from `chunk_dir` sequentially within remaining budget *(completed)*
+- [x] Implement metadata-only fallback: when `has_pdf=true` but no chunks, emit metadata block (title, authors, year, abstract_snippet) + convert suggestion note *(completed)*
+- [x] Implement metadata-only path for entries with neither PDF nor chunks *(completed)*
+- [x] Implement `last_retrieved` timestamp update (best-effort, non-blocking) *(completed)*
+- [x] Emit `<zotero-context>...</zotero-context>` block wrapping all selected content *(completed)*
+- [x] Ensure exit 0 always (even on empty results); exit 1 only on fatal JSON parse failure *(completed)*
+- [x] Add term sanitization: strip non-alphanumeric characters from query terms before jq `test()` *(completed)*
+- [x] Copy completed script to `.claude/scripts/zotero-retrieve.sh` *(completed)*
 
 **Timing**: 1.5 hours
 
@@ -114,28 +114,28 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Wire --zot into command files and skill files [NOT STARTED]
+### Phase 2: Wire --zot into command files and skill files [COMPLETED]
 
 **Goal**: Add `--zot` flag parsing to the 3 command files (research.md, plan.md, implement.md) and add `zot_context` injection blocks to the 3 skill files (skill-researcher, skill-planner, skill-implementer).
 
 **Tasks**:
-- [ ] In `commands/research.md` Stage 1.5: add step 7 "Extract Zot Flag" (after lit flag, before focus prompt extraction) parsing `--zot` -> `zot_flag = true`
-- [ ] In `commands/research.md` Stage 1.5 step 7 (focus prompt): add `--zot` to the list of flags to remove from remaining args
-- [ ] In `commands/research.md` Stage 2: add `zot_flag={zot_flag}` to both team and single-agent args strings
-- [ ] In `commands/research.md` options table: add `--zot` row documenting the flag
-- [ ] In `commands/plan.md` Stage 1.5: add step 7 "Extract Zot Flag" (after lit flag, before roadmap flag) parsing `--zot` -> `zot_flag = true`
-- [ ] In `commands/plan.md` Stage 1.5 focus prompt step: add `--zot` to the list of flags to remove
-- [ ] In `commands/plan.md` Stage 2: add `zot_flag={zot_flag}` to all three args strings (team, single-agent standard, single-agent hard)
-- [ ] In `commands/plan.md` options table: add `--zot` row documenting the flag
-- [ ] In `commands/implement.md`: add `zot_flag={ZOT_FLAG}` to both team and single-agent args strings
-- [ ] In `commands/implement.md` options table: add `--zot` row documenting the flag
-- [ ] In `skills/skill-researcher/SKILL.md` Stage 4a: add `zot_context` block after existing `lit_context` block, following identical pattern with `zot_flag` and `zotero-retrieve.sh`
-- [ ] In `skills/skill-researcher/SKILL.md` Stage 4a: add note about `zot_flag` independence from `clean_flag` and `lit_flag`
-- [ ] In `skills/skill-researcher/SKILL.md` Stage 5: add "Zotero Context Injection" block after the "Literature Context Injection" block
-- [ ] In `skills/skill-planner/SKILL.md` Stage 4a: add `zot_context` block (same pattern as skill-researcher)
-- [ ] In `skills/skill-planner/SKILL.md` Stage 5: add "Zotero Context Injection" block
-- [ ] In `skills/skill-implementer/SKILL.md` Stage 4a: add `zot_context` block (same pattern as skill-researcher)
-- [ ] In `skills/skill-implementer/SKILL.md` Stage 5: add "Zotero Context Injection" block
+- [x] In `commands/research.md` Stage 1.5: add step 7 "Extract Zot Flag" (after lit flag, before focus prompt extraction) parsing `--zot` -> `zot_flag = true` *(completed)*
+- [x] In `commands/research.md` Stage 1.5 step 7 (focus prompt): add `--zot` to the list of flags to remove from remaining args *(completed)*
+- [x] In `commands/research.md` Stage 2: add `zot_flag={zot_flag}` to both team and single-agent args strings *(completed)*
+- [x] In `commands/research.md` options table: add `--zot` row documenting the flag *(completed)*
+- [x] In `commands/plan.md` Stage 1.5: add step 7 "Extract Zot Flag" (after lit flag, before roadmap flag) parsing `--zot` -> `zot_flag = true` *(completed)*
+- [x] In `commands/plan.md` Stage 1.5 focus prompt step: add `--zot` to the list of flags to remove *(completed)*
+- [x] In `commands/plan.md` Stage 2: add `zot_flag={zot_flag}` to all three args strings (team, single-agent standard, single-agent hard) *(completed)*
+- [x] In `commands/plan.md` options table: add `--zot` row documenting the flag *(completed)*
+- [x] In `commands/implement.md`: add `zot_flag={ZOT_FLAG}` to both team and single-agent args strings *(completed)*
+- [x] In `commands/implement.md` options table: add `--zot` row documenting the flag *(completed)*
+- [x] In `skills/skill-researcher/SKILL.md` Stage 4a: add `zot_context` block after existing `lit_context` block, following identical pattern with `zot_flag` and `zotero-retrieve.sh` *(completed)*
+- [x] In `skills/skill-researcher/SKILL.md` Stage 4a: add note about `zot_flag` independence from `clean_flag` and `lit_flag` *(completed)*
+- [x] In `skills/skill-researcher/SKILL.md` Stage 5: add "Zotero Context Injection" block after the "Literature Context Injection" block *(completed)*
+- [x] In `skills/skill-planner/SKILL.md` Stage 4a: add `zot_context` block (same pattern as skill-researcher) *(completed)*
+- [x] In `skills/skill-planner/SKILL.md` Stage 5: add "Zotero Context Injection" block *(completed)*
+- [x] In `skills/skill-implementer/SKILL.md` Stage 4a: add `zot_context` block (same pattern as skill-researcher) *(completed)*
+- [x] In `skills/skill-implementer/SKILL.md` Stage 5: add "Zotero Context Injection" block *(completed)*
 
 **Timing**: 1 hour
 
@@ -158,21 +158,21 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Wire --zot through skill-orchestrate [NOT STARTED]
+### Phase 3: Wire --zot through skill-orchestrate [COMPLETED]
 
 **Goal**: Thread `zot_flag` through all dispatch contexts in `skill-orchestrate/SKILL.md`, covering both single-task and multi-task modes (12 injection points matching the existing `lit_flag` pattern).
 
 **Tasks**:
-- [ ] In Stage 0: add `zot_flag` extraction from delegation context (parallel to existing `lit_flag` extraction at line 36)
-- [ ] In Stage 1: add `zot_flag` extraction from delegation context (parallel to existing `lit_flag` extraction at line 59)
-- [ ] In Stage 4 "not_started" state handler: add `"zot_flag": "'$zot_flag'"` to research dispatch context (line ~205)
-- [ ] In Stage 4 "researched" state handler: add `"zot_flag": "'$zot_flag'"` to plan dispatch context (line ~232)
-- [ ] In Stage 4 "planned/implementing" state handler: add `"zot_flag": "'$zot_flag'"` to implement dispatch context (line ~256)
-- [ ] In Stage 4 "partial" state handler (continuation): add `"zot_flag": "'$zot_flag'"` to implement dispatch context (line ~285)
-- [ ] In Multi-Task Mode research dispatch: add `--arg zot_flag "$zot_flag"` and `"zot_flag": $zot_flag` (lines ~944-945)
-- [ ] In Multi-Task Mode plan dispatch: add `--arg zot_flag "$zot_flag"` and `"zot_flag": $zot_flag` (lines ~966-968)
-- [ ] In Multi-Task Mode implement dispatch: add `--arg zot_flag "$zot_flag"` and `"zot_flag": $zot_flag` (lines ~995-998)
-- [ ] Grep-audit: verify all 12 `lit_flag` locations have corresponding `zot_flag` additions
+- [x] In Stage 0: add `zot_flag` extraction from delegation context (parallel to existing `lit_flag` extraction at line 36) *(completed)*
+- [x] In Stage 1: add `zot_flag` extraction from delegation context (parallel to existing `lit_flag` extraction at line 59) *(completed)*
+- [x] In Stage 4 "not_started" state handler: add `"zot_flag": "'$zot_flag'"` to research dispatch context (line ~205) *(completed)*
+- [x] In Stage 4 "researched" state handler: add `"zot_flag": "'$zot_flag'"` to plan dispatch context (line ~232) *(completed)*
+- [x] In Stage 4 "planned/implementing" state handler: add `"zot_flag": "'$zot_flag'"` to implement dispatch context (line ~256) *(completed)*
+- [x] In Stage 4 "partial" state handler (continuation): add `"zot_flag": "'$zot_flag'"` to implement dispatch context (line ~285) *(completed)*
+- [x] In Multi-Task Mode research dispatch: add `--arg zot_flag "$zot_flag"` and `"zot_flag": $zot_flag` (lines ~944-945) *(completed)*
+- [x] In Multi-Task Mode plan dispatch: add `--arg zot_flag "$zot_flag"` and `"zot_flag": $zot_flag` (lines ~966-968) *(completed)*
+- [x] In Multi-Task Mode implement dispatch: add `--arg zot_flag "$zot_flag"` and `"zot_flag": $zot_flag` (lines ~995-998) *(completed)*
+- [x] Grep-audit: verify all 12 `lit_flag` locations have corresponding `zot_flag` additions *(completed: lit_flag=12, zot_flag=12)*
 
 **Timing**: 45 minutes
 
@@ -188,18 +188,18 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Update documentation and final verification [NOT STARTED]
+### Phase 4: Update documentation and final verification [COMPLETED]
 
 **Goal**: Update EXTENSION.md to remove the "not yet implemented" note, update `retrieval-flags.md` to remove placeholder comments, regenerate CLAUDE.md from merge sources, and perform end-to-end verification.
 
 **Tasks**:
-- [ ] Update `.claude/extensions/zotero/EXTENSION.md`: remove or update any "not yet implemented" note related to `--zot` wiring
-- [ ] Update `.claude/extensions/zotero/context/project/zotero/patterns/retrieval-flags.md`: remove `<!-- Content populated in task 753 -->` and `<!-- Full coexistence documentation populated in task 753 -->` placeholder comments
-- [ ] Update `.claude/extensions/zotero/scripts/zotero-retrieve.sh` header: change "implemented in task 753" to "implemented" (remove future-tense references)
-- [ ] Regenerate `.claude/CLAUDE.md` from merge sources (removes the "task 753" note at line 703)
-- [ ] Run comprehensive grep audit: `grep -rn 'task 753' .claude/extensions/zotero/` to find remaining references and update them
-- [ ] Verify all 8 modified/created files are syntactically correct (no broken markdown, valid bash)
-- [ ] Verify `zotero-retrieve.sh` is accessible at both `.claude/extensions/zotero/scripts/` and `.claude/scripts/`
+- [x] Update `.claude/extensions/zotero/EXTENSION.md`: remove or update any "not yet implemented" note related to `--zot` wiring *(completed)*
+- [x] Update `.claude/extensions/zotero/context/project/zotero/patterns/retrieval-flags.md`: remove `<!-- Content populated in task 753 -->` and `<!-- Full coexistence documentation populated in task 753 -->` placeholder comments *(completed)*
+- [x] Update `.claude/extensions/zotero/scripts/zotero-retrieve.sh` header: change "implemented in task 753" to "implemented" (remove future-tense references) *(completed)*
+- [x] Regenerate `.claude/CLAUDE.md` from merge sources (removes the "task 753" note at line 703) *(completed)*
+- [x] Run comprehensive grep audit: `grep -rn 'task 753' .claude/extensions/zotero/` to find remaining references and update them *(completed: no remaining task 753 references in zotero extension)*
+- [x] Verify all 8 modified/created files are syntactically correct (no broken markdown, valid bash) *(completed)*
+- [x] Verify `zotero-retrieve.sh` is accessible at both `.claude/extensions/zotero/scripts/` and `.claude/scripts/` *(completed: both 310-line files exist and are executable)*
 
 **Timing**: 45 minutes
 
