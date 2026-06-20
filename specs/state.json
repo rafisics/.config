@@ -163,7 +163,7 @@
           "summary": "Implementation summary for task 752"
         }
       ],
-      "completion_summary": "Implemented zotero-chunk.sh and zotero-attach-chunks.sh completing the PDF-to-markdown conversion pipeline for the Zotero extension. Both scripts replace stubs, follow exit code conventions (0/1/2), use set -euo pipefail, store chunk_dir as relative paths, and avoid jq != operators per Issue #1132."
+      "completion_summary": "Implemented zotero-chunk.sh (PDF->markdown->chunks pipeline with index update) and zotero-attach-chunks.sh (idempotent chunk upload to Zotero)"
     },
     {
       "project_number": 753,
