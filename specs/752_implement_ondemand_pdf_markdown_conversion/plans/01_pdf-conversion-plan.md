@@ -1,7 +1,7 @@
 # Implementation Plan: Task #752
 
 - **Task**: 752 - Implement On-Demand PDF-to-Markdown Conversion via Zotero
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2.5 hours
 - **Dependencies**: Task 751 (zotero-index-add.sh, index schema -- already implemented)
 - **Research Inputs**: specs/752_implement_ondemand_pdf_markdown_conversion/reports/01_pdf-conversion-research.md

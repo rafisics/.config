@@ -11,15 +11,13 @@ next_project_number: 754
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,752 | -- | literature, Terminal UI, Email Integration |
-| 2 | 753 | 752 | literature |
+| 1 | 78,87,753 | -- | literature, Terminal UI, Email Integration |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Literature
 
-752 [IMPLEMENTING] — Implement the on-demand PDF-to-markdown conversion pipeline that 
-  └─ 753 [NOT STARTED] — Implement the --zot flag for /research, /plan, and /implement tha
+753 [NOT STARTED] — Implement the --zot flag for /research, /plan, and /implement tha
 
 ### Terminal UI
 
@@ -42,10 +40,13 @@ next_project_number: 754
 ---
 
 ### 752. Implement on-demand PDF-to-markdown conversion via Zotero
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: literature
 - **Dependencies**: Task 750, Task 751
+- **Research**: [specs/752_implement_ondemand_pdf_markdown_conversion/reports/01_pdf-conversion-research.md]
+- **Plan**: [specs/752_implement_ondemand_pdf_markdown_conversion/plans/01_pdf-conversion-plan.md]
+- **Summary**: [specs/752_implement_ondemand_pdf_markdown_conversion/summaries/01_pdf-conversion-summary.md]
 
 **Description**: Implement the on-demand PDF-to-markdown conversion pipeline that stores chunks in Zotero as child attachments alongside the original PDF. (1) When a linked citation is needed (during --zot retrieval or explicit /zotero --convert KEY), check if markdown chunks already exist as child attachments on the Zotero item. (2) If not, resolve the PDF path from Zotero storage, convert using pdftotext with content-aware chunking (reuse logic from literature-chunk.sh), and store each chunk as a separate child attachment on the same Zotero parent item via zotero-cli-attach.sh, tagged with ordering metadata (chunk_01, chunk_02, etc.). This keeps all literature content in Zotero as the single source of truth. (3) Update the per-repo local index (specs/zotero-index.json) with has_markdown=true, chunk_count, and per-chunk token counts. (4) Support batch conversion: /zotero --convert-all to convert all linked citations lacking markdown. (5) Handle retrieval of chunked documents — reassemble chunks in order from child attachments, respecting token budget by selecting relevant chunks rather than always including all.
 
