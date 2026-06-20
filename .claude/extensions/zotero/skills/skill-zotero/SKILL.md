@@ -35,6 +35,7 @@ mode=$(echo "$ARGUMENTS" | grep -oP 'mode=\K\S+' | head -1)
 key=$(echo "$ARGUMENTS" | grep -oP 'key=\K\S+' | head -1)
 chunk_flag=$(echo "$ARGUMENTS" | grep -oP 'chunk=\K\S+' | head -1)
 delete_chunks_flag=$(echo "$ARGUMENTS" | grep -oP 'delete_chunks=\K\S+' | head -1)
+task_num=$(echo "$ARGUMENTS" | grep -oP 'task_num=\K\S+' | head -1)
 
 # Extract query: everything after "query=" (supports spaces in query text)
 query=$(echo "$ARGUMENTS" | sed 's/.*query=//' | sed 's/^[[:space:]]*//')
@@ -74,10 +75,11 @@ case "$mode" in
   convert)        handle_convert ;;
   attach)         handle_attach ;;
   search)         handle_search ;;
+  task_search)    handle_task_search ;;
   sync)           handle_sync ;;
   validate)       handle_validate ;;
   *)
-    echo "Error: Unknown mode '$mode'. Available: status, setup, add, remove, convert, attach, search, sync, validate"
+    echo "Error: Unknown mode '$mode'. Available: status, setup, add, remove, convert, attach, search, task_search, sync, validate"
     exit 1
     ;;
 esac
@@ -291,14 +293,69 @@ handle_search() {
   fi
 
   if [ ! -x "$zotero_search_sh" ]; then
-    echo "Error: zotero-search-index.sh not yet implemented (task 751)"
+    echo "Error: zotero-search-index.sh not found"
     exit 2
   fi
 
   bash "$zotero_search_sh" "$query" --format pretty
 
   # After displaying results, offer to add items to index
-  # (interactive flow via AskUserQuestion — implemented in task 751)
+  # (interactive flow via AskUserQuestion — future enhancement)
+}
+```
+
+---
+
+## Mode: Task Search
+
+Search the per-repo index using a task description extracted from specs/state.json.
+
+```bash
+handle_task_search() {
+  if [ -z "$task_num" ]; then
+    echo "Error: --task requires a task number. Usage: /zotero --task 751"
+    exit 1
+  fi
+
+  if [ ! -x "$zotero_search_sh" ]; then
+    echo "Error: zotero-search-index.sh not found"
+    exit 2
+  fi
+
+  # Extract task description from specs/state.json
+  state_file="specs/state.json"
+  if [ ! -f "$state_file" ]; then
+    echo "Error: specs/state.json not found"
+    exit 1
+  fi
+
+  # Try to get description or title from active_projects; fall back to project_name
+  desc=$(jq -r --arg n "$task_num" '
+    .active_projects[] |
+    select(.project_number == ($n | tonumber)) |
+    .description // .title // .project_name // ""
+  ' "$state_file" 2>/dev/null | head -1)
+
+  if [ -z "$desc" ]; then
+    # Try project_name and convert snake_case to spaces
+    desc=$(jq -r --arg n "$task_num" '
+      .active_projects[] |
+      select(.project_number == ($n | tonumber)) |
+      .project_name // ""
+    ' "$state_file" 2>/dev/null | tr '_' ' ')
+  fi
+
+  if [ -z "$desc" ]; then
+    echo "Error: Task $task_num not found in specs/state.json"
+    echo ""
+    echo "Available tasks:"
+    jq -r '.active_projects[] | "  \(.project_number): \(.project_name)"' "$state_file" 2>/dev/null || echo "  (could not read state.json)"
+    exit 1
+  fi
+
+  echo "Searching for task $task_num: $desc"
+  echo ""
+  bash "$zotero_search_sh" "$desc" --format pretty
 }
 ```
 

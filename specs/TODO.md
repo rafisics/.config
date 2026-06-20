@@ -6,22 +6,20 @@ next_project_number: 754
 
 ## Task Order
 
-*Updated 2026-06-19. Generated from state.json dependency graph.*
+*Updated 2026-06-20. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,751 | -- | literature, Terminal UI, Email Integration |
-| 2 | 752 | 751 | literature |
-| 3 | 753 | 752 | literature |
+| 1 | 78,87,752 | -- | literature, Terminal UI, Email Integration |
+| 2 | 753 | 752 | literature |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Literature
 
-751 [NOT STARTED] — Implement the /zotero --search and local index management functio
-  └─ 752 [NOT STARTED] — Implement the on-demand PDF-to-markdown conversion pipeline that 
-    └─ 753 [NOT STARTED] — Implement the --zot flag for /research, /plan, and /implement tha
+752 [NOT STARTED] — Implement the on-demand PDF-to-markdown conversion pipeline that 
+  └─ 753 [NOT STARTED] — Implement the --zot flag for /research, /plan, and /implement tha
 
 ### Terminal UI
 
@@ -54,10 +52,13 @@ next_project_number: 754
 ---
 
 ### 751. Implement Zotero search and local index management
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: literature
 - **Dependencies**: Task 749, Task 750
+- **Research**: [specs/751_implement_zotero_search_local_index/reports/01_search-index-research.md]
+- **Plan**: [specs/751_implement_zotero_search_local_index/plans/01_search-index-plan.md]
+- **Summary**: [specs/751_implement_zotero_search_local_index/summaries/01_search-index-summary.md]
 
 **Description**: Implement the /zotero --search and local index management functionality. (1) /zotero --search 'QUERY' — search Zotero library via CLI wrapper scripts, present results with availability tags ([HAS MARKDOWN], [PDF ONLY], [NO PDF]), allow multi-select to link citations to local index. (2) /zotero --link KEY — add a Zotero citation key to specs/zotero-index.json, recording metadata (title, authors, year, keywords, has_markdown, token_count). (3) /zotero --unlink KEY — remove from local index. (4) /zotero --status — show local index health, linked citations count, markdown availability. (5) /zotero --task N — extract task description as search query (like literature --task N). The local index (specs/zotero-index.json) maps Zotero citation keys to per-project relevance data.
 

@@ -100,7 +100,7 @@
     {
       "project_number": 751,
       "project_name": "implement_zotero_search_local_index",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "meta",
       "title": "Implement Zotero search and local index management",
       "description": "Implement the /zotero --search and local index management functionality. (1) /zotero --search 'QUERY' — search Zotero library via CLI wrapper scripts, present results with availability tags ([HAS MARKDOWN], [PDF ONLY], [NO PDF]), allow multi-select to link citations to local index. (2) /zotero --link KEY — add a Zotero citation key to specs/zotero-index.json, recording metadata (title, authors, year, keywords, has_markdown, token_count). (3) /zotero --unlink KEY — remove from local index. (4) /zotero --status — show local index health, linked citations count, markdown availability. (5) /zotero --task N — extract task description as search query (like literature --task N). The local index (specs/zotero-index.json) maps Zotero citation keys to per-project relevance data.",
@@ -110,7 +110,25 @@
         750
       ],
       "created": "2026-06-19T22:00:00Z",
-      "last_updated": "2026-06-19T22:00:00Z"
+      "last_updated": "2026-06-20T00:08:30Z",
+      "session_id": "sess_1781910367_99f70a_751",
+      "artifacts": [
+        {
+          "path": "specs/751_implement_zotero_search_local_index/reports/01_search-index-research.md",
+          "type": "report",
+          "summary": "01_search-index-research.md"
+        },
+        {
+          "path": "specs/751_implement_zotero_search_local_index/plans/01_search-index-plan.md",
+          "type": "plan",
+          "summary": "01_search-index-plan.md"
+        },
+        {
+          "path": "specs/751_implement_zotero_search_local_index/summaries/01_search-index-summary.md",
+          "type": "summary",
+          "summary": "01_search-index-summary.md"
+        }
+      ]
     },
     {
       "project_number": 752,

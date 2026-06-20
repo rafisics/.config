@@ -1,7 +1,7 @@
 ---
 description: Manage Zotero library integration — add items, search, convert PDFs, and inject context with --zot flag
 allowed-tools: Skill
-argument-hint: [--setup|--add KEY [--chunk]|--remove KEY [--delete-chunks]|--convert KEY|--attach KEY|--search "QUERY"|--sync|--validate|--status]
+argument-hint: [--setup|--add KEY [--chunk]|--remove KEY [--delete-chunks]|--convert KEY|--attach KEY|--search "QUERY"|--task N|--sync|--validate|--status]
 ---
 
 # Command: /zotero
@@ -28,15 +28,17 @@ argument-hint: [--setup|--add KEY [--chunk]|--remove KEY [--delete-chunks]|--con
     5. `--convert KEY` -> Convert mode (extract PDF and chunk)
     6. `--attach KEY` -> Attach mode (upload chunks as Zotero attachments)
     7. `--search QUERY` -> Search mode (search index with Zotero fallback)
-    8. `--sync` -> Sync mode (re-fetch all index entries from Zotero)
-    9. `--validate` -> Validate mode (check index entry integrity)
-    10. `--status` -> Status mode (full stats report, verbose)
+    8. `--task N` -> Task search mode (extract task N description as search query)
+    9. `--sync` -> Sync mode (re-fetch all index entries from Zotero)
+    10. `--validate` -> Validate mode (check index entry integrity)
+    11. `--status` -> Status mode (full stats report, verbose)
 
     **Additional Flags**:
     - `KEY` (after --add, --remove, --convert, --attach) -> 8-char Zotero item key
     - `--chunk` (after --add KEY) -> Also chunk PDF after adding
     - `--delete-chunks` (after --remove KEY) -> Also delete chunk files
     - `QUERY` (after --search) -> Search query text (everything after --search flag)
+    - `N` (after --task) -> Task number to extract description from as search query
 
     ```
     sub_mode = "status"  # default for bare invocation
@@ -60,6 +62,9 @@ argument-hint: [--setup|--add KEY [--chunk]|--remove KEY [--delete-chunks]|--con
     elif "--search" in $ARGUMENTS:
       sub_mode = "search"
       query = extract_text_after("--search", $ARGUMENTS) or ""
+    elif "--task" in $ARGUMENTS:
+      sub_mode = "task_search"
+      task_num = extract_arg_after("--task", $ARGUMENTS) or ""
     elif "--sync" in $ARGUMENTS:
       sub_mode = "sync"
     elif "--validate" in $ARGUMENTS:
@@ -80,22 +85,24 @@ argument-hint: [--setup|--add KEY [--chunk]|--remove KEY [--delete-chunks]|--con
     <process>
       Check if the requested sub-mode has required arguments:
 
-      | Sub-Mode | KEY Required | QUERY Required | Description |
-      |----------|-------------|----------------|-------------|
-      | status   | No          | No             | Show connectivity + index summary |
-      | setup    | No          | No             | Run setup wizard |
-      | add      | Yes         | No             | Add item to per-repo index |
-      | remove   | Yes         | No             | Remove item from per-repo index |
-      | convert  | Yes         | No             | Extract PDF and chunk |
-      | attach   | Yes         | No             | Upload chunks as attachments |
-      | search   | No          | Yes            | Search index with fallback |
-      | sync     | No          | No             | Re-fetch all entries |
-      | validate | No          | No             | Check index integrity |
-      | status_verbose | No   | No             | Full stats report |
+      | Sub-Mode    | KEY Required | QUERY/N Required | Description |
+      |-------------|-------------|------------------|-------------|
+      | status      | No          | No               | Show connectivity + index summary |
+      | setup       | No          | No               | Run setup wizard |
+      | add         | Yes         | No               | Add item to per-repo index |
+      | remove      | Yes         | No               | Remove item from per-repo index |
+      | convert     | Yes         | No               | Extract PDF and chunk |
+      | attach      | Yes         | No               | Upload chunks as attachments |
+      | search      | No          | Yes (QUERY)      | Search index with fallback |
+      | task_search | No          | Yes (N)          | Extract task N description as search query |
+      | sync        | No          | No               | Re-fetch all entries |
+      | validate    | No          | No               | Check index integrity |
+      | status_verbose | No      | No               | Full stats report |
 
       Validation rules:
       - If sub_mode in ["add", "remove", "convert", "attach"] AND key = "": Print error, exit
       - If sub_mode = "search" AND query = "": Print error, exit
+      - If sub_mode = "task_search" AND task_num = "": Print error, exit
       - KEY format: 8 alphanumeric characters (warn but do not block if format mismatch)
 
       Error messages:
@@ -104,6 +111,7 @@ argument-hint: [--setup|--add KEY [--chunk]|--remove KEY [--delete-chunks]|--con
       - --convert without KEY: "Error: --convert requires a Zotero item KEY. Usage: /zotero --convert Z7T6Q25X"
       - --attach without KEY: "Error: --attach requires a Zotero item KEY. Usage: /zotero --attach Z7T6Q25X"
       - --search without QUERY: "Error: --search requires a query. Usage: /zotero --search \"modal logic\""
+      - --task without N: "Error: --task requires a task number. Usage: /zotero --task 751"
     </process>
   </step_1>
 
@@ -113,6 +121,7 @@ argument-hint: [--setup|--add KEY [--chunk]|--remove KEY [--delete-chunks]|--con
       - skill: "skill-zotero"
       - args: "mode={sub_mode} key={key} chunk={chunk_flag} delete_chunks={delete_chunks_flag}"
       - args: "mode=search query={query text}" (for --search mode)
+      - args: "mode=task_search task_num={N}" (for --task N mode)
     </input>
     <expected_return>
       {
@@ -164,6 +173,11 @@ argument-hint: [--setup|--add KEY [--chunk]|--remove KEY [--delete-chunks]|--con
         - If index empty: show full library fallback results with notice
         - Offer to add selected items to index via AskUserQuestion
 
+      Task search mode (--task N):
+        - Show which task description was extracted
+        - Display search results (same format as search mode)
+        - If task not found: show error with available task numbers
+
       Sync mode:
         - Report per-entry refresh results
         - Show success count and any failures
@@ -183,9 +197,10 @@ argument-hint: [--setup|--add KEY [--chunk]|--remove KEY [--delete-chunks]|--con
 
 <error_handling>
   <argument_errors>
-    - Unknown flag -> "Unknown flag: {flag}. Usage: /zotero [--setup|--add KEY [--chunk]|--remove KEY [--delete-chunks]|--convert KEY|--attach KEY|--search \"QUERY\"|--sync|--validate|--status]"
+    - Unknown flag -> "Unknown flag: {flag}. Usage: /zotero [--setup|--add KEY [--chunk]|--remove KEY [--delete-chunks]|--convert KEY|--attach KEY|--search \"QUERY\"|--task N|--sync|--validate|--status]"
     - --add/remove/convert/attach without KEY -> mode-specific error with usage example
     - --search without QUERY -> "Error: --search requires a query. Usage: /zotero --search \"modal logic\""
+    - --task without N -> "Error: --task requires a task number. Usage: /zotero --task 751"
   </argument_errors>
 
   <execution_errors>
