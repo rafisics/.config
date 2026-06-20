@@ -197,7 +197,7 @@
           "summary": "Implementation summary for --zot flag: zotero-retrieve.sh script + 7-file wiring across commands and skills"
         }
       ],
-      "completion_summary": "Implemented --zot context injection flag: created zotero-retrieve.sh with 6-field weighted scoring, wired flag through 3 command files, 3 skill files, and skill-orchestrate (12 injection points), updated documentation",
+      "completion_summary": "Implemented --zot flag: zotero-retrieve.sh with 6-field weighted scoring, wired through 3 command files, 3 skill files, and 12 dispatch locations in skill-orchestrate",
       "memory_candidates": [
         {
           "content": "The --zot flag for Zotero context injection is wired in skill SKILL.md files (not command-route-skill.sh). Skills call bash .claude/scripts/zotero-retrieve.sh. The zot_flag flows through delegation context JSON from command files to skills. skill-orchestrate has 12 lit_flag/zot_flag locations (2 parse + 4 single-task dispatch + 6 multi-task dispatch args).",
