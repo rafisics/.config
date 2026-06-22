@@ -11,7 +11,7 @@
       "description": "Port /vet command-skill-agent triplet from cslib project to cslib extension. Tasks 270-271 in /home/benjamin/Projects/cslib/ created /vet as project-local files (.claude/commands/vet.md, .claude/skills/skill-cslib-vet/SKILL.md, .claude/agents/cslib-vet-agent.md) but never added them to the cslib extension. Port all three into /home/benjamin/.config/nvim/.claude/extensions/cslib/ (commands/, skills/, agents/ directories), register in manifest.json (agents, skills, commands arrays), and update EXTENSION.md + README.md. Critical requirement: the AskUserQuestion tool must be available to the skill (not the agent) for interactive violation selection during /vet execution -- verify the skill's allowed-tools includes AskUserQuestion and that the agent does NOT call it (agent writes findings to .vet-findings.json, skill reads findings and presents via AskUserQuestion). Also register cslib-vet-agent in the skill-agent mapping table and add /vet to the commands table in both EXTENSION.md and README.md.",
       "topic": "agent-system",
       "created": "2026-06-22T21:26:20Z",
-      "last_updated": "2026-06-22T21:55:00Z",
+      "last_updated": "2026-06-22T21:41:15Z",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -53,7 +53,7 @@
           }
         ]
       },
-      "completion_summary": "Ported /vet command-skill-agent triplet from cslib project into the cslib extension: copied vet.md, skill-cslib-vet/SKILL.md, and cslib-vet-agent.md verbatim; registered all three in manifest.json; added /vet and skill-cslib-vet entries to EXTENSION.md and README.md tables and architecture tree."
+      "completion_summary": "Ported /vet command-skill-agent triplet into cslib extension: copied 3 files (vet.md, skill-cslib-vet/SKILL.md, cslib-vet-agent.md), registered in manifest.json, updated EXTENSION.md and README.md with skill-agent mapping and commands table entries"
     },
     {
       "project_number": 754,
