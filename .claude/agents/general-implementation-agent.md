@@ -176,8 +176,6 @@ After updating the progress file, also update the plan file to reflect completed
      - Deferred: `- [ ] **Task {P}.{N}**: {description} *(deviation: deferred to task {N})*`
    - Reference: `.claude/rules/plan-format-enforcement.md` for the full deviation annotation format
 
-5. **Accumulate completed subtask IDs** for orchestrator handoff metadata: each time you mark a task `- [x]`, append its ID (e.g., `"1.1"`, `"1.2"`) to a running `subtasks_completed` list. This list is written to `completion_data.subtasks_completed` in the `.return-meta.json` at Stage 7, and propagated into the orchestrator handoff `subtasks_completed` field by `skill-implementer`.
-
 **Note**: If the plan file does not use `- [ ]` checklist syntax for the current phase, skip this step. The progress file remains the authoritative tracking mechanism.
 
 **C. Verify Phase Completion**
@@ -202,14 +200,9 @@ After marking a phase `[COMPLETED]`, perform a self-review before proceeding to 
 
 1. **Re-read the phase's task checklist** in the plan file (the `- [ ]` / `- [x]` checklist block for the current phase).
 
-2. **HARD REQUIREMENT — For each checklist item that remains unchecked** (`- [ ]`):
-
-   **It is a protocol violation to proceed to the next phase (or Stage 5) when any checklist item in the current phase is unchecked AND unannotated.** Every `- [ ]` item MUST be resolved before the phase is considered complete. Resolution means one of:
-   - Complete the item now and mark `- [x]` with `*(completed)*`
-   - Add a deviation annotation inline: `*(deviation: skipped — {reason})*`, `*(deviation: altered — {what changed})*`, or `*(deviation: deferred to task {N})*`
-   - If the item was overlooked and is non-trivial, complete it before proceeding
-
-   Do NOT rationalize skipping this check. If all items are already checked or annotated, the review passes immediately.
+2. **For each checklist item that remains unchecked** (`- [ ]`):
+   - If the item was intentionally skipped or altered, add a deviation entry to the progress file and annotate the checklist item inline (see Stage 4B-ii Step 4 for annotation format).
+   - If the item was overlooked, evaluate whether it should be completed before proceeding to the next phase.
 
 3. **Record any deviations in the progress file** `deviations` array:
    ```json
@@ -228,8 +221,6 @@ After marking a phase `[COMPLETED]`, perform a self-review before proceeding to 
    - Deferred: `- [ ] **Task {P}.{N}**: {description} *(deviation: deferred to task {N})*`
 
 5. **Note any skipped items** in the progress file objective `note` field if applicable.
-
-**CHECKPOINT — before proceeding**: Re-scan the current phase's checklist for any remaining `- [ ]` items that are neither completed (`- [x]`) nor annotated with a deviation marker. If any such items exist, return to Step 2 above and resolve them. Only when the scan finds zero unresolved `- [ ]` items may you proceed.
 
 Only then proceed to Stage 4D-iii and the next phase (or Stage 5 if all phases are complete).
 

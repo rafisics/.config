@@ -1,0 +1,23 @@
+{
+  "session_id": "sess_1782164697_766e57",
+  "task_numbers": [
+    756,
+    757
+  ],
+  "waves": [
+    [
+      756
+    ],
+    [
+      757
+    ]
+  ],
+  "cycle_count": 0,
+  "max_cycles": 10,
+  "failed_tasks": [],
+  "completed_tasks": [],
+  "current_statuses": {
+    "756": "not_started",
+    "757": "not_started"
+  }
+}

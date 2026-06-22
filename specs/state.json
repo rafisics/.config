@@ -1,7 +1,58 @@
 {
   "version": "1.1.0",
-  "next_project_number": 756,
+  "next_project_number": 758,
   "active_projects": [
+    {
+      "project_number": 756,
+      "project_name": "fix_orchestrate_artifact_linking",
+      "status": "completed",
+      "task_type": "meta",
+      "title": "Fix orchestrate Stage 5 to link artifacts via .return-meta.json fallback",
+      "description": "When /orchestrate dispatches research/plan/implement agents directly (bypassing skill layer), no .orchestrator-handoff.json is written. Stage 5 sees no handoff and skips artifact linking and status postflight entirely. Fix: when no handoff file exists in Stage 5, fall back to reading .return-meta.json from the task directory, extract status + artifact path/type/summary, then call skill_postflight_update and skill_link_artifacts. Affected file: .claude/skills/skill-orchestrate/SKILL.md (Stage 5 handoff reading, lines ~346-417). The if-branch for missing handoff should read .return-meta.json via skill_read_metadata and proceed with postflight + artifact linking instead of just logging an error and continuing.",
+      "dependencies": [],
+      "last_updated": "2026-06-22T21:53:32Z",
+      "session_id": "sess_1782164697_766e57_756",
+      "artifacts": [
+        {
+          "path": "specs/756_fix_orchestrate_artifact_linking/reports/01_artifact-linking-fix.md",
+          "type": "report",
+          "summary": "Root cause analysis: Stage 5 missing fallback reads .return-meta.json when no handoff file exists"
+        },
+        {
+          "path": "specs/756_fix_orchestrate_artifact_linking/summaries/01_artifact-linking-fix-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for task 756 — Stage 5 orchestrate artifact linking fallback fix"
+        }
+      ],
+      "completion_summary": "Replaced the dead 3-line `if [ ! -f \"$handoff_file\" ]` branch in Stage 5 of skill-orchestrate/SKILL.md with a 54-line fallback that reads .return-meta.json, calls skill_postflight_update and skill_link_artifacts using the same case logic as the else branch, and falls back gracefully when neither file is present.",
+      "memory_candidates": [
+        {
+          "content": "skill-orchestrate Stage 5 reads .orchestrator-handoff.json after each agent dispatch. When agents bypass the skill layer, no handoff is written. The fallback pattern is: check for .return-meta.json at ${TASK_DIR}/.return-meta.json, validate with `jq empty`, extract status and artifacts[0] fields, then call skill_postflight_update and skill_link_artifacts with the same case logic as the handoff path. Drift detection and per-cycle commit logic should be skipped in the fallback path since they require phases_completed/phases_total which are not in .return-meta.json.",
+          "category": "PATTERN",
+          "source_artifact": "specs/756_fix_orchestrate_artifact_linking/summaries/01_artifact-linking-fix-summary.md",
+          "confidence": 0.85,
+          "suggested_keywords": [
+            "orchestrate",
+            "stage5",
+            "handoff",
+            "return-meta",
+            "artifact-linking",
+            "fallback"
+          ]
+        }
+      ]
+    },
+    {
+      "project_number": 757,
+      "project_name": "fix_handoff_artifact_summary",
+      "status": "not_started",
+      "task_type": "meta",
+      "title": "Add summary field to skill_write_orchestrator_handoff artifacts",
+      "description": "In .claude/scripts/skill-base.sh line 436, skill_write_orchestrator_handoff() builds the artifacts JSON without a summary field (uses printf with only type and path). When orchestrate reads this handoff and calls skill_link_artifacts, the summary is empty, overwriting any good artifact data. Fix: (1) Add 10th parameter artifact_summary to the function signature, (2) Include summary in the artifacts JSON via jq instead of printf, (3) Update the usage comment at lines 384-386. Secondary fix: ensure callers (skill-implementer SKILL.md postflight) pass the artifact summary from .return-meta.json when calling this function.",
+      "dependencies": [
+        756
+      ]
+    },
     {
       "project_number": 755,
       "project_name": "port_vet_to_cslib_extension",

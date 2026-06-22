@@ -1,0 +1,1 @@
+../extensions/cslib/commands/vet.md

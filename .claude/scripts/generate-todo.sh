@@ -281,13 +281,13 @@ ${short_path}"
 
       if [[ "$path_count" -le 1 ]]; then
         # Single artifact: inline format
-        printf -- '- **%s**: [specs/%s]\n' "$display_type" "$paths_str"
+        printf -- '- **%s**: [%s]\n' "$display_type" "$paths_str"
       else
         # Multiple artifacts: multi-line list
         printf -- '- **%s**:\n' "$display_type"
         while IFS= read -r p; do
           [[ -z "$p" ]] && continue
-          printf '  - [specs/%s]\n' "$p"
+          printf '  - [%s]\n' "$p"
         done <<< "$paths_str"
       fi
     done

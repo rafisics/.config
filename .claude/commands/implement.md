@@ -28,7 +28,6 @@ Execute implementation plan with automatic resume support by delegating to the a
 | `--opus` | Use Opus model (highest quality, same as agent default) | false |
 | `--clean` | Skip automatic memory retrieval | false |
 | `--lit` | Literature mode: pass lit_flag=true to skill for paper/spec-based implementation | false |
-| `--zot` | Zotero mode: inject relevant Zotero index entries as context via zotero-retrieve.sh | false |
 
 ## Anti-Bypass Constraint
 
@@ -142,11 +141,11 @@ skill_name="$SKILL_NAME"
 ```
 # For team mode:
 skill: "skill-team-implement"
-args: "task_number={N} plan_path={path} resume_phase={phase} team_size={TEAM_SIZE} session_id={SESSION_ID} effort_flag={EFFORT_FLAG} model_flag={MODEL_FLAG} clean_flag={CLEAN_FLAG} lit_flag={LIT_FLAG} zot_flag={ZOT_FLAG} orchestrator_mode=false"
+args: "task_number={N} plan_path={path} resume_phase={phase} team_size={TEAM_SIZE} session_id={SESSION_ID} effort_flag={EFFORT_FLAG} model_flag={MODEL_FLAG} clean_flag={CLEAN_FLAG} lit_flag={LIT_FLAG} orchestrator_mode=false"
 
 # For single-agent mode:
 skill: "{skill_name}"
-args: "task_number={N} plan_path={path} resume_phase={phase} session_id={SESSION_ID} effort_flag={EFFORT_FLAG} model_flag={MODEL_FLAG} clean_flag={CLEAN_FLAG} lit_flag={LIT_FLAG} zot_flag={ZOT_FLAG} orchestrator_mode=false"
+args: "task_number={N} plan_path={path} resume_phase={phase} session_id={SESSION_ID} effort_flag={EFFORT_FLAG} model_flag={MODEL_FLAG} clean_flag={CLEAN_FLAG} lit_flag={LIT_FLAG} orchestrator_mode=false"
 ```
 
 Pass `model` parameter if `MODEL_FLAG` is set. Pass `effort_flag` as prompt context if set.

@@ -1,0 +1,1 @@
+../extensions/cslib/agents/cslib-research-hard-agent.md

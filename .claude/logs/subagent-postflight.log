@@ -28055,3 +28055,35 @@
 [2026-06-22T14:39:57-07:00] No postflight marker, allowing stop
 [2026-06-22T14:40:30-07:00] No postflight marker, allowing stop
 [2026-06-22T14:40:56-07:00] No postflight marker, allowing stop
+[2026-06-22T14:42:26-07:00] No postflight marker, allowing stop
+[2026-06-22T14:47:03-07:00] No postflight marker, allowing stop
+[2026-06-22T14:47:35-07:00] No postflight marker, allowing stop
+[2026-06-22T14:48:07-07:00] No postflight marker, allowing stop
+[2026-06-22T14:48:35-07:00] No postflight marker, allowing stop
+[2026-06-22T14:48:40-07:00] No postflight marker, allowing stop
+[2026-06-22T14:48:48-07:00] No postflight marker, allowing stop
+[2026-06-22T14:49:19-07:00] No postflight marker, allowing stop
+[2026-06-22T14:49:43-07:00] No postflight marker, allowing stop
+[2026-06-22T14:49:55-07:00] No postflight marker, allowing stop
+[2026-06-22T14:50:41-07:00] No postflight marker, allowing stop
+[2026-06-22T14:51:13-07:00] Postflight marker found at: specs/756_fix_orchestrate_artifact_linking/.postflight-pending
+[2026-06-22T14:51:13-07:00] Task directory: specs/756_fix_orchestrate_artifact_linking
+[2026-06-22T14:51:13-07:00] Loop guard initialized to 1
+[2026-06-22T14:51:13-07:00] Blocking stop: Postflight pending: status update, artifact linking, git commit
+[2026-06-22T14:51:45-07:00] Postflight marker found at: specs/756_fix_orchestrate_artifact_linking/.postflight-pending
+[2026-06-22T14:51:45-07:00] Task directory: specs/756_fix_orchestrate_artifact_linking
+[2026-06-22T14:51:45-07:00] Loop guard incremented to 2
+[2026-06-22T14:51:45-07:00] Blocking stop: Postflight pending: status update, artifact linking, git commit
+[2026-06-22T14:51:52-07:00] Postflight marker found at: specs/756_fix_orchestrate_artifact_linking/.postflight-pending
+[2026-06-22T14:51:52-07:00] Task directory: specs/756_fix_orchestrate_artifact_linking
+[2026-06-22T14:51:52-07:00] Loop guard incremented to 3
+[2026-06-22T14:51:52-07:00] Blocking stop: Postflight pending: status update, artifact linking, git commit
+[2026-06-22T14:51:54-07:00] Postflight marker found at: specs/756_fix_orchestrate_artifact_linking/.postflight-pending
+[2026-06-22T14:51:54-07:00] Task directory: specs/756_fix_orchestrate_artifact_linking
+[2026-06-22T14:51:54-07:00] Loop guard triggered: 3 >= 3
+[2026-06-22T14:51:54-07:00] Loop guard prevented continuation
+[2026-06-22T14:52:19-07:00] No postflight marker, allowing stop
+[2026-06-22T14:52:51-07:00] No postflight marker, allowing stop
+[2026-06-22T14:53:24-07:00] No postflight marker, allowing stop
+[2026-06-22T14:53:24-07:00] No postflight marker, allowing stop
+[2026-06-22T14:53:57-07:00] No postflight marker, allowing stop

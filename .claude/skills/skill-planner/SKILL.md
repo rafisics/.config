@@ -191,23 +191,6 @@ fi
 
 **Note**: `lit_flag` is independent of `clean_flag`. Using `--clean --lit` suppresses memory retrieval but still injects literature context. Literature context is gated solely on `lit_flag == "true"`.
 
-```bash
-# Zotero context injection (independent of clean_flag and lit_flag)
-zot_context=""
-zot_flag=$(echo "$delegation_context" | jq -r '.zot_flag // "false"')
-if [ "$zot_flag" = "true" ]; then
-  zot_context=$(bash .claude/scripts/zotero-retrieve.sh "$description" "$task_type" 2>/dev/null) || zot_context=""
-fi
-
-# zot_context will be empty string if:
-# - zot_flag is not "true" (skipped)
-# - specs/zotero-index.json does not exist or has no entries
-# - no entries scored >= 4 against query terms
-# - script exited with error
-```
-
-**Note**: `zot_flag` is independent of `clean_flag` and `lit_flag`. Using `--clean --zot` suppresses memory retrieval but still injects Zotero context. Zotero context is gated solely on `zot_flag == "true"`.
-
 ---
 
 ### Stage 4: Prepare Delegation Context
@@ -308,14 +291,6 @@ Place the memory context block AFTER the format specification and BEFORE the tas
 ```
 
 Place the literature context block AFTER the memory context block (if any) and BEFORE the task-specific instructions. Do NOT inject an empty `<literature-context>` block when no literature was retrieved.
-
-**Zotero Context Injection**: If `zot_context` from Stage 4a is non-empty, include it in the prompt as a separate block:
-
-```
-{zot_context from Stage 4a -- already wrapped in <zotero-context> tags}
-```
-
-Place the Zotero context block AFTER the literature context block (if any) and BEFORE the task-specific instructions. Do NOT inject an empty `<zotero-context>` block when no Zotero context was retrieved.
 
 **DO NOT** use `Skill(planner-agent)` - this will FAIL.
 
