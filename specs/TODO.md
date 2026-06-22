@@ -1,12 +1,12 @@
 ---
-next_project_number: 754
+next_project_number: 755
 ---
 
 # TODO
 
 ## Task Order
 
-*Updated 2026-06-20. Generated from state.json dependency graph.*
+*Updated 2026-06-22. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
@@ -24,6 +24,19 @@ next_project_number: 754
 78 [PLANNED] — Fix Gmail SMTP authentication failure when sending emails via Him
 
 ## Tasks
+
+### 754. Update cslib extension README.md to reflect all capabilities
+- **Status**: [COMPLETED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+- **Research**: [specs/754_update_cslib_extension_readme/reports/01_cslib-readme-update.md]
+- **Plan**: [specs/754_update_cslib_extension_readme/plans/01_cslib-readme-plan.md]
+- **Summary**: [specs/754_update_cslib_extension_readme/summaries/01_cslib-readme-summary.md]
+
+**Description**: Update the cslib extension README.md to match the actual extension capabilities documented in EXTENSION.md and manifest.json. Currently README.md shows only 2 agents (actual: 6), 2 skills (actual: 7), says commands are "(none)" (actual: /pr), shows 1 rule (actual: 2), and omits hard-mode support, PR review workflow, and pr task type. Modeled after task 270 which updated the founder extension docs to match v3.0 capabilities. Update: (1) Architecture tree to show all agents (including hard-mode and pr-review), skills, /pr command, both rules. (2) Skill-Agent Mapping table to include all 7 skills. (3) Overview routing table to include pr task type. (4) Language Routing to include pr task type tools. (5) Add --hard mode section. (6) Add PR review workflow section. (7) Add Commands table showing /pr usage. (8) Bump manifest.json version if warranted.
+
+---
 
 ### 753. Implement Zotero context injection (--zot flag)
 - **Status**: [COMPLETED]

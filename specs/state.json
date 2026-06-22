@@ -1,7 +1,38 @@
 {
   "version": "1.1.0",
-  "next_project_number": 754,
+  "next_project_number": 755,
   "active_projects": [
+    {
+      "project_number": 754,
+      "project_name": "update_cslib_extension_readme",
+      "status": "completed",
+      "task_type": "meta",
+      "title": "Update cslib extension README.md to reflect all capabilities",
+      "description": "Update the cslib extension README.md to match the actual extension capabilities documented in EXTENSION.md and manifest.json. Currently README.md shows only 2 agents (actual: 6), 2 skills (actual: 7), says commands are \"(none)\" (actual: /pr), shows 1 rule (actual: 2), and omits hard-mode support, PR review workflow, and pr task type. Modeled after task 270 which updated the founder extension docs to match v3.0 capabilities. Update: (1) Architecture tree to show all agents (including hard-mode and pr-review), skills, /pr command, both rules. (2) Skill-Agent Mapping table to include all 7 skills. (3) Overview routing table to include pr task type. (4) Language Routing to include pr task type tools. (5) Add --hard mode section. (6) Add PR review workflow section. (7) Add Commands table showing /pr usage. (8) Bump manifest.json version if warranted.",
+      "topic": "agent-system",
+      "dependencies": [],
+      "created": "2026-06-22T00:00:00Z",
+      "last_updated": "2026-06-22T21:00:58Z",
+      "artifacts": [
+        {
+          "path": "specs/754_update_cslib_extension_readme/reports/01_cslib-readme-update.md",
+          "type": "report",
+          "summary": "01_cslib-readme-update.md"
+        },
+        {
+          "path": "specs/754_update_cslib_extension_readme/plans/01_cslib-readme-plan.md",
+          "type": "plan",
+          "summary": "01_cslib-readme-plan.md"
+        },
+        {
+          "path": "specs/754_update_cslib_extension_readme/summaries/01_cslib-readme-summary.md",
+          "type": "summary",
+          "summary": "01_cslib-readme-summary.md"
+        }
+      ],
+      "session_id": "sess_1750636800_c3a1b2",
+      "completion_summary": "Rewrote cslib extension README.md from 74 to 182 lines: added all 6 agents, 7 skills, /pr command, 2 rules, pr task type routing, hard-mode section, PR review workflow, keyword auto-detection, and dependencies"
+    },
     {
       "project_number": 747,
       "project_name": "evaluate_zotero_cli_tools",
