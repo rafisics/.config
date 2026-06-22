@@ -34,6 +34,7 @@ Loaded via the extension picker. Once loaded, `cslib` and `pr` become recognized
     |   +-- cslib-implementation-hard-agent.md # Hard-mode CSLib implementation (sonnet)
     |   +-- pr-review-research-agent.md        # Fetch/synthesize GitHub PR + Zulip (sonnet)
     |   +-- pr-review-implementation-agent.md  # Compose pr-response.md + zulip-response.md (sonnet)
+    |   +-- cslib-vet-agent.md                 # Vet CSLib tasks against standards (sonnet)
     |
     +-- skills/
     |   +-- skill-cslib-research/              # Research skill wrapper
@@ -43,9 +44,11 @@ Loaded via the extension picker. Once loaded, `cslib` and `pr` become recognized
     |   +-- skill-cslib-implementation-hard/   # Hard-mode implementation skill wrapper
     |   +-- skill-pr-review-research/          # PR review research skill wrapper
     |   +-- skill-pr-review-implementation/    # PR review implementation skill wrapper
+    |   +-- skill-cslib-vet/                   # Vet skill wrapper
     |
     +-- commands/
     |   +-- pr.md                              # /pr command (submit CSLib PR, review PRs)
+    |   +-- vet.md                             # /vet command (vet tasks against standards)
     |
     +-- rules/
     |   +-- cslib.md                           # CSLib coding conventions (auto-applied to *.lean)
@@ -70,6 +73,7 @@ Loaded via the extension picker. Once loaded, `cslib` and `pr` become recognized
 | skill-cslib-implementation-hard | cslib-implementation-hard-agent | sonnet | Hard-mode CSLib proof implementation: anti-analysis (H2), sorry_inventory (H9), territory (H7) |
 | skill-pr-review-research | pr-review-research-agent | sonnet | Fetch and synthesize GitHub PR and Zulip discussion for review tasks |
 | skill-pr-review-implementation | pr-review-implementation-agent | sonnet | Compose pr-response.md and zulip-response.md for pr-type review tasks; falls back to legacy pr-description workflow when sources are absent |
+| skill-cslib-vet | cslib-vet-agent | sonnet | Vet CSLib tasks against standards; run CI; create fix tasks with user confirmation |
 
 ## Language Routing
 
@@ -85,6 +89,7 @@ Loaded via the extension picker. Once loaded, `cslib` and `pr` become recognized
 | `/pr` | `/pr <task_number\|path\|description> [--draft] [--dry-run]` | Submit CSLib PR: create branch, run CI, create PR on leanprover/cslib (user-only) |
 | `/pr` | `/pr --review <sources...>` | Create pr-type review task from GitHub PR URLs, Zulip URLs, or descriptions |
 | `/pr` | `/pr N` (when task is [PR READY] with sources) | Push changes, post GitHub PR comment, optionally send Zulip message |
+| `/vet` | `/vet <task_numbers> [focus_prompt]` | Quality-gate: vet completed CSLib task(s) against CONTRIBUTING.md, NOTATION.md, ORGANISATION.md; run CI; create fix tasks |
 
 ## Hard Mode for CSLib Tasks
 

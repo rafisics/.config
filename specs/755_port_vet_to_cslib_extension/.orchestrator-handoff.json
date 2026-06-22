@@ -1,17 +1,17 @@
 {
-  "status": "planned",
-  "summary": "4-phase plan to port /vet command-skill-agent triplet into cslib extension: copy 3 files verbatim, register in manifest.json, update EXTENSION.md tables, update README.md tree and tables. ~1 hour total effort.",
+  "status": "implemented",
+  "summary": "Ported /vet command-skill-agent triplet into cslib extension: created commands/vet.md, skills/skill-cslib-vet/SKILL.md, agents/cslib-vet-agent.md; updated manifest.json, EXTENSION.md, and README.md.",
   "blockers": [],
   "continuation_context": null,
-  "next_action_hint": "implement",
-  "phases_completed": 0,
+  "next_action_hint": "none",
+  "phases_completed": 4,
   "phases_total": 4,
-  "subtasks_completed": [],
+  "subtasks_completed": ["1.1", "1.2", "1.3", "1.4", "2.1", "2.2", "2.3", "2.4", "3.1", "3.2", "4.1", "4.2", "4.3", "4.4", "4.5"],
   "artifacts": [
     {
-      "path": "specs/755_port_vet_to_cslib_extension/plans/01_port-vet-plan.md",
-      "type": "plan",
-      "summary": "4-phase implementation plan: copy files, update manifest.json, update EXTENSION.md, update README.md"
+      "path": "specs/755_port_vet_to_cslib_extension/summaries/01_port-vet-summary.md",
+      "type": "summary",
+      "summary": "Implementation summary for task 755: ported /vet triplet to cslib extension across 4 phases"
     }
   ]
 }

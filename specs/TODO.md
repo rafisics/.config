@@ -11,13 +11,9 @@ next_project_number: 756
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,755 | -- | agent-system, Terminal UI, Email Integration |
+| 1 | 78,87 | -- | Terminal UI, Email Integration |
 
 **Grouped by Topic** (indented = depends on parent):
-
-### Agent System
-
-755 [PLANNED] — Port /vet command-skill-agent triplet from cslib project to cslib
 
 ### Terminal UI
 
@@ -30,7 +26,7 @@ next_project_number: 756
 ## Tasks
 
 ### 755. Port /vet command-skill-agent triplet to cslib extension
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None

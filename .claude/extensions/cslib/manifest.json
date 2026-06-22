@@ -15,7 +15,8 @@
       "cslib-research-hard-agent.md",
       "cslib-implementation-hard-agent.md",
       "pr-review-research-agent.md",
-      "pr-review-implementation-agent.md"
+      "pr-review-implementation-agent.md",
+      "cslib-vet-agent.md"
     ],
     "skills": [
       "skill-cslib-research",
@@ -24,9 +25,10 @@
       "skill-cslib-research-hard",
       "skill-cslib-implementation-hard",
       "skill-pr-review-research",
-      "skill-pr-review-implementation"
+      "skill-pr-review-implementation",
+      "skill-cslib-vet"
     ],
-    "commands": ["pr.md"],
+    "commands": ["pr.md", "vet.md"],
     "rules": [
       "cslib.md",
       "cslib-lint-fix.md"

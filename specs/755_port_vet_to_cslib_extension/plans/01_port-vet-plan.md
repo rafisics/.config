@@ -66,7 +66,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Copy source files [NOT STARTED]
+### Phase 1: Copy source files [COMPLETED]
 
 **Goal**: Copy the three /vet files from the cslib project into the cslib extension directory structure.
 
@@ -94,7 +94,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Update manifest.json [NOT STARTED]
+### Phase 2: Update manifest.json [COMPLETED]
 
 **Goal**: Register the new agent, skill, and command in the cslib extension manifest.
 
@@ -119,7 +119,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Update EXTENSION.md [NOT STARTED]
+### Phase 3: Update EXTENSION.md [COMPLETED]
 
 **Goal**: Add /vet documentation to the EXTENSION.md skill-agent mapping and commands tables.
 
@@ -141,7 +141,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Update README.md [NOT STARTED]
+### Phase 4: Update README.md [COMPLETED]
 
 **Goal**: Add /vet documentation to the README.md architecture tree, skill-agent mapping, and commands tables.
 
