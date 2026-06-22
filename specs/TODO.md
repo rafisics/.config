@@ -17,7 +17,7 @@ next_project_number: 756
 
 ### Agent System
 
-755 [RESEARCHED] — Port /vet command-skill-agent triplet from cslib project to cslib
+755 [PLANNED] — Port /vet command-skill-agent triplet from cslib project to cslib
 
 ### Terminal UI
 
@@ -30,11 +30,12 @@ next_project_number: 756
 ## Tasks
 
 ### 755. Port /vet command-skill-agent triplet to cslib extension
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
 - **Research**: [specs/755_port_vet_to_cslib_extension/reports/01_port-vet-research.md]
+- **Plan**: [specs/755_port_vet_to_cslib_extension/plans/01_port-vet-plan.md]
 
 **Description**: Port /vet command-skill-agent triplet from cslib project to cslib extension. Tasks 270-271 in /home/benjamin/Projects/cslib/ created /vet as project-local files (.claude/commands/vet.md, .claude/skills/skill-cslib-vet/SKILL.md, .claude/agents/cslib-vet-agent.md) but never added them to the cslib extension. Port all three into /home/benjamin/.config/nvim/.claude/extensions/cslib/ (commands/, skills/, agents/ directories), register in manifest.json (agents, skills, commands arrays), and update EXTENSION.md + README.md. Critical requirement: the AskUserQuestion tool must be available to the skill (not the agent) for interactive violation selection during /vet execution -- verify the skill's allowed-tools includes AskUserQuestion and that the agent does NOT call it (agent writes findings to .vet-findings.json, skill reads findings and presents via AskUserQuestion). Also register cslib-vet-agent in the skill-agent mapping table and add /vet to the commands table in both EXTENSION.md and README.md.
 
