@@ -1,5 +1,5 @@
 ---
-next_project_number: 755
+next_project_number: 756
 ---
 
 # TODO
@@ -11,9 +11,13 @@ next_project_number: 755
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87 | -- | Terminal UI, Email Integration |
+| 1 | 78,87,755 | -- | agent-system, Terminal UI, Email Integration |
 
 **Grouped by Topic** (indented = depends on parent):
+
+### Agent System
+
+755 [NOT STARTED] — Port /vet command-skill-agent triplet from cslib project to cslib
 
 ### Terminal UI
 
@@ -24,6 +28,16 @@ next_project_number: 755
 78 [PLANNED] — Fix Gmail SMTP authentication failure when sending emails via Him
 
 ## Tasks
+
+### 755. Port /vet command-skill-agent triplet to cslib extension
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: Port /vet command-skill-agent triplet from cslib project to cslib extension. Tasks 270-271 in /home/benjamin/Projects/cslib/ created /vet as project-local files (.claude/commands/vet.md, .claude/skills/skill-cslib-vet/SKILL.md, .claude/agents/cslib-vet-agent.md) but never added them to the cslib extension. Port all three into /home/benjamin/.config/nvim/.claude/extensions/cslib/ (commands/, skills/, agents/ directories), register in manifest.json (agents, skills, commands arrays), and update EXTENSION.md + README.md. Critical requirement: the AskUserQuestion tool must be available to the skill (not the agent) for interactive violation selection during /vet execution -- verify the skill's allowed-tools includes AskUserQuestion and that the agent does NOT call it (agent writes findings to .vet-findings.json, skill reads findings and presents via AskUserQuestion). Also register cslib-vet-agent in the skill-agent mapping table and add /vet to the commands table in both EXTENSION.md and README.md.
+
+---
 
 ### 754. Update cslib extension README.md to reflect all capabilities
 - **Status**: [COMPLETED]
