@@ -382,7 +382,7 @@ skill_cleanup() {
 # ─────────────────────────────────────────────────────────────────────────────
 # Orchestrator Mode: Write .orchestrator-handoff.json for skill-orchestrate
 # Usage: skill_write_orchestrator_handoff "$orchestrator_mode" "$padded_num" "$project_name" \
-#          "$phase" "$status" "$summary" "$artifact_path" "$artifact_type" "$next_hint"
+#          "$phase" "$status" "$summary" "$artifact_path" "$artifact_type" "$next_hint" "$artifact_summary"
 #
 # Parameters:
 #   $1 = orchestrator_mode : "true" | "false" — write only if "true"
@@ -394,6 +394,7 @@ skill_cleanup() {
 #   $7 = artifact_path     : path to primary artifact (may be empty string)
 #   $8 = artifact_type     : "report" | "plan" | "summary" (may be empty string)
 #   $9 = next_hint         : "plan" | "implement" | "revise" | "none"
+#  $10 = artifact_summary  : brief description of the artifact (may be empty string)
 #
 # Optional (set before calling): ORCHESTRATOR_HANDOFF_CONTINUATION_JSON (JSON object or "null")
 #   Example: export ORCHESTRATOR_HANDOFF_CONTINUATION_JSON='{"handoff_path":"...","phases_completed":2,"phases_total":4}'
@@ -414,6 +415,7 @@ skill_write_orchestrator_handoff() {
   local artifact_path="$7"
   local artifact_type="$8"
   local next_hint="${9:-none}"
+  local artifact_summary="${10:-}"
 
   # Guard: only write when orchestrator_mode is explicitly "true"
   if [ "$orchestrator_mode" != "true" ]; then
@@ -433,7 +435,11 @@ skill_write_orchestrator_handoff() {
   # Build artifacts array (empty if no artifact_path)
   local artifacts_json
   if [ -n "$artifact_path" ] && [ -n "$artifact_type" ]; then
-    artifacts_json=$(printf '[{"type":"%s","path":"%s"}]' "$artifact_type" "$artifact_path")
+    artifacts_json=$(jq -n \
+      --arg type "$artifact_type" \
+      --arg path "$artifact_path" \
+      --arg summary "$artifact_summary" \
+      '[{"type": $type, "path": $path, "summary": $summary}]')
   else
     artifacts_json='[]'
   fi

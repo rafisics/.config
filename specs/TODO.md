@@ -11,7 +11,7 @@ next_project_number: 758
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,757 | -- | Terminal UI, Email Integration |
+| 1 | 78,87 | -- | Terminal UI, Email Integration |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -23,16 +23,14 @@ next_project_number: 758
 
 78 [PLANNED] — Fix Gmail SMTP authentication failure when sending emails via Him
 
-### Uncategorized
-
-757 [NOT STARTED] — In .claude/scripts/skill-base.sh line 436, skill_write_orchestrat
-
 ## Tasks
 
 ### 757. Add summary field to skill_write_orchestrator_handoff artifacts
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Dependencies**: Task 756
+- **Research**: [757_fix_handoff_artifact_summary/reports/01_handoff-summary-fix.md]
+- **Summary**: [757_fix_handoff_artifact_summary/summaries/01_handoff-summary-fix-summary.md]
 
 **Description**: In .claude/scripts/skill-base.sh line 436, skill_write_orchestrator_handoff() builds the artifacts JSON without a summary field (uses printf with only type and path). When orchestrate reads this handoff and calls skill_link_artifacts, the summary is empty, overwriting any good artifact data. Fix: (1) Add 10th parameter artifact_summary to the function signature, (2) Include summary in the artifacts JSON via jq instead of printf, (3) Update the usage comment at lines 384-386. Secondary fix: ensure callers (skill-implementer SKILL.md postflight) pass the artifact summary from .return-meta.json when calling this function.
 
