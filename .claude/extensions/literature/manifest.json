@@ -19,6 +19,9 @@
       "skill-literature",
       "skill-cite"
     ],
+    "context": [
+      "project/literature"
+    ],
     "scripts": [
       "zotero-search.sh",
       "cite-extract.sh",
@@ -28,7 +31,10 @@
       "zotero-chunk.sh",
       "zotero-attach-chunks.sh",
       "zotero-index-add.sh",
-      "zotero-index-remove.sh"
+      "zotero-index-remove.sh",
+      "literature-briefing.sh",
+      "literature-create-setup-task.sh",
+      "test-lit-pipeline.sh"
     ]
   },
   "merge_targets": {
