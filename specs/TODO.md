@@ -29,12 +29,12 @@ next_project_number: 760
 
 ### Uncategorized
 
-759 [RESEARCHED] — Agent return value "implemented" leaks into state.json as a raw s
+759 [PLANNING] — Agent return value "implemented" leaks into state.json as a raw s
 
 ## Tasks
 
 ### 759. Fix implemented status leaking into state.json instead of completed
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Task Type**: meta
 - **Dependencies**: None
 - **Research**: [759_fix_implemented_status_leak/reports/01_status-leak-fix.md]
@@ -49,6 +49,12 @@ next_project_number: 760
 - **Topic**: literature
 - **Dependencies**: None
 - **Plan**: [758_unified_literature_system/plans/05_unified-literature-plan.md]
+- **Research**:
+  - [758_unified_literature_system/reports/01_infrastructure-audit.md]
+  - [758_unified_literature_system/reports/02_agent-design-patterns.md]
+  - [758_unified_literature_system/reports/03_storage-architecture.md]
+  - [758_unified_literature_system/reports/04_extension-consolidation.md]
+  - [758_unified_literature_system/reports/05_research-synthesis.md]
 
 **Description**: Refactor literature/zotero into unified literature system: (1) Global Literature/ repo as single source of truth for segmented+indexed markdown, tracked by git; (2) Per-repo sub-index (specs/literature-index.json) declaring relevant sources; (3) Replace --lit/--zot context injection with a literature-agent that receives the sub-index and autonomously explores the global Literature/ corpus; (4) Consolidate literature+zotero extensions into one extension; (5) Design the literature-agent tool interface (search, read chunks, cross-reference)
 

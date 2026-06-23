@@ -5,12 +5,12 @@
     {
       "project_number": 759,
       "project_name": "fix_implemented_status_leak",
-      "status": "researched",
+      "status": "planning",
       "task_type": "meta",
       "title": "Fix implemented status leaking into state.json instead of completed",
       "description": "Agent return value \"implemented\" leaks into state.json as a raw status instead of being normalized to \"completed\". Three fix sites: (1) skill-status-sync/SKILL.md line 164 maps implemented->[IMPLEMENTED] — should normalize to completed/[COMPLETED]; (2) generate-todo.sh has no explicit mapping for \"implemented\" — wildcard uppercases to IMPLEMENTED; (3) skill-orchestrate/SKILL.md line 703 writes status:\"implemented\" in partial-exit metadata — should write \"completed\". Extension mirrors (.claude/extensions/core/) need matching fixes.",
       "created": "2026-06-23T20:19:34Z",
-      "last_updated": "2026-06-23T20:25:36Z",
+      "last_updated": "2026-06-23T20:25:49Z",
       "session_id": "sess_1782246127_273e70",
       "artifacts": [
         {
@@ -35,8 +35,34 @@
           "path": "specs/758_unified_literature_system/plans/05_unified-literature-plan.md",
           "type": "plan",
           "summary": "6-phase implementation plan for unified literature system: extension consolidation, per-repo sub-index, briefing+tools pattern, flag rewiring, scoring unification, documentation"
+        },
+        {
+          "path": "specs/758_unified_literature_system/reports/01_infrastructure-audit.md",
+          "type": "report",
+          "summary": "Infrastructure audit: all scripts implemented, 4 scoring algorithms, dual incompatible indexes"
+        },
+        {
+          "path": "specs/758_unified_literature_system/reports/02_agent-design-patterns.md",
+          "type": "report",
+          "summary": "Agent design: recommends briefing+tools (Pattern 3C) over injection"
+        },
+        {
+          "path": "specs/758_unified_literature_system/reports/03_storage-architecture.md",
+          "type": "report",
+          "summary": "Storage: global Literature/ repo already exists with 222 entries and SQLite FTS5"
+        },
+        {
+          "path": "specs/758_unified_literature_system/reports/04_extension-consolidation.md",
+          "type": "report",
+          "summary": "Consolidation: absorb zotero into literature v2.0.0, single --lit flag"
+        },
+        {
+          "path": "specs/758_unified_literature_system/reports/05_research-synthesis.md",
+          "type": "report",
+          "summary": "Synthesis of all four research dimensions with resolved conflicts and architectural decisions"
         }
-      ]
+      ],
+      "next_artifact_number": 6
     },
     {
       "project_number": 756,
