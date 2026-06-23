@@ -1,5 +1,5 @@
 ---
-next_project_number: 764
+next_project_number: 767
 ---
 
 # TODO
@@ -11,9 +11,15 @@ next_project_number: 764
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87 | -- | Terminal UI, Email Integration |
+| 1 | 78,87,764,765,766 | -- | agent-system, Terminal UI, Email Integration |
 
 **Grouped by Topic** (indented = depends on parent):
+
+### Agent System
+
+764 [NOT STARTED] — The general-implementation-agent has plan marker update instructi
+765 [NOT STARTED] — The skill-orchestrate MT mode (Stages MT-3 through MT-4) dispatch
+766 [NOT STARTED] — The dispatch-agent.sh script generates JSON dispatch instructions
 
 ### Terminal UI
 
@@ -24,6 +30,36 @@ next_project_number: 764
 78 [PLANNED] — Fix Gmail SMTP authentication failure when sending emails via Him
 
 ## Tasks
+
+### 766. Modernize agent dispatch architecture for current Claude Code capabilities
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: The dispatch-agent.sh script generates JSON dispatch instructions that skill-orchestrate interprets to make Agent tool calls — an indirection layer designed for a hypothetical future named-fork API. As of June 2026, Claude Code supports: (1) subagent_type fork for cache-warm context inheritance, (2) parallel Agent calls in a single message, (3) the Workflow tool with pipeline()/parallel()/agent() primitives for deterministic multi-agent orchestration. Research whether: (a) dispatch-agent.sh should be simplified to direct Agent tool calls, (b) MT orchestration should use the Workflow tool instead of the 400+ lines of bash pseudocode in MT-1 through MT-5, (c) fork patterns should be used more broadly for operations that benefit from cache sharing. Goal: reduce complexity while improving reliability and leveraging current platform capabilities. This task may supersede task 765 if MT mode is refactored.
+
+---
+
+### 765. Fix multi-task orchestration wave cycling and agent tracking
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: The skill-orchestrate MT mode (Stages MT-3 through MT-4) dispatches one phase per wave iteration but does not cycle back to dispatch the next phase. When all tasks start as [not_started], Wave 0 dispatches research for all, but after research completes the wave loop exits without dispatching planning or implementation. The orchestrator also loses track of parallel Agent completions — the user had to manually prompt that planner agents had finished after 8+ minutes of churning. Fix the wave loop to cycle through all lifecycle phases (research -> plan -> implement) until all tasks reach terminal state, and ensure parallel Agent calls are properly awaited and their completions processed.
+
+---
+
+### 764. Harden implementation agent plan marker enforcement
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: The general-implementation-agent has plan marker update instructions (Stage 4A marks [IN PROGRESS], Stage 4D marks [COMPLETED]) but implementation agents dispatched via /orchestrate multi-task mode do not reliably follow them. The top-level **Status** and phase headings remain [NOT STARTED] after implementation completes. Add a mandatory post-implementation verification step that checks all completed phases have [COMPLETED] markers in the plan file, and that the top-level Status reflects overall completion. Make this a hard contract rather than a soft instruction.
+
+---
 
 ### 763. Add --lit integration test script
 - **Status**: [COMPLETED]
