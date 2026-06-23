@@ -34,19 +34,14 @@
     {
       "project_number": 758,
       "project_name": "unified_literature_system",
-      "status": "researched",
+      "status": "planned",
       "task_type": "meta",
       "description": "Refactor literature/zotero into unified literature system: (1) Global Literature/ repo as single source of truth for segmented+indexed markdown, tracked by git; (2) Per-repo sub-index (specs/literature-index.json) declaring relevant sources; (3) Replace --lit/--zot context injection with a literature-agent that receives the sub-index and autonomously explores the global Literature/ corpus; (4) Consolidate literature+zotero extensions into one extension; (5) Design the literature-agent tool interface (search, read chunks, cross-reference)",
       "topic": "literature",
       "created": "2026-06-23T20:11:39Z",
-      "last_updated": "2026-06-23T20:40:40Z",
-      "session_id": "sess_1750720000_research758",
+      "last_updated": "2026-06-23T21:00:00Z",
+      "session_id": "sess_1782248071_5ae11b",
       "artifacts": [
-        {
-          "path": "specs/758_unified_literature_system/plans/05_unified-literature-plan.md",
-          "type": "plan",
-          "summary": "6-phase implementation plan for unified literature system: extension consolidation, per-repo sub-index, briefing+tools pattern, flag rewiring, scoring unification, documentation"
-        },
         {
           "path": "specs/758_unified_literature_system/reports/01_infrastructure-audit.md",
           "type": "report",
@@ -81,6 +76,11 @@
           "path": "specs/758_unified_literature_system/reports/07_literature-workflow-design.md",
           "type": "research",
           "summary": "Concrete /literature workflow design: two modes (discover + integrate), --lit briefing swap, sub-index schema, SOURCES.md format"
+        },
+        {
+          "path": "specs/758_unified_literature_system/plans/08_unified-literature-plan.md",
+          "type": "plan",
+          "summary": "6-phase plan (v2) covering prerequisites, extension consolidation, sub-index/briefing, source discovery, skill preflight rewiring, and documentation cleanup"
         }
       ],
       "next_artifact_number": 8,
