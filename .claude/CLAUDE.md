@@ -307,28 +307,34 @@ explicitly pass `--hard` to activate hard mode.
 
 ## Literature Mode (`--lit`)
 
-Literature mode injects reference files from `specs/literature/` as `<literature-context>` into
-agent prompts. Use this when a task involves implementing from a paper, specification, or
+Literature mode enables on-demand access to the global Literature/ repository via a compact
+briefing block. Use this when a task involves implementing from a paper, specification, or
 reference document.
 
 ### What `--lit` Does
 
 When `--lit` is passed to `/research`, `/plan`, `/implement`, or `/orchestrate`:
-- `literature-retrieve.sh` reads all `.md` and `.txt` files from `specs/literature/`
-- Files are included up to TOKEN_BUDGET=4000 tokens (MAX_FILES=10)
-- A `<literature-context>` block is injected after `<memory-context>` (if any) and before
-  task-specific instructions
-- If `specs/literature/` does not exist or is empty, the flag is silently ignored (no error)
+- `literature-briefing.sh` reads `specs/literature-index.json` (per-repo sub-index)
+- For each entry, resolves metadata from `$LITERATURE_DIR/index.json`
+- Injects a compact `<literature-briefing>` block (~300-500 tokens) into the agent prompt
+- If `specs/literature-index.json` does not exist or is empty, the flag is silently ignored
 
-### specs/literature/ Directory Convention
+**Agents then access content on demand**:
+- `Read` tool with absolute paths from the briefing to access specific chunks
+- `bash .claude/scripts/literature-search.sh "query"` to search the full FTS5 corpus
+- `bash .claude/scripts/literature-search.sh --toc doc_id` to browse a document's TOC
 
-The `specs/literature/` directory is user-maintained and not task-scoped:
-- Place paper summaries, specification documents, algorithm descriptions, or reference PDFs
-  (converted to .md/.txt) here
-- All files in the directory are available to any task when `--lit` is active
-- The directory is not created automatically — create it before using `--lit`
-- Suitable content: academic paper summaries, RFC/spec excerpts, algorithm pseudocode,
-  mathematical definitions the agent should treat as ground truth
+This is strictly cheaper than full content injection (~300 tokens briefing vs 4,000-8,000 tokens
+injection) while giving agents access to the entire corpus.
+
+### Per-Repo Sub-Index Convention
+
+The `specs/literature-index.json` file is project-scoped and lists which global documents are
+relevant to this project. It is managed by `/literature` (Mode A and Mode B commands).
+
+Entries are reference-only (`doc_id` pointers); metadata is resolved at runtime from the
+global `$LITERATURE_DIR/index.json`. To add entries: `/literature N` (discover mode) or
+`/literature ~/path/to/file.pdf` (integrate mode).
 
 ### When to Use `--lit`
 
@@ -341,7 +347,7 @@ The `specs/literature/` directory is user-maintained and not task-scoped:
 
 The two flags are independent:
 
-| Flag combination | Memory retrieval | Literature injection |
+| Flag combination | Memory retrieval | Literature briefing |
 |------------------|-----------------|---------------------|
 | (neither)        | active          | inactive            |
 | `--clean`        | suppressed      | inactive            |
@@ -353,11 +359,12 @@ The two flags are independent:
 - `--lit` works with `--team`, `--hard`, `--fast`, and model flags
 - `--lit` is threaded through all dispatch contexts in skill-orchestrate
 - Per-invocation only: no sticky state in state.json
+- No `--zot` flag: Zotero functionality is accessed via `/literature N` (discover mode)
 
 ### Per-Invocation Only
 
 `--lit` has no persistent state. Each invocation of `/research`, `/plan`, `/implement`, or
-`/orchestrate` must explicitly pass `--lit` to activate literature injection.
+`/orchestrate` must explicitly pass `--lit` to activate literature briefing.
 
 ## Rules References
 
@@ -532,7 +539,7 @@ Memory retrieval is automatic: when the memory extension is loaded, `/research`,
 
 ### Literature-Augmented Research
 
-The `--lit` flag is the complementary context-injection mechanism to memory retrieval. While `--clean` suppresses memory retrieval, `--lit` adds literature file injection from `specs/literature/`. The two flags are independent and combinable: `--clean --lit` suppresses memory but still injects literature; `--lit` alone injects both memory (if available) and literature. See the "Literature Mode (`--lit`)" section in CLAUDE.md for full details on `specs/literature/` conventions, token budget, and composability with other flags.
+The `--lit` flag is the complementary context-injection mechanism to memory retrieval. While `--clean` suppresses memory retrieval, `--lit` adds a literature briefing from `specs/literature-index.json`. The two flags are independent and combinable: `--clean --lit` suppresses memory but still injects the literature briefing; `--lit` alone injects both memory (if available) and the literature briefing. See the "Literature Mode (`--lit`)" section in CLAUDE.md for full details on sub-index conventions, briefing+tools pattern, and composability with other flags.
 
 ### Memory Lifecycle
 

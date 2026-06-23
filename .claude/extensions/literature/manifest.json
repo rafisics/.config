@@ -20,17 +20,15 @@
       "skill-cite"
     ],
     "scripts": [
-      "scripts/zotero-search.sh",
-      "scripts/cite-extract.sh",
-      "scripts/zotero-read.sh",
-      "scripts/zotero-write.sh",
-      "scripts/zotero-setup.sh",
-      "scripts/zotero-chunk.sh",
-      "scripts/zotero-attach-chunks.sh",
-      "scripts/zotero-index-add.sh",
-      "scripts/zotero-index-remove.sh",
-      "scripts/zotero-retrieve.sh",
-      "scripts/zotero-search-index.sh"
+      "zotero-search.sh",
+      "cite-extract.sh",
+      "zotero-read.sh",
+      "zotero-write.sh",
+      "zotero-setup.sh",
+      "zotero-chunk.sh",
+      "zotero-attach-chunks.sh",
+      "zotero-index-add.sh",
+      "zotero-index-remove.sh"
     ]
   },
   "merge_targets": {
