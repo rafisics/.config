@@ -812,26 +812,92 @@ done
 echo "[orchestrate-mt] Multi-state initialized: $mt_state_file (MAX_CYCLES=$MAX_CYCLES_MT)"
 ```
 
-### Stage MT-3: Wave Execution Loop
+### Stage MT-3: Lifecycle-Cycling Loop
 
-Outer loop iterates through waves sequentially. Within each wave, tasks are dispatched in parallel (up to 4 concurrent). After each batch, per-task postflight (status sync + artifact linking) fires for every dispatched task.
+Outer loop drives all tasks through their full lifecycle (research -> plan -> implement -> completed). Each iteration re-reads all task statuses from state.json, builds an eligible-task list (dependency-aware), dispatches the appropriate next phase for each eligible task, and exits when all tasks reach terminal state or the cycle cap is hit.
 
-```
-# Outer loop: iterate through waves sequentially
-for wave_idx in $(seq 0 $((wave_count - 1))); do
-  wave_tasks=$(echo "$waves_json" | jq -r ".[$wave_idx][]")
-  
-  # Filter: remove completed/failed/terminal tasks and tasks with failed predecessors
-  active_tasks=()
-  for task_num in $wave_tasks; do
-    # Re-read status from state.json for freshness
+```bash
+cycle_count=0
+
+while [ "$cycle_count" -lt "$MAX_CYCLES_MT" ]; do
+  echo "[orchestrate-mt] Cycle $((cycle_count + 1))/$MAX_CYCLES_MT — refreshing statuses"
+
+  # --- Status refresh: re-read all task statuses from state.json ---
+  all_terminal=true
+  for task_num in "${task_numbers[@]}"; do
     current_status=$(jq -r --argjson num "$task_num" \
       '.active_projects[] | select(.project_number == $num) | .status' \
       specs/state.json)
     current_statuses[$task_num]="$current_status"
-    
-    # Check if task's predecessors failed
+    # Update multi-state file
+    jq --argjson num "$task_num" \
+       --arg status "$current_status" \
+      '.current_statuses[$num | tostring] = $status' \
+      "$mt_state_file" > "${mt_state_file}.tmp" && mv "${mt_state_file}.tmp" "$mt_state_file"
+  done
+
+  # --- All-terminal detection: break when every task is done ---
+  for task_num in "${task_numbers[@]}"; do
+    current_status="${current_statuses[$task_num]}"
+    case "$current_status" in
+      completed|abandoned|expanded)
+        # terminal — OK
+        ;;
+      *)
+        # Check failed_tasks list too
+        if jq -e --argjson p "$task_num" '.failed_tasks | map(select(. == $p)) | length > 0' \
+            "$mt_state_file" > /dev/null 2>&1; then
+          : # failed is also terminal
+        else
+          all_terminal=false
+        fi
+        ;;
+    esac
+  done
+
+  if [ "$all_terminal" = "true" ]; then
+    echo "[orchestrate-mt] All tasks reached terminal state. Exiting lifecycle loop."
+    break
+  fi
+
+  # --- Build eligible_tasks list: dependency-aware filtering ---
+  # A task is eligible when:
+  #   (a) not in terminal state (completed, abandoned, expanded, failed)
+  #   (b) not in an in-flight state (researching, planning)
+  #   (c) all its predecessors (from dependency_graph_json) are in terminal state
+  eligible_tasks=()
+  for task_num in "${task_numbers[@]}"; do
+    current_status="${current_statuses[$task_num]}"
+
+    # Skip terminal states
+    case "$current_status" in
+      completed|abandoned|expanded)
+        # Move to completed_tasks if not already tracked
+        jq --argjson num "$task_num" \
+          '.completed_tasks = (.completed_tasks + [$num] | unique)' \
+          "$mt_state_file" > "${mt_state_file}.tmp" && mv "${mt_state_file}.tmp" "$mt_state_file"
+        continue
+        ;;
+    esac
+
+    # Skip if in failed_tasks
+    if jq -e --argjson p "$task_num" '.failed_tasks | map(select(. == $p)) | length > 0' \
+        "$mt_state_file" > /dev/null 2>&1; then
+      echo "[orchestrate-mt] Task $task_num in failed_tasks — skipping"
+      continue
+    fi
+
+    # Skip in-flight states (mid-dispatch from a prior cycle)
+    case "$current_status" in
+      researching|planning)
+        echo "[orchestrate-mt] Task $task_num in-flight state [$current_status] — skipping this cycle"
+        continue
+        ;;
+    esac
+
+    # Check dependency gate: all predecessors must be in terminal state
     predecessor_failed=false
+    predecessor_pending=false
     predecessors_json=$(echo "$dependency_graph_json" | jq -c ".\"$task_num\" // []")
     for pred in $(echo "$predecessors_json" | jq -r '.[]'); do
       if jq -e --argjson p "$pred" '.failed_tasks | map(select(. == $p)) | length > 0' \
@@ -840,41 +906,92 @@ for wave_idx in $(seq 0 $((wave_count - 1))); do
         echo "[orchestrate-mt] Skipping task $task_num: predecessor $pred failed"
         break
       fi
+      pred_status="${current_statuses[$pred]:-not_started}"
+      case "$pred_status" in
+        completed|abandoned|expanded)
+          : # predecessor is terminal — OK
+          ;;
+        *)
+          predecessor_pending=true
+          echo "[orchestrate-mt] Task $task_num waiting for predecessor $pred [$pred_status]"
+          break
+          ;;
+      esac
     done
-    
+
     if [ "$predecessor_failed" = "true" ]; then
+      jq --argjson num "$task_num" \
+        '.failed_tasks = (.failed_tasks + [$num] | unique) |
+         .current_statuses[$num | tostring] = "blocked"' \
+        "$mt_state_file" > "${mt_state_file}.tmp" && mv "${mt_state_file}.tmp" "$mt_state_file"
       continue
     fi
-    
-    case "$current_status" in
-      completed|abandoned|expanded)
-        echo "[orchestrate-mt] Task $task_num already in terminal state [$current_status], skipping"
-        jq --argjson num "$task_num" \
-          '.completed_tasks = (.completed_tasks + [$num] | unique)' \
-          "$mt_state_file" > "${mt_state_file}.tmp" && mv "${mt_state_file}.tmp" "$mt_state_file"
-        continue
-        ;;
-    esac
-    
-    active_tasks+=("$task_num")
+
+    if [ "$predecessor_pending" = "true" ]; then
+      continue
+    fi
+
+    eligible_tasks+=("$task_num")
   done
-  
-  echo "[orchestrate-mt] Wave $wave_idx: ${#active_tasks[@]} active tasks: ${active_tasks[*]}"
-  
-  # Phase-aware grouping: dispatch each task to its appropriate agent
-  # (parallel dispatch in batches of max 4 concurrent)
-  # Stage MT-4 handles the dispatch context construction and parallel invocation
-  # After all tasks in wave complete: read handoffs, call postflight, update multi-state
+
+  # --- No-eligible-tasks circuit breaker ---
+  if [ "${#eligible_tasks[@]}" -eq 0 ]; then
+    # Determine which tasks are stuck (non-terminal, non-failed, dependencies not blocking)
+    stuck_tasks=()
+    for task_num in "${task_numbers[@]}"; do
+      current_status="${current_statuses[$task_num]}"
+      case "$current_status" in
+        completed|abandoned|expanded) continue ;;
+      esac
+      if jq -e --argjson p "$task_num" '.failed_tasks | map(select(. == $p)) | length > 0' \
+          "$mt_state_file" > /dev/null 2>&1; then
+        continue
+      fi
+      stuck_tasks+=("$task_num")
+    done
+    echo "[orchestrate-mt] WARNING: No eligible tasks in cycle $((cycle_count + 1)). Stuck: ${stuck_tasks[*]}"
+    echo "[orchestrate-mt] Exiting lifecycle loop with partial status."
+    break
+  fi
+
+  echo "[orchestrate-mt] Cycle $((cycle_count + 1)): ${#eligible_tasks[@]} eligible tasks: ${eligible_tasks[*]}"
+
+  # --- Stage MT-4 handles phase-aware dispatch for all eligible_tasks ---
+  # active_tasks is set to eligible_tasks for MT-4 compatibility
+  active_tasks=("${eligible_tasks[@]}")
+
+  # (Stage MT-4 code follows — dispatch, postflight, multi-state update)
+
+  # --- Cycle counter: increment at bottom of loop ---
+  cycle_count=$((cycle_count + 1))
+  jq --argjson count "$cycle_count" \
+    '.cycle_count = $count' \
+    "$mt_state_file" > "${mt_state_file}.tmp" && mv "${mt_state_file}.tmp" "$mt_state_file"
+
+  # Cycle guard (redundant with while condition, kept for logging)
+  if [ "$cycle_count" -ge "$MAX_CYCLES_MT" ]; then
+    echo "[orchestrate-mt] MAX_CYCLES ($MAX_CYCLES_MT) reached. Writing partial results."
+    completed_tasks_json=$(jq -c '.completed_tasks' "$mt_state_file")
+    failed_tasks_json=$(jq -c '.failed_tasks' "$mt_state_file")
+    echo "[orchestrate-mt] Completed: $completed_tasks_json | Failed: $failed_tasks_json"
+    # Proceed to Stage MT-5 with partial status
+    break
+  fi
+
 done
 ```
 
 ### Stage MT-4: Phase-Aware Dispatch and Per-Task Postflight
 
-For each active task in the current wave, determine which agent phase to dispatch based on current status, construct the dispatch context, invoke the Agent tool (up to 4 in parallel), then read each task's handoff and call both postflight functions.
+For each task in `active_tasks` (set by Stage MT-3's lifecycle loop from `eligible_tasks`), determine which agent phase to dispatch based on current status, construct the dispatch context, invoke the Agent tool — **all Agent calls for a cycle's dispatch batch MUST be issued in a single orchestrator message with multiple tool-use content blocks** — then read each task's handoff and call both postflight functions.
+
+**Batching rule**: All Agent tool calls for the research_tasks, plan_tasks, and implement_tasks groups within the same cycle iteration MUST be emitted in a single message. Do NOT sequentialize Agent calls across the three groups within one cycle. Claude Code processes all Agent calls in a single message concurrently; multiple messages force sequential execution.
+
+**Completion sequencing**: After all parallel Agent tool calls complete (Claude Code returns control after all calls in the single message finish), proceed to read handoffs for every dispatched task. Do NOT read handoffs interleaved with dispatches.
 
 ```
-# Phase-aware dispatch for each active task in wave
-# Group by needed phase for batching
+# Phase-aware dispatch for each active task (eligible tasks from Stage MT-3)
+# Group by needed phase for batching — all three groups dispatched in one message
 research_tasks=()
 plan_tasks=()
 implement_tasks=()
@@ -920,7 +1037,7 @@ for task_num in "${active_tasks[@]}"; do
   esac
 done
 
-# Dispatch research tasks (concurrent, max 4)
+# Dispatch research tasks (concurrent — all Agent calls in one message)
 for task_num in "${research_tasks[@]}"; do
   task_dir="${task_dirs[$task_num]}"
   task_type="${task_types[$task_num]:-general}"
@@ -942,7 +1059,7 @@ for task_num in "${research_tasks[@]}"; do
   echo "[orchestrate-mt] Dispatching research for task $task_num -> $r_agent"
 done
 
-# Dispatch plan tasks (concurrent, max 4)
+# Dispatch plan tasks (concurrent — all Agent calls in one message)
 for task_num in "${plan_tasks[@]}"; do
   task_dir="${task_dirs[$task_num]}"
   task_type="${task_types[$task_num]:-general}"
@@ -964,7 +1081,7 @@ for task_num in "${plan_tasks[@]}"; do
   echo "[orchestrate-mt] Dispatching planning for task $task_num -> planner-agent"
 done
 
-# Dispatch implement tasks (concurrent, max 4)
+# Dispatch implement tasks (concurrent — all Agent calls in one message)
 for task_num in "${implement_tasks[@]}"; do
   task_dir="${task_dirs[$task_num]}"
   task_type="${task_types[$task_num]:-general}"
@@ -1072,8 +1189,9 @@ for task_num in "${research_tasks[@]}" "${plan_tasks[@]}" "${implement_tasks[@]}
       "$mt_state_file" > "${mt_state_file}.tmp" && mv "${mt_state_file}.tmp" "$mt_state_file"
   elif [ "$dispatch_status" = "failed" ] || [ "$dispatch_status" = "blocked" ]; then
     jq --argjson num "$task_num" \
+       --arg status "$dispatch_status" \
       '.failed_tasks = (.failed_tasks + [$num] | unique) |
-       .current_statuses[$num | tostring] = $num' \
+       .current_statuses[$num | tostring] = $status' \
       "$mt_state_file" > "${mt_state_file}.tmp" && mv "${mt_state_file}.tmp" "$mt_state_file"
   else
     jq --argjson num "$task_num" \
@@ -1082,27 +1200,12 @@ for task_num in "${research_tasks[@]}" "${plan_tasks[@]}" "${implement_tasks[@]}
       "$mt_state_file" > "${mt_state_file}.tmp" && mv "${mt_state_file}.tmp" "$mt_state_file"
   fi
 done
-
-# Increment cycle_count and update multi-state
-cycle_count=$(jq -r '.cycle_count' "$mt_state_file")
-cycle_count=$((cycle_count + 1))
-jq --argjson count "$cycle_count" \
-  '.cycle_count = $count' \
-  "$mt_state_file" > "${mt_state_file}.tmp" && mv "${mt_state_file}.tmp" "$mt_state_file"
-
-# Cycle guard: exit if MAX_CYCLES_MT reached
-if [ "$cycle_count" -ge "$MAX_CYCLES_MT" ]; then
-  echo "[orchestrate-mt] MAX_CYCLES ($MAX_CYCLES_MT) reached. Writing partial results."
-  completed_tasks=$(jq -c '.completed_tasks' "$mt_state_file")
-  failed_tasks=$(jq -c '.failed_tasks' "$mt_state_file")
-  echo "[orchestrate-mt] Completed: $completed_tasks | Failed: $failed_tasks"
-  # Proceed to Stage MT-5 with partial status
-fi
+# Note: cycle_count increment is handled in Stage MT-3's while loop bottom.
 ```
 
 ### Stage MT-5: Multi-Task Postflight
 
-On completion of the wave loop (all tasks completed, all waves processed, or MAX_CYCLES reached):
+On completion of the lifecycle-cycling loop (all tasks reached terminal state, no eligible tasks remain, or MAX_CYCLES_MT reached):
 
 ```bash
 # Read final multi-state

@@ -1,0 +1,19 @@
+{
+  "status": "implemented",
+  "summary": "Fixed MT orchestration wave cycling: replaced one-pass for loop with while lifecycle-cycling loop (all 4 phases complete), fixed jq status bug, clarified parallel dispatch batching, added MT mode architecture docs.",
+  "task_number": 765,
+  "session_id": "sess_1782258135_3f7634",
+  "artifacts": [
+    {
+      "type": "summary",
+      "path": "specs/765_fix_mt_orchestration_wave_cycling/summaries/01_mt-wave-cycling-summary.md",
+      "summary": "Implementation summary for MT wave cycling fix — all 4 phases completed"
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Replaced the one-pass wave loop in skill-orchestrate/SKILL.md Stage MT-3 with a lifecycle-cycling while loop that drives tasks through all phases (research -> plan -> implement), fixed a jq status-assignment bug in Stage MT-4 postflight, added explicit parallel dispatch batching instructions, and documented MT mode in orchestrate-state-machine.md.",
+    "roadmap_items": []
+  },
+  "phases_completed": 4,
+  "phases_total": 4
+}

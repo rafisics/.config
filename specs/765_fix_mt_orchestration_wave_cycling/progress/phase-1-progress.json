@@ -1,0 +1,19 @@
+{
+  "phase": 1,
+  "phase_name": "Replace Stage MT-3 Wave Loop with Lifecycle-Cycling Loop",
+  "started_at": "2026-06-23T00:00:00Z",
+  "last_updated": "2026-06-23T00:00:00Z",
+  "objectives": [
+    {"id": 1, "description": "Replace for wave_idx loop with while cycle_count < MAX_CYCLES_MT loop", "status": "not_started"},
+    {"id": 2, "description": "Add status refresh block at top of each iteration", "status": "not_started"},
+    {"id": 3, "description": "Add all-terminal detection", "status": "not_started"},
+    {"id": 4, "description": "Build eligible_tasks list using dependency-aware filtering", "status": "not_started"},
+    {"id": 5, "description": "Add no-eligible-tasks circuit breaker", "status": "not_started"},
+    {"id": 6, "description": "Pass eligible_tasks to Stage MT-4 dispatch", "status": "not_started"},
+    {"id": 7, "description": "Move cycle_count increment into while loop bottom", "status": "not_started"}
+  ],
+  "current_objective": 1,
+  "approaches_tried": [],
+  "handoff_count": 0,
+  "deviations": []
+}

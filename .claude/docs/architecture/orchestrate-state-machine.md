@@ -233,3 +233,132 @@ Cycle 2: BLOCKER ESCALATION
 
 EXIT: Task 593 completed successfully.
 ```
+
+---
+
+## MT Mode: Multi-Task Orchestration
+
+MT mode drives multiple tasks through their full lifecycle (research -> plan -> implement -> completed) using a lifecycle-cycling loop with dependency-aware gating and parallel dispatch.
+
+### Lifecycle-Cycling Loop (Stage MT-3)
+
+```
+┌──────────────────────────────────────────────────┐
+│         MT Lifecycle-Cycling While Loop          │
+│                                                  │
+│  ┌─────────────────────────────────────────┐     │
+│  │ 1. Refresh statuses from state.json     │     │
+│  │    for every task in task_numbers[]     │     │
+│  └──────────────────┬──────────────────────┘     │
+│                     │                            │
+│  ┌──────────────────▼──────────────────────┐     │
+│  │ 2. All-terminal check                   │     │
+│  │    all tasks in {completed, abandoned,  │     │─── YES ──► EXIT (success)
+│  │    expanded, failed_tasks}?             │     │
+│  └──────────────────┬──────────────────────┘     │
+│                     │ NO                         │
+│  ┌──────────────────▼──────────────────────┐     │
+│  │ 3. Build eligible_tasks[]               │     │
+│  │    Filter each task:                    │     │
+│  │    (a) not terminal                     │     │
+│  │    (b) not in-flight (researching,      │     │
+│  │        planning)                        │     │
+│  │    (c) all predecessors terminal        │     │
+│  └──────────────────┬──────────────────────┘     │
+│                     │                            │
+│  ┌──────────────────▼──────────────────────┐     │
+│  │ 4. No-eligible circuit breaker          │     │
+│  │    eligible_tasks[] is empty?           │     │─── YES ──► EXIT (partial)
+│  └──────────────────┬──────────────────────┘     │
+│                     │ NO                         │
+│  ┌──────────────────▼──────────────────────┐     │
+│  │ 5. Phase-aware dispatch (Stage MT-4)    │     │
+│  │    Group eligible_tasks by needed phase:│     │
+│  │    research_tasks / plan_tasks /        │     │
+│  │    implement_tasks                      │     │
+│  │    ─────────────────────────────────    │     │
+│  │    Issue ALL Agent calls in ONE message │     │
+│  │    (concurrent parallel execution)      │     │
+│  └──────────────────┬──────────────────────┘     │
+│                     │                            │
+│  ┌──────────────────▼──────────────────────┐     │
+│  │ 6. Read handoffs for every dispatched   │     │
+│  │    task (after ALL Agents complete)     │     │
+│  └──────────────────┬──────────────────────┘     │
+│                     │                            │
+│  ┌──────────────────▼──────────────────────┐     │
+│  │ 7. Per-task postflight                  │     │
+│  │    skill_postflight_update + artifact   │     │
+│  │    linking + multi-state update         │     │
+│  └──────────────────┬──────────────────────┘     │
+│                     │                            │
+│  ┌──────────────────▼──────────────────────┐     │
+│  │ 8. cycle_count++                        │     │
+│  │    MAX_CYCLES_MT guard                  │     │─── HIT ──► EXIT (partial)
+│  └──────────────────┬──────────────────────┘     │
+│                     │                            │
+│                     └──────────────────────────► │
+│                        (back to step 1)          │
+└──────────────────────────────────────────────────┘
+```
+
+### Dependency Gating Model
+
+Tasks progress through lifecycle phases independently. A task becomes eligible when:
+1. Its current status is not terminal (`completed`, `abandoned`, `expanded`) and not in `failed_tasks`
+2. It is not in an in-flight state from a prior cycle (`researching`, `planning`)
+3. All of its predecessors in the dependency graph are in a terminal state
+
+If a predecessor is `failed`, the dependent task is immediately moved to `failed_tasks` with status `blocked`.
+
+If a predecessor is still in-progress (e.g., `researched`, `planned`), the dependent task waits until the next cycle when the predecessor reaches terminal state.
+
+### Exit Conditions
+
+| Condition | Exit Status | Description |
+|-----------|-------------|-------------|
+| All tasks terminal | `completed` (if 0 failed) or `partial` | Normal completion |
+| No eligible tasks | `partial` | Deadlock or all blocked |
+| MAX_CYCLES_MT hit | `partial` | Cycle budget exhausted |
+
+`MAX_CYCLES_MT = min(task_count * 5, 25)`
+
+### MT Example Flow: 2 Independent Tasks
+
+```
+Initial: Task A (not_started), Task B (not_started)
+         Dependency graph: {} (no dependencies between A and B)
+
+--- Cycle 1 ---
+Refresh: A=not_started, B=not_started
+All-terminal: NO
+Eligible: [A, B]  (both not_started, no dependencies)
+Dispatch: research A + research B  (ONE message, 2 Agent calls)
+After agents complete: read handoffs for A and B
+Postflight: A -> researched, B -> researched
+cycle_count: 1
+
+--- Cycle 2 ---
+Refresh: A=researched, B=researched
+All-terminal: NO
+Eligible: [A, B]  (researched is not terminal, not in-flight)
+Dispatch: plan A + plan B  (ONE message, 2 Agent calls)
+After agents complete: read handoffs for A and B
+Postflight: A -> planned, B -> planned
+cycle_count: 2
+
+--- Cycle 3 ---
+Refresh: A=planned, B=planned
+All-terminal: NO
+Eligible: [A, B]  (planned -> implement)
+Dispatch: implement A + implement B  (ONE message, 2 Agent calls)
+After agents complete: read handoffs for A and B
+Postflight: A -> completed, B -> completed
+cycle_count: 3
+
+--- Cycle 4 ---
+Refresh: A=completed, B=completed
+All-terminal: YES -- break
+
+EXIT: All 2 tasks completed. Cycles used: 3/10.
+```
