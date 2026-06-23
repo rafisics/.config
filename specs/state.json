@@ -34,13 +34,13 @@
     {
       "project_number": 758,
       "project_name": "unified_literature_system",
-      "status": "planned",
+      "status": "researched",
       "task_type": "meta",
       "description": "Refactor literature/zotero into unified literature system: (1) Global Literature/ repo as single source of truth for segmented+indexed markdown, tracked by git; (2) Per-repo sub-index (specs/literature-index.json) declaring relevant sources; (3) Replace --lit/--zot context injection with a literature-agent that receives the sub-index and autonomously explores the global Literature/ corpus; (4) Consolidate literature+zotero extensions into one extension; (5) Design the literature-agent tool interface (search, read chunks, cross-reference)",
       "topic": "literature",
       "created": "2026-06-23T20:11:39Z",
-      "last_updated": "2026-06-23T20:24:07Z",
-      "session_id": "sess_1750716000_plan758",
+      "last_updated": "2026-06-23T20:40:40Z",
+      "session_id": "sess_1750720000_research758",
       "artifacts": [
         {
           "path": "specs/758_unified_literature_system/plans/05_unified-literature-plan.md",
@@ -71,9 +71,15 @@
           "path": "specs/758_unified_literature_system/reports/05_research-synthesis.md",
           "type": "report",
           "summary": "Synthesis of all four research dimensions with resolved conflicts and architectural decisions"
+        },
+        {
+          "path": "specs/758_unified_literature_system/reports/06_team-research.md",
+          "type": "research",
+          "summary": "Team research (4 teammates): --lit wiring, source discovery pipeline, critical gaps, strategic horizons"
         }
       ],
-      "next_artifact_number": 6
+      "next_artifact_number": 7,
+      "researched": "2026-06-23T20:40:40Z"
     },
     {
       "project_number": 756,
