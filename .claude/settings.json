@@ -24,7 +24,8 @@
       "TaskCreate",
       "TaskUpdate",
       "Skill",
-      "mcp__lean-lsp__*"
+      "mcp__lean-lsp__*",
+      "Bash(bash .claude/scripts/literature-search.sh *)"
     ],
     "deny": [
       "Bash(rm -rf /)",
@@ -148,6 +149,7 @@
     ]
   },
   "env": {
-    "SLASH_COMMAND_TOOL_CHAR_BUDGET": "50000"
+    "SLASH_COMMAND_TOOL_CHAR_BUDGET": "50000",
+    "LITERATURE_DIR": "/home/benjamin/Projects/Literature"
   }
 }

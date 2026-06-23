@@ -1,7 +1,7 @@
 # Implementation Plan: Unified Literature System
 
 - **Task**: 758 - Unified Literature System
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 10 hours
 - **Dependencies**: None
 - **Research Inputs**: reports/01_infrastructure-audit.md, reports/02_agent-design-patterns.md, reports/03_storage-architecture.md, reports/04_extension-consolidation.md, reports/05_research-synthesis.md, reports/06_team-research.md, reports/07_literature-workflow-design.md
@@ -96,7 +96,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Prerequisites -- Bash Permission and Environment [NOT STARTED]
+### Phase 1: Prerequisites -- Bash Permission and Environment [COMPLETED]
 
 **Goal**: Establish the critical prerequisites that all subsequent phases depend on: Bash permission for `literature-search.sh` and explicit `LITERATURE_DIR` in settings.
 
@@ -121,7 +121,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Extension Consolidation -- File Migration [NOT STARTED]
+### Phase 2: Extension Consolidation -- File Migration [IN PROGRESS]
 
 **Goal**: Merge zotero extension artifacts into the literature extension and remove the zotero extension directory.
 
