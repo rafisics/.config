@@ -1,7 +1,7 @@
 {
   "name": "literature",
-  "version": "1.0.0",
-  "description": "Manage specs/literature/ — scan, convert PDFs/DJVUs, maintain index.json, and search/import from Zotero",
+  "version": "2.0.0",
+  "description": "Unified literature management: scan, convert PDFs/DJVUs, maintain index.json, search/import from Zotero, and manage per-repo sub-index. Replaces separate zotero extension.",
   "dependencies": [
     "core",
     "filetypes"
@@ -21,7 +21,16 @@
     ],
     "scripts": [
       "scripts/zotero-search.sh",
-      "scripts/cite-extract.sh"
+      "scripts/cite-extract.sh",
+      "scripts/zotero-read.sh",
+      "scripts/zotero-write.sh",
+      "scripts/zotero-setup.sh",
+      "scripts/zotero-chunk.sh",
+      "scripts/zotero-attach-chunks.sh",
+      "scripts/zotero-index-add.sh",
+      "scripts/zotero-index-remove.sh",
+      "scripts/zotero-retrieve.sh",
+      "scripts/zotero-search-index.sh"
     ]
   },
   "merge_targets": {
@@ -29,7 +38,17 @@
       "source": "EXTENSION.md",
       "target": ".claude/CLAUDE.md",
       "section_id": "extension_literature"
+    },
+    "index": {
+      "source": "index-entries.json",
+      "target": ".claude/context/index.json"
     }
+  },
+  "keyword_overrides": {
+    "literature": "meta",
+    "zotero": "meta",
+    "bibliography": "meta",
+    "citation": "meta"
   },
   "hooks": {}
 }

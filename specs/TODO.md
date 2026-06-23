@@ -17,7 +17,7 @@ next_project_number: 760
 
 ### Literature
 
-758 [PLANNED] — Refactor literature/zotero into unified literature system: (1) Gl
+758 [IMPLEMENTING] — Refactor literature/zotero into unified literature system: (1) Gl
 
 ### Terminal UI
 
@@ -42,7 +42,7 @@ next_project_number: 760
 ---
 
 ### 758. Unified literature system
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: meta
 - **Topic**: literature
 - **Dependencies**: None

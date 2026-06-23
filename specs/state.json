@@ -34,13 +34,13 @@
     {
       "project_number": 758,
       "project_name": "unified_literature_system",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "meta",
       "description": "Refactor literature/zotero into unified literature system: (1) Global Literature/ repo as single source of truth for segmented+indexed markdown, tracked by git; (2) Per-repo sub-index (specs/literature-index.json) declaring relevant sources; (3) Replace --lit/--zot context injection with a literature-agent that receives the sub-index and autonomously explores the global Literature/ corpus; (4) Consolidate literature+zotero extensions into one extension; (5) Design the literature-agent tool interface (search, read chunks, cross-reference)",
       "topic": "literature",
       "created": "2026-06-23T20:11:39Z",
-      "last_updated": "2026-06-23T21:00:00Z",
-      "session_id": "sess_1782248071_5ae11b",
+      "last_updated": "2026-06-23T21:02:36Z",
+      "session_id": "sess_1782248533_4c4a34",
       "artifacts": [
         {
           "path": "specs/758_unified_literature_system/reports/01_infrastructure-audit.md",

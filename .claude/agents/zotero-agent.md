@@ -1,1 +1,0 @@
-../extensions/zotero/agents/zotero-agent.md

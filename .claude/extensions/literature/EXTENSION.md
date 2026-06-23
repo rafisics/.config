@@ -112,3 +112,42 @@ Citations Found: {total} total
 ```
 
 **Dependencies**: `cite-extract.sh` (pattern extraction), `zotero-search.sh` (Zotero search, optional), `specs/literature/index.json` (Literature/ index, optional). Both external sources degrade gracefully — if Zotero is unavailable, index-only matching is used; if the index is missing, Zotero-only matching is used.
+
+### Zotero Integration (Unified)
+
+Full Zotero library management is now part of this extension (previously a separate extension).
+Uses the `zot` CLI tool (zotero-cli-cc v0.7.0) with a two-tier data model.
+
+| Tier | Location | Purpose |
+|------|----------|---------|
+| **Tier 1 (Global)** | `~/Documents/Zotero/zotero.sqlite` | Full library: all items, metadata, PDFs |
+| **Tier 2 (Per-repo)** | `specs/zotero-index.json` | Relevance filter: curated items for this project |
+
+#### Available Scripts
+
+| Script | Purpose |
+|--------|---------|
+| `zotero-read.sh` | Read item metadata and PDFs from Zotero via `zot` CLI |
+| `zotero-write.sh` | Write/attach files to Zotero items |
+| `zotero-setup.sh` | Setup wizard: detect data dir, validate, configure |
+| `zotero-chunk.sh` | Extract PDF text and chunk into sections |
+| `zotero-attach-chunks.sh` | Upload chunks as Zotero child attachments |
+| `zotero-index-add.sh` | Add item to per-repo `specs/zotero-index.json` |
+| `zotero-index-remove.sh` | Remove item from per-repo index |
+| `zotero-retrieve.sh` | Score and retrieve relevant items for context injection |
+| `zotero-search-index.sh` | Search per-repo index with Zotero library fallback |
+| `zotero-search.sh` | Search Zotero CSL-JSON export by keyword |
+| `cite-extract.sh` | Extract citation patterns from markdown artifacts |
+
+#### Retrieval Scoring
+
+Multi-field weighted formula with threshold >= 4:
+- Title match: weight 4 (highest signal)
+- User tags: weight 3 (expert classification)
+- Abstract: weight 2
+- Keywords: weight 2
+- Collections: weight 1
+- Notes: weight 1
+
+**Graceful degradation**: When `zot` is not installed, `ZOT_DATA_DIR` is unset, or
+`specs/zotero-index.json` is missing, the scripts exit cleanly without error.

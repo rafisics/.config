@@ -1,0 +1,32 @@
+{
+  "entries": [
+    {
+      "path": "project/literature/domain/literature-index.md",
+      "domain": "project",
+      "subdomain": "literature",
+      "topics": ["literature", "index", "schema", "per-repo", "global"],
+      "keywords": ["literature", "index", "schema", "doc_id", "sub-index", "briefing"],
+      "summary": "Unified index schema: global Literature/ repo structure, per-repo sub-index (specs/literature-index.json), and runtime resolution",
+      "line_count": 80,
+      "load_when": {
+        "agents": ["literature-agent"],
+        "skills": ["skill-literature"],
+        "commands": ["/literature"]
+      }
+    },
+    {
+      "path": "project/literature/patterns/agent-exploration.md",
+      "domain": "project",
+      "subdomain": "literature",
+      "topics": ["literature", "briefing", "tools", "agent", "exploration"],
+      "keywords": ["briefing", "literature-search", "read", "chunk", "agent-exploration"],
+      "summary": "Briefing+tools pattern: how agents interact with literature using Read and literature-search.sh on demand",
+      "line_count": 60,
+      "load_when": {
+        "agents": ["literature-agent", "general-research-agent", "general-implementation-agent", "planner-agent"],
+        "skills": ["skill-literature", "skill-researcher", "skill-implementer", "skill-planner"],
+        "commands": ["/literature", "/research", "/plan", "/implement"]
+      }
+    }
+  ]
+}

@@ -9,9 +9,53 @@ allowed-tools: Bash, Read, Write, Edit, AskUserQuestion
 
 ## Overview
 
-This agent documents the `/literature` command's direct-execution architecture. The agent file exists for documentation purposes and system discoverability. During normal `/literature` command execution, `skill-literature` runs inline (direct execution) without spawning this agent as a subagent.
+This agent documents the `/literature` command's direct-execution architecture and the
+briefing+tools pattern used by all agents when interacting with the global Literature/
+corpus.
 
-**Architecture**: Direct-execution pattern (like `/distill`, `/fix-it`, `/refresh`). The skill manages all PDF/DJVU-to-markdown conversion, index.json maintenance, filesystem validation, and Zotero search/import inline using `AskUserQuestion` for interactivity.
+**Architecture**: Direct-execution pattern (like `/distill`, `/fix-it`, `/refresh`). The skill
+manages all PDF/DJVU-to-markdown conversion, index.json maintenance, filesystem validation,
+and Zotero search/import inline using `AskUserQuestion` for interactivity.
+
+**Note**: This file is NOT a spawnable agent definition — it is an architectural description
+of how agents interact with literature resources. The `/literature` command runs `skill-literature`
+directly without spawning a subagent.
+
+## Briefing+Tools Pattern
+
+### Why Briefing+Tools (Not Content Injection)
+
+Prior to this architecture, the `--lit` flag blindly injected all literature files (up to 4,000
+tokens) into agent prompts. The briefing+tools pattern replaces this with:
+
+1. A compact ~300-token **briefing** listing available documents with metadata
+2. Agents use `Read` and `literature-search.sh` **on demand** to access only what they need
+
+**Advantages**:
+- Briefing is always cheaper than injection (~300 tokens vs 4,000-8,000)
+- Agents read selectively (only what matters for the task)
+- Agents can search the full corpus FTS5 index without pre-loading everything
+- No new agent type required — agents already have `Read` and `Bash` tools
+
+**Token economics**:
+- Briefing: ~300 tokens (fixed, always present)
+- Single search: ~3K tokens returned
+- Typical task: 1-2 searches + 2-3 chunk reads = ~12K tokens total (vs ~6K blind injection)
+- Selectivity win: agents read relevant content; blind injection includes everything
+
+### How Agents Interact with Literature
+
+When `<literature-briefing>` is present in the agent prompt:
+
+```
+1. Read the briefing to understand what's available
+2. Search for relevant chunks: bash .claude/scripts/literature-search.sh "query"
+3. Read specific chunks: Read /home/benjamin/Projects/Literature/sources/doc_id/section.md
+4. Continue with task using retrieved context
+```
+
+See `.claude/extensions/literature/context/project/literature/patterns/agent-exploration.md`
+for detailed usage patterns.
 
 ## Execution Pattern
 
@@ -112,16 +156,41 @@ The search mode requires a Zotero Better BibTeX CSL-JSON export:
 | Edit | Update existing index.json entries |
 | AskUserQuestion | Present chunk boundaries, keywords, summary, search results, import confirmation |
 
+## Zotero Integration (Unified)
+
+The literature extension includes full Zotero library integration (previously a separate
+extension). Scripts available in `.claude/extensions/literature/scripts/`:
+
+| Script | Purpose |
+|--------|---------|
+| `zotero-search.sh` | Search CSL-JSON Zotero export by keyword |
+| `zotero-read.sh` | Read item metadata and PDFs from Zotero via `zot` CLI |
+| `zotero-write.sh` | Write/attach files to Zotero items |
+| `zotero-setup.sh` | Setup wizard: detect data dir, validate, configure |
+| `zotero-chunk.sh` | Extract PDF text and chunk into sections |
+| `zotero-attach-chunks.sh` | Upload chunks as Zotero child attachments |
+| `zotero-index-add.sh` | Add item to per-repo `specs/zotero-index.json` |
+| `zotero-index-remove.sh` | Remove item from per-repo index |
+| `zotero-retrieve.sh` | Score and retrieve relevant items for context injection |
+| `zotero-search-index.sh` | Search per-repo index with Zotero library fallback |
+
 ## Related Files
 
 - `.claude/commands/literature.md` - Command entry point (argument parsing)
 - `.claude/skills/skill-literature/SKILL.md` - All implementation logic
-- `.claude/extensions/literature/scripts/zotero-search.sh` - Zotero CSL-JSON search script
-- `specs/literature/index.json` - Literature index (root level)
-- `specs/literature/*/index.json` - Subdirectory indexes (chunked documents)
+- `.claude/extensions/literature/scripts/` - All literature and zotero scripts
+- `.claude/scripts/literature-search.sh` - Global FTS5 search script
+- `$LITERATURE_DIR/index.json` - Global literature index (v2 schema)
+- `specs/literature-index.json` - Per-repo sub-index (reference-only)
+- `specs/literature/index.json` - Legacy per-project index (flat layout)
 - `$LITERATURE_DIR/pdfs/` - Symlinked PDFs from Zotero (created by import pipeline)
 
-## Index Schema
+## Index Schema Reference
+
+See `.claude/extensions/literature/context/project/literature/domain/literature-index.md`
+for the complete global index schema (v2) and per-repo sub-index schema.
+
+## Index Schema (Legacy Per-Project)
 
 Root `specs/literature/index.json` uses an enriched entry schema with the following fields:
 
