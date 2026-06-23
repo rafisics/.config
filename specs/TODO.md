@@ -11,13 +11,9 @@ next_project_number: 760
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,758 | -- | literature, Terminal UI, Email Integration |
+| 1 | 78,87 | -- | Terminal UI, Email Integration |
 
 **Grouped by Topic** (indented = depends on parent):
-
-### Literature
-
-758 [IMPLEMENTING] — Refactor literature/zotero into unified literature system: (1) Gl
 
 ### Terminal UI
 
@@ -42,7 +38,7 @@ next_project_number: 760
 ---
 
 ### 758. Unified literature system
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: literature
 - **Dependencies**: None
