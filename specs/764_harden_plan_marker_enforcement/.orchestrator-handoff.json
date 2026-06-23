@@ -1,0 +1,23 @@
+{
+  "$schema": "orchestrator-handoff-v1",
+  "phase": "implement",
+  "status": "implemented",
+  "summary": "Implemented all 4 phases of task 764. Added Stage 5a (mandatory plan marker verification) to general-implementation-agent.md and general-implementation-hard-agent.md. Extended validate-artifact.sh with --verify-completion flag. Added plan_markers_verified field to handoff-schema.md. All phase headings in the plan file verified [COMPLETED].",
+  "artifacts": [
+    {"type": "summary", "path": "specs/764_harden_plan_marker_enforcement/summaries/01_plan-marker-summary.md"}
+  ],
+  "blockers": [],
+  "next_action_hint": "none",
+  "files_modified": [
+    ".claude/agents/general-implementation-agent.md",
+    ".claude/agents/general-implementation-hard-agent.md",
+    ".claude/scripts/validate-artifact.sh",
+    ".claude/docs/architecture/handoff-schema.md"
+  ],
+  "decisions_made": [
+    "Stage 4A/4D now call update-phase-status.sh with Edit tool fallback for robustness",
+    "Stage 5a does not block Stage 6 on repair failure -- logs diagnostic and continues"
+  ],
+  "dead_ends": [],
+  "plan_markers_verified": true
+}

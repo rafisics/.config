@@ -119,7 +119,14 @@ For each phase starting from resume point (or the specific `phase_number`):
 **Pre-execution preamble** (execute this BEFORE first tool call):
 State the settled design for this phase (see Settled-Design Preamble Protocol above).
 
-**A. Mark Phase In Progress** (edit plan file heading to [IN PROGRESS])
+**A. Mark Phase In Progress**
+Call `update-phase-status.sh` to mark the phase active (same contract as base agent):
+
+```bash
+bash /home/benjamin/.config/nvim/.claude/scripts/update-phase-status.sh "$task_number" "$project_name" "$phase_num" IN_PROGRESS
+```
+
+**Fallback**: If the script is unavailable, use Edit tool to change `[NOT STARTED]` to `[IN PROGRESS]` in the phase heading.
 
 **B. Execute Steps** following the same pattern as base agent, plus:
 - After every 8 tool calls: check anti-analysis contract compliance (is there an output yet?)
@@ -128,14 +135,22 @@ State the settled design for this phase (see Settled-Design Preamble Protocol ab
 
 **C. Verify Phase Completion** - Run phase verification criteria
 
-**D. Mark Phase Complete** ([IN PROGRESS] -> [COMPLETED])
+**D. Mark Phase Complete**
+Call `update-phase-status.sh` to mark the phase finished:
+
+```bash
+bash /home/benjamin/.config/nvim/.claude/scripts/update-phase-status.sh "$task_number" "$project_name" "$phase_num" COMPLETED
+```
+
+**Fallback**: If the script is unavailable, use Edit tool to change `[IN PROGRESS]` to `[COMPLETED]` in the phase heading.
 
 **D-ii. Post-Phase Self-Review**: Check for unchecked items, document deviations.
 
 **D-iii. Progressive Handoff Update**: Write phase-end handoff artifact.
 
 **Single-phase stop**: When `phase_number` is set and the target phase is complete,
-STOP and proceed to Stage 5 (wrap-up). Do not continue to the next phase.
+STOP and proceed to Stage 5a (marker verification), then Stage 5 (wrap-up). Do not continue
+to the next phase.
 
 ### Stage 4.5: Context Exhaustion Monitoring
 
@@ -148,6 +163,29 @@ Same as base agent. Additionally: if any of the following are true, write handof
 
 Same as base agent, plus: ensure `.orchestrator-handoff.json` is written with `status: "partial"`,
 `blockers` including the interrupted phase with verbatim goal text, and `continuation_path`.
+
+### Stage 5a: Verify and Repair Plan Markers (HARD CONTRACT)
+
+**MANDATORY**: Same as base agent Stage 5a. After all assigned phases complete, perform a fresh
+read of the plan file to confirm every completed phase heading carries `[COMPLETED]`.
+
+```bash
+# Count stale phase headings (NOT STARTED, IN PROGRESS, PARTIAL)
+stale_total=$(grep -cE '^### Phase [0-9]+.*\[(NOT STARTED|IN PROGRESS|PARTIAL)\]' "$plan_file" 2>/dev/null || echo 0)
+
+# Repair each stale heading via update-phase-status.sh
+if [ "$stale_total" -gt 0 ]; then
+  grep -nE '^### Phase [0-9]+.*\[(NOT STARTED|IN PROGRESS|PARTIAL)\]' "$plan_file" | while IFS=: read -r linenum content; do
+    phase_num=$(echo "$content" | grep -oE "Phase [0-9]+" | grep -oE "[0-9]+")
+    bash /home/benjamin/.config/nvim/.claude/scripts/update-phase-status.sh "$task_number" "$project_name" "$phase_num" COMPLETED
+  done
+fi
+```
+
+When `phase_number` is set (single-phase dispatch): only verify the assigned phase heading,
+not all phases in the plan (other phases may legitimately not be `[COMPLETED]` yet).
+
+Set `plan_markers_verified: true` in `.orchestrator-handoff.json` when Stage 5a passes.
 
 ### Stage 5: Wrap-Up Contract (H9)
 
