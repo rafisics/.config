@@ -11,14 +11,12 @@ next_project_number: 767
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,764,765,766 | -- | agent-system, Terminal UI, Email Integration |
+| 1 | 78,87,766 | -- | agent-system, Terminal UI, Email Integration |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Agent System
 
-764 [NOT STARTED] — The general-implementation-agent has plan marker update instructi
-765 [NOT STARTED] — The skill-orchestrate MT mode (Stages MT-3 through MT-4) dispatch
 766 [NOT STARTED] — The dispatch-agent.sh script generates JSON dispatch instructions
 
 ### Terminal UI
@@ -42,20 +40,26 @@ next_project_number: 767
 ---
 
 ### 765. Fix multi-task orchestration wave cycling and agent tracking
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
+- **Research**: [765_fix_mt_orchestration_wave_cycling/reports/01_mt-wave-cycling-research.md]
+- **Plan**: [765_fix_mt_orchestration_wave_cycling/plans/01_mt-wave-cycling-plan.md]
+- **Summary**: [765_fix_mt_orchestration_wave_cycling/summaries/01_mt-wave-cycling-summary.md]
 
 **Description**: The skill-orchestrate MT mode (Stages MT-3 through MT-4) dispatches one phase per wave iteration but does not cycle back to dispatch the next phase. When all tasks start as [not_started], Wave 0 dispatches research for all, but after research completes the wave loop exits without dispatching planning or implementation. The orchestrator also loses track of parallel Agent completions — the user had to manually prompt that planner agents had finished after 8+ minutes of churning. Fix the wave loop to cycle through all lifecycle phases (research -> plan -> implement) until all tasks reach terminal state, and ensure parallel Agent calls are properly awaited and their completions processed.
 
 ---
 
 ### 764. Harden implementation agent plan marker enforcement
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
+- **Research**: [764_harden_plan_marker_enforcement/reports/01_plan-marker-research.md]
+- **Plan**: [764_harden_plan_marker_enforcement/plans/01_plan-marker-plan.md]
+- **Summary**: [764_harden_plan_marker_enforcement/summaries/01_plan-marker-summary.md]
 
 **Description**: The general-implementation-agent has plan marker update instructions (Stage 4A marks [IN PROGRESS], Stage 4D marks [COMPLETED]) but implementation agents dispatched via /orchestrate multi-task mode do not reliably follow them. The top-level **Status** and phase headings remain [NOT STARTED] after implementation completes. Add a mandatory post-implementation verification step that checks all completed phases have [COMPLETED] markers in the plan file, and that the top-level Status reflects overall completion. Make this a hard contract rather than a soft instruction.
 

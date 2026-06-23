@@ -1,7 +1,7 @@
 # Implementation Plan: Task #765
 
 - **Task**: 765 - Fix multi-task orchestration wave cycling and agent tracking
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/765_fix_mt_orchestration_wave_cycling/reports/01_mt-wave-cycling-research.md

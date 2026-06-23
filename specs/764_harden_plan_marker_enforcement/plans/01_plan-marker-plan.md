@@ -1,7 +1,7 @@
 # Implementation Plan: Task #764
 
 - **Task**: 764 - Harden implementation agent plan marker enforcement
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/764_harden_plan_marker_enforcement/reports/01_plan-marker-research.md

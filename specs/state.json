@@ -112,28 +112,64 @@
     {
       "project_number": 764,
       "project_name": "harden_plan_marker_enforcement",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "meta",
       "title": "Harden implementation agent plan marker enforcement",
       "description": "The general-implementation-agent has plan marker update instructions (Stage 4A marks [IN PROGRESS], Stage 4D marks [COMPLETED]) but implementation agents dispatched via /orchestrate multi-task mode do not reliably follow them. The top-level **Status** and phase headings remain [NOT STARTED] after implementation completes. Add a mandatory post-implementation verification step that checks all completed phases have [COMPLETED] markers in the plan file, and that the top-level Status reflects overall completion. Make this a hard contract rather than a soft instruction.",
       "topic": "agent-system",
       "dependencies": [],
-      "artifacts": [],
+      "artifacts": [
+        {
+          "type": "report",
+          "path": "specs/764_harden_plan_marker_enforcement/reports/01_plan-marker-research.md",
+          "summary": "Root cause analysis: soft instructions not hard contracts, no verification step, top-level Status is skill-layer responsibility"
+        },
+        {
+          "type": "plan",
+          "path": "specs/764_harden_plan_marker_enforcement/plans/01_plan-marker-plan.md",
+          "summary": "4-phase plan: agent spec hardening, validate-artifact extension, handoff schema, integration verification"
+        },
+        {
+          "type": "summary",
+          "path": "specs/764_harden_plan_marker_enforcement/summaries/01_plan-marker-summary.md",
+          "summary": "Implementation complete: Stage 5a hard contract, validate-artifact --verify-completion, handoff schema update"
+        }
+      ],
       "created": "2026-06-23T23:45:00Z",
-      "last_updated": "2026-06-23T23:45:00Z"
+      "last_updated": "2026-06-23T23:57:43Z",
+      "session_id": "sess_1782258135_3f7634",
+      "completion_summary": "Added mandatory Stage 5a (Verify and Repair Plan Markers) as a hard contract to general-implementation-agent. Extended validate-artifact.sh with --verify-completion flag. Added plan_markers_verified to handoff schema. Synced hard-mode agent."
     },
     {
       "project_number": 765,
       "project_name": "fix_mt_orchestration_wave_cycling",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "meta",
       "title": "Fix multi-task orchestration wave cycling and agent tracking",
       "description": "The skill-orchestrate MT mode (Stages MT-3 through MT-4) dispatches one phase per wave iteration but does not cycle back to dispatch the next phase. When all tasks start as [not_started], Wave 0 dispatches research for all, but after research completes the wave loop exits without dispatching planning or implementation. The orchestrator also loses track of parallel Agent completions — the user had to manually prompt that planner agents had finished after 8+ minutes of churning. Fix the wave loop to cycle through all lifecycle phases (research -> plan -> implement) until all tasks reach terminal state, and ensure parallel Agent calls are properly awaited and their completions processed.",
       "topic": "agent-system",
       "dependencies": [],
-      "artifacts": [],
+      "artifacts": [
+        {
+          "type": "report",
+          "path": "specs/765_fix_mt_orchestration_wave_cycling/reports/01_mt-wave-cycling-research.md",
+          "summary": "Root cause: wave loop is one-pass iterator not lifecycle driver, no cycling mechanism for phase transitions"
+        },
+        {
+          "type": "plan",
+          "path": "specs/765_fix_mt_orchestration_wave_cycling/plans/01_mt-wave-cycling-plan.md",
+          "summary": "4-phase plan: replace one-pass wave loop with lifecycle cycling while loop, fix parallel dispatch, fix jq bug, add docs"
+        },
+        {
+          "type": "summary",
+          "path": "specs/765_fix_mt_orchestration_wave_cycling/summaries/01_mt-wave-cycling-summary.md",
+          "summary": "Implementation complete: lifecycle cycling while loop, parallel dispatch batching, jq status bug fix, architecture docs"
+        }
+      ],
       "created": "2026-06-23T23:45:00Z",
-      "last_updated": "2026-06-23T23:45:00Z"
+      "last_updated": "2026-06-23T23:57:43Z",
+      "session_id": "sess_1782258135_3f7634",
+      "completion_summary": "Replaced one-pass for wave_idx loop with lifecycle-cycling while loop. Fixed jq bug writing task number as status. Added parallel dispatch batching rules. Documented MT mode in architecture docs."
     },
     {
       "project_number": 766,

@@ -154,6 +154,12 @@ section_b() {
   log_info "Section B: CSLib skill Stage 4a wiring"
   echo "----------------------------------------"
 
+  # Check if cslib extension is loaded; if not, skip with info
+  if [[ ! -d "$PROJECT_ROOT/.claude/skills/skill-cslib-research" ]]; then
+    log_info "CSLib extension not loaded in this project — skipping Section B"
+    return
+  fi
+
   local skills=(
     "skill-cslib-research"
     "skill-cslib-implementation"
@@ -199,6 +205,12 @@ section_c() {
   echo ""
   log_info "Section C: CSLib agent acknowledgment sections"
   echo "----------------------------------------"
+
+  # Check if cslib extension is loaded; if not, skip with info
+  if [[ ! -f "$PROJECT_ROOT/.claude/agents/cslib-research-agent.md" ]]; then
+    log_info "CSLib extension not loaded in this project — skipping Section C"
+    return
+  fi
 
   local agents=(
     "cslib-research-agent"
