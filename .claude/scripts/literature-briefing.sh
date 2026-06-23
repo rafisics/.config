@@ -14,6 +14,13 @@
 # Exit 0 (briefing on stdout) when entries are found and resolved.
 # Warnings about missing doc_ids go to stderr; they do not stop execution.
 #
+# NOTE: Interactive detection of a missing specs/literature-index.json (and the
+# AskUserQuestion prompt offering setup options) is handled UPSTREAM in the Stage 4a
+# block of each skill SKILL.md that supports --lit. This script retains its existing
+# silent-exit behavior when the sub-index is missing; the upstream skills are
+# responsible for offering the interactive setup flow before calling this script.
+# See .claude/skills/skill-researcher/SKILL.md Stage 4a for the detection block.
+#
 # Environment:
 #   LITERATURE_DIR  Path to global Literature/ repo (default: ~/Projects/Literature)
 

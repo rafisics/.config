@@ -45,6 +45,7 @@ or when the orchestrator is using per-phase dispatch mode (H1).
 - `@.claude/context/patterns/context-exhaustion-detection.md` - Context pressure monitoring
 - `@.claude/context/patterns/subagent-continuation-loop.md` - When continuing from handoffs
 - `@.claude/extensions/cslib/context/project/cslib/standards/ci-pipeline.md` - CSLib CI steps
+- `<literature-briefing>` block - Pre-loaded literature from `specs/literature/` (injected by skill when `--lit` flag is used)
 
 ## Anti-Analysis Contract (Mandatory)
 

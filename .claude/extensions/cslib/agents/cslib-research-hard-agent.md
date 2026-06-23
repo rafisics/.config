@@ -42,6 +42,7 @@ abstraction before recommending new definitions.
 - `@.claude/context/repo/project-overview.md` - Project structure (for codebase research)
 - `@.claude/context/patterns/context-discovery.md` - Use with agent=`cslib-research-hard-agent`
 - `@.claude/extensions/cslib/context/project/cslib/standards/citation-conventions.md` - BibKey format (H3 enrichment)
+- `<literature-briefing>` block - Pre-loaded literature from `specs/literature/` (injected by skill when `--lit` flag is used; when present, auto-confirms Tier 1 reference grounding selection)
 
 ## Anti-Analysis Contract Enforcement
 

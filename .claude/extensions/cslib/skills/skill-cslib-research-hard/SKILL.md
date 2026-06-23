@@ -124,6 +124,21 @@ if [ "$clean_flag" != "true" ]; then
 fi
 ```
 
+```bash
+# Literature briefing injection (independent of clean_flag)
+lit_context=""
+if [ "$lit_flag" = "true" ]; then
+  lit_context=$(bash .claude/scripts/literature-briefing.sh 2>/dev/null) || lit_context=""
+fi
+
+# lit_context will be empty string if:
+# - lit_flag is not "true" (skipped)
+# - specs/literature/ sub-index is empty or missing
+# - script exited with error
+```
+
+**Note**: `lit_flag` is independent of `clean_flag`. Using `--clean --lit` suppresses memory retrieval but still injects literature briefing. Literature briefing is gated solely on `lit_flag == "true"`.
+
 ---
 
 ### Stage 4: Prepare Delegation Context
@@ -165,11 +180,15 @@ format_content=$(cat .claude/context/formats/report-format.md)
 Tool: Agent
 Parameters:
   - subagent_type: "cslib-research-hard-agent"
-  - prompt: [task_context, delegation_context, format specification, memory_context, focus]
+  - prompt: [task_context, delegation_context, format specification, memory_context, lit_context, focus]
   - description: "Execute hard-mode CSLib research for task {N}"
 ```
 
-Include format specification and memory context in prompt.
+Include format specification, memory context, and literature briefing in prompt.
+
+- If `memory_context` is non-empty, include it as a `<memory-context>` block after the format specification.
+- If `lit_context` is non-empty, include it as a `<literature-briefing>` block after the memory context.
+- Do NOT inject empty blocks when content is empty.
 
 ---
 

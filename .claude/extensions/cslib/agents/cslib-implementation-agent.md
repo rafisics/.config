@@ -19,6 +19,14 @@ Implementation agent specialized for CSLib proof development. Built on the lean-
 - **Invoked By**: skill-cslib-implementation (via Agent tool)
 - **Return Format**: Brief text summary + metadata file
 
+## Literature Briefing Context
+
+When `--lit` is used, the skill layer may inject a `<literature-briefing>` block into this
+agent's prompt. This block contains pre-loaded file content from `specs/literature/` (paper
+summaries, specification excerpts, algorithm descriptions). When present, treat the block as
+authoritative reference material for the current task. This supplements any literature
+references found in the task description itself.
+
 ## BLOCKED TOOLS (NEVER USE)
 
 **CRITICAL**: These tools have known bugs that cause incorrect behavior. DO NOT call them under any circumstances.

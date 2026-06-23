@@ -47,8 +47,46 @@ Domain-specific context for the cslib-research-agent:
 }
 ```
 
+### Stage 4a: Memory and Literature Retrieval (Auto)
+
+Retrieve relevant memories and literature briefing to inject into the delegation context.
+
+**Skip memory if**: `clean_flag` is true (from `--clean` command flag).
+
+```bash
+# Check clean_flag
+if [ "$clean_flag" != "true" ]; then
+  memory_context=$(bash .claude/scripts/memory-retrieve.sh "$description" "$task_type" "$focus_prompt" 2>/dev/null) || memory_context=""
+fi
+
+# memory_context will be empty string if:
+# - clean_flag is true (skipped)
+# - memory-index.json missing or empty
+# - no keywords matched any entries
+# - script exited with error
+```
+
+```bash
+# Literature briefing injection (independent of clean_flag)
+lit_context=""
+if [ "$lit_flag" = "true" ]; then
+  lit_context=$(bash .claude/scripts/literature-briefing.sh 2>/dev/null) || lit_context=""
+fi
+
+# lit_context will be empty string if:
+# - lit_flag is not "true" (skipped)
+# - specs/literature/ sub-index is empty or missing
+# - script exited with error
+```
+
+**Note**: `lit_flag` is independent of `clean_flag`. Using `--clean --lit` suppresses memory retrieval but still injects literature briefing. Literature briefing is gated solely on `lit_flag == "true"`.
+
 ### Stage 4: Invoke Subagent
 Use Agent tool with subagent_type: "cslib-research-agent".
+
+Include `memory_context` and `lit_context` in the prompt if non-empty:
+- If `memory_context` is non-empty, include it as a `<memory-context>` block after the delegation context.
+- If `lit_context` is non-empty, include it as a `<literature-briefing>` block after the memory context.
 
 ### Stage 4b: Self-Execution Fallback
 

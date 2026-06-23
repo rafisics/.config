@@ -342,59 +342,9 @@ Never read the full research report, plan, or implementation summary — only th
 
 ```bash
 if [ ! -f "$handoff_file" ]; then
-  echo "[orchestrate] WARNING: No orchestrator handoff found. Falling back to .return-meta.json."
-  meta_file="${TASK_DIR}/.return-meta.json"
-  if [ -f "$meta_file" ] && jq empty "$meta_file" 2>/dev/null; then
-    dispatch_status=$(jq -r '.status' "$meta_file")
-    meta_artifact_path=$(jq -r '.artifacts[0].path // ""' "$meta_file")
-    meta_artifact_type=$(jq -r '.artifacts[0].type // ""' "$meta_file")
-    meta_artifact_summary=$(jq -r '.artifacts[0].summary // ""' "$meta_file")
-    echo "[orchestrate] Fallback dispatch result from .return-meta.json: $dispatch_status"
-
-    # Postflight status update (same logic as else branch)
-    case "$dispatch_status" in
-      researched)
-        skill_postflight_update "$task_number" "research" "$session_id" "$dispatch_status"
-        ;;
-      planned)
-        skill_postflight_update "$task_number" "plan" "$session_id" "$dispatch_status"
-        ;;
-      implemented)
-        skill_postflight_update "$task_number" "implement" "$session_id" "$dispatch_status"
-        ;;
-      *)
-        echo "[orchestrate] Fallback status '$dispatch_status' — no postflight update needed"
-        ;;
-    esac
-
-    # Artifact linking (same logic as else branch)
-    if [ -n "$meta_artifact_path" ] && [ "$meta_artifact_path" != "null" ]; then
-      case "$meta_artifact_type" in
-        report)
-          field_name='**Research**'
-          next_field='**Plan**'
-          ;;
-        plan)
-          field_name='**Plan**'
-          next_field='**Description**'
-          ;;
-        summary)
-          field_name='**Summary**'
-          next_field='**Description**'
-          ;;
-        *)
-          field_name='**Summary**'
-          next_field='**Description**'
-          ;;
-      esac
-      skill_link_artifacts "$task_number" "$meta_artifact_path" "$meta_artifact_type" \
-        "$meta_artifact_summary" "$field_name" "$next_field"
-    fi
-  else
-    echo "[orchestrate] ERROR: Neither handoff nor .return-meta.json found. State.json may be stale."
-    echo "This may mean orchestrator_mode was not propagated correctly."
-    # Increment cycle and continue — no postflight possible without metadata
-  fi
+  echo "[orchestrate] ERROR: Skill did not write orchestrator handoff."
+  echo "This may mean orchestrator_mode was not propagated correctly."
+  # Increment cycle and continue — state.json may still have been updated
 else
   handoff=$(cat "$handoff_file")
   dispatch_status=$(echo "$handoff" | jq -r '.status')
@@ -404,11 +354,8 @@ else
   next_hint=$(echo "$handoff" | jq -r '.next_action_hint // "none"')
   phases_completed=$(echo "$handoff" | jq -r '.phases_completed // 0')
   phases_total=$(echo "$handoff" | jq -r '.phases_total // 0')
-  subtasks_completed=$(echo "$handoff" | jq -c '.subtasks_completed // []')
   echo "[orchestrate] Dispatch result: $dispatch_status — $dispatch_summary"
   [ "$phases_total" -gt 0 ] && echo "[orchestrate] Phase progress: $phases_completed/$phases_total"
-  subtasks_count=$(echo "$subtasks_completed" | jq 'length')
-  [ "$subtasks_count" -gt 0 ] && echo "[orchestrate] Subtasks completed this cycle: $(echo "$subtasks_completed" | jq -r 'join(", ")')"
 
   # Drift detection: arithmetic gate (cheap check before expensive inspection fork)
   if [ "$phases_total" -gt 0 ] && [ "$dispatch_status" = "partial" ]; then
@@ -462,29 +409,6 @@ else
     esac
     skill_link_artifacts "$task_number" "$handoff_artifact_path" "$handoff_artifact_type" \
       "$handoff_artifact_summary" "$field_name" "$next_field"
-  fi
-
-  # Per-implementation-cycle commit: bundle all artifacts from this research+plan+implement cycle
-  should_commit=false
-  if [ "$dispatch_status" = "implemented" ]; then
-    should_commit=true
-    commit_msg="task ${task_number}: complete implementation
-
-Session: ${session_id}"
-  elif [ "$dispatch_status" = "partial" ] && [ "$phases_completed" -gt 0 ]; then
-    should_commit=true
-    commit_msg="task ${task_number}: implementation progress (${phases_completed}/${phases_total} phases)
-
-Session: ${session_id}"
-  fi
-
-  if [ "$should_commit" = "true" ]; then
-    if ! git diff --quiet HEAD 2>/dev/null || git status --porcelain 2>/dev/null | grep -q '^'; then
-      git add -A && git commit -m "$commit_msg" \
-        || echo "[orchestrate] WARNING: Git commit failed (non-blocking)"
-    else
-      echo "[orchestrate] No uncommitted changes -- skipping per-cycle commit"
-    fi
   fi
 fi
 
