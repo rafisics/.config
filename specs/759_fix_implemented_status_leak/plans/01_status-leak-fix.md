@@ -1,7 +1,7 @@
 # Implementation Plan: Fix "implemented" Status Leak
 
 - **Task**: 759 - Fix "implemented" status leak into state.json
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 0.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/759_fix_implemented_status_leak/reports/01_status-leak-fix.md
@@ -57,15 +57,15 @@ No ROADMAP.md found.
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Fix All Status Leak Sites [NOT STARTED]
+### Phase 1: Fix All Status Leak Sites [COMPLETED]
 
 **Goal**: Eliminate all paths where `"implemented"` can leak into state.json or TODO.md as a lifecycle status.
 
 **Tasks**:
-- [ ] **Fix 1a**: Edit `.claude/skills/skill-status-sync/SKILL.md` line 164 -- replace `implemented | [IMPLEMENTED]` with `completed  | [COMPLETED]` in the Status Mapping table
-- [ ] **Fix 1b**: Edit `.claude/extensions/core/skills/skill-status-sync/SKILL.md` line 164 -- same change as 1a (extension mirror)
-- [ ] **Fix 2**: Edit `.claude/scripts/generate-todo.sh` -- add `implemented) printf '%s' "COMPLETED" ;;` case between line 128 (`expanded`) and line 129 (`pr_ready`) in the `format_status` function
-- [ ] **Fix 3a**: Edit `.claude/skills/skill-orchestrate/SKILL.md` lines 698-712 -- replace the single shared metadata write block with two blocks: one for clean exit using `--arg status "completed"` and one for partial exit using `--arg status "partial"`. Restructure as:
+- [x] **Fix 1a**: Edit `.claude/skills/skill-status-sync/SKILL.md` line 164 -- replace `implemented | [IMPLEMENTED]` with `completed  | [COMPLETED]` in the Status Mapping table *(completed)*
+- [x] **Fix 1b**: Edit `.claude/extensions/core/skills/skill-status-sync/SKILL.md` line 164 -- same change as 1a (extension mirror) *(completed)*
+- [x] **Fix 2**: Edit `.claude/scripts/generate-todo.sh` -- add `implemented) printf '%s' "COMPLETED" ;;` case between line 128 (`expanded`) and line 129 (`pr_ready`) in the `format_status` function *(completed)*
+- [x] **Fix 3a**: Edit `.claude/skills/skill-orchestrate/SKILL.md` lines 698-712 -- replace the single shared metadata write block with two blocks: one for clean exit using `--arg status "completed"` and one for partial exit using `--arg status "partial"`. Restructure as: *(completed)*
 
 ```
 Write metadata file.
@@ -105,8 +105,8 @@ jq -n \
 \`\`\`
 ```
 
-- [ ] **Fix 3b**: Edit `.claude/extensions/core/skills/skill-orchestrate/SKILL.md` lines 620-635 -- same restructuring as 3a (extension mirror)
-- [ ] **Fix 4**: Edit `.claude/scripts/command-gate-out.sh` lines 64-65 -- add `[ "$skill_status" = "completed" ]` to the match condition, changing:
+- [x] **Fix 3b**: Edit `.claude/extensions/core/skills/skill-orchestrate/SKILL.md` lines 620-635 -- same restructuring as 3a (extension mirror) *(completed)*
+- [x] **Fix 4**: Edit `.claude/scripts/command-gate-out.sh` lines 64-65 -- add `[ "$skill_status" = "completed" ]` to the match condition, changing: *(completed)*
 
 Old (line 64-65):
 ```bash

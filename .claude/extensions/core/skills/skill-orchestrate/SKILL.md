@@ -617,12 +617,31 @@ echo "[orchestrate] Task $task_number: orchestration paused."
 echo "Status: $current_status | Cycles: $cycle_count/$MAX_CYCLES | Run /orchestrate $task_number to continue."
 ```
 
-Write metadata file:
+Write metadata file.
+
+On clean exit:
 
 ```bash
 mkdir -p "${TASK_DIR}/summaries"
 jq -n \
-  --arg status "implemented" \
+  --arg status "completed" \
+  --argjson cycles "$cycle_count" \
+  --arg final_state "$current_status" \
+  '{
+    "status": $status,
+    "metadata": {
+      "cycles_used": $cycles,
+      "final_state": $final_state
+    }
+  }' > "${TASK_DIR}/.return-meta.json"
+```
+
+On partial exit:
+
+```bash
+mkdir -p "${TASK_DIR}/summaries"
+jq -n \
+  --arg status "partial" \
   --argjson cycles "$cycle_count" \
   --arg final_state "$current_status" \
   '{
@@ -1098,7 +1117,7 @@ if [ "$failed_count" -eq 0 ]; then
   echo "[orchestrate-mt] All $total_count tasks completed. Cycles used: $cycles_used/$MAX_CYCLES_MT"
   # On clean exit: remove multi-state file
   rm -f "$mt_state_file"
-  exit_status="implemented"
+  exit_status="completed"
 else
   echo "[orchestrate-mt] Partial: $completed_count/$total_count completed, $failed_count failed."
   echo "[orchestrate-mt] Multi-state preserved at: $mt_state_file (for diagnostics)"

@@ -62,6 +62,7 @@ case "$operation" in
 esac
 
 if [ -n "$expected_status" ] && { [ "$skill_status" = "implemented" ] || \
+   [ "$skill_status" = "completed" ] || \
    [ "$skill_status" = "researched" ] || [ "$skill_status" = "planned" ]; }; then
 
   # Get current status from state.json using safe jq pattern (no != operator per Issue #1132)
