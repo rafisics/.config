@@ -29,14 +29,15 @@ next_project_number: 760
 
 ### Uncategorized
 
-759 [RESEARCHING] — Agent return value "implemented" leaks into state.json as a raw s
+759 [RESEARCHED] — Agent return value "implemented" leaks into state.json as a raw s
 
 ## Tasks
 
 ### 759. Fix implemented status leaking into state.json instead of completed
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: meta
 - **Dependencies**: None
+- **Research**: [759_fix_implemented_status_leak/reports/01_status-leak-fix.md]
 
 **Description**: Agent return value "implemented" leaks into state.json as a raw status instead of being normalized to "completed". Three fix sites: (1) skill-status-sync/SKILL.md line 164 maps implemented->[IMPLEMENTED] — should normalize to completed/[COMPLETED]; (2) generate-todo.sh has no explicit mapping for "implemented" — wildcard uppercases to IMPLEMENTED; (3) skill-orchestrate/SKILL.md line 703 writes status:"implemented" in partial-exit metadata — should write "completed". Extension mirrors (.claude/extensions/core/) need matching fixes.
 
