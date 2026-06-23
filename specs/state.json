@@ -5,18 +5,23 @@
     {
       "project_number": 759,
       "project_name": "fix_implemented_status_leak",
-      "status": "planning",
+      "status": "planned",
       "task_type": "meta",
       "title": "Fix implemented status leaking into state.json instead of completed",
       "description": "Agent return value \"implemented\" leaks into state.json as a raw status instead of being normalized to \"completed\". Three fix sites: (1) skill-status-sync/SKILL.md line 164 maps implemented->[IMPLEMENTED] — should normalize to completed/[COMPLETED]; (2) generate-todo.sh has no explicit mapping for \"implemented\" — wildcard uppercases to IMPLEMENTED; (3) skill-orchestrate/SKILL.md line 703 writes status:\"implemented\" in partial-exit metadata — should write \"completed\". Extension mirrors (.claude/extensions/core/) need matching fixes.",
       "created": "2026-06-23T20:19:34Z",
-      "last_updated": "2026-06-23T20:25:49Z",
+      "last_updated": "2026-06-23T20:27:42Z",
       "session_id": "sess_1782246127_273e70",
       "artifacts": [
         {
           "path": "specs/759_fix_implemented_status_leak/reports/01_status-leak-fix.md",
           "type": "report",
           "summary": "Root cause analysis: implemented status leaks into state.json via skill-status-sync and skill-orchestrate"
+        },
+        {
+          "path": "specs/759_fix_implemented_status_leak/plans/01_status-leak-fix.md",
+          "type": "plan",
+          "summary": "Single-phase plan: 6 edits across 4 fix sites to normalize implemented->completed"
         }
       ]
     },
