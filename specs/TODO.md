@@ -17,7 +17,7 @@ next_project_number: 759
 
 ### Literature
 
-758 [NOT STARTED] — Refactor literature/zotero into unified literature system: (1) Gl
+758 [RESEARCHED] — Refactor literature/zotero into unified literature system: (1) Gl
 
 ### Terminal UI
 
@@ -30,7 +30,7 @@ next_project_number: 759
 ## Tasks
 
 ### 758. Unified literature system
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: meta
 - **Topic**: literature
 - **Dependencies**: None
