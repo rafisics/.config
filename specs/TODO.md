@@ -1,5 +1,5 @@
 ---
-next_project_number: 759
+next_project_number: 760
 ---
 
 # TODO
@@ -11,13 +11,13 @@ next_project_number: 759
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,758 | -- | literature, Terminal UI, Email Integration |
+| 1 | 78,87,758,759 | -- | literature, Terminal UI, Email Integration |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Literature
 
-758 [RESEARCHED] — Refactor literature/zotero into unified literature system: (1) Gl
+758 [PLANNED] — Refactor literature/zotero into unified literature system: (1) Gl
 
 ### Terminal UI
 
@@ -27,13 +27,27 @@ next_project_number: 759
 
 78 [PLANNED] — Fix Gmail SMTP authentication failure when sending emails via Him
 
+### Uncategorized
+
+759 [RESEARCHING] — Agent return value "implemented" leaks into state.json as a raw s
+
 ## Tasks
 
+### 759. Fix implemented status leaking into state.json instead of completed
+- **Status**: [RESEARCHING]
+- **Task Type**: meta
+- **Dependencies**: None
+
+**Description**: Agent return value "implemented" leaks into state.json as a raw status instead of being normalized to "completed". Three fix sites: (1) skill-status-sync/SKILL.md line 164 maps implemented->[IMPLEMENTED] — should normalize to completed/[COMPLETED]; (2) generate-todo.sh has no explicit mapping for "implemented" — wildcard uppercases to IMPLEMENTED; (3) skill-orchestrate/SKILL.md line 703 writes status:"implemented" in partial-exit metadata — should write "completed". Extension mirrors (.claude/extensions/core/) need matching fixes.
+
+---
+
 ### 758. Unified literature system
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: meta
 - **Topic**: literature
 - **Dependencies**: None
+- **Plan**: [758_unified_literature_system/plans/05_unified-literature-plan.md]
 
 **Description**: Refactor literature/zotero into unified literature system: (1) Global Literature/ repo as single source of truth for segmented+indexed markdown, tracked by git; (2) Per-repo sub-index (specs/literature-index.json) declaring relevant sources; (3) Replace --lit/--zot context injection with a literature-agent that receives the sub-index and autonomously explores the global Literature/ corpus; (4) Consolidate literature+zotero extensions into one extension; (5) Design the literature-agent tool interface (search, read chunks, cross-reference)
 

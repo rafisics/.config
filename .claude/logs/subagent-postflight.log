@@ -28088,3 +28088,40 @@
 [2026-06-22T14:53:24-07:00] No postflight marker, allowing stop
 [2026-06-22T14:53:57-07:00] No postflight marker, allowing stop
 [2026-06-22T14:54:11-07:00] No postflight marker, allowing stop
+[2026-06-22T14:58:23-07:00] No postflight marker, allowing stop
+[2026-06-22T17:01:07-07:00] No postflight marker, allowing stop
+[2026-06-23T13:12:41-07:00] No postflight marker, allowing stop
+[2026-06-23T13:12:50-07:00] No postflight marker, allowing stop
+[2026-06-23T13:13:01-07:00] No postflight marker, allowing stop
+[2026-06-23T13:13:09-07:00] No postflight marker, allowing stop
+[2026-06-23T13:13:15-07:00] No postflight marker, allowing stop
+[2026-06-23T13:13:24-07:00] No postflight marker, allowing stop
+[2026-06-23T13:13:34-07:00] No postflight marker, allowing stop
+[2026-06-23T13:13:43-07:00] No postflight marker, allowing stop
+[2026-06-23T13:13:49-07:00] No postflight marker, allowing stop
+[2026-06-23T13:13:57-07:00] No postflight marker, allowing stop
+[2026-06-23T13:14:08-07:00] No postflight marker, allowing stop
+[2026-06-23T13:14:18-07:00] No postflight marker, allowing stop
+[2026-06-23T13:14:23-07:00] No postflight marker, allowing stop
+[2026-06-23T13:15:15-07:00] No postflight marker, allowing stop
+[2026-06-23T13:15:23-07:00] No postflight marker, allowing stop
+[2026-06-23T13:15:27-07:00] No postflight marker, allowing stop
+[2026-06-23T13:15:38-07:00] No postflight marker, allowing stop
+[2026-06-23T13:16:12-07:00] No postflight marker, allowing stop
+[2026-06-23T13:21:35-07:00] Postflight marker found at: specs/758_unified_literature_system/.postflight-pending
+[2026-06-23T13:21:35-07:00] Task directory: specs/758_unified_literature_system
+[2026-06-23T13:21:35-07:00] Loop guard initialized to 1
+[2026-06-23T13:21:35-07:00] Blocking stop: Postflight pending: status update, artifact linking, git commit
+[2026-06-23T13:23:26-07:00] Postflight marker found at: specs/758_unified_literature_system/.postflight-pending
+[2026-06-23T13:23:26-07:00] Task directory: specs/758_unified_literature_system
+[2026-06-23T13:23:26-07:00] Loop guard incremented to 2
+[2026-06-23T13:23:26-07:00] Blocking stop: Postflight pending: status update, artifact linking, git commit
+[2026-06-23T13:23:39-07:00] Postflight marker found at: specs/758_unified_literature_system/.postflight-pending
+[2026-06-23T13:23:39-07:00] Task directory: specs/758_unified_literature_system
+[2026-06-23T13:23:39-07:00] Loop guard incremented to 3
+[2026-06-23T13:23:39-07:00] Blocking stop: Postflight pending: status update, artifact linking, git commit
+[2026-06-23T13:23:50-07:00] Postflight marker found at: specs/758_unified_literature_system/.postflight-pending
+[2026-06-23T13:23:50-07:00] Task directory: specs/758_unified_literature_system
+[2026-06-23T13:23:50-07:00] Loop guard triggered: 3 >= 3
+[2026-06-23T13:23:50-07:00] Loop guard prevented continuation
+[2026-06-23T13:23:58-07:00] No postflight marker, allowing stop
