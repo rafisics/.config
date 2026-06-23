@@ -1539,6 +1539,169 @@ fi
 
 ---
 
+---
+
+## Sub-Index Management
+
+Per-repo sub-index operations for `specs/literature-index.json`. These operations manage which documents from the global Literature/ repo are relevant to the current project. The sub-index is reference-only: it stores doc_ids and metadata is resolved at runtime from the global index.
+
+All operations assume `$LITERATURE_DIR` is set (default: `~/Projects/Literature`) and the global index exists at `$LITERATURE_DIR/index.json`.
+
+### Init: Create Empty Sub-Index
+
+Creates `specs/literature-index.json` with empty entries. Safe to run in a project without an existing sub-index.
+
+```bash
+project_name=$(basename "$(pwd)")
+today=$(date +%Y-%m-%d)
+
+if [ -f "specs/literature-index.json" ]; then
+  echo "Sub-index already exists at specs/literature-index.json"
+  echo "Current entries: $(jq '.entries | length' specs/literature-index.json) entries"
+else
+  jq -n \
+    --arg project "$project_name" \
+    --arg today "$today" \
+    '{
+      "project": $project,
+      "literature_dir": null,
+      "created": $today,
+      "entries": []
+    }' > specs/literature-index.json
+  echo "Created specs/literature-index.json for project: $project_name"
+fi
+```
+
+### Add: Append a Document Entry
+
+Validates that `doc_id` exists in the global index before appending. Idempotent: if the doc_id is already in the sub-index, reports a warning and skips.
+
+```bash
+# Usage: doc_id="blackburn_2002" relevance="Core reference for modal logic"
+global_index="${LITERATURE_DIR:-$HOME/Projects/Literature}/index.json"
+today=$(date +%Y-%m-%d)
+
+# Validate doc_id exists in global index
+if ! jq -e --arg id "$doc_id" '.entries[] | select(.id == $id)' "$global_index" >/dev/null 2>&1; then
+  echo "Error: doc_id '$doc_id' not found in global index ($global_index)" >&2
+  exit 1
+fi
+
+# Check if already present in sub-index
+if jq -e --arg id "$doc_id" '.entries[] | select(.doc_id == $id)' specs/literature-index.json >/dev/null 2>&1; then
+  echo "Warning: doc_id '$doc_id' already in sub-index — skipping" >&2
+  exit 0
+fi
+
+# Append entry
+tmp=$(mktemp)
+jq --arg id "$doc_id" \
+   --arg rel "${relevance:-}" \
+   --arg today "$today" \
+   '.entries += [{
+     "doc_id": $id,
+     "relevance": (if $rel == "" then null else $rel end),
+     "added": $today,
+     "source": "manual"
+   }]' specs/literature-index.json > "$tmp" && mv "$tmp" specs/literature-index.json
+echo "Added doc_id '$doc_id' to specs/literature-index.json"
+```
+
+### Remove: Delete a Document Entry
+
+Removes an entry by doc_id. No-op if doc_id not present.
+
+```bash
+# Usage: doc_id="blackburn_2002"
+tmp=$(mktemp)
+before=$(jq '.entries | length' specs/literature-index.json)
+jq --arg id "$doc_id" '
+  .entries = [.entries[] | select(.doc_id == $id | not)]
+' specs/literature-index.json > "$tmp" && mv "$tmp" specs/literature-index.json
+after=$(jq '.entries | length' specs/literature-index.json)
+
+if [ "$before" -eq "$after" ]; then
+  echo "Warning: doc_id '$doc_id' not found in sub-index — no change"
+else
+  echo "Removed doc_id '$doc_id' from specs/literature-index.json"
+fi
+```
+
+### List: Show Entries with Resolved Metadata
+
+Resolves title, authors, and year from the global index for each sub-index entry.
+
+```bash
+global_index="${LITERATURE_DIR:-$HOME/Projects/Literature}/index.json"
+
+entry_count=$(jq '.entries | length' specs/literature-index.json)
+if [ "$entry_count" -eq 0 ]; then
+  echo "Sub-index is empty. Run: /literature --subindex add <doc_id>"
+  exit 0
+fi
+
+echo "## Sub-Index Entries ($entry_count)"
+echo ""
+
+while IFS=$'\t' read -r doc_id relevance added source; do
+  # Resolve from global index
+  title=$(jq -r --arg id "$doc_id" '.entries[] | select(.id == $id) | .title // "?"' "$global_index" 2>/dev/null | head -1)
+  authors=$(jq -r --arg id "$doc_id" '.entries[] | select(.id == $id) | (.authors // []) | first // "?"' "$global_index" 2>/dev/null | head -1)
+  year=$(jq -r --arg id "$doc_id" '.entries[] | select(.id == $id) | (.year // "?") | tostring' "$global_index" 2>/dev/null | head -1)
+  chunk_count=$(jq --arg id "$doc_id" '[.entries[] | select(.parent_doc == $id)] | length' "$global_index" 2>/dev/null || echo 0)
+
+  status_tag=""
+  if [ "$title" = "?" ] || [ -z "$title" ]; then
+    status_tag=" [NOT IN GLOBAL INDEX]"
+  fi
+
+  echo "- **$doc_id**${status_tag}"
+  echo "  Title: $title ($year) by $authors"
+  [ "$chunk_count" -gt 0 ] && echo "  Chunks: $chunk_count"
+  [ -n "$relevance" ] && [ "$relevance" != "null" ] && echo "  Relevance: $relevance"
+  echo "  Added: $added (source: ${source:-manual})"
+  echo ""
+done < <(jq -r '.entries[] | [.doc_id, (.relevance // ""), .added, (.source // "manual")] | @tsv' specs/literature-index.json 2>/dev/null)
+```
+
+### Validate: Check All doc_ids Exist in Global Index
+
+Reports orphaned entries (doc_ids that no longer exist in the global index). Does not modify the sub-index.
+
+```bash
+global_index="${LITERATURE_DIR:-$HOME/Projects/Literature}/index.json"
+
+orphans=()
+valid=()
+
+while IFS= read -r doc_id; do
+  if jq -e --arg id "$doc_id" '.entries[] | select(.id == $id)' "$global_index" >/dev/null 2>&1; then
+    valid+=("$doc_id")
+  else
+    orphans+=("$doc_id")
+  fi
+done < <(jq -r '.entries[].doc_id' specs/literature-index.json 2>/dev/null)
+
+echo "## Sub-Index Validation"
+echo ""
+echo "Valid entries: ${#valid[@]}"
+echo "Orphaned entries: ${#orphans[@]}"
+echo ""
+
+if [ "${#orphans[@]}" -gt 0 ]; then
+  echo "### Orphaned doc_ids (not found in global index)"
+  for id in "${orphans[@]}"; do
+    echo "  - $id"
+  done
+  echo ""
+  echo "To remove an orphan: /literature --subindex remove <doc_id>"
+else
+  echo "All entries valid."
+fi
+```
+
+---
+
 ## Error Handling
 
 See `rules/error-handling.md` for general patterns. Skill-specific behaviors:

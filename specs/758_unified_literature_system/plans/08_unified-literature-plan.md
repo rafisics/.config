@@ -163,22 +163,22 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Per-Repo Sub-Index and Briefing Generator [NOT STARTED]
+### Phase 3: Per-Repo Sub-Index and Briefing Generator [COMPLETED]
 
 **Goal**: Implement the per-repo sub-index schema and the briefing generator script that replaces static content injection.
 
 **Tasks**:
-- [ ] Create `literature-briefing.sh` in `.claude/scripts/`:
+- [x] Create `literature-briefing.sh` in `.claude/scripts/`: *(completed)*
   - Reads `specs/literature-index.json` (per-repo sub-index)
   - For each entry, resolves metadata from `$LITERATURE_DIR/index.json` (title, authors, year, chunk count, total tokens, chunk paths)
   - Outputs a `<literature-briefing>` block to stdout (~300-500 tokens)
   - Includes usage instructions: Read tool for chunks, `literature-search.sh` for search
   - Edge cases: missing sub-index (exit 0, empty stdout), missing doc_id (skip with stderr warning), unset LITERATURE_DIR (use default)
-- [ ] Define the per-repo sub-index schema (`specs/literature-index.json`):
+- [x] Define the per-repo sub-index schema (`specs/literature-index.json`): *(completed: documented in Sub-Index Management section of SKILL.md)*
   - Fields: `project` (string), `literature_dir` (string|null, override), `entries` array
   - Entry fields: `doc_id` (required), `relevance` (optional), `added` (ISO date), `source` (optional: discover/manual/import)
   - Reference-only: no cached metadata; resolved at runtime from global index
-- [ ] Add sub-index jq operations to `skill-literature/SKILL.md`:
+- [x] Add sub-index jq operations to `skill-literature/SKILL.md`: *(completed)*
   - `init`: create file with empty entries array
   - `add <doc_id>`: validate against global index, append entry
   - `remove <doc_id>`: delete entry by doc_id
