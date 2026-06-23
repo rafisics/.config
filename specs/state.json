@@ -76,9 +76,14 @@
           "path": "specs/758_unified_literature_system/reports/06_team-research.md",
           "type": "research",
           "summary": "Team research (4 teammates): --lit wiring, source discovery pipeline, critical gaps, strategic horizons"
+        },
+        {
+          "path": "specs/758_unified_literature_system/reports/07_literature-workflow-design.md",
+          "type": "research",
+          "summary": "Concrete /literature workflow design: two modes (discover + integrate), --lit briefing swap, sub-index schema, SOURCES.md format"
         }
       ],
-      "next_artifact_number": 7,
+      "next_artifact_number": 8,
       "researched": "2026-06-23T20:40:40Z"
     },
     {
