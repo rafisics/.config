@@ -134,6 +134,16 @@ if [ "$clean_flag" != "true" ]; then
 fi
 ```
 
+```bash
+# Literature briefing injection (independent of clean_flag)
+lit_context=""
+if [ "$lit_flag" = "true" ]; then
+  lit_context=$(bash .claude/scripts/literature-briefing.sh 2>/dev/null) || lit_context=""
+fi
+```
+
+**Note**: `lit_flag` is independent of `clean_flag`. Using `--clean --lit` suppresses memory retrieval but still injects literature briefing. Literature briefing is gated solely on `lit_flag == "true"`.
+
 ---
 
 ### Stage 4: Prepare Delegation Context
@@ -186,9 +196,11 @@ format_content=$(cat .claude/context/formats/plan-format.md)
 Tool: Agent
 Parameters:
   - subagent_type: "planner-hard-agent"
-  - prompt: [task_context, delegation_context, format specification, memory_context]
+  - prompt: [task_context, delegation_context, format specification, memory_context, lit_context]
   - description: "Create hard-mode implementation plan for task {N}"
 ```
+
+If `lit_context` is non-empty, inject it as a `<literature-briefing>` block after the memory context and before the task-specific instructions.
 
 ---
 

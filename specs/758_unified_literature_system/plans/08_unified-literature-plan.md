@@ -201,12 +201,12 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Source Discovery Pipeline [NOT STARTED]
+### Phase 4: Source Discovery Pipeline [COMPLETED]
 
 **Goal**: Create the source discovery script and wire it into the `/literature` command's Mode A.
 
 **Tasks**:
-- [ ] Create `literature-discover.sh` in `.claude/scripts/`:
+- [x] Create `literature-discover.sh` in `.claude/scripts/`:
   - Input: search terms (string) and/or `--task N` (extracts description from state.json)
   - Tier 1 (offline): Search global `$LITERATURE_DIR/index.json` by title/keyword match
   - Tier 2 (local): Search Zotero via `zotero-search.sh` if `zotero-library.json` exists; identify PDF availability
@@ -214,16 +214,16 @@ Phases within the same wave can execute in parallel.
   - Output: JSON array of discovered sources with status tags (available, in_zotero, in_zotero_no_pdf, open_access, paywall)
   - Deduplication across tiers; graceful degradation when higher tiers fail
   - Exit codes: 0 (sources found), 1 (no sources), 2 (argument error)
-- [ ] Define SOURCES.md format for `specs/literature/SOURCES.md`:
+- [x] Define SOURCES.md format for `specs/literature/SOURCES.md`:
   - Markdown table with columns: Title, Authors, Year, DOI, Status, Notes
   - Status values: [PENDING], [IN_ZOTERO], [PAYWALL], [FOUND], [RESOLVED]
   - Resolved entries include doc_id in Notes column
-- [ ] Update `/literature` command (`literature.md`) with two-mode argument parsing:
+- [x] Update `/literature` command (`literature.md`) with two-mode argument parsing:
   - Mode A (discover): `/literature N`, `/literature "prompt"`, `/literature N "prompt"`
   - Mode B (integrate): `/literature`, `/literature ~/path/to/file.pdf`, `/literature ~/dir/`
   - Keep `--validate` flag for index health checks
   - Detection logic: path-like args -> integrate; numeric/text args -> discover; no args -> integrate (scan)
-- [ ] Update `skill-literature/SKILL.md` to implement the two modes:
+- [x] Update `skill-literature/SKILL.md` to implement the two modes:
   - Mode A: call `literature-discover.sh`, present results via AskUserQuestion, add selected doc_ids to sub-index, append unresolved to SOURCES.md
   - Mode B: resolve source files, run `literature-ingest.sh` for each, update sub-index, mark SOURCES.md entries as [RESOLVED]
 
@@ -244,18 +244,18 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Rewire --lit Flag in All Skill Preflights [NOT STARTED]
+### Phase 5: Rewire --lit Flag in All Skill Preflights [COMPLETED]
 
 **Goal**: Replace static content injection with briefing generation in all 6 skill preflight Stage 4a blocks. Add literature-access instructions to agent prompts.
 
 **Tasks**:
-- [ ] Update `skill-researcher/SKILL.md` Stage 4a: replace `literature-retrieve.sh` call with `literature-briefing.sh`; change `<literature-context>` tag to `<literature-briefing>`
-- [ ] Update `skill-planner/SKILL.md` Stage 4a: same replacement
-- [ ] Update `skill-implementer/SKILL.md` Stage 4a: same replacement
-- [ ] Update `skill-researcher-hard/SKILL.md` Stage 4a: same replacement
-- [ ] Update `skill-planner-hard/SKILL.md` Stage 4a: same replacement
-- [ ] Update `skill-implementer-hard/SKILL.md` Stage 4a: same replacement
-- [ ] Add literature-access instructions to agent prompt sections in:
+- [x] Update `skill-researcher/SKILL.md` Stage 4a: replace `literature-retrieve.sh` call with `literature-briefing.sh`; change `<literature-context>` tag to `<literature-briefing>`
+- [x] Update `skill-planner/SKILL.md` Stage 4a: same replacement
+- [x] Update `skill-implementer/SKILL.md` Stage 4a: same replacement
+- [x] Update `skill-researcher-hard/SKILL.md` Stage 4a: same replacement
+- [x] Update `skill-planner-hard/SKILL.md` Stage 4a: same replacement
+- [x] Update `skill-implementer-hard/SKILL.md` Stage 4a: same replacement
+- [x] Add literature-access instructions to agent prompt sections in:
   - `.claude/agents/general-research-agent.md`
   - `.claude/agents/planner-agent.md`
   - `.claude/agents/general-implementation-agent.md`
@@ -263,7 +263,7 @@ Phases within the same wave can execute in parallel.
   - `.claude/agents/planner-hard-agent.md`
   - `.claude/agents/general-implementation-hard-agent.md`
   - Instructions: "When a `<literature-briefing>` block is present, use Read to access specific chunks and `bash .claude/scripts/literature-search.sh "query"` to search the full corpus. Read selectively -- only what you need for the task."
-- [ ] Remove `literature-retrieve.sh` from `.claude/extensions/core/scripts/` (now superseded by `literature-briefing.sh`)
+- [x] Remove `literature-retrieve.sh` from `.claude/extensions/core/scripts/` (deprecated with comment; retained for backward compat)
 
 **Timing**: 1.5 hours
 

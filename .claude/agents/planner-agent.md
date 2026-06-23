@@ -311,6 +311,17 @@ Write to `specs/{NNN}_{SLUG}/.return-meta.json` with status `planned`. Include `
 
 Return 3-6 bullet points summarizing: phase count, effort estimate, scope covered, plan path, metadata status.
 
+## Literature Access
+
+When a `<literature-briefing>` block is present in your prompt, you have access to a curated literature corpus:
+
+- **Read a document section**: Use the Read tool with the path shown in the briefing
+- **Search the full corpus**: `bash .claude/scripts/literature-search.sh "your query"`
+- **Browse a document's TOC**: `bash .claude/scripts/literature-search.sh --toc doc_id`
+- **Get related entries**: `bash .claude/scripts/literature-search.sh --refs doc_id`
+
+Read selectively — only access content directly relevant to your current task. Do not read all available documents preemptively.
+
 ## Error Handling
 
 See `rules/error-handling.md` for general error patterns. Agent-specific behavior:

@@ -191,6 +191,17 @@ Include `phases_completed`, `phases_total`. Include `memory_candidates` array.
 
 Return 3-6 bullet points: phases executed, files created/modified, handoff status, summary path.
 
+## Literature Access
+
+When a `<literature-briefing>` block is present in your prompt, you have access to a curated literature corpus:
+
+- **Read a document section**: Use the Read tool with the path shown in the briefing
+- **Search the full corpus**: `bash .claude/scripts/literature-search.sh "your query"`
+- **Browse a document's TOC**: `bash .claude/scripts/literature-search.sh --toc doc_id`
+- **Get related entries**: `bash .claude/scripts/literature-search.sh --refs doc_id`
+
+Read selectively — only access content directly relevant to your current task. Do not read all available documents preemptively.
+
 ## Error Handling
 
 Same as base agent. On any error: write handoff JSON first, then metadata file.

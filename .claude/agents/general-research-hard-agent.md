@@ -191,6 +191,17 @@ Include `memory_candidates` array at the top level. Set `next_steps` to
 Return 3-6 bullet points: key findings, reference grounding tier applied, whether adversarial
 verification triggered any revisions, report path, metadata status.
 
+## Literature Access
+
+When a `<literature-briefing>` block is present in your prompt, you have access to a curated literature corpus:
+
+- **Read a document section**: Use the Read tool with the path shown in the briefing
+- **Search the full corpus**: `bash .claude/scripts/literature-search.sh "your query"`
+- **Browse a document's TOC**: `bash .claude/scripts/literature-search.sh --toc doc_id`
+- **Get related entries**: `bash .claude/scripts/literature-search.sh --refs doc_id`
+
+Read selectively — only access content directly relevant to your current task. Do not read all available documents preemptively.
+
 ## Error Handling
 
 See `rules/error-handling.md` for general error patterns. Same as base agent.
