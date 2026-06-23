@@ -1,19 +1,23 @@
 ---
-next_project_number: 758
+next_project_number: 759
 ---
 
 # TODO
 
 ## Task Order
 
-*Updated 2026-06-22. Generated from state.json dependency graph.*
+*Updated 2026-06-23. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87 | -- | Terminal UI, Email Integration |
+| 1 | 78,87,758 | -- | literature, Terminal UI, Email Integration |
 
 **Grouped by Topic** (indented = depends on parent):
+
+### Literature
+
+758 [NOT STARTED] — Refactor literature/zotero into unified literature system: (1) Gl
 
 ### Terminal UI
 
@@ -24,6 +28,16 @@ next_project_number: 758
 78 [PLANNED] — Fix Gmail SMTP authentication failure when sending emails via Him
 
 ## Tasks
+
+### 758. Unified literature system
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: literature
+- **Dependencies**: None
+
+**Description**: Refactor literature/zotero into unified literature system: (1) Global Literature/ repo as single source of truth for segmented+indexed markdown, tracked by git; (2) Per-repo sub-index (specs/literature-index.json) declaring relevant sources; (3) Replace --lit/--zot context injection with a literature-agent that receives the sub-index and autonomously explores the global Literature/ corpus; (4) Consolidate literature+zotero extensions into one extension; (5) Design the literature-agent tool interface (search, read chunks, cross-reference)
+
+---
 
 ### 757. Add summary field to skill_write_orchestrator_handoff artifacts
 - **Status**: [COMPLETED]
