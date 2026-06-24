@@ -6,18 +6,14 @@ next_project_number: 767
 
 ## Task Order
 
-*Updated 2026-06-23. Generated from state.json dependency graph.*
+*Updated 2026-06-24. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,766 | -- | agent-system, Terminal UI, Email Integration |
+| 1 | 78,87 | -- | Terminal UI, Email Integration |
 
 **Grouped by Topic** (indented = depends on parent):
-
-### Agent System
-
-766 [NOT STARTED] — The dispatch-agent.sh script generates JSON dispatch instructions
 
 ### Terminal UI
 
@@ -30,10 +26,13 @@ next_project_number: 767
 ## Tasks
 
 ### 766. Modernize agent dispatch architecture for current Claude Code capabilities
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
+- **Research**: [766_modernize_agent_dispatch_architecture/reports/01_dispatch-modernization-research.md]
+- **Plan**: [766_modernize_agent_dispatch_architecture/plans/01_dispatch-modernization-plan.md]
+- **Summary**: [766_modernize_agent_dispatch_architecture/summaries/01_dispatch-modernization-summary.md]
 
 **Description**: The dispatch-agent.sh script generates JSON dispatch instructions that skill-orchestrate interprets to make Agent tool calls — an indirection layer designed for a hypothetical future named-fork API. As of June 2026, Claude Code supports: (1) subagent_type fork for cache-warm context inheritance, (2) parallel Agent calls in a single message, (3) the Workflow tool with pipeline()/parallel()/agent() primitives for deterministic multi-agent orchestration. Research whether: (a) dispatch-agent.sh should be simplified to direct Agent tool calls, (b) MT orchestration should use the Workflow tool instead of the 400+ lines of bash pseudocode in MT-1 through MT-5, (c) fork patterns should be used more broadly for operations that benefit from cache sharing. Goal: reduce complexity while improving reliability and leveraging current platform capabilities. This task may supersede task 765 if MT mode is refactored.
 

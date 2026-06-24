@@ -174,15 +174,33 @@
     {
       "project_number": 766,
       "project_name": "modernize_agent_dispatch_architecture",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "meta",
       "title": "Modernize agent dispatch architecture for current Claude Code capabilities",
       "description": "The dispatch-agent.sh script generates JSON dispatch instructions that skill-orchestrate interprets to make Agent tool calls — an indirection layer designed for a hypothetical future named-fork API. As of June 2026, Claude Code supports: (1) subagent_type fork for cache-warm context inheritance, (2) parallel Agent calls in a single message, (3) the Workflow tool with pipeline()/parallel()/agent() primitives for deterministic multi-agent orchestration. Research whether: (a) dispatch-agent.sh should be simplified to direct Agent tool calls, (b) MT orchestration should use the Workflow tool instead of the 400+ lines of bash pseudocode in MT-1 through MT-5, (c) fork patterns should be used more broadly for operations that benefit from cache sharing. Goal: reduce complexity while improving reliability and leveraging current platform capabilities. This task may supersede task 765 if MT mode is refactored.",
       "topic": "agent-system",
       "dependencies": [],
-      "artifacts": [],
+      "artifacts": [
+        {
+          "type": "report",
+          "path": "specs/766_modernize_agent_dispatch_architecture/reports/01_dispatch-modernization-research.md",
+          "summary": "dispatch-agent.sh is pseudocode not runtime, Workflow tool unavailable in skill context, MT bash should become prose tables, fork patterns correctly targeted"
+        },
+        {
+          "type": "plan",
+          "path": "specs/766_modernize_agent_dispatch_architecture/plans/01_dispatch-modernization-plan.md",
+          "summary": "4-phase plan: delete dispatch-agent files, rewrite single-task dispatch as prose, rewrite MT as prose tables, update docs"
+        },
+        {
+          "type": "summary",
+          "path": "specs/766_modernize_agent_dispatch_architecture/summaries/01_dispatch-modernization-summary.md",
+          "summary": "Deleted dispatch-agent.sh, rewrote SKILL.md from 1275 to 719 lines, MT section from 590 to 154 lines prose tables"
+        }
+      ],
       "created": "2026-06-23T23:45:00Z",
-      "last_updated": "2026-06-23T23:45:00Z"
+      "last_updated": "2026-06-24T03:08:00Z",
+      "session_id": "sess_1782269265_b9e110",
+      "completion_summary": "Removed dispatch-agent.sh indirection (361 lines). Rewrote all dispatch blocks as direct Agent tool call prose tables. Simplified MT mode from 590 lines bash pseudocode to 154 lines numbered prose. Unified fork dispatch to subagent_type: fork. SKILL.md reduced 44% (1275 to 719 lines)."
     }
   ],
   "completed_projects": [],
