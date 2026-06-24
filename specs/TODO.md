@@ -11,19 +11,9 @@ next_project_number: 771
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,767 | -- | agent-system, Terminal UI, Email Integration |
-| 2 | 768 | 767 | agent-system |
-| 3 | 769 | 768 | agent-system |
-| 4 | 770 | 769 | agent-system |
+| 1 | 78,87 | -- | Terminal UI, Email Integration |
 
 **Grouped by Topic** (indented = depends on parent):
-
-### Agent System
-
-767 [NOT STARTED] — Make --hard mode a first-class CORE capability so core hard agent
-  └─ 768 [NOT STARTED] — Implement the --hard routing behavior that CLAUDE.md (Routing Mec
-    └─ 769 [NOT STARTED] — Add a validation guard (extend .claude/scripts/check-extension-do
-      └─ 770 [NOT STARTED] — Re-deploy/propagate the corrected core hard agents + skills from 
 
 ### Terminal UI
 
@@ -36,7 +26,7 @@ next_project_number: 771
 ## Tasks
 
 ### 770. Re-deploy/propagate corrected core hard pieces to installed projects and sync CLAUDE.md docs
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 767, Task 768, Task 769
@@ -46,7 +36,7 @@ next_project_number: 771
 ---
 
 ### 769. Add manifest-vs-disk and routing-target consistency guard to doc-lint
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 767, Task 768
@@ -56,7 +46,7 @@ next_project_number: 771
 ---
 
 ### 768. Implement and standardize routing_hard resolution and core/extension composition model
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: Task 767
@@ -66,7 +56,7 @@ next_project_number: 771
 ---
 
 ### 767. Make core hard agents + skills first-class in core extension source
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None

@@ -24,8 +24,8 @@ if [[ "${1:-}" == "--quiet" ]]; then
   QUIET=1
 fi
 
-REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-EXT_DIR="$REPO_ROOT/.claude/extensions"
+REPO_ROOT="${REPO_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
+EXT_DIR="${EXT_DIR:-$REPO_ROOT/.claude/extensions}"
 
 if [[ ! -d "$EXT_DIR" ]]; then
   echo "ERROR: $EXT_DIR does not exist" >&2
@@ -129,6 +129,165 @@ check_routing_block() {
   fi
 }
 
+# Rule A: Undeclared skill dirs in extension source not in provides.skills
+check_undeclared_skills() {
+  local ext_path="$1"
+  local manifest="$ext_path/manifest.json"
+
+  [[ -d "$ext_path/skills" ]] || return 0
+
+  for skill_dir in "$ext_path/skills/"/skill-*/; do
+    [[ -d "$skill_dir" ]] || continue
+    local skill_name
+    skill_name=$(basename "$skill_dir")
+    if ! jq -e --arg s "$skill_name" '.provides.skills[]? | select(. == $s)' \
+        "$manifest" > /dev/null 2>&1; then
+      fail "skill dir on disk NOT in provides.skills: $skill_name"
+    fi
+  done
+}
+
+# Rules B + C: Routing target consistency and deployment
+#
+# Policy rationale (documented per plan Phase 2):
+#   Both routing and routing_hard share the same deployment-dimension severity rule:
+#     - FAIL if the extension is installed but the target is not deployed
+#     - WARN (info) if the extension is not installed (expected undeployed state)
+#   routing_hard adds TWO stricter requirements beyond the deployment dimension:
+#     1. Source-grounding: the target must exist in some extension's SOURCE provides.skills
+#     2. Unconditional-dispatch FAIL: command-route-skill.sh steps 4a-4d scan routing_hard
+#        across ALL manifests without an install guard. A routing_hard target that exists
+#        in source but is undeployed because its extension is uninstalled is a correctness
+#        bug regardless of installation. This is the lean case -- FAIL for routing_hard
+#        targets that exist in source but are undeployed.
+#   Rule B (resolvability): any routing or routing_hard target that does not exist in any
+#   extension's provides.skills AND is not deployed is a FAIL (manifest typo/stale entry).
+check_routing_consistency() {
+  local ext_path="$1"
+  local manifest="$ext_path/manifest.json"
+
+  # Determine if this extension is "installed":
+  # installed = at least one of its source skills appears in .claude/skills/ OR
+  #             at least one of its source agents appears in .claude/agents/
+  local installed=0
+  if [[ -d "$ext_path/skills" ]]; then
+    local sdir
+    for sdir in "$ext_path/skills/"/*/; do
+      [[ -d "$sdir" ]] || continue
+      local sn
+      sn=$(basename "$sdir")
+      if [[ -d "$REPO_ROOT/.claude/skills/$sn" || -L "$REPO_ROOT/.claude/skills/$sn" ]]; then
+        installed=1
+        break
+      fi
+    done
+  fi
+  if [[ $installed -eq 0 && -d "$ext_path/agents" ]]; then
+    local af
+    for af in "$ext_path/agents/"*.md; do
+      [[ -f "$af" ]] || continue
+      local an
+      an=$(basename "$af")
+      if [[ -f "$REPO_ROOT/.claude/agents/$an" ]]; then
+        installed=1
+        break
+      fi
+    done
+  fi
+
+  # Helper: check if a skill target is resolvable (in any extension's provides.skills
+  # OR deployed under .claude/skills/)
+  target_resolvable() {
+    local target="$1"
+    # Check deployed first (fast path for cross-extension core skills)
+    if [[ -d "$REPO_ROOT/.claude/skills/$target" || -L "$REPO_ROOT/.claude/skills/$target" ]]; then
+      return 0
+    fi
+    # Check all extension manifests for provides.skills
+    local m
+    for m in "$EXT_DIR"/*/manifest.json; do
+      [[ -f "$m" ]] || continue
+      if jq -e --arg s "$target" '.provides.skills[]? | select(. == $s)' \
+          "$m" > /dev/null 2>&1; then
+        return 0
+      fi
+    done
+    return 1
+  }
+
+  # --- routing targets ---
+  local routing_targets
+  routing_targets=$(jq -r '.routing // {} | to_entries[] | .value | to_entries[] | .value' \
+    "$manifest" 2>/dev/null)
+  local t base_t
+  for t in $routing_targets; do
+    # Routing values may use colon notation (e.g., skill-grant:assemble) where the part
+    # before the colon is the actual skill name and the colon suffix is a sub-operation mode.
+    # Strip the suffix for skill-resolution purposes.
+    base_t="${t%%:*}"
+    if [[ ! -d "$REPO_ROOT/.claude/skills/$base_t" && ! -L "$REPO_ROOT/.claude/skills/$base_t" ]]; then
+      # Rule B: target not resolvable to any provides.skills and not deployed
+      if ! target_resolvable "$base_t"; then
+        fail "routing target not resolvable (not in any provides.skills, not deployed): $t"
+      elif [[ $installed -eq 1 ]]; then
+        # Rule C (routing, installed): deployed dimension violation
+        fail "routing target not deployed (extension is installed): $t"
+      else
+        # Rule C (routing, uninstalled): warn only
+        info "WARN: routing target not deployed (extension not installed): $t"
+      fi
+    fi
+  done
+
+  # --- routing_hard targets ---
+  local hard_targets
+  hard_targets=$(jq -r '.routing_hard // {} | to_entries[] | .value | to_entries[] | .value' \
+    "$manifest" 2>/dev/null)
+  for t in $hard_targets; do
+    # Strip colon sub-operation suffix for skill-resolution (same as routing above)
+    base_t="${t%%:*}"
+    if [[ ! -d "$REPO_ROOT/.claude/skills/$base_t" && ! -L "$REPO_ROOT/.claude/skills/$base_t" ]]; then
+      # Rule B: target not resolvable to any provides.skills and not deployed
+      if ! target_resolvable "$base_t"; then
+        fail "routing_hard target not resolvable (not in any provides.skills, not deployed): $t"
+      elif [[ $installed -eq 1 ]]; then
+        # Rule C (routing_hard, installed): deployment violation
+        fail "routing_hard target not deployed (extension is installed): $t"
+      else
+        # Rule C extra for routing_hard (unconditional-dispatch FAIL clause):
+        # routing_hard is scanned by command-route-skill.sh with no install guard --
+        # a source-grounded but undeployed routing_hard target is a live correctness bug.
+        fail "routing_hard target declared but not deployed (and extension not installed): $t"
+      fi
+    fi
+  done
+}
+
+# Rule D: Deployed skills must reference agents that exist
+check_deployed_skill_agents() {
+  local ext_path="$1"
+  local manifest="$ext_path/manifest.json"
+
+  local skills
+  skills=$(jq -r '.provides.skills[]? // empty' "$manifest" 2>/dev/null)
+  local s
+  for s in $skills; do
+    local deployed_skill="$REPO_ROOT/.claude/skills/$s/SKILL.md"
+    [[ -f "$deployed_skill" ]] || continue  # not deployed, skip
+
+    # Extract subagent_type from SKILL.md body
+    local agent_name
+    agent_name=$(grep -o 'subagent_type: "[^"]*"' "$deployed_skill" 2>/dev/null \
+      | head -1 | cut -d'"' -f2)
+    [[ -z "$agent_name" ]] && continue      # direct-execution skill, no agent
+    [[ "$agent_name" == "fork" ]] && continue  # fork pattern, not a named agent file
+
+    if [[ ! -f "$REPO_ROOT/.claude/agents/${agent_name}.md" ]]; then
+      fail "deployed skill $s references agent $agent_name NOT in .claude/agents/"
+    fi
+  done
+}
+
 check_readme_vs_manifest() {
   local ext_path="$1"
   local manifest="$ext_path/manifest.json"
@@ -177,6 +336,9 @@ for ext_path in "$EXT_DIR"/*/; do
     if jq empty "$ext_path/manifest.json" 2>/dev/null; then
       check_manifest_entries "$ext_path"
       check_routing_block "$ext_path"
+      check_undeclared_skills "$ext_path"
+      check_routing_consistency "$ext_path"
+      check_deployed_skill_agents "$ext_path"
       check_readme_vs_manifest "$ext_path"
     else
       fail "manifest.json is not valid JSON"

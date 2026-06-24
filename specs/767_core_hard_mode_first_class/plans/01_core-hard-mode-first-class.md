@@ -1,7 +1,7 @@
 # Implementation Plan: Task #767
 
 - **Task**: 767 - Make --hard mode a first-class CORE capability
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 2.5 hours
 - **Dependencies**: None (foundational; tasks 768, 769, 770 depend on this)
 - **Research Inputs**: specs/767_core_hard_mode_first_class/reports/01_core-hard-mode-first-class.md
