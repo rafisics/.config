@@ -1,5 +1,5 @@
 ---
-next_project_number: 781
+next_project_number: 783
 ---
 
 # TODO
@@ -11,8 +11,8 @@ next_project_number: 781
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,772,775,777,778,780 | -- | agent-system, literature, Terminal UI, ... |
-| 2 | 773,774,776,779 | 772,775,778,780 | agent-system, literature |
+| 1 | 78,87,772,775,777,778,780,782 | -- | agent-system, literature, Terminal UI, ... |
+| 2 | 773,774,776,779,781 | 772,775,778,780 | agent-system, literature |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -26,6 +26,8 @@ next_project_number: 781
   └─ 779 [NOT STARTED] — [--hard recovery discipline] Define an unambiguous recovery contr
 780 [NOT STARTED] — [Working-tree preservation] Prevent agents from destroying uncomm
   └─ 779 [NOT STARTED] — [--hard recovery discipline] Define an unambiguous recovery contr (see above)
+  └─ 781 [NOT STARTED] — [Context-overflow safety] Dispatched agents must detect context p
+782 [NOT STARTED] — [Formal-domain context hygiene] Reduce the context that lean4/for
 
 ### Literature
 
@@ -41,6 +43,28 @@ next_project_number: 781
 78 [PLANNED] — Fix Gmail SMTP authentication failure when sending emails via Him
 
 ## Tasks
+
+### 782. Formal-domain context hygiene: minimize goal-state context for lean4 agents
+- **Effort**: 2-4 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: [Formal-domain context hygiene] Reduce the context that lean4/formal-proof agents consume per step so enormous goal states do not overflow the window. MOTIVATING FAILURE: five dispatches on Lean tableau proofs overflowed because goal states are enormous and were repeatedly pulled into context. Scope (lean4 / formal domains -- applies to lean-*/cslib-* and formal hard agents and their context/contracts): (1) Goal-state query discipline: prefer TARGETED lean-lsp queries (lean_goal at a specific position, lean_minimal_hypotheses, lean_term_goal) over dumping full goal states; do NOT paste entire goal states into reasoning repeatedly; summarize the goal in a few lines and re-query precisely when needed. (2) File-read discipline: avoid re-reading whole large proof files; read only the region around the active proof; use lean_file_outline / targeted offset reads. (3) Hypothesis pruning: work from minimal hypotheses; avoid carrying large unused contexts forward. (4) Encode these as a formal-domain CONTEXT CONTRACT (an extension context file analogous to the lean4 override of anti-analysis.md) consumed by the lean/formal research + implementation hard agents. (5) Combine with checkpoint-before-overflow (task 781): hygiene lowers the baseline context; checkpointing handles the residual. SCOPE NOTE: this is domain-specific. If the lean/cslib extension lives in a separate repo, author the contract here and FLAG it for sync to that extension (do not assume the shared repo is the only consumer). Pairs with task 781. Goal: a single large goal state is handled by targeted querying and summarization rather than overflowing the agent's context.
+
+---
+
+### 781. Agent context-overflow safety: checkpoint + handoff before the hard limit
+- **Effort**: 3-6 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: Task 780
+
+**Description**: [Context-overflow safety] Dispatched agents must detect context pressure and CHECKPOINT before hitting the hard context limit, instead of crashing mid-work. MOTIVATING FAILURE: five agent dispatches on Lean tableau proofs (enormous goal states) hit 'Prompt is too long'; on overflow an agent crashes WITHOUT writing a handoff, leaving a stale handoff and a RED working tree -- which then triggers the revert/work-loss failure (the next agent sees RED and reverts). Scope (general -- all dispatched implementation/research agents): (1) Wire the existing context-exhaustion-detection.md into the dispatched implementation and research agents (general-implementation-hard-agent, general-research-hard-agent, and base variants), not just the orchestrator -- they must monitor context-pressure signals (large tool outputs, repeated reads, growing goal states, high tool-call count) and treat approaching the limit as a STOP condition. (2) Define the CHECKPOINT-BEFORE-OVERFLOW procedure: at the pressure threshold, STOP taking new work -> commit the current green state (or snapshot via task 780 if RED) -> write a complete H9 handoff (.orchestrator-handoff.json + continuation markdown) naming the exact next action -> terminate cleanly. Never crash mid-edit; never leave a stale handoff. (3) Ensure the handoff captures enough for a FRESH agent to resume with minimal context (the continuation-handoff markdown already specifies this), so work is divided across agents by CONTEXT BUDGET, not lost. (4) Coordinate with the small-phase/skeleton work (774/778): if a phase's single goal state is too large to fit, the agent lands a strategic-sorry skeleton (778) and hands off rather than overflowing. Pairs with task 780 (snapshot) and task 779 (resume must fix-forward, not revert). Goal: context overflow degrades gracefully to a clean handoff + recoverable checkpoint, never a crash that loses uncommitted progress. Depends on task 780 (snapshot mechanism for the RED-checkpoint path).
+
+---
 
 ### 780. Agent git-safety: preserve uncommitted work, guard destructive git ops
 - **Effort**: 3-6 hours
