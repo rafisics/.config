@@ -11,13 +11,9 @@ next_project_number: 772
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,771 | -- | agent-system, Terminal UI, Email Integration |
+| 1 | 78,87 | -- | Terminal UI, Email Integration |
 
 **Grouped by Topic** (indented = depends on parent):
-
-### Agent System
-
-771 [NOT STARTED] — The doc-lint guard (.claude/scripts/check-extension-docs.sh, adde
 
 ### Terminal UI
 
@@ -30,10 +26,13 @@ next_project_number: 772
 ## Tasks
 
 ### 771. Resolve the 4 doc-lint baseline FAILs from the routing/deployment consistency guard
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
+- **Research**: [771_resolve_doclint_baseline_fails/reports/01_doclint-baseline-fails.md]
+- **Plan**: [771_resolve_doclint_baseline_fails/plans/01_resolve-doclint-baseline-fails.md]
+- **Summary**: [771_resolve_doclint_baseline_fails/plans/01_resolve-doclint-baseline-fails.md]
 
 **Description**: The doc-lint guard (.claude/scripts/check-extension-docs.sh, added in task 769) exits 1 with 4 known FAILs. Resolve or formally accept each: (1) CORE: manifest provides.scripts lists scripts/dispatch-agent.sh which is missing on disk — either restore the script, remove it from provides.scripts if obsolete, or confirm it was intentionally removed and update the manifest. (2) CORE: command /zulip is listed in the core manifest but not mentioned in the relevant README.md — add the missing README entry. (3) and (4) LEAN: routing_hard targets skill-lean-research-hard and skill-lean-implementation-hard are declared in lean/manifest.json but not deployed because the lean extension is not installed in this project. These are arguably NOT defects (the targets exist in extension source and are correctly declared). Decide the right resolution: either (a) refine the guard rule so routing_hard targets for an UNINSTALLED extension are a WARN rather than a FAIL (consistent with how routing non-hard targets are install-gated), or (b) accept them as intentional FAILs and document a baseline-allowlist mechanism so CI distinguishes known-accepted findings from new regressions. Investigate whether option (a) weakens the guard ability to catch the original class of bug (core hard skills declared but undeployed) before choosing. Deliverable: doc-lint either exits 0, or exits non-zero only on genuinely actionable findings with the accepted baseline explicitly documented. Do NOT install lean or modify uninstalled extensions just to satisfy the check.
 

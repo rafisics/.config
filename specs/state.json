@@ -114,15 +114,31 @@
     {
       "project_number": 771,
       "project_name": "resolve_doclint_baseline_fails",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "meta",
       "topic": "agent-system",
       "dependencies": [],
       "title": "Resolve the 4 doc-lint baseline FAILs from the routing/deployment consistency guard",
       "description": "The doc-lint guard (.claude/scripts/check-extension-docs.sh, added in task 769) exits 1 with 4 known FAILs. Resolve or formally accept each: (1) CORE: manifest provides.scripts lists scripts/dispatch-agent.sh which is missing on disk — either restore the script, remove it from provides.scripts if obsolete, or confirm it was intentionally removed and update the manifest. (2) CORE: command /zulip is listed in the core manifest but not mentioned in the relevant README.md — add the missing README entry. (3) and (4) LEAN: routing_hard targets skill-lean-research-hard and skill-lean-implementation-hard are declared in lean/manifest.json but not deployed because the lean extension is not installed in this project. These are arguably NOT defects (the targets exist in extension source and are correctly declared). Decide the right resolution: either (a) refine the guard rule so routing_hard targets for an UNINSTALLED extension are a WARN rather than a FAIL (consistent with how routing non-hard targets are install-gated), or (b) accept them as intentional FAILs and document a baseline-allowlist mechanism so CI distinguishes known-accepted findings from new regressions. Investigate whether option (a) weakens the guard ability to catch the original class of bug (core hard skills declared but undeployed) before choosing. Deliverable: doc-lint either exits 0, or exits non-zero only on genuinely actionable findings with the accepted baseline explicitly documented. Do NOT install lean or modify uninstalled extensions just to satisfy the check.",
-      "artifacts": [],
-      "last_updated": "2026-06-24T19:48:54Z",
-      "session_id": "sess_1782320124_aa5841"
+      "artifacts": [
+        {
+          "path": "specs/771_resolve_doclint_baseline_fails/reports/01_doclint-baseline-fails.md",
+          "type": "report",
+          "summary": "All 4 FAILs analyzed. Three files need changes: (1) core/manifest.json: remove dispatch-agent.sh from provides.scripts; (2) core/README.md: add /zulip row to Commands table; (3) check-extension-docs.sh: change routing_hard uninstalled-extension branch from fail to info (WARN). Option (a) chosen for FAILs 3/4 — does not weaken core hard-skill detection because core is always installed=1."
+        },
+        {
+          "path": "specs/771_resolve_doclint_baseline_fails/plans/01_resolve-doclint-baseline-fails.md",
+          "type": "plan",
+          "summary": "Single-phase plan (sized to one implementation run) resolving all 4 doc-lint baseline FAILs across 3 files. FAIL 1: remove dispatch-agent.sh from core/manifest.json provides.scripts. FAIL 2: add /zulip row to core/README.md Commands table, update count 15->16. FAILs 3/4: change routing_hard uninstalled-extension branch from fail to info (WARN) in check-extension-docs.sh and correct the policy comment. Verification: check-extension-docs.sh exits 0 with no FAILs."
+        },
+        {
+          "path": "specs/771_resolve_doclint_baseline_fails/plans/01_resolve-doclint-baseline-fails.md",
+          "type": "summary",
+          "summary": ""
+        }
+      ],
+      "last_updated": "2026-06-24T20:04:01Z",
+      "session_id": "sess_1782330680_8c9229"
     }
   ],
   "completed_projects": [],
