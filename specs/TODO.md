@@ -1,5 +1,5 @@
 ---
-next_project_number: 778
+next_project_number: 779
 ---
 
 # TODO
@@ -11,8 +11,8 @@ next_project_number: 778
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 78,87,772,774,775,777 | -- | agent-system, literature, Terminal UI, ... |
-| 2 | 773,776 | 772,775 | agent-system, literature |
+| 1 | 78,87,772,775,777,778 | -- | agent-system, literature, Terminal UI, ... |
+| 2 | 773,774,776 | 772,775,778 | agent-system, literature |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -20,8 +20,9 @@ next_project_number: 778
 
 772 [NOT STARTED] — [--hard IMPLEMENTATION leg: focus each agent round on an INDIVIDU
   └─ 773 [NOT STARTED] — The anti-analysis contract (H2, .claude/context/contracts/anti-an
-774 [NOT STARTED] — [--hard PLANNING leg: make phases SMALLER and divide work into a 
 777 [NOT STARTED] — [--hard RESEARCH leg: more effort, higher standards for quality, 
+778 [NOT STARTED] — [--hard CORE EFFECT: relax the zero-debt policy to permit STRATEG
+  └─ 774 [NOT STARTED] — [--hard PLANNING leg: make phases SMALLER and divide work into a 
 
 ### Literature
 
@@ -37,6 +38,17 @@ next_project_number: 778
 78 [PLANNED] — Fix Gmail SMTP authentication failure when sending emails via Him
 
 ## Tasks
+
+### 778. Hard-mode: relax zero-debt for strategic-sorry skeletons (division mechanism)
+- **Effort**: 3-6 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: meta
+- **Topic**: agent-system
+- **Dependencies**: None
+
+**Description**: [--hard CORE EFFECT: relax the zero-debt policy to permit STRATEGIC SORRIES forming a SKELETON that divides the task into parts.] A primary effect of --hard is that the standard zero-debt / build-green completeness requirement is RELAXED to allow deliberately-placed, documented 'strategic' sorries (placeholder stubs) that scaffold a skeleton of the overall objective. The skeleton's strategic sorries are the DIVISION POINTS: each becomes a discrete part / follow-up task. This is the mechanism that connects the planning leg (task 774: skeleton + follow-up tasks) to the implementation leg (task 772: one phase per round). Scope of changes (hard-mode ONLY): (1) Relax zero-debt enforcement under --hard -- update the wrap-up build-green invariant (.claude/context/contracts/wrap-up.md, 'No leftover scaffolding' clause) and the anti-analysis Sub-Sorry Policy (.claude/context/contracts/anti-analysis.md) so a documented strategic-sorry skeleton is an ACCEPTABLE dispatch outcome under --hard. Under STANDARD mode, zero-debt still holds unchanged. (2) Define what makes a sorry 'strategic' and acceptable: a deliberate division boundary on the skeleton (NOT an abandoned proof), tightly scoped, documented with (a) what it assumes, (b) why deferred, (c) which follow-up task/part will discharge it. (3) Require every strategic sorry to map to a TRACKED part -- a follow-up task (created by planner-hard, task 774) or a sub-phase -- so relaxed zero-debt is VISIBLE and TRACKED, never silently abandoned. (4) Update the hard implementer/agent verification (skill-implementer-hard / general-implementation-hard-agent) and the handoff sorry_inventory so a documented strategic-sorry skeleton is reported as 'implemented (skeleton)' rather than 'failed/partial', while the sorry_inventory MUST enumerate every strategic sorry and its owning follow-up task. (5) Build-green still holds: the skeleton with strategic sorries must still compile/typecheck (sorries are valid placeholders), so 'green build with tracked strategic sorries' is the hard-mode skeleton-completion bar. Domain note: Lean4 'sorry' is the canonical strategic placeholder; the same idea applies to other domains (stubbed functions, 'admit', NotImplemented). CONTEXT: on task 305 the zero-debt expectation (no incomplete proofs) combined with an oversized phase pushed the orchestrator to try to fully prove a research-grade lemma in one round, driving burnout; allowing a strategic-sorry skeleton would have let it land the structure and divide the remaining proof obligations into tracked parts. Foundational --hard policy that the planning leg (774) and implementation leg (772) build on.
+
+---
 
 ### 777. Hard-mode research: more effort, higher quality and verification standards
 - **Effort**: 3-6 hours
@@ -76,9 +88,9 @@ next_project_number: 778
 - **Status**: [NOT STARTED]
 - **Task Type**: meta
 - **Topic**: agent-system
-- **Dependencies**: None
+- **Dependencies**: Task 778
 
-**Description**: [--hard PLANNING leg: make phases SMALLER and divide work into a SKELETON plan + follow-up tasks.] Revise hard-mode planning (skill-planner-hard / planner-hard-agent) so that under --hard the plan is decomposed into genuinely small phases, each completable in one bounded agent round, rather than one large open-ended plan ('Phase 1 strike 3: prove merge_forward_succ' was research-grade). (1) Tighten H8 phase sizing so each phase is a minimal bounded unit (e.g. one lemma / one checklist sub-item / ~100-300 lines output), not a multi-part objective. (2) Add a SKELETON-PLUS-FOLLOW-UP decomposition: when the full objective exceeds what a few small phases can cover, planner-hard produces a SKELETON plan covering the core/critical path and SPAWNS follow-up tasks (via the task-spawn / multi-task-creation mechanism) for the remaining work, instead of inflating phases. The skeleton plan and its follow-up tasks are linked via state.json dependencies. (3) Ensure the resulting small phases feed the implementation leg (task 772) so each implement round handles exactly one phase. (4) Extend the handoff schema (.claude/context/contracts/wrap-up.md) as needed to track skeleton-vs-follow-up status, and update skill-implementer-hard Stage 3b to consume the smaller phases. Root cause: RC4 (phases not regimented; oversized open-ended phases drove orchestrator burnout on task 305). Scope: hard-mode only. CONTEXT: part of making --hard proceed in regimented bounded chunks (transcript /orchestrate 305 --hard --lit, .claude/output/hard.md). This is the PLANNING leg of the three-leg --hard model (research=task 777, planning=this task, implementation=task 772).
+**Description**: [--hard PLANNING leg: make phases SMALLER and divide work into a SKELETON plan + follow-up tasks.] Revise hard-mode planning (skill-planner-hard / planner-hard-agent) so that under --hard the plan is decomposed into genuinely small phases, each completable in one bounded agent round, rather than one large open-ended plan ('Phase 1 strike 3: prove merge_forward_succ' was research-grade). (1) Tighten H8 phase sizing so each phase is a minimal bounded unit (e.g. one lemma / one checklist sub-item / ~100-300 lines output), not a multi-part objective. (2) Add a SKELETON-PLUS-FOLLOW-UP decomposition: when the full objective exceeds what a few small phases can cover, planner-hard produces a SKELETON plan covering the core/critical path and SPAWNS follow-up tasks (via the task-spawn / multi-task-creation mechanism) for the remaining work, instead of inflating phases. The skeleton plan and its follow-up tasks are linked via state.json dependencies. (3) The SKELETON is realized with STRATEGIC SORRIES per the relaxed zero-debt policy (task 778): planner-hard plans the skeleton so that deliberately-placed, documented sorries sit at the DIVISION BOUNDARIES, and EACH strategic sorry maps to a follow-up task/part. The division into follow-up tasks is therefore concretely driven by where strategic sorries are placed on the skeleton -- each sorry's deferral comment names the follow-up task that will discharge it. (4) Ensure the resulting small phases feed the implementation leg (task 772) so each implement round handles exactly one phase. (5) Extend the handoff schema (.claude/context/contracts/wrap-up.md) as needed to track skeleton-vs-follow-up status and the strategic-sorry-to-task mapping, and update skill-implementer-hard Stage 3b to consume the smaller phases. Root cause: RC4 (phases not regimented; oversized open-ended phases drove orchestrator burnout on task 305). Scope: hard-mode only. CONTEXT: part of making --hard proceed in regimented bounded chunks (transcript /orchestrate 305 --hard --lit, .claude/output/hard.md). This is the PLANNING leg of the three-leg --hard model (research=task 777, planning=this task, implementation=task 772), built on the relaxed zero-debt / strategic-sorry policy (task 778). Depends on task 778.
 
 ---
 
@@ -100,7 +112,7 @@ next_project_number: 778
 - **Topic**: agent-system
 - **Dependencies**: None
 
-**Description**: [--hard IMPLEMENTATION leg: focus each agent round on an INDIVIDUAL PHASE, never the entire plan.] Make skill-orchestrate-hard structurally incapable of doing implementation work itself, forcing per-phase delegation. (1) Remove `Edit` from skill-orchestrate-hard `allowed-tools` (currently `Agent, Bash, Read, Edit`) so the orchestrator cannot directly modify source files -- it used Update ~10 times on task 305. (2) Constrain Bash to orchestration-only operations (jq/state.json reads, git status/log, status-sync scripts) and explicitly forbid build/test/compiler invocations (lake build, lean-lsp, etc.) in the orchestrator context. (3) Require BLOCKING, foreground single-phase dispatch: exactly one Agent call per cycle, wait for its handoff return, never interleave the orchestrator's own work -- forbid background/parallel dispatch of implementation agents (root cause: transcript line 92 'launched it in the background and will continue the orchestration'). (4) Restrict orchestrator Reads to handoff JSON, state.json, and plan files ONLY -- forbid reading implementation source files. Root causes: RC1 (orchestrator had Edit + unrestricted Bash), RC3 (H1 not enforced as a hard loop boundary; background dispatch). Scope: hard-mode only; do NOT modify base skill-orchestrate. CONTEXT: /orchestrate 305 --hard --lit (transcript .claude/output/hard.md) -- the orchestrator became the implementation agent (lines 954-2700: zero implementation dispatches, only inline proof reasoning + ~10 direct Update/lake-build/lean-lsp calls). Goal: each --hard implementation round dispatches exactly ONE phase to a bounded sub-agent; the orchestrator never takes the plan as a whole. Pairs with the planning leg (task 774), which produces the small phases this leg consumes.
+**Description**: [--hard IMPLEMENTATION leg: focus each agent round on an INDIVIDUAL PHASE, never the entire plan.] Make skill-orchestrate-hard structurally incapable of doing implementation work itself, forcing per-phase delegation. (1) Remove `Edit` from skill-orchestrate-hard `allowed-tools` (currently `Agent, Bash, Read, Edit`) so the orchestrator cannot directly modify source files -- it used Update ~10 times on task 305. (2) Constrain Bash to orchestration-only operations (jq/state.json reads, git status/log, status-sync scripts) and explicitly forbid build/test/compiler invocations (lake build, lean-lsp, etc.) in the orchestrator context. (3) Require BLOCKING, foreground single-phase dispatch: exactly one Agent call per cycle, wait for its handoff return, never interleave the orchestrator's own work -- forbid background/parallel dispatch of implementation agents (root cause: transcript line 92 'launched it in the background and will continue the orchestration'). (4) Restrict orchestrator Reads to handoff JSON, state.json, and plan files ONLY -- forbid reading implementation source files. (5) Under the relaxed zero-debt policy (task 778), a VALID outcome of an implementation round is a green-building strategic-sorry SKELETON for the phase -- each strategic sorry documented and mapped to a tracked follow-up part -- rather than a fully complete phase; the orchestrator must ACCEPT and route such skeleton handoffs (reading the sorry_inventory) as progress, not demand completeness in one round. Root causes: RC1 (orchestrator had Edit + unrestricted Bash), RC3 (H1 not enforced as a hard loop boundary; background dispatch). Scope: hard-mode only; do NOT modify base skill-orchestrate. CONTEXT: /orchestrate 305 --hard --lit (transcript .claude/output/hard.md) -- the orchestrator became the implementation agent (lines 954-2700: zero implementation dispatches, only inline proof reasoning + ~10 direct Update/lake-build/lean-lsp calls). Goal: each --hard implementation round dispatches exactly ONE phase to a bounded sub-agent; the orchestrator never takes the plan as a whole. Pairs with the planning leg (task 774), which produces the small phases / strategic-sorry skeleton this leg consumes, and the relaxed-debt policy (task 778).
 
 ---
 
