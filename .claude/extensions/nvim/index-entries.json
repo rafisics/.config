@@ -290,8 +290,8 @@
       "path": "project/neovim/guides/tts-stt-integration.md",
       "domain": "project",
       "subdomain": "neovim",
-      "topics": ["tts", "stt", "piper", "vosk", "audio"],
-      "keywords": ["tts", "stt", "piper", "vosk", "speech", "audio"],
+      "topics": ["tts", "stt", "pico", "vosk", "audio"],
+      "keywords": ["tts", "stt", "pico", "vosk", "speech", "audio"],
       "summary": "TTS/STT setup, configuration, and troubleshooting for Claude Code and Neovim",
       "line_count": 367,
       "load_when": {

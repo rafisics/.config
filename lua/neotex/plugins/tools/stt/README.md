@@ -222,7 +222,7 @@ The STT plugin integrates with Claude Code sidebar via:
 
 1. **Terminal-mode keybinding**: `<C-\>` works in terminal buffers
 2. **SessionStart hook**: Claude signals Neovim when ready (see `.claude/docs/guides/neovim-integration.md`)
-3. **TTS notifications**: Piper announces when Claude completes (see `.claude/hooks/tts-notify.sh`)
+3. **TTS notifications**: pico2wave announces when Claude completes (see `.claude/hooks/tts-notify.sh`)
 
 **Full integration docs**: See `.claude/docs/guides/neovim-integration.md` in your project root.
 

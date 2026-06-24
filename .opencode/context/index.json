@@ -3281,14 +3281,14 @@
       "topics": [
         "tts",
         "stt",
-        "piper",
+        "pico",
         "vosk",
         "audio"
       ],
       "keywords": [
         "tts",
         "stt",
-        "piper",
+        "pico",
         "vosk",
         "speech",
         "audio"
