@@ -25,7 +25,23 @@ subagent will load it fresh anyway.
 
 ---
 
-### `CLAUDE_CODE_FORK_SUBAGENT=1` (environment variable)
+### `subagent_type: "fork"` (Agent tool parameter — current pattern)
+
+**What it does**: Passing `subagent_type: "fork"` to the Agent tool spawns a forked subprocess
+that inherits the parent's prompt cache. This is the **current, preferred** fork mechanism used
+by `skill-orchestrate` for blocker research and drift inspection.
+
+**Current state**: `skill-orchestrate` uses `subagent_type: "fork"` for its two fork dispatch
+points (Stage 5a drift inspection, Stage 6 blocker research). This pattern was confirmed working
+in `skill-researcher` and is now unified across all fork dispatch sites.
+
+**When to use**: Lightweight analysis tasks that benefit from cache sharing (e.g., reading a
+plan file, researching a specific blocker). The fork inherits the parent's context without
+requiring a specialized agent type.
+
+---
+
+### `CLAUDE_CODE_FORK_SUBAGENT=1` (environment variable — legacy)
 
 **What it does**: When set, Agent/Agent tool invocations that **omit `subagent_type`** spawn a
 forked subprocess that inherits the parent's prompt cache. This can reduce input token costs by
@@ -36,6 +52,8 @@ specified explicitly, the env var has no effect — a fresh agent is always laun
 
 **Current state**: Core skills always specify `subagent_type` explicitly (e.g.,
 `subagent_type: "general-implementation-agent"`), so they are unaffected by this env var.
+The `FORK_SUBAGENT` env var mechanism (referenced in the old `dispatch-agent.sh`) is no longer
+used. Use `subagent_type: "fork"` instead.
 
 ---
 

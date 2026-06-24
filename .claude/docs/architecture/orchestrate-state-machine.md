@@ -2,7 +2,7 @@
 
 **Status**: Current architecture — designed by Task 592, implemented by Task 596.
 
-**See Also**: `architecture-spec.md` (Component 3), `dispatch-agent-spec.md`, `handoff-schema.md`
+**See Also**: `architecture-spec.md` (Component 3), `handoff-schema.md`
 
 ---
 
@@ -116,30 +116,33 @@ When a dispatch returns with non-empty `blockers` in the orchestrator handoff:
 Step 1: DETECT
   Read .orchestrator-handoff.json
   blockers = jq -c '.blockers // []' handoff.json
-  if [ "$(echo "$blockers" | jq 'length')" -gt 0 ]; then
-    escalate=true
-  fi
+  If blockers array is non-empty: escalate=true
 
-Step 2: RESEARCH FORK (cache-warm, no subagent_type)
+Step 2: RESEARCH FORK (subagent_type: "fork")
   blocker_desc = jq -r '.[0].description' blockers
-  dispatch_agent "" "$blocker_research_prompt" "" "true"
-  # is_blocker_escalation=true → fork (no subagent_type)
-  # Parent cache prefix inherited → ~90% token savings
+  Invoke Agent tool:
+    subagent_type: "fork"
+    prompt: "Research this blocker for task $N: $blocker_desc. Find root cause and solution path."
+    context: { task_number, session_id, blocker, orchestrator_mode: false }
   Read .orchestrator-handoff.json → research findings
 
 Step 3: READ FINDINGS
-  findings = jq -r '.summary' research_handoff.json
-  artifact = jq -r '.artifacts[0].path' research_handoff.json
+  findings = jq -r '.summary' .orchestrator-handoff.json
+  artifact = jq -r '.artifacts[0].path' .orchestrator-handoff.json
 
 Step 4: REVISE PLAN
-  dispatch_agent "reviser-agent" "$revise_prompt" "$context_with_findings" "false"
-  # Normal named subagent dispatch
-  # Reviser reads current plan + research findings, writes new plan version
+  Invoke Agent tool:
+    subagent_type: "reviser-agent"
+    prompt: "Revise plan for task $N to address blocker: $blocker_desc. Findings: $findings"
+    context: { task_number, session_id, research_findings, plan_path, orchestrator_mode: false }
+  Reviser reads current plan + research findings, writes new plan version
 
 Step 5: RE-DISPATCH IMPLEMENT
-  dispatch_agent "general-implementation-agent" "$implement_prompt" "$context" "false"
-  # orchestrator_mode=true in context
-  # Fresh implementation with revised plan
+  Invoke Agent tool:
+    subagent_type: $IMPLEMENT_AGENT  (resolved by task_type in Stage 1b)
+    prompt: "Implement task $N following the revised plan."
+    context: { task_number, session_id, orchestrator_mode: true, plan_path }
+  Fresh implementation with revised plan
 ```
 
 ---

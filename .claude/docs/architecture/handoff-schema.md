@@ -6,8 +6,7 @@
 **Written by**: Skills when `orchestrator_mode: true` in delegation context
 **Read by**: `skill-orchestrate` state machine loop
 
-**See Also**: `architecture-spec.md` (Component 5), `orchestrate-state-machine.md`,
-`dispatch-agent-spec.md`
+**See Also**: `architecture-spec.md` (Component 5), `orchestrate-state-machine.md`
 
 ---
 
