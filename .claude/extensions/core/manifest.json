@@ -24,7 +24,10 @@
       "planner-agent.md",
       "reviser-agent.md",
       "spawn-agent.md",
-      "synthesis-agent.md"
+      "synthesis-agent.md",
+      "general-research-hard-agent.md",
+      "general-implementation-hard-agent.md",
+      "planner-hard-agent.md"
     ],
     "commands": [
       "errors.md",
@@ -73,7 +76,11 @@
       "skill-team-research",
       "skill-todo",
       "skill-zulip",
-      "skill-project-overview"
+      "skill-project-overview",
+      "skill-researcher-hard",
+      "skill-planner-hard",
+      "skill-implementer-hard",
+      "skill-orchestrate-hard"
     ],
     "scripts": [
       "archive-task.sh",
@@ -179,5 +186,22 @@
       ".gitignore"
     ]
   },
-  "hooks": {}
+  "hooks": {},
+  "routing_hard": {
+    "research": {
+      "general": "skill-researcher-hard",
+      "meta": "skill-researcher-hard",
+      "markdown": "skill-researcher-hard"
+    },
+    "plan": {
+      "general": "skill-planner-hard",
+      "meta": "skill-planner-hard",
+      "markdown": "skill-planner-hard"
+    },
+    "implement": {
+      "general": "skill-implementer-hard",
+      "meta": "skill-implementer-hard",
+      "markdown": "skill-implementer-hard"
+    }
+  }
 }
