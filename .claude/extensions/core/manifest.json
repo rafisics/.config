@@ -92,7 +92,6 @@
       "command-gate-in.sh",
       "command-gate-out.sh",
       "command-route-skill.sh",
-      "dispatch-agent.sh",
       "export-to-markdown.sh",
       "generate-task-order.sh",
       "generate-todo.sh",
