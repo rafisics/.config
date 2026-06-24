@@ -1,7 +1,37 @@
 {
   "version": "1.1.0",
-  "next_project_number": 775,
+  "next_project_number": 777,
   "active_projects": [
+    {
+      "project_number": 775,
+      "project_name": "lit_global_corpus_fallback_briefing",
+      "status": "not_started",
+      "task_type": "meta",
+      "created": "2026-06-24T22:01:31Z",
+      "last_updated": "2026-06-24T22:01:31Z",
+      "title": "Add global-corpus fallback to --lit so the briefing is never empty",
+      "description": "Make literature-briefing.sh fall back to the global Literature corpus when the per-repo specs/literature-index.json sub-index is absent, instead of silently exiting empty. Specifically: (1) When no sub-index exists (or it has zero entries), run a NON-INTERACTIVE relevance search against the global ~/Projects/Literature FTS5 index (via literature-search.sh, keyed by the task description / task_type passed from the skill) and build a <literature-briefing> from the top-N matching segments (paths + chunk counts + token totals + the existing \"How to Use\" navigation footer). (2) Ensure the briefing always lists how to call literature-search.sh and Read chunk files so the agent actively explores the segmented sources. (3) Thread the task description/query into literature-briefing.sh (it currently takes no arguments) so the fallback search is relevant. (4) Update the skill Stage 4a callers (skill-researcher, skill-researcher-hard, skill-planner, skill-planner-hard, skill-implementer, skill-implementer-hard) so the fallback briefing is generated and injected even when the interactive sub-index setup is skipped -- keep the interactive \"curate sub-index\" path as an optional enhancement, not a precondition. Root causes: G1 (hard gate + silent empty exit), G2 (no global-corpus fallback). Goal: --lit reliably directs the agent to the segmented global sources without requiring a pre-curated per-repo sub-index. CONTEXT: User asked a primary agent (conversationally) to invoke a research agent with --lit on a difficult Lean proof in ~/Projects/cslib/ (transcript: .claude/output/lit.md). The live --lit mechanism (literature-briefing.sh, which superseded the deprecated static-dump literature-retrieve.sh) already does navigate-on-demand correctly, but in lit.md the briefing never reached the agent because literature-briefing.sh is hard-gated on a per-repo sub-index that did not exist and silently exited empty, and there is no global-corpus fallback. The global ~/Projects/Literature (222 entries in index.json + queryable FTS5 .literature.db via literature-search.sh + per-doc chunks.json TOC) was never explored.",
+      "effort": "3-6 hours",
+      "topic": "literature",
+      "dependencies": [],
+      "artifacts": []
+    },
+    {
+      "project_number": 776,
+      "project_name": "lit_adhoc_dispatch_navigation_doc_sync",
+      "status": "not_started",
+      "task_type": "meta",
+      "created": "2026-06-24T22:01:31Z",
+      "last_updated": "2026-06-24T22:01:31Z",
+      "title": "Make --lit navigation work for ad-hoc dispatch and sync stale CLAUDE.md docs",
+      "description": "Two coupled fixes so --lit works outside the formal /research N --lit command path and is documented accurately. (1) Ad-hoc dispatch directive: create a reusable \"literature navigation directive\" (e.g. a short context snippet or a thin script wrapper) that the primary/orchestrator agent can inject into ANY dispatched agent prompt when the user asks for --lit conversationally (not via skill Stage 4a) -- it should carry the same <literature-briefing> navigation instructions (run literature-search.sh against the global corpus, Read the relevant segmented chunk files) so a conversationally-dispatched research agent is actually directed to explore the index. Reference how Stage 4a generates lit_context. (2) CLAUDE.md doc sync: the \"Literature Mode (--lit)\" section still describes the DEPRECATED static-dump model (literature-retrieve.sh, <literature-context>, \"reads all .md and .txt files from specs/literature/\", TOKEN_BUDGET=4000/MAX_FILES=10). Rewrite the \"What --lit Does\" subsection to describe the live navigate-on-demand briefing (literature-briefing.sh -> <literature-briefing>) against the global segmented corpus, including the new global-corpus fallback from Task 775. Also reconcile the token-budget drift (literature-retrieve.sh header says 8000, CLAUDE.md says 4000, global index.json says 8000). Root causes: G3 (navigation reachable only from skill Stage 4a), G4 (stale CLAUDE.md misdocuments --lit). Depends on Task 775 (documents the fallback behavior 775 implements).",
+      "effort": "3-6 hours",
+      "topic": "literature",
+      "dependencies": [
+        775
+      ],
+      "artifacts": []
+    },
     {
       "project_number": 772,
       "project_name": "hardmode_orchestrator_pure_dispatcher",
